@@ -1,0 +1,347 @@
+<!DOCTYPE html><html class="dark" lang="tr" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>TeknoAkış - Arama Sonuçları</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#006970",
+                        "surface-container-lowest": "#0c0e12",
+                        "surface-bright": "#37393e",
+                        "surface": "#111317",
+                        "on-primary-fixed": "#002022",
+                        "primary-fixed-dim": "#00dbe9",
+                        "on-tertiary": "#003824",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "secondary-fixed": "#e9ddff",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "inverse-primary": "#006970",
+                        "surface-tint": "#00dbe9",
+                        "surface-container": "#1e2024",
+                        "on-secondary-fixed": "#23005c",
+                        "surface-container-low": "#1a1c20",
+                        "secondary": "#d0bcff",
+                        "tertiary": "#d8ffe7",
+                        "on-tertiary-container": "#006d4a",
+                        "on-surface": "#e2e2e8",
+                        "on-primary-fixed-variant": "#004f54",
+                        "outline-variant": "#3b494b",
+                        "background": "#111317",
+                        "surface-container-high": "#282a2e",
+                        "inverse-on-surface": "#2f3035",
+                        "tertiary-fixed": "#6ffbbe",
+                        "surface-container-highest": "#333539",
+                        "on-surface-variant": "#b9cacb",
+                        "on-error": "#690005",
+                        "surface-variant": "#333539",
+                        "primary-container": "#00f0ff",
+                        "surface-dim": "#111317",
+                        "error": "#ffb4ab",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "on-secondary": "#3c0091",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "tertiary-container": "#65f2b5",
+                        "outline": "#849495",
+                        "secondary-container": "#571bc1",
+                        "on-primary": "#00363a",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-container": "#c4abff",
+                        "on-background": "#e2e2e8",
+                        "error-container": "#93000a",
+                        "primary-fixed": "#7df4ff",
+                        "on-tertiary-fixed": "#002113",
+                        "primary": "#dbfcff",
+                        "inverse-surface": "#e2e2e8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "md": "16px",
+                        "margin-desktop": "32px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "headline-lg": ["Geist"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Geist"],
+                        "mono-code": ["JetBrains Mono"],
+                        "mono-label": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Geist"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "mono-code": ["13px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "mono-label": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        
+        .glass-panel {
+            background: rgba(26, 28, 32, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid theme('colors.outline-variant');
+        }
+
+        .tech-card-hover {
+            transition: all 0.2s ease;
+        }
+        
+        .tech-card-hover:hover {
+            border-color: theme('colors.primary-fixed-dim');
+            box-shadow: 0 0 15px rgba(0, 219, 233, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .code-block {
+            background-color: #000000;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        /* Hide scrollbar for filter tabs */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col pt-16 pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface/60 dark:bg-surface/60 backdrop-blur-xl border-b border-outline-variant flat no shadows font-headline-md text-headline-md">
+<div class="flex items-center gap-md">
+<a href="#" class="text-on-surface-variant dark:text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-150 flex items-center justify-center">{{DATA:SCREEN:SCREEN_30}}<span class="material-symbols-outlined" data-icon="menu">menu</span></a>
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed tracking-tight">TeknoAkış</span>
+</div>
+<!-- Desktop Search (hidden on mobile) -->
+<div class="hidden md:flex flex-1 max-w-xl mx-lg">
+<div class="relative w-full group">
+<span class="absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant material-symbols-outlined" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded focus:border-primary-container focus:ring-1 focus:ring-primary-container text-on-surface pl-10 pr-sm py-sm font-mono-code text-mono-code transition-colors" placeholder="Ara..." type="text" value="GPT-4">
+<a href="#" class="absolute right-sm top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center">{{DATA:SCREEN:SCREEN_30}}<span class="material-symbols-outlined text-sm" data-icon="close">close</span></a>
+</div>
+</div>
+<button class="md:hidden text-primary dark:text-primary-fixed hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</header>
+<!-- Main Content Container -->
+<main class="flex-1 w-full max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop py-lg flex flex-col gap-lg md:gap-xl">
+<!-- Mobile Search Bar (visible only on mobile) -->
+<div class="md:hidden relative w-full group mt-sm">
+<span class="absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant material-symbols-outlined" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded focus:border-primary-container focus:ring-1 focus:ring-primary-container text-on-surface pl-10 pr-sm py-md font-mono-code text-mono-code transition-colors" placeholder="Ara..." type="text" value="GPT-4">
+<a href="#" class="absolute right-sm top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary transition-colors flex items-center justify-center">{{DATA:SCREEN:SCREEN_30}}<span class="material-symbols-outlined text-sm" data-icon="close">close</span></a>
+</div>
+<!-- Search Header & Filters -->
+<div class="flex flex-col gap-md">
+<div class="flex items-baseline justify-between border-b border-outline-variant pb-sm">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg">
+                    "<span class="text-primary-container">GPT-4</span>"
+                </h1>
+<span class="font-mono-label text-mono-label text-on-surface-variant">42 sonuç bulundu</span>
+</div>
+<!-- Filter Tabs -->
+<div class="flex overflow-x-auto no-scrollbar gap-sm pb-xs">
+<button class="px-md py-sm rounded-full bg-primary-container text-on-primary-container font-mono-label text-mono-label whitespace-nowrap transition-colors border border-transparent">
+                    Tümü
+                </button>
+<button class="px-md py-sm rounded-full bg-surface-container hover:bg-surface-variant text-on-surface-variant font-mono-label text-mono-label whitespace-nowrap transition-colors border border-outline-variant">
+                    AI Modelleri
+                </button>
+<button class="px-md py-sm rounded-full bg-surface-container hover:bg-surface-variant text-on-surface-variant font-mono-label text-mono-label whitespace-nowrap transition-colors border border-outline-variant">
+                    GitHub
+                </button>
+<button class="px-md py-sm rounded-full bg-surface-container hover:bg-surface-variant text-on-surface-variant font-mono-label text-mono-label whitespace-nowrap transition-colors border border-outline-variant">
+                    Haberler
+                </button>
+</div>
+</div>
+<!-- Search Results Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Result 1: AI Model Card (Spans full on mobile, 8 cols on desktop) -->
+<div class="md:col-span-8 glass-panel rounded-lg p-md tech-card-hover flex flex-col gap-md group cursor-pointer active:scale-[0.98]" onclick="window.location.href='{{DATA:SCREEN:SCREEN_10}}'">
+<div class="flex justify-between items-start">
+<div>
+<div class="flex items-center gap-xs mb-xs">
+<span class="material-symbols-outlined text-sm text-primary-fixed-dim" data-icon="psychology">psychology</span>
+<span class="font-mono-label text-mono-label text-primary-fixed-dim">LLM · OpenAI</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary-container transition-colors">GPT-4o</h2>
+</div>
+<div class="bg-surface-container-highest px-xs py-base rounded border border-outline-variant">
+<span class="font-mono-code text-mono-code text-tertiary-fixed-dim text-[10px]">+v2024.05.13</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                    OpenAI's latest flagship model that can reason across audio, vision, and text in real time. It matches GPT-4 Turbo performance on text and code, with significantly faster and cheaper API access.
+                </p>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-sm pt-sm border-t border-outline-variant/50">
+<div class="flex flex-col">
+<span class="font-mono-label text-mono-label text-on-surface-variant text-[10px]">Context Window</span>
+<span class="font-mono-code text-mono-code text-on-surface">128K</span>
+</div>
+<div class="flex flex-col">
+<span class="font-mono-label text-mono-label text-on-surface-variant text-[10px]">Training Data</span>
+<span class="font-mono-code text-mono-code text-on-surface">Up to Oct 2023</span>
+</div>
+<div class="flex flex-col">
+<span class="font-mono-label text-mono-label text-on-surface-variant text-[10px]">MMLU Score</span>
+<span class="font-mono-code text-mono-code text-tertiary-fixed-dim">88.7%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-mono-label text-mono-label text-on-surface-variant text-[10px]">Latency</span>
+<span class="font-mono-code text-mono-code text-primary-container">~320ms</span>
+</div>
+</div>
+</div>
+<!-- Result 2: GitHub Card (Spans full on mobile, 4 cols on desktop) -->
+<div class="md:col-span-4 bg-surface-container-low rounded-lg p-md border border-outline-variant tech-card-hover flex flex-col gap-md group cursor-pointer active:scale-[0.98]" onclick="window.location.href='{{DATA:SCREEN:SCREEN_11}}'">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-sm text-on-surface-variant" data-icon="terminal">terminal</span>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary-container transition-colors truncate">gpt-prompt-engineering</h3>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+                    A comprehensive guide and collection of advanced prompt engineering techniques for GPT-4 and GPT-4o models. Includes examples for coding, reasoning, and agents.
+                </p>
+<div class="flex flex-wrap gap-xs mt-auto pt-sm">
+<div class="flex items-center gap-base px-sm py-base rounded bg-surface-container-highest border border-outline-variant">
+<span class="material-symbols-outlined text-[12px] text-tertiary-fixed-dim" data-icon="star" data-weight="fill">star</span>
+<span class="font-mono-label text-mono-label text-on-surface">12.4k</span>
+</div>
+<div class="flex items-center gap-base px-sm py-base rounded bg-surface-container-highest border border-outline-variant">
+<div class="w-2 h-2 rounded-full bg-secondary-fixed-dim"></div>
+<span class="font-mono-label text-mono-label text-on-surface">Python</span>
+</div>
+<div class="flex items-center gap-base px-sm py-base rounded bg-surface-container-highest border border-outline-variant">
+<span class="material-symbols-outlined text-[12px] text-on-surface-variant" data-icon="balance">balance</span>
+<span class="font-mono-label text-mono-label text-on-surface">MIT</span>
+</div>
+</div>
+</div>
+<!-- Result 3: News/Article Card (Spans full width) -->
+<div class="md:col-span-12 bg-surface-container-low rounded-lg border border-outline-variant tech-card-hover flex flex-col md:flex-row overflow-hidden group">
+<!-- Abstract Image representation (placeholder required by prompt) -->
+<div class="md:w-64 h-48 md:h-auto border-b md:border-b-0 md:border-r border-outline-variant relative overflow-hidden" data-alt="A macro shot of a sleek, dark server rack or glowing quantum computing core, illuminated by stark cyan and deep blue LED lights, representing enterprise-grade AI infrastructure. Hyper-technical aesthetic, sharp focus, cinematic lighting, 8k resolution." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCusTzkVgwIsbFXZYEprTH20G9Mitjq04iO_uu-QXhfuMqW2O9MEGSAzyvbqg4_xC1zS5WRVE19BOQLeW5vdrunvvdDukKCCc-UNFuCIHMvBGvSaehB3ZdiZ5iIANNhG9IVy1OBzKhoTViAO_xkw0Q8BKXE67EAa9614lJpKfVYQdiMxm_lupSFPlq3AoT0UBfBbFPvYEDfua7N6vxqDA8VqnFJwiduDgiZPi-9PjEa_8gIR0VVAewqlnV5efnXcBo84hwQDyKbrp8')">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent opacity-60"></div>
+</div>
+<div class="p-md flex-1 flex flex-col justify-between gap-md">
+<div>
+<div class="flex items-center justify-between mb-sm">
+<span class="font-mono-label text-mono-label text-secondary-fixed-dim bg-secondary-container/20 px-xs py-base rounded">HABERLER</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant">2 gün önce</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary-container transition-colors mb-sm">GPT-4 Enterprise Güncellemesi: Gelişmiş Veri Analizi ve Güvenlik Özellikleri</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                            OpenAI, kurumsal müşteriler için GPT-4'ün yeni versiyonunu duyurdu. Güncelleme, SOC 2 uyumluluğu, geliştirilmiş RAG (Retrieval-Augmented Generation) kapasitesi ve zero-data retention garantisi içeriyor. Ayrıca yeni veri analizi modülü karmaşık veritabanı sorgularını doğrudan doğal dilde işleyebiliyor.
+                        </p>
+</div>
+<div class="flex items-center gap-sm mt-sm border-t border-outline-variant/50 pt-sm">
+<div class="w-6 h-6 rounded-full bg-surface-variant border border-outline-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px]" data-icon="person">person</span>
+</div>
+<span class="font-mono-label text-mono-label text-on-surface">Tech Desk</span>
+<span class="text-on-surface-variant font-mono-label text-mono-label">·</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> 4 dk okuma
+                        </span>
+</div>
+</div>
+</div>
+<!-- Result 4: Code Snippet Snippet (Tech Utility) -->
+<div class="md:col-span-12 glass-panel rounded-lg border border-outline-variant overflow-hidden flex flex-col">
+<div class="bg-surface-container-highest px-md py-sm border-b border-outline-variant flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-sm text-on-surface-variant" data-icon="code">code</span>
+<span class="font-mono-label text-mono-label text-on-surface">openai_api_call.py</span>
+</div>
+<button class="font-mono-label text-mono-label text-primary-fixed-dim hover:text-primary-container transition-colors flex items-center gap-xs">
+<span class="material-symbols-outlined text-sm" data-icon="content_copy">content_copy</span> Kopyala
+                    </button>
+</div>
+<div class="code-block p-md text-on-surface overflow-x-auto text-sm">
+<pre><code><span class="text-secondary-fixed-dim">import</span> os
+<span class="text-secondary-fixed-dim">from</span> openai <span class="text-secondary-fixed-dim">import</span> AsyncOpenAI
+
+client = AsyncOpenAI(api_key=os.environ.get(<span class="text-tertiary-fixed-dim">"OPENAI_API_KEY"</span>))
+
+<span class="text-primary-container">async def</span> <span class="text-on-secondary-container">generate_tech_summary</span>(query: <span class="text-secondary-fixed">str</span>) -&gt; <span class="text-secondary-fixed">str</span>:
+    response = <span class="text-primary-container">await</span> client.chat.completions.create(
+        model=<span class="text-tertiary-fixed-dim">"gpt-4o"</span>,
+        messages=[
+            {<span class="text-tertiary-fixed-dim">"role"</span>: <span class="text-tertiary-fixed-dim">"system"</span>, <span class="text-tertiary-fixed-dim">"content"</span>: <span class="text-tertiary-fixed-dim">"You are an expert technical analyst."</span>},
+            {<span class="text-tertiary-fixed-dim">"role"</span>: <span class="text-tertiary-fixed-dim">"user"</span>, <span class="text-tertiary-fixed-dim">"content"</span>: <span class="text-secondary-fixed-dim">f</span><span class="text-tertiary-fixed-dim">"Analyze: {query}"</span>}
+        ],
+        temperature=<span class="text-on-tertiary-container">0.2</span>
+    )
+    <span class="text-primary-container">return</span> response.choices[<span class="text-on-tertiary-container">0</span>].message.content</code></pre>
+</div>
+</div>
+</div>
+<!-- Load More -->
+<div class="flex justify-center mt-md">
+<button class="px-xl py-sm rounded border border-outline-variant text-primary-container font-mono-label text-mono-label hover:bg-surface-container transition-colors active:scale-95">
+                Daha Fazla Sonuç Yükle
+            </button>
+</div>
+</main>
+<!-- BottomNavBar (Visible on Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 flex justify-around items-center px-margin-mobile py-sm pb-safe bg-surface/60 dark:bg-surface/60 backdrop-blur-xl border-t border-outline-variant flat no shadows">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-xs" data-icon="home">home</span>
+<span class="font-mono-label text-mono-label text-[10px]">Ana Sayfa</span>
+</a>
+<!-- Active Tab: Keşfet (Explore/Search) -->
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed font-bold hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-xs" data-icon="explore" data-weight="fill" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-mono-label text-mono-label text-[10px]">Keşfet</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-xs" data-icon="add_circle">add_circle</span>
+<span class="font-mono-label text-mono-label text-[10px]">Paylaş</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-xs" data-icon="notifications">notifications</span>
+<span class="font-mono-label text-mono-label text-[10px]">Bildirimler</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-xs" data-icon="person_outline">person_outline</span>
+<span class="font-mono-label text-mono-label text-[10px]">Profil</span>
+</a>
+</nav>
+
+
+</body></html>

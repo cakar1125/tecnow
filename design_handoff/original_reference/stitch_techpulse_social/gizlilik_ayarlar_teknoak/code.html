@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=390, height=844, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>TeknoAkış - Gizlilik Ayarları</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Inter:wght@400;500&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration (From Design System) -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary": "#d8ffe7",
+                    "surface-variant": "#333539",
+                    "surface-bright": "#37393e",
+                    "tertiary-fixed-dim": "#4edea3",
+                    "secondary-fixed-dim": "#d0bcff",
+                    "on-primary-fixed": "#002022",
+                    "secondary-container": "#571bc1",
+                    "primary-fixed": "#7df4ff",
+                    "on-surface-variant": "#b9cacb",
+                    "surface": "#111317",
+                    "error": "#ffb4ab",
+                    "primary": "#dbfcff",
+                    "tertiary-fixed": "#6ffbbe",
+                    "surface-container-low": "#1a1c20",
+                    "surface-container": "#1e2024",
+                    "on-primary": "#00363a",
+                    "tertiary-container": "#65f2b5",
+                    "surface-container-highest": "#333539",
+                    "primary-fixed-dim": "#00dbe9",
+                    "outline-variant": "#3b494b",
+                    "primary-container": "#00f0ff",
+                    "outline": "#849495",
+                    "on-tertiary-fixed": "#002113",
+                    "on-secondary-container": "#c4abff",
+                    "background": "#111317",
+                    "on-tertiary": "#003824",
+                    "on-secondary-fixed": "#23005c",
+                    "on-tertiary-container": "#006d4a",
+                    "surface-tint": "#00dbe9",
+                    "on-error": "#690005",
+                    "surface-container-lowest": "#0c0e12",
+                    "secondary-fixed": "#e9ddff",
+                    "on-tertiary-fixed-variant": "#005236",
+                    "on-surface": "#e2e2e8",
+                    "secondary": "#d0bcff",
+                    "inverse-surface": "#e2e2e8",
+                    "surface-dim": "#111317",
+                    "on-secondary-fixed-variant": "#5516be",
+                    "on-primary-container": "#006970",
+                    "error-container": "#93000a",
+                    "on-secondary": "#3c0091",
+                    "inverse-primary": "#006970",
+                    "inverse-on-surface": "#2f3035",
+                    "surface-container-high": "#282a2e",
+                    "on-background": "#e2e2e8",
+                    "on-error-container": "#ffdad6",
+                    "on-primary-fixed-variant": "#004f54"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "base": "4px",
+                    "xl": "32px",
+                    "margin-mobile": "16px",
+                    "gutter": "16px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "margin-desktop": "32px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Geist"],
+                    "mono-code": ["JetBrains Mono"],
+                    "headline-md": ["Geist"],
+                    "headline-lg-mobile": ["Geist"],
+                    "mono-label": ["JetBrains Mono"],
+                    "body-sm": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "mono-code": ["13px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "mono-label": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        /* Base reset and styling */
+        html, body {
+            background-color: #0c0e12; /* surface-container-lowest equivalent */
+            color: #e2e2e8;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Custom Toggle Switch Styles */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #00dbe9; /* surface-tint / primary-fixed-dim */
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #00dbe9;
+        }
+        
+        /* Custom Radio Button Styles */
+        .custom-radio:checked {
+            background-color: #00dbe9;
+            border-color: #00dbe9;
+        }
+        
+        /* Suppress global nav shell since this is a deep settings page */
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface antialiased min-h-screen flex flex-col w-full max-w-[390px] mx-auto relative shadow-2xl overflow-y-auto">
+<!-- Header (Transactional / Contextual, overriding TopAppBar JSON to fit deep settings context) -->
+<header class="sticky top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface/60 backdrop-blur-xl border-b border-outline-variant flat no shadows">
+<button aria-label="Geri Dön" class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 rounded-full">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary tracking-tight">Gizlilik</h1>
+<div class="w-10 h-10"></div> <!-- Spacer for centering -->
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-margin-mobile py-lg flex flex-col gap-lg pb-32">
+<!-- Section: Profil Görünürlüğü -->
+<section class="flex flex-col gap-sm">
+<h2 class="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-widest mb-xs">Profil Görünürlüğü</h2>
+<div class="bg-surface-container-low rounded-xl border border-outline-variant overflow-hidden flex flex-col">
+<!-- Option: Herkese açık -->
+<label class="flex items-center justify-between p-md border-b border-outline-variant cursor-pointer hover:bg-surface-variant/30 transition-colors">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary-fixed-dim" style="font-variation-settings: 'FILL' 0;">public</span>
+<div>
+<p class="font-body-lg text-body-lg text-on-surface">Herkese açık</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Profilinizi herkes görebilir</p>
+</div>
+</div>
+<input checked="" class="custom-radio w-5 h-5 appearance-none rounded-full border-2 border-outline-variant checked:border-primary-fixed-dim transition-all relative after:content-[''] after:absolute after:inset-[3px] after:rounded-full after:bg-primary-fixed-dim after:opacity-0 checked:after:opacity-100" name="profile_visibility" type="radio" value="public"/>
+</label>
+<!-- Option: Takipçiler -->
+<label class="flex items-center justify-between p-md border-b border-outline-variant cursor-pointer hover:bg-surface-variant/30 transition-colors">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant" style="font-variation-settings: 'FILL' 0;">group</span>
+<div>
+<p class="font-body-lg text-body-lg text-on-surface">Takipçiler</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Sadece onaylı takipçiler görebilir</p>
+</div>
+</div>
+<input class="custom-radio w-5 h-5 appearance-none rounded-full border-2 border-outline-variant checked:border-primary-fixed-dim transition-all relative after:content-[''] after:absolute after:inset-[3px] after:rounded-full after:bg-primary-fixed-dim after:opacity-0 checked:after:opacity-100" name="profile_visibility" type="radio" value="followers"/>
+</label>
+<!-- Option: Gizli -->
+<label class="flex items-center justify-between p-md cursor-pointer hover:bg-surface-variant/30 transition-colors">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant" style="font-variation-settings: 'FILL' 0;">lock</span>
+<div>
+<p class="font-body-lg text-body-lg text-on-surface">Gizli</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Sadece siz görebilirsiniz</p>
+</div>
+</div>
+<input class="custom-radio w-5 h-5 appearance-none rounded-full border-2 border-outline-variant checked:border-primary-fixed-dim transition-all relative after:content-[''] after:absolute after:inset-[3px] after:rounded-full after:bg-primary-fixed-dim after:opacity-0 checked:after:opacity-100" name="profile_visibility" type="radio" value="private"/>
+</label>
+</div>
+</section>
+<!-- Section: İçerik Etkileşimleri -->
+<section class="flex flex-col gap-sm">
+<h2 class="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-widest mb-xs">İçerik Görünürlüğü</h2>
+<div class="bg-surface-container-low rounded-xl border border-outline-variant overflow-hidden flex flex-col">
+<!-- Toggle: Beğenilenleri göster -->
+<div class="flex items-center justify-between p-md border-b border-outline-variant">
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg text-on-surface">Beğenilenleri göster</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Profilinizde beğendiğiniz gönderiler listelenir</span>
+</div>
+<div class="relative inline-block w-12 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-surface-container-highest border-2 border-outline-variant appearance-none cursor-pointer z-10 top-0 left-0 transition-all duration-300" id="show_likes" name="show_likes" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-variant cursor-pointer transition-colors duration-300" for="show_likes"></label>
+</div>
+</div>
+<!-- Toggle: Koleksiyonları göster -->
+<div class="flex items-center justify-between p-md border-b border-outline-variant">
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg text-on-surface">Koleksiyonları göster</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Oluşturduğunuz genel koleksiyonlar görünür</span>
+</div>
+<div class="relative inline-block w-12 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-surface-container-highest border-2 border-outline-variant appearance-none cursor-pointer z-10 top-0 left-0 transition-all duration-300" id="show_collections" name="show_collections" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-variant cursor-pointer transition-colors duration-300" for="show_collections"></label>
+</div>
+</div>
+<!-- Toggle: Takip listesini göster -->
+<div class="flex items-center justify-between p-md">
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg text-on-surface">Takip listesini göster</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Takip ettiğiniz kişiler profilinizde görünür</span>
+</div>
+<div class="relative inline-block w-12 align-middle select-none transition duration-200 ease-in">
+<input class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-surface-container-highest border-2 border-outline-variant appearance-none cursor-pointer z-10 top-0 left-0 transition-all duration-300" id="show_following" name="show_following" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-variant cursor-pointer transition-colors duration-300" for="show_following"></label>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Veri ve Geçmiş -->
+<section class="flex flex-col gap-sm">
+<h2 class="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-widest mb-xs">Veri ve Geçmiş</h2>
+<div class="bg-surface-container-low rounded-xl border border-outline-variant overflow-hidden flex flex-col">
+<!-- Toggle: Veri kullanımı -->
+<div class="flex items-center justify-between p-md border-b border-outline-variant">
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg text-on-surface">Kişiselleştirilmiş veri</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Algoritmayı iyileştirmek için verileri kullan</span>
+</div>
+<div class="relative inline-block w-12 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-surface-container-highest border-2 border-outline-variant appearance-none cursor-pointer z-10 top-0 left-0 transition-all duration-300" id="data_usage" name="data_usage" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-variant cursor-pointer transition-colors duration-300" for="data_usage"></label>
+</div>
+</div>
+<!-- Toggle: Arama geçmişi -->
+<div class="flex items-center justify-between p-md">
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg text-on-surface">Arama geçmişini kaydet</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Aramalarınız hızlı erişim için cihazda tutulur</span>
+</div>
+<div class="relative inline-block w-12 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-surface-container-highest border-2 border-outline-variant appearance-none cursor-pointer z-10 top-0 left-0 transition-all duration-300" id="search_history" name="search_history" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-variant cursor-pointer transition-colors duration-300" for="search_history"></label>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Bağlantılar -->
+<section class="flex flex-col gap-sm mt-md">
+<div class="flex flex-col bg-surface-container-low rounded-xl border border-outline-variant overflow-hidden">
+<a class="flex items-center justify-between p-md border-b border-outline-variant hover:bg-surface-variant/30 transition-colors active:bg-surface-variant/50" href="#">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant" style="font-variation-settings: 'FILL' 0;">block</span>
+<span class="font-body-lg text-body-lg text-on-surface">Engellenen Kullanıcılar</span>
+</div>
+<span class="material-symbols-outlined text-outline" style="font-variation-settings: 'FILL' 0;">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-md border-b border-outline-variant hover:bg-surface-variant/30 transition-colors active:bg-surface-variant/50" href="#">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant" style="font-variation-settings: 'FILL' 0;">download</span>
+<span class="font-body-lg text-body-lg text-on-surface">Verilerimi İndir</span>
+</div>
+<span class="material-symbols-outlined text-outline" style="font-variation-settings: 'FILL' 0;">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-md hover:bg-surface-variant/30 transition-colors active:bg-surface-variant/50" href="#">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant" style="font-variation-settings: 'FILL' 0;">policy</span>
+<span class="font-body-lg text-body-lg text-on-surface">Gizlilik Politikası</span>
+</div>
+<span class="material-symbols-outlined text-outline" style="font-variation-settings: 'FILL' 0;">chevron_right</span>
+</a>
+</div>
+</section>
+</main>
+<!-- Sticky Bottom Action (Replacing BottomNavBar as this is transactional) -->
+<div class="fixed bottom-0 w-full max-w-[390px] px-margin-mobile py-md bg-surface-container-lowest/80 backdrop-blur-xl border-t border-outline-variant z-50">
+<button class="w-full py-3 rounded-lg bg-primary-fixed-dim text-on-primary-fixed font-headline-md text-body-lg font-bold hover:opacity-90 active:scale-[0.98] transition-all flex justify-center items-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1; font-size: 20px;">save</span>
+            Değişiklikleri Kaydet
+        </button>
+</div>
+</body></html>

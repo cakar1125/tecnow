@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TeknoAkış - Post Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#d0bcff",
+                    "on-primary-fixed": "#002022",
+                    "tertiary": "#d8ffe7",
+                    "on-background": "#e2e2e8",
+                    "inverse-primary": "#006970",
+                    "primary-container": "#00f0ff",
+                    "on-surface-variant": "#b9cacb",
+                    "error-container": "#93000a",
+                    "tertiary-fixed": "#6ffbbe",
+                    "secondary": "#d0bcff",
+                    "tertiary-container": "#65f2b5",
+                    "background": "#111317",
+                    "surface-container-lowest": "#0c0e12",
+                    "surface-dim": "#111317",
+                    "on-tertiary-fixed-variant": "#005236",
+                    "on-surface": "#e2e2e8",
+                    "inverse-on-surface": "#2f3035",
+                    "surface-bright": "#37393e",
+                    "on-tertiary": "#003824",
+                    "primary": "#dbfcff",
+                    "tertiary-fixed-dim": "#4edea3",
+                    "on-secondary": "#3c0091",
+                    "surface-variant": "#333539",
+                    "surface-tint": "#00dbe9",
+                    "on-primary": "#00363a",
+                    "on-error-container": "#ffdad6",
+                    "secondary-fixed": "#e9ddff",
+                    "outline-variant": "#3b494b",
+                    "inverse-surface": "#e2e2e8",
+                    "outline": "#849495",
+                    "on-tertiary-container": "#006d4a",
+                    "secondary-container": "#571bc1",
+                    "error": "#ffb4ab",
+                    "surface-container-low": "#1a1c20",
+                    "surface-container-highest": "#333539",
+                    "primary-fixed-dim": "#00dbe9",
+                    "on-tertiary-fixed": "#002113",
+                    "surface-container-high": "#282a2e",
+                    "surface-container": "#1e2024",
+                    "on-secondary-fixed-variant": "#5516be",
+                    "primary-fixed": "#7df4ff",
+                    "on-secondary-fixed": "#23005c",
+                    "surface": "#111317",
+                    "on-primary-container": "#006970",
+                    "on-primary-fixed-variant": "#004f54",
+                    "on-error": "#690005",
+                    "on-secondary-container": "#c4abff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "margin-desktop": "32px",
+                    "xs": "4px",
+                    "xl": "32px",
+                    "margin-mobile": "16px",
+                    "gutter": "16px",
+                    "base": "4px",
+                    "md": "16px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": [
+                            "Geist"
+                    ],
+                    "mono-code": [
+                            "JetBrains Mono"
+                    ],
+                    "body-sm": [
+                            "Inter"
+                    ],
+                    "headline-md": [
+                            "Geist"
+                    ],
+                    "mono-label": [
+                            "JetBrains Mono"
+                    ],
+                    "headline-lg": [
+                            "Geist"
+                    ],
+                    "body-lg": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": [
+                            "24px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "mono-code": [
+                            "13px",
+                            {
+                                    "lineHeight": "1.5",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "1.5",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-md": [
+                            "20px",
+                            {
+                                    "lineHeight": "1.3",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "mono-label": [
+                            "12px",
+                            {
+                                    "lineHeight": "1.4",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-lg": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #111317; /* Background color from config */
+            color: #e2e2e8; /* On-background color from config */
+        }
+        
+        .tech-glow {
+            box-shadow: 0 0 15px rgba(0, 219, 233, 0.15); /* primary-fixed-dim base */
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col antialiased">
+<!-- Top Navigation (Contextual 'Back' structure based on prompt request, overriding standard nav shell) -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 backdrop-blur-xl border-b border-outline-variant bg-surface/60">
+<button class="text-primary-fixed hover:opacity-80 transition-opacity active:scale-95 duration-150 flex items-center p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-fixed">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+</button>
+<span class="font-headline-md text-headline-md font-bold text-primary-fixed tracking-tight">Post Detail</span>
+<div class="w-10"></div> <!-- Spacer for centering -->
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 mt-16 mb-24 px-margin-mobile md:px-margin-desktop py-lg max-w-[800px] mx-auto w-full flex flex-col gap-lg">
+<!-- Post Content Card -->
+<article class="bg-surface-container-low rounded-xl border border-outline-variant overflow-hidden flex flex-col">
+<!-- Hero Image -->
+<div class="w-full h-64 md:h-96 relative">
+<img class="w-full h-full object-cover" data-alt="A highly detailed, macro shot of a complex quantum computing processor chip, glowing with intricate blue and cyan energetic pathways. The lighting is high-contrast, moody, and futuristic, emphasizing the hyper-technical details and microscopic circuitry. Set against a deep, dark obsidian background. Hyper-realistic, professional tech photography style, embodying cutting-edge innovation and raw computational power." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqscyTEeEjuPYNsnRQHnNhT-7V6EMLwXCfdN7PJ3jRi4fkChjOBDGNL0RaQjaDh1387EjIdLyKLDT5LrI_F0bKmIJBBeJUdudcpvOASpFpslX2oZ80-bF-4E13XyDduaJcMB5TB8zlSmPqAssPZU92r_TPjMleRsrhTBzzaxSZW4YV5xyU2Sh81MewKOrE2vHggqlKd2VGa_B7esqh7LgHIGAAkWzEO3fT_HnmOT-nONjzyJO4F74BrtfiCudwISdg9SVqMG0nBeA"/>
+<!-- Category Badge overlay -->
+<div class="absolute top-md left-md bg-surface-container-highest/80 backdrop-blur-sm border border-outline-variant px-3 py-1 rounded-full flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px] text-tertiary-fixed-dim" style="font-variation-settings: 'FILL' 1;">memory</span>
+<span class="font-mono-label text-mono-label text-on-surface">QUANTUM_TECH</span>
+</div>
+</div>
+<!-- Header Info -->
+<div class="p-md md:p-lg flex flex-col gap-md">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-variant border border-outline-variant overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A sleek, minimalist digital avatar of a futuristic character, rendered in clean lines and subtle gradients, primarily using dark grays and a subtle cyan accent. The style is modern, tech-focused, and professional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsnZcYphlBxVrsKIpphj8ukEgmvAt6o0AYB12Mh7OJY3TUTZp3MvYW3bHj0owv_9VtYvHLkWI4q179T2Bxh6rZOOCkxHhUukBGOF5nYcT9ESQ1YSzqLXoXVDiiADPsARdf2Ej8V1D_xUwgChIPAWG8qWDdDwof43wNdb8QIiVGaNSaCYp_9gGmYrkFyU6qSQLugKHLZ2J-2zLVdlxUmUb22iDwOBHxrchHe8k7p50E79qgeaVfZQqtNSb_oIOpV558aJhD9BNUIbo"/>
+</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">Dr. Elara Vance</span>
+<span class="font-mono-code text-mono-code text-on-surface-variant">@elara_qdev</span>
+</div>
+</div>
+<div class="font-mono-label text-mono-label text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 0;">schedule</span>
+                        2h ago
+                    </div>
+</div>
+<!-- Title & Body -->
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Breakthrough in Room-Temperature Qubit Stability Achieved</h1>
+<div class="font-body-lg text-body-lg text-on-surface-variant flex flex-col gap-4">
+<p>In a monumental stride for quantum computing, researchers have successfully demonstrated coherent qubit operation at near-room temperatures, bypassing the need for massive cryogenic systems that have long bottlenecked scalability.</p>
+<p>The novel approach utilizes a unique spin-defect in a carefully engineered diamond lattice, stabilized by continuous microwave pulses. This effectively creates a localized environment isolated from thermal noise.</p>
+<!-- Tech Snippet Block -->
+<div class="bg-black rounded-lg border border-outline-variant p-md mt-sm mb-sm overflow-x-auto">
+<div class="flex justify-between items-center mb-2 pb-2 border-b border-outline-variant/50">
+<span class="font-mono-label text-mono-label text-on-surface-variant">Qubit_Stabilization.py</span>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant cursor-pointer hover:text-primary-fixed" style="font-variation-settings: 'FILL' 0;">content_copy</span>
+</div>
+<pre class="font-mono-code text-mono-code text-[#a9b7c6] whitespace-pre-wrap"><code>
+def apply_microwave_pulse(qubit_id, freq, duration):
+    """
+    Applies continuous dynamical decoupling.
+    Targets room-temp lattice vibrations.
+    """
+    pulse_seq = generate_sequence(freq, type='XY8')
+    execute_gate(qubit_id, pulse_seq, duration)
+    return measure_fidelity(qubit_id)
+                        </code></pre>
+</div>
+<p>While still in experimental phases, this development signifies a critical pivot towards practical, deployable quantum hardware for complex simulations and cryptography.</p>
+</div>
+<!-- Tags -->
+<div class="flex flex-wrap gap-2 mt-sm">
+<span class="bg-surface-variant text-on-surface font-mono-label text-mono-label px-2 py-1 rounded-DEFAULT border border-outline-variant">#QuantumComputing</span>
+<span class="bg-surface-variant text-on-surface font-mono-label text-mono-label px-2 py-1 rounded-DEFAULT border border-outline-variant">#Physics</span>
+<span class="bg-surface-variant text-on-surface font-mono-label text-mono-label px-2 py-1 rounded-DEFAULT border border-outline-variant">#Research</span>
+</div>
+</div>
+<!-- Interaction Bar -->
+<div class="border-t border-outline-variant p-sm flex justify-around items-center bg-surface-container">
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary-fixed transition-colors p-2 rounded-lg hover:bg-surface-variant">
+<span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-mono-label text-mono-label text-primary-fixed">1,024</span>
+</button>
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary-fixed transition-colors p-2 rounded-lg hover:bg-surface-variant">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">chat_bubble</span>
+<span class="font-mono-label text-mono-label">128</span>
+</button>
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary-fixed transition-colors p-2 rounded-lg hover:bg-surface-variant">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">bookmark</span>
+</button>
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary-fixed transition-colors p-2 rounded-lg hover:bg-surface-variant">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">share</span>
+</button>
+</div>
+</article>
+<!-- Comments Preview Section -->
+<section class="bg-surface-container-low rounded-xl border border-outline-variant p-md flex flex-col gap-md">
+<h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2 border-b border-outline-variant pb-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">forum</span>
+                Discussion
+            </h3>
+<!-- Comment Input -->
+<div class="flex gap-3 mt-sm">
+<div class="w-8 h-8 rounded-full bg-surface-variant border border-outline-variant overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A sleek, minimalist digital avatar of a user, rendered in clean lines and subtle gradients, primarily using dark grays and a subtle cyan accent. The style is modern, tech-focused, and professional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAd0SvVLHVCLrBJmhd37fWxyi7QC0SqS3yymHQCRwktwuFYguBThdvx_x9WSef56zBR6-eiE0Bl8rqeFNbXxkWYsIOGuquD7WZQBmo_laXeHh_OR_CUJwd1OJ1ZAEOy_glBSU_pFIGVTIEQCZvSMlj0lXo_OBGjo3YyMjm_94XWjDWNMsyYFw1njv9U6c9DrQlj41pfim3lANLY1L8rBP39Tidoyj9t9nABugz4-lHwsz6NkF6h8NASoOE7uNGbkhECRM5B1AstzCs"/>
+</div>
+<div class="flex-1 relative">
+<input class="w-full bg-surface-variant border border-outline-variant rounded-lg py-2 px-3 text-body-sm font-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary-fixed focus:ring-1 focus:ring-primary-fixed transition-colors" placeholder="Add to the discussion..." type="text"/>
+<button class="absolute right-2 top-1/2 -translate-y-1/2 text-primary-fixed hover:text-primary p-1">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</div>
+<!-- Comment 1 -->
+<div class="flex gap-3 pt-sm">
+<div class="w-8 h-8 rounded-full bg-surface-variant border border-outline-variant overflow-hidden shrink-0 mt-1">
+<span class="material-symbols-outlined text-on-surface-variant w-full h-full flex items-center justify-center text-[18px]" style="font-variation-settings: 'FILL' 0;">person</span>
+</div>
+<div class="flex-1 flex flex-col">
+<div class="flex justify-between items-baseline">
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">@sys_architect</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant">1h ago</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Fascinating approach with the diamond lattice. I wonder how this impacts the coherence times compared to superconducting qubits in the long run.</p>
+</div>
+</div>
+<!-- Comment 2 -->
+<div class="flex gap-3 pt-sm border-t border-outline-variant/30 mt-2">
+<div class="w-8 h-8 rounded-full bg-surface-variant border border-outline-variant overflow-hidden shrink-0 mt-1">
+<span class="material-symbols-outlined text-on-surface-variant w-full h-full flex items-center justify-center text-[18px]" style="font-variation-settings: 'FILL' 0;">computer</span>
+</div>
+<div class="flex-1 flex flex-col">
+<div class="flex justify-between items-baseline">
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">@quantum_dev</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant">45m ago</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">The paper linked mentions fidelity holding up surprisingly well. We need more data on scaling it past a few qubits though.</p>
+</div>
+</div>
+<button class="w-full py-2 mt-2 text-center text-primary-fixed font-mono-label text-mono-label hover:bg-surface-variant rounded-lg transition-colors border border-dashed border-outline-variant/50">
+                View all 128 comments
+            </button>
+</section>
+</main>
+<!-- Navigation Drawer (Suppressed on this specific detail view per intent rules, but included for completeness if triggered) -->
+<!-- Hidden by default, typically activated by a menu button in a full app flow -->
+<!-- Floating Action Button (Suppressed per rules for Detail/Transactional screens) -->
+</body></html>

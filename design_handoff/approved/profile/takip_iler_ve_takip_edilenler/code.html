@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Takipçiler / Takip Edilenler</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+        /* Base styles for material symbols */
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b494b; /* outline-variant */
+            border-radius: 4px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#d0bcff",
+                        "on-primary-fixed": "#002022",
+                        "tertiary": "#d8ffe7",
+                        "on-background": "#e2e2e8",
+                        "inverse-primary": "#006970",
+                        "primary-container": "#00f0ff",
+                        "on-surface-variant": "#b9cacb",
+                        "error-container": "#93000a",
+                        "tertiary-fixed": "#6ffbbe",
+                        "secondary": "#d0bcff",
+                        "tertiary-container": "#65f2b5",
+                        "background": "#111317",
+                        "surface-container-lowest": "#0c0e12",
+                        "surface-dim": "#111317",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-surface": "#e2e2e8",
+                        "inverse-on-surface": "#2f3035",
+                        "surface-bright": "#37393e",
+                        "on-tertiary": "#003824",
+                        "primary": "#dbfcff",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "on-secondary": "#3c0091",
+                        "surface-variant": "#333539",
+                        "surface-tint": "#00dbe9",
+                        "on-primary": "#00363a",
+                        "on-error-container": "#ffdad6",
+                        "secondary-fixed": "#e9ddff",
+                        "outline-variant": "#3b494b",
+                        "inverse-surface": "#e2e2e8",
+                        "outline": "#849495",
+                        "on-tertiary-container": "#006d4a",
+                        "secondary-container": "#571bc1",
+                        "error": "#ffb4ab",
+                        "surface-container-low": "#1a1c20",
+                        "surface-container-highest": "#333539",
+                        "primary-fixed-dim": "#00dbe9",
+                        "on-tertiary-fixed": "#002113",
+                        "surface-container-high": "#282a2e",
+                        "surface-container": "#1e2024",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "primary-fixed": "#7df4ff",
+                        "on-secondary-fixed": "#23005c",
+                        "surface": "#111317",
+                        "on-primary-container": "#006970",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-error": "#690005",
+                        "on-secondary-container": "#c4abff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "margin-desktop": "32px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "margin-mobile": "16px",
+                        "gutter": "16px",
+                        "base": "4px",
+                        "md": "16px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Geist"],
+                        "mono-code": ["JetBrains Mono"],
+                        "body-sm": ["Inter"],
+                        "headline-md": ["Geist"],
+                        "mono-label": ["JetBrains Mono"],
+                        "headline-lg": ["Geist"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "mono-code": ["13px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "mono-label": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-background min-h-screen flex flex-col items-center">
+<!-- Container for centering on desktop, full width on mobile -->
+<div class="w-full max-w-[1200px] flex-1 flex flex-col border-x border-outline-variant/30 min-h-screen">
+<!-- Contextual Header (Task-focused sub-page, navigation shell suppressed) -->
+<header class="sticky top-0 z-50 bg-surface/60 backdrop-blur-xl border-b border-outline-variant flex items-center h-16 px-margin-mobile gap-md">
+<button class="p-2 -ml-2 rounded-full hover:bg-surface-variant transition-colors text-on-surface group">
+<span class="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
+</button>
+<div class="flex flex-col">
+<h1 class="font-headline-md text-headline-md text-on-surface tracking-tight">TeknoKullanıcı</h1>
+<span class="font-mono-label text-mono-label text-on-surface-variant">@dev_expert</span>
+</div>
+</header>
+<!-- Tabs -->
+<div class="flex w-full border-b border-outline-variant bg-surface-container-lowest sticky top-16 z-40">
+<button class="flex-1 py-md font-mono-label text-mono-label text-on-surface-variant hover:text-primary transition-colors relative flex justify-center items-center">
+<span>Takipçiler</span>
+</button>
+<button class="flex-1 py-md font-mono-label text-mono-label text-primary font-bold transition-colors relative flex justify-center items-center">
+<span>Takip Edilenler</span>
+<div class="absolute bottom-0 left-0 w-full h-[2px] bg-primary rounded-t-full"></div>
+</button>
+</div>
+<!-- Search Bar -->
+<div class="p-margin-mobile bg-surface-container-lowest">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full bg-surface-container border border-outline-variant rounded-lg py-2 pl-10 pr-4 font-mono-code text-mono-code text-on-surface placeholder-on-surface-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all duration-200" placeholder="Kullanıcı ara..." type="text"/>
+</div>
+</div>
+<!-- List Content -->
+<main class="flex-1 flex flex-col">
+<!-- List Item 1: Following -->
+<div class="flex items-center gap-md px-margin-mobile py-lg border-b border-outline-variant/50 hover:bg-surface-container/50 transition-colors cursor-pointer group">
+<div class="relative shrink-0">
+<img class="w-12 h-12 rounded-full object-cover border border-outline-variant group-hover:border-primary transition-colors" data-alt="A professional headshot of a software engineer in a dark, atmospheric server room. The lighting is moody, with cool cyan and deep blue volumetric lights casting subtle rim highlights on their face. They are wearing a minimalist black turtleneck. The overall aesthetic is hyper-technical, sleek, and modern, fitting a premium developer social network. Shot with a shallow depth of field to blur the background racks." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8czh7jgV-Gi_HGDhdcEWARnmBnnm3EmTY7NUcYtQuDatyr9Dh4Qz4heL3aiRt4FTVXmBC3xULmhJfKnFfTm02EDR7qAvw23MIYU8rQ7BAcbCBBX6pbJe-QLS6N3t6EoCXpWU_J3GrCXMgIYF7ezgaaLLvaq2Ah-ao1uRuuRLai22vfCys7HC8s9dCQDiAW-wBTKBgZlCuUDDYszgEZsGSUqyKnrujS81rBc7rvr2DWd47-oBqRpccwJsZgHqC-U1soqsaU2qvMT8"/>
+<div class="absolute -bottom-1 -right-1 bg-surface-container border border-outline-variant rounded-full p-[2px]">
+<span class="material-symbols-outlined text-[12px] text-tertiary-fixed-dim" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-xs">
+<span class="font-headline-md text-headline-md text-on-surface truncate !text-[16px]">Alice_AI</span>
+</div>
+<span class="font-mono-label text-mono-label text-on-surface-variant block truncate mb-1">@alice_tensor</span>
+<p class="font-body-sm text-body-sm text-on-surface line-clamp-1 opacity-80">Machine Learning Researcher | Building next-gen LLMs at scale.</p>
+</div>
+<button class="shrink-0 ml-auto border border-outline-variant hover:border-error hover:text-error hover:bg-error-container/10 bg-transparent text-on-surface font-mono-label text-mono-label rounded-lg px-4 py-2 transition-all duration-200 group/btn">
+<span class="group-hover/btn:hidden">Takip Ediliyor</span>
+<span class="hidden group-hover/btn:inline">Takibi Bırak</span>
+</button>
+</div>
+<!-- List Item 2: Not Following -->
+<div class="flex items-center gap-md px-margin-mobile py-lg border-b border-outline-variant/50 hover:bg-surface-container/50 transition-colors cursor-pointer group">
+<div class="relative shrink-0">
+<img class="w-12 h-12 rounded-full object-cover border border-outline-variant group-hover:border-primary transition-colors" data-alt="A sleek, stylized portrait of an AI researcher working late in a minimalist, glass-walled office overlooking a futuristic city at night. Soft neon reflections of tertiary green and primary blue illuminate their focused expression. The composition is highly cinematic and professional, conveying intelligence and cutting-edge innovation. The scene embodies a dark-mode, high-end tech aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuARDxlx3O9-CI_eB81G4amoqSAVGq7AHW__hvNljodCVBel_mZDxJxIS3jY-mZc2r9zz3fIzQ_ltFTyauzw4-bqYVvhVodTBJknrfhf7Ly9heTxPEA6nPKB5SMFeSx0mPSj_TZi3DDpP5Ai54Q_AVfOFY8a1OuVBzOD5pvUmLEcA_db-NXiB1CbI6ZQwzrN7s8mfkrIpVZ_1qxapgobIjBlnS8S-K1RMbnp_J4sPdx5Ndm0mzE7zKP5XxXw2c9pNUNmI07ZewFlLIo"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-xs">
+<span class="font-headline-md text-headline-md text-on-surface truncate !text-[16px]">Bob_DevOps</span>
+</div>
+<span class="font-mono-label text-mono-label text-on-surface-variant block truncate mb-1">@bobby_k8s</span>
+<p class="font-body-sm text-body-sm text-on-surface line-clamp-1 opacity-80">Infrastructure enthusiast. Kubernetes, Go, Rust. Tinkering with hardware.</p>
+</div>
+<button class="shrink-0 ml-auto bg-primary hover:bg-primary-fixed hover:shadow-[0_0_12px_rgba(0,240,255,0.2)] text-on-primary font-mono-label text-mono-label font-bold rounded-lg px-4 py-2 transition-all duration-200">
+                    Takip Et
+                </button>
+</div>
+<!-- List Item 3: Following -->
+<div class="flex items-center gap-md px-margin-mobile py-lg border-b border-outline-variant/50 hover:bg-surface-container/50 transition-colors cursor-pointer group">
+<div class="relative shrink-0">
+<img class="w-12 h-12 rounded-full object-cover border border-outline-variant group-hover:border-primary transition-colors" data-alt="An artistic, abstract profile picture featuring a glowing, low-poly 3D geometric shape hovering over a dark, textured metallic surface. The lighting is dramatic, emitting a soft magenta and deep indigo glow. It has a high-concept cyberpunk feel, representing a creative technologist. The image is rendered with pristine clarity and subtle chromatic aberration on the edges." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDI2WgSj72pY1Uj3p1Jz0ZW0pUzgPbdkdtxC2qRkCSHMxJKoH8n8E0J4O0Azs5CnJsmGbuF6ifY2AvkB5X5MnP6GxGCUzz4sR5YBo4wbNSTc4f614s6L3qopumW-QKuLhnM4vvKmjYy9usg9YXkIxjeCGCfJxjgXAN_E2l32SbTOYRs70g0JbpF8QyAiHBrPl7YUWdARidUwTXZsZlqA6yk7wtuhNciGeM6Car7TnpSCQC_yoqonFYYUp6XNmPP6Ra2TSyCJcRgrv4"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-xs">
+<span class="font-headline-md text-headline-md text-on-surface truncate !text-[16px]">CyberSec_Ninja</span>
+</div>
+<span class="font-mono-label text-mono-label text-on-surface-variant block truncate mb-1">@null_pointer_exp</span>
+<p class="font-body-sm text-body-sm text-on-surface line-clamp-1 opacity-80">Penetration testing | Web3 Security | Red Team Ops.</p>
+</div>
+<button class="shrink-0 ml-auto border border-outline-variant hover:border-error hover:text-error hover:bg-error-container/10 bg-transparent text-on-surface font-mono-label text-mono-label rounded-lg px-4 py-2 transition-all duration-200 group/btn">
+<span class="group-hover/btn:hidden">Takip Ediliyor</span>
+<span class="hidden group-hover/btn:inline">Takibi Bırak</span>
+</button>
+</div>
+<!-- List Item 4: Following (Mutual) -->
+<div class="flex items-center gap-md px-margin-mobile py-lg border-b border-outline-variant/50 hover:bg-surface-container/50 transition-colors cursor-pointer group">
+<div class="relative shrink-0">
+<img class="w-12 h-12 rounded-full object-cover border border-outline-variant group-hover:border-primary transition-colors" data-alt="A gritty, high-contrast portrait of a game developer illuminated solely by the multi-colored glare of dual curved monitors. The environment is dark and chaotic, cluttered with mechanical keyboards and prototype electronics. Deep shadows dominate, accented by vivid RGB lighting. The aesthetic captures the intense focus and technical grit of a late-night coding session." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCH8N0uhk7t5M9lRbtpBDlwREtjcHSSw_TaoYHj6uxNxi48oA13vq3L7dYcR0ewBWpYoWoRFTkRdJSYrWz2D0fbyC7kOu2hVtEiyq82f0lZsTdL9e6IqTXUW1uhNs3fJJvEU6p8ZvVIV8FRQgU1BTf9l4gBD-uuO_EiWh55fwtaI77L8L5fiVbNxe9d0Asv6OFeMr3spXccjsQkOZl1HotYIrRz6aY3UYd8PQZNOOyfFKVk-jTFfAG7k_nIAA468mDlvwys8ZnVVLc"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-xs">
+<span class="font-headline-md text-headline-md text-on-surface truncate !text-[16px]">PixelCrafter</span>
+</div>
+<span class="font-mono-label text-mono-label text-on-surface-variant block truncate mb-1 flex items-center gap-2">
+                        @engine_dev
+                        <span class="bg-surface-variant text-on-surface-variant px-1.5 py-0.5 rounded text-[10px]">Seni Takip Ediyor</span>
+</span>
+<p class="font-body-sm text-body-sm text-on-surface line-clamp-1 opacity-80">Graphics programmer. Shader enthusiast. Building custom game engines.</p>
+</div>
+<button class="shrink-0 ml-auto border border-outline-variant hover:border-error hover:text-error hover:bg-error-container/10 bg-transparent text-on-surface font-mono-label text-mono-label rounded-lg px-4 py-2 transition-all duration-200 group/btn">
+<span class="group-hover/btn:hidden">Takip Ediliyor</span>
+<span class="hidden group-hover/btn:inline">Takibi Bırak</span>
+</button>
+</div>
+</main>
+<!-- Bottom padding for mobile safe area, navigation is suppressed per rules -->
+<div class="h-safe py-lg"></div>
+</div>
+</body></html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gemini 1.5 Pro - TeknoAkış</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..800&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "on-error": "#690005",
+                "on-primary-fixed": "#22005d",
+                "secondary-fixed": "#e9ddff",
+                "on-primary-container": "#e0d2ff",
+                "secondary": "#cdc0e9",
+                "on-tertiary-fixed-variant": "#594400",
+                "error": "#ffb4ab",
+                "surface-bright": "#3b383e",
+                "tertiary-container": "#c9a74d",
+                "on-tertiary-fixed": "#241a00",
+                "tertiary-fixed-dim": "#e7c365",
+                "inverse-primary": "#6750a4",
+                "surface-container-low": "#1d1b20",
+                "inverse-surface": "#e6e0e9",
+                "primary-fixed": "#e9ddff",
+                "on-surface-variant": "#cbc4d2",
+                "on-primary": "#381e72",
+                "error-container": "#93000a",
+                "tertiary-fixed": "#ffdf93",
+                "surface-container-highest": "#36343a",
+                "surface-tint": "#cfbcff",
+                "surface": "#141218",
+                "surface-container": "#211f24",
+                "on-tertiary-container": "#503d00",
+                "inverse-on-surface": "#322f35",
+                "background": "#141218",
+                "on-error-container": "#ffdad6",
+                "primary-fixed-dim": "#cfbcff",
+                "on-secondary-container": "#bfb2da",
+                "surface-container-lowest": "#0f0d13",
+                "surface-variant": "#36343a",
+                "tertiary": "#e7c365",
+                "on-secondary-fixed-variant": "#4b4263",
+                "on-background": "#e6e0e9",
+                "primary-container": "#6750a4",
+                "on-tertiary": "#3e2e00",
+                "surface-container-high": "#2b292f",
+                "outline-variant": "#494551",
+                "on-secondary": "#342b4b",
+                "secondary-container": "#4d4465",
+                "surface-dim": "#141218",
+                "outline": "#948e9c",
+                "primary": "#cfbcff",
+                "secondary-fixed-dim": "#cdc0e9",
+                "on-secondary-fixed": "#1f1635",
+                "on-primary-fixed-variant": "#4f378a",
+                "on-surface": "#e6e0e9"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+        },
+        "spacing": {},
+        "fontFamily": {
+                "headline": [
+                        "Geist"
+                ],
+                "display": [
+                        "Geist"
+                ],
+                "body": [
+                        "Geist"
+                ],
+                "label": [
+                        "Geist"
+                ]
+        },
+        "fontSize": {}
+      },
+    },
+  }
+</script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        
+        .tech-grid-bg {
+            background-image: 
+                linear-gradient(to right, theme('colors.outline-variant') 1px, transparent 1px),
+                linear-gradient(to bottom, theme('colors.outline-variant') 1px, transparent 1px);
+            background-size: 24px 24px;
+            opacity: 0.2;
+        }
+
+        .glow-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .glow-card:hover {
+            border-color: theme('colors.primary');
+            box-shadow: 0 0 12px 0 rgba(207, 188, 255, 0.2);
+        }
+
+        .diff-added { color: theme('colors.tertiary-fixed-dim'); }
+        .diff-removed { color: theme('colors.error'); text-decoration: line-through; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col pt-16 pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-surface/60 dark:bg-surface/60 backdrop-blur-xl border-b border-outline-variant flat no shadows hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-150">
+<button class="text-on-surface-variant dark:text-on-surface-variant w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<span class="font-headline text-xl font-semibold text-primary dark:text-primary-fixed tracking-tight">TeknoAkış</span>
+<button class="text-on-surface-variant dark:text-on-surface-variant w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">share</span>
+</button>
+</header>
+<!-- Main Canvas -->
+<main class="flex-grow w-full max-w-[1200px] mx-auto px-4 md:px-8 py-6 relative">
+<!-- Hero Background Grid -->
+<div class="absolute inset-0 tech-grid-bg pointer-events-none -z-10 h-[400px]"></div>
+<!-- Hero Section -->
+<section class="mb-8 text-center md:text-left mt-6">
+<div class="inline-flex items-center gap-2 bg-tertiary-container/10 border border-tertiary-container/30 px-3 py-1 rounded-full mb-4">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim animate-pulse"></span>
+<span class="font-mono text-xs font-medium tracking-wide text-tertiary-fixed-dim">Stable Release</span>
+</div>
+<h1 class="font-headline text-2xl font-bold md:text-3xl mb-2 text-primary">Gemini 1.5 Pro</h1>
+<p class="font-body text-base text-on-surface-variant mb-6">Google DeepMind</p>
+<div class="flex flex-wrap gap-4 justify-center md:justify-start">
+<button class="bg-primary text-on-primary font-mono text-xs font-medium tracking-wide px-6 py-3 rounded-xl hover:bg-primary-fixed transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">terminal</span> API Documentation
+                </button>
+<button class="border border-primary text-primary font-mono text-xs font-medium tracking-wide px-6 py-3 rounded-xl hover:bg-primary/10 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span> Playground
+                </button>
+</div>
+</section>
+<!-- Core Stats Grid (Bento) -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+<!-- Stat 1 -->
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-4 flex flex-col justify-between glow-card">
+<span class="material-symbols-outlined text-on-surface-variant mb-2">memory</span>
+<div>
+<div class="font-mono text-xs font-medium tracking-wide text-on-surface-variant mb-1">Context Window</div>
+<div class="font-headline text-xl font-semibold text-on-surface">1M Token</div>
+</div>
+</div>
+<!-- Stat 2 -->
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-4 flex flex-col justify-between glow-card">
+<span class="material-symbols-outlined text-on-surface-variant mb-2">view_in_ar</span>
+<div>
+<div class="font-mono text-xs font-medium tracking-wide text-on-surface-variant mb-1">Architecture</div>
+<div class="font-headline text-xl font-semibold text-on-surface">MoE</div>
+</div>
+</div>
+<!-- Stat 3 -->
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-4 flex flex-col justify-between glow-card col-span-2 md:col-span-1">
+<span class="material-symbols-outlined text-on-surface-variant mb-2">category</span>
+<div>
+<div class="font-mono text-xs font-medium tracking-wide text-on-surface-variant mb-1">Multimodality</div>
+<div class="font-body text-sm text-on-surface flex gap-2 flex-wrap mt-1">
+<span class="bg-surface-variant px-2 py-0.5 rounded-DEFAULT text-xs">Audio</span>
+<span class="bg-surface-variant px-2 py-0.5 rounded-DEFAULT text-xs">Video</span>
+<span class="bg-surface-variant px-2 py-0.5 rounded-DEFAULT text-xs">Text</span>
+</div>
+</div>
+</div>
+<!-- Stat 4 -->
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-4 flex flex-col justify-between glow-card col-span-2 md:col-span-1">
+<span class="material-symbols-outlined text-on-surface-variant mb-2">calendar_today</span>
+<div>
+<div class="font-mono text-xs font-medium tracking-wide text-on-surface-variant mb-1">Training Cutoff</div>
+<div class="font-headline text-xl font-semibold text-on-surface">Jan 2024</div>
+</div>
+</div>
+</section>
+<!-- Technical Comparison List -->
+<section class="mb-8">
+<h2 class="font-headline text-xl font-semibold mb-4 text-on-surface">Architecture Diff: v1.0 vs v1.5</h2>
+<div class="bg-[#000000] border border-outline-variant rounded-xl p-4 font-mono text-[13px] overflow-x-auto">
+<div class="flex flex-col gap-2">
+<div class="flex"><span class="w-6 text-outline select-none">1</span><span class="diff-removed">- params.context_length = 32000;</span></div>
+<div class="flex"><span class="w-6 text-outline select-none">2</span><span class="diff-added">+ params.context_length = 1000000; // Expanded capacity</span></div>
+<div class="flex"><span class="w-6 text-outline select-none">3</span><span class="text-on-surface-variant">  params.architecture = 'Transformer';</span></div>
+<div class="flex"><span class="w-6 text-outline select-none">4</span><span class="diff-removed">- params.routing = 'dense';</span></div>
+<div class="flex"><span class="w-6 text-outline select-none">5</span><span class="diff-added">+ params.routing = 'MoE'; // Mixture of Experts</span></div>
+<div class="flex"><span class="w-6 text-outline select-none">6</span><span class="text-on-surface-variant">  params.multimodal = true;</span></div>
+</div>
+</div>
+</section>
+<!-- Benchmarks -->
+<section class="mb-8">
+<h2 class="font-headline text-xl font-semibold mb-4 text-on-surface">Benchmark Results</h2>
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-4 flex flex-col gap-4">
+<!-- MMLU -->
+<div>
+<div class="flex justify-between font-mono text-xs font-medium tracking-wide mb-2">
+<span class="text-on-surface">MMLU (5-shot)</span>
+<span class="text-primary">81.9%</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-2">
+<div class="bg-primary h-2 rounded-full" style="width: 81.9%"></div>
+</div>
+</div>
+<!-- HumanEval -->
+<div>
+<div class="flex justify-between font-mono text-xs font-medium tracking-wide mb-2">
+<span class="text-on-surface">HumanEval (0-shot)</span>
+<span class="text-primary">84.1%</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-2">
+<div class="bg-primary h-2 rounded-full" style="width: 84.1%"></div>
+</div>
+</div>
+<!-- GSM8K -->
+<div>
+<div class="flex justify-between font-mono text-xs font-medium tracking-wide mb-2">
+<span class="text-on-surface">GSM8K (maj1@32)</span>
+<span class="text-primary">91.7%</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-2">
+<div class="bg-primary h-2 rounded-full" style="width: 91.7%"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Use Cases -->
+<section class="mb-8">
+<h2 class="font-headline text-xl font-semibold mb-4 text-on-surface">Primary Use Cases</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-4 hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-primary mb-2">description</span>
+<h3 class="font-body text-base font-bold text-on-surface mb-1">Big Document Analysis</h3>
+<p class="font-body text-sm text-on-surface-variant">Process entire codebases, large PDF reports, or extensive datasets in a single prompt utilizing the 1M context window.</p>
+</div>
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-4 hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-primary mb-2">movie</span>
+<h3 class="font-body text-base font-bold text-on-surface mb-1">Video Processing</h3>
+<p class="font-body text-sm text-on-surface-variant">Analyze up to 1 hour of video content directly, identifying key moments, extracting transcripts, and summarizing events.</p>
+</div>
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-4 hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-primary mb-2">code</span>
+<h3 class="font-body text-base font-bold text-on-surface mb-1">Code Interpretation</h3>
+<p class="font-body text-sm text-on-surface-variant">Advanced understanding of complex logic, bug fixing across multiple files, and architecture-level refactoring suggestions.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Fixed Action Area -->
+<div class="fixed bottom-0 w-full z-40 bg-surface/80 backdrop-blur-md border-t border-outline-variant p-4 flex justify-center">
+<button class="bg-secondary-container text-on-secondary-container font-mono text-xs font-medium tracking-wide px-8 py-3 rounded-full hover:bg-secondary-container/80 transition-colors flex items-center gap-2 shadow-[0_0_15px_rgba(77,68,101,0.3)]">
+<span class="material-symbols-outlined text-[18px]">notifications_active</span> Track Updates
+        </button>
+</div>
+</body></html>

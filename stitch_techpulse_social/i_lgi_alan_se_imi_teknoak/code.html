@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TeknoAkış - İlgi Alanlarını Seç</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Design System Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#00dbe9",
+                    "tertiary": "#d8ffe7",
+                    "surface": "#111317",
+                    "on-secondary-fixed-variant": "#5516be",
+                    "on-error-container": "#ffdad6",
+                    "tertiary-fixed": "#6ffbbe",
+                    "secondary": "#d0bcff",
+                    "primary-container": "#00f0ff",
+                    "outline": "#849495",
+                    "secondary-fixed": "#e9ddff",
+                    "on-background": "#e2e2e8",
+                    "inverse-primary": "#006970",
+                    "on-surface": "#e2e2e8",
+                    "primary-fixed": "#7df4ff",
+                    "surface-container-low": "#1a1c20",
+                    "on-primary-fixed": "#002022",
+                    "primary": "#dbfcff",
+                    "on-error": "#690005",
+                    "inverse-surface": "#e2e2e8",
+                    "surface-variant": "#333539",
+                    "on-secondary-container": "#c4abff",
+                    "surface-container": "#1e2024",
+                    "on-tertiary-container": "#006d4a",
+                    "on-surface-variant": "#b9cacb",
+                    "inverse-on-surface": "#2f3035",
+                    "primary-fixed-dim": "#00dbe9",
+                    "surface-container-highest": "#333539",
+                    "on-tertiary-fixed": "#002113",
+                    "secondary-fixed-dim": "#d0bcff",
+                    "secondary-container": "#571bc1",
+                    "surface-container-high": "#282a2e",
+                    "on-tertiary-fixed-variant": "#005236",
+                    "outline-variant": "#3b494b",
+                    "on-tertiary": "#003824",
+                    "tertiary-fixed-dim": "#4edea3",
+                    "on-secondary-fixed": "#23005c",
+                    "surface-dim": "#111317",
+                    "on-secondary": "#3c0091",
+                    "on-primary": "#00363a",
+                    "error": "#ffb4ab",
+                    "surface-container-lowest": "#0c0e12",
+                    "on-primary-fixed-variant": "#004f54",
+                    "on-primary-container": "#006970",
+                    "surface-bright": "#37393e",
+                    "background": "#111317",
+                    "tertiary-container": "#65f2b5",
+                    "error-container": "#93000a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "base": "4px",
+                    "xl": "32px",
+                    "margin-desktop": "32px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "gutter": "16px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "mono-code": ["JetBrains Mono"],
+                    "headline-lg-mobile": ["Geist"],
+                    "headline-lg": ["Geist"],
+                    "headline-md": ["Geist"],
+                    "body-sm": ["Inter"],
+                    "mono-label": ["JetBrains Mono"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "mono-code": ["13px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["20px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "mono-label": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        body {
+            background-color: #0c0e12;
+            color: #e2e2e8;
+        }
+
+        /* Custom Scrollbar for a technical feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111317; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b494b; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #849495; 
+        }
+
+        /* Selection Utility Classes */
+        .chip-unselected {
+            @apply border-outline-variant text-on-surface-variant bg-surface-container hover:border-primary-fixed hover:text-primary-fixed hover:shadow-[0_0_12px_rgba(0,219,233,0.1)];
+        }
+        .chip-selected {
+            @apply border-primary-fixed text-primary-fixed bg-inverse-primary/20 shadow-[0_0_8px_rgba(0,219,233,0.2)];
+        }
+        
+        .follow-btn-unfollowed {
+            @apply border-outline-variant text-on-surface hover:border-primary hover:text-primary;
+        }
+        .follow-btn-followed {
+            @apply border-primary bg-primary text-on-primary hover:opacity-90;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-sm text-body-sm antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen relative pb-32">
+<!-- Linear Flow Header (Suppressing standard shell per mandate) -->
+<header class="w-full flex items-center justify-between px-margin-mobile md:px-margin-desktop h-16 border-b border-outline-variant/30 backdrop-blur-md sticky top-0 z-40 bg-surface-container-lowest/80">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed tracking-tight">
+            TeknoAkış
+        </div>
+<div class="font-mono-label text-mono-label text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+            Güvenli Kurulum
+        </div>
+</header>
+<main class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop py-lg mt-md">
+<!-- Header Section -->
+<section class="mb-xl">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface mb-sm">
+                İlgi Alanlarını Seç
+            </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+                Teknoloji dünyasında neleri takip etmek istersin? En az <span class="text-primary-fixed font-mono-code">3</span> konu seçmen önerilir.
+            </p>
+</section>
+<!-- Interest Grid -->
+<section class="mb-xl">
+<div class="flex flex-wrap gap-sm" id="interest-container">
+<!-- Interest Chips (Injected via JS for clean management, but hardcoded a few for structure preview) -->
+<button class="interest-chip chip-selected px-md py-sm rounded-full border transition-all duration-300 flex items-center gap-xs font-mono-label text-mono-label cursor-pointer select-none">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">psychology</span>
+                    Yapay Zekâ
+                </button>
+<button class="interest-chip chip-selected px-md py-sm rounded-full border transition-all duration-300 flex items-center gap-xs font-mono-label text-mono-label cursor-pointer select-none">
+<span class="material-symbols-outlined text-[16px]">terminal</span>
+                    GitHub
+                </button>
+<button class="interest-chip chip-unselected px-md py-sm rounded-full border transition-all duration-300 flex items-center gap-xs font-mono-label text-mono-label cursor-pointer select-none">
+<span class="material-symbols-outlined text-[16px]">code</span>
+                    Açık Kaynak
+                </button>
+<button class="interest-chip chip-unselected px-md py-sm rounded-full border transition-all duration-300 flex items-center gap-xs font-mono-label text-mono-label cursor-pointer select-none">
+<span class="material-symbols-outlined text-[16px]">smartphone</span>
+                    Mobil Geliştirme
+                </button>
+<button class="interest-chip chip-unselected px-md py-sm rounded-full border transition-all duration-300 flex items-center gap-xs font-mono-label text-mono-label cursor-pointer select-none">
+<span class="material-symbols-outlined text-[16px]">language</span>
+                    Web Geliştirme
+                </button>
+<button class="interest-chip chip-selected px-md py-sm rounded-full border transition-all duration-300 flex items-center gap-xs font-mono-label text-mono-label cursor-pointer select-none">
+<span class="material-symbols-outlined text-[16px]">videogame_asset</span>
+                    Oyun Geliştirme
+                </button>
+<button class="interest-chip chip-unselected px-md py-sm rounded-full border transition-all duration-300 flex items-center gap-xs font-mono-label text-mono-label cursor-pointer select-none">
+<span class="material-symbols-outlined text-[16px]">view_in_ar</span>
+                    3D ve Tasarım
+                </button>
+<button class="interest-chip chip-unselected px-md py-sm rounded-full border transition-all duration-300 flex items-center gap-xs font-mono-label text-mono-label cursor-pointer select-none">
+<span class="material-symbols-outlined text-[16px]">smart_toy</span>
+                    Robotik
+                </button>
+<button class="interest-chip chip-unselected px-md py-sm rounded-full border transition-all duration-300 flex items-center gap-xs font-mono-label text-mono-label cursor-pointer select-none">
+<span class="material-symbols-outlined text-[16px]">security</span>
+                    Siber Güvenlik
+                </button>
+<button class="interest-chip chip-unselected px-md py-sm rounded-full border transition-all duration-300 flex items-center gap-xs font-mono-label text-mono-label cursor-pointer select-none">
+<span class="material-symbols-outlined text-[16px]">memory</span>
+                    Donanım
+                </button>
+<button class="interest-chip chip-unselected px-md py-sm rounded-full border transition-all duration-300 flex items-center gap-xs font-mono-label text-mono-label cursor-pointer select-none">
+<span class="material-symbols-outlined text-[16px]">science</span>
+                    Bilimsel Araştırmalar
+                </button>
+<button class="interest-chip chip-unselected px-md py-sm rounded-full border transition-all duration-300 flex items-center gap-xs font-mono-label text-mono-label cursor-pointer select-none">
+<span class="material-symbols-outlined text-[16px]">rocket_launch</span>
+                    Girişimler
+                </button>
+<button class="interest-chip chip-unselected px-md py-sm rounded-full border transition-all duration-300 flex items-center gap-xs font-mono-label text-mono-label cursor-pointer select-none">
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+                    No-code ve Otomasyon
+                </button>
+<button class="interest-chip chip-unselected px-md py-sm rounded-full border transition-all duration-300 flex items-center gap-xs font-mono-label text-mono-label cursor-pointer select-none">
+<span class="material-symbols-outlined text-[16px]">vrpano</span>
+                    AR/VR
+                </button>
+<button class="interest-chip chip-unselected px-md py-sm rounded-full border transition-all duration-300 flex items-center gap-xs font-mono-label text-mono-label cursor-pointer select-none">
+<span class="material-symbols-outlined text-[16px]">link</span>
+                    Blockchain
+                </button>
+</div>
+</section>
+<hr class="border-outline-variant/30 my-xl"/>
+<!-- Recommended Sources -->
+<section>
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary-fixed">recommend</span>
+<h2 class="font-headline-md text-[18px] font-semibold text-on-surface">Önerilen Kaynaklar</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+<!-- Source Card 1 -->
+<div class="group flex items-center justify-between p-md bg-surface-container-high border border-outline-variant rounded-xl hover:border-primary-fixed/50 transition-colors">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-surface overflow-hidden border border-outline-variant/50 relative">
+<img class="w-full h-full object-cover" data-alt="Abstract glowing neural network logo, deep black background with vibrant cyan and electric blue nodes, high contrast, technical aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQKg132fJnGkJje-7b4R2vWA9f28x7RDp3b3JXQ9w7c9NSsw-VFG5p2ZNJAKNK7-BlJ-ja1O56HzlWZubYrtTDPdvxJM28QgrpVVE_EXbnyjji0fo9WlJ_dqsnD7lgt9Fc_Kg4xry7JY86e4xnmi7X30NT2RtRS2wxC64uhvtwUtvCEWtlOEwETCgJJrq0o28FL9JMYbpcsNEHTesQ8USpMvV54MI2_P6yvXZ2OPLre2TFR8c9-kziI_BAYaaK_xwtW1zqsehYnQE"/>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-[16px] text-on-surface group-hover:text-primary-fixed transition-colors">OpenAI</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">verified</span> AI Research</span>
+</div>
+</div>
+<button class="follow-btn follow-btn-unfollowed px-sm py-xs rounded-full border font-mono-label text-mono-label transition-colors">Takip Et</button>
+</div>
+<!-- Source Card 2 -->
+<div class="group flex items-center justify-between p-md bg-surface-container-high border border-outline-variant rounded-xl hover:border-primary-fixed/50 transition-colors">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-surface overflow-hidden border border-outline-variant/50 relative">
+<img class="w-full h-full object-cover" data-alt="Minimalist abstract brain logo composed of precise geometric lines, deep dark anthracite background, soft glowing white and cyan accents, professional tech corporate style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHhijLlvkvMfsnrn-HY0dGnBnE2EYi7-1SvptXI3u9nMcSOR8OkKNXhEdL6QmOl599oE9WFhXC3CpklXrO-7vNtvmv4ivjUFidroQOCl4ZQPh78TYhikj6Jw4kybscEE5X0pfiKTV8nARvq7CVid0NRqvDeLnpAS_wfr8DZyosi6MV5PuSDHC3y2GZHJHy4DBPI96tNNHXFE-SmKLCYcxu6zIH99uIkVnp9o5F50NaXIcWr1JCe8aG_4ABBRMeRlpHm1vmruEKFwI"/>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-[16px] text-on-surface group-hover:text-primary-fixed transition-colors">Google DeepMind</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">science</span> AGI Dev</span>
+</div>
+</div>
+<button class="follow-btn follow-btn-followed px-sm py-xs rounded-full border font-mono-label text-mono-label transition-colors">Takip Ediliyor</button>
+</div>
+<!-- Source Card 3 -->
+<div class="group flex items-center justify-between p-md bg-surface-container-high border border-outline-variant rounded-xl hover:border-primary-fixed/50 transition-colors">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-surface overflow-hidden border border-outline-variant/50 relative">
+<img class="w-full h-full object-cover" data-alt="Infinity symbol made of fiber optic cables, glowing on a dark pitch black background, subtle blue and purple neon light spill, high tech aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8QHiumETrNPkQBcSESz69_n5B4hWCfOKGEAPWz24aBKd-r9x-GgghOpWuqlSEs8GpBYnRpzzv_dxGjqsHF4TZm3sokom0KUuv4xOmzLGqOUrhwGVdrhoj6svitvaY8EeD3l6Uny6suAqqiuIjZoHbz3YXsWexQlav_ne5BiylW16NoA2MVXAsXKH83Gu3LxV414HGFikAz9KfbV7eSzttDjL2_GZ2hh6kLqN2dUT-oyRQpsdAacoWqfEXPblitVwI6UrUwl2ui6Q"/>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-[16px] text-on-surface group-hover:text-primary-fixed transition-colors">Meta Open Source</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">code</span> Frameworks</span>
+</div>
+</div>
+<button class="follow-btn follow-btn-unfollowed px-sm py-xs rounded-full border font-mono-label text-mono-label transition-colors">Takip Et</button>
+</div>
+<!-- Source Card 4 -->
+<div class="group flex items-center justify-between p-md bg-surface-container-high border border-outline-variant rounded-xl hover:border-primary-fixed/50 transition-colors">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-surface overflow-hidden border border-outline-variant/50 relative">
+<img class="w-full h-full object-cover" data-alt="Sleek modern black triangle logo, completely dark minimalist design with a single glowing cyan edge, highly polished metallic texture, dark mode UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEL_4HcntXnitBj7j-6SXvseKuG1klv8TVJf_d98D5hXDDtK0y-wI1OlXoyBZ0tzBcBVkji4DKxTPT6SFqjVmUYkLalpvdxmDM2S1RIE8o5mHfryuZ5OUZdb_X88sujQ0Ex6-Wdds8nDZYdpSL-QNBCqrppXbPXV35oRslQQ2E2pGR--UxhbKUMTQXZtZ6xDiqdFclpHh2Qa0CHQUSv2TP-107iPRVyETqIER5uMIdKjCd5w5YiusiPiZYRFVjrb3nKkuKInDifUk"/>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-[16px] text-on-surface group-hover:text-primary-fixed transition-colors">Vercel</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">cloud</span> Infrastructure</span>
+</div>
+</div>
+<button class="follow-btn follow-btn-unfollowed px-sm py-xs rounded-full border font-mono-label text-mono-label transition-colors">Takip Et</button>
+</div>
+<!-- Source Card 5 -->
+<div class="group flex items-center justify-between p-md bg-surface-container-high border border-outline-variant rounded-xl hover:border-primary-fixed/50 transition-colors">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-surface overflow-hidden border border-outline-variant/50 relative">
+<img class="w-full h-full object-cover" data-alt="A stylized glowing yellow smiling face icon composed of digital pixels and code fragments, set against a dark void background, hacker culture aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuALCLRmwiQMstf4_MPO26jo6ZXMHitU6T5gwdXCqQZkXEMLJ9RY2k3gNIZ0CUy5u00uCHcdneOssPMkH6_lERkL3cVVjP7NUqrpVZSY21m5uNFHOBYDo5Otv-DhF_smCh_fXtyzv2YM70EoK3lRlVz1dYIbJhwnk4qn-PAQb0R49s1HltOJGHXNS_5PO7muy0t8xDhjO7LPhoshLBYATxG24DALuLK_BK22cKqJ7G4bx6S3etNG_kuzEbTkzj5pIlAXonWQ7hWipM8"/>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-[16px] text-on-surface group-hover:text-primary-fixed transition-colors">Hugging Face</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">hub</span> ML Models</span>
+</div>
+</div>
+<button class="follow-btn follow-btn-unfollowed px-sm py-xs rounded-full border font-mono-label text-mono-label transition-colors">Takip Et</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Action Bar -->
+<div class="fixed bottom-0 left-0 w-full bg-surface-container-lowest/80 backdrop-blur-xl border-t border-outline-variant/50 p-md flex flex-col items-center justify-center z-50">
+<div class="max-w-[1200px] w-full flex items-center justify-between gap-md">
+<div class="hidden md:flex flex-col">
+<span class="font-mono-label text-mono-label text-on-surface-variant">Seçilen Konular</span>
+<span class="font-headline-md text-[16px] text-primary-fixed" id="selection-count">3 / 15</span>
+</div>
+<button class="w-full md:w-auto md:min-w-[200px] py-sm px-xl rounded-lg bg-primary text-on-primary font-headline-md text-[16px] font-semibold hover:opacity-90 active:scale-95 transition-all shadow-[0_0_15px_rgba(0,219,233,0.3)] flex justify-center items-center gap-2" id="continue-btn">
+                Devam Et
+                <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+<!-- Progress Bar Indicator -->
+<div class="w-full h-1 bg-surface-container mt-md rounded-full overflow-hidden max-w-[1200px]">
+<div class="h-full bg-primary-fixed w-[66%] shadow-[0_0_8px_rgba(0,219,233,0.8)]"></div>
+</div>
+</div>
+<script>
+        // Simple Interaction Logic for Demonstration
+        document.addEventListener('DOMContentLoaded', () => {
+            const chips = document.querySelectorAll('.interest-chip');
+            let selectedCount = 3; // Starts with 3 pre-selected in HTML
+            const countDisplay = document.getElementById('selection-count');
+            const continueBtn = document.getElementById('continue-btn');
+
+            chips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    if (chip.classList.contains('chip-selected')) {
+                        chip.classList.remove('chip-selected');
+                        chip.classList.add('chip-unselected');
+                        selectedCount--;
+                    } else {
+                        chip.classList.remove('chip-unselected');
+                        chip.classList.add('chip-selected');
+                        selectedCount++;
+                    }
+                    updateUI();
+                });
+            });
+            
+            const followBtns = document.querySelectorAll('.follow-btn');
+            followBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if(btn.classList.contains('follow-btn-followed')) {
+                        btn.classList.remove('follow-btn-followed');
+                        btn.classList.add('follow-btn-unfollowed');
+                        btn.textContent = 'Takip Et';
+                    } else {
+                        btn.classList.remove('follow-btn-unfollowed');
+                        btn.classList.add('follow-btn-followed');
+                        btn.textContent = 'Takip Ediliyor';
+                    }
+                })
+            })
+
+            function updateUI() {
+                if(countDisplay) countDisplay.textContent = `${selectedCount} / 15`;
+                
+                if (selectedCount >= 3) {
+                    continueBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'shadow-none');
+                    continueBtn.classList.add('shadow-[0_0_15px_rgba(0,219,233,0.3)]');
+                } else {
+                    continueBtn.classList.add('opacity-50', 'cursor-not-allowed', 'shadow-none');
+                    continueBtn.classList.remove('shadow-[0_0_15px_rgba(0,219,233,0.3)]');
+                }
+            }
+        });
+    </script>
+</body></html>

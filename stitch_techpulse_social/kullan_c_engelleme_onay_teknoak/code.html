@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=390, height=844, initial-scale=1.0" name="viewport"/>
+<title>Kullanıcı Engelleme Onayı - TeknoAkış</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Inter:wght@400;500&amp;family=Geist:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed": "#6ffbbe",
+                      "on-secondary": "#3c0091",
+                      "on-tertiary-fixed": "#002113",
+                      "surface-container-low": "#1a1c20",
+                      "primary-fixed-dim": "#00dbe9",
+                      "on-primary-container": "#006970",
+                      "inverse-surface": "#e2e2e8",
+                      "on-primary": "#00363a",
+                      "secondary-container": "#571bc1",
+                      "surface-container": "#1e2024",
+                      "on-tertiary-fixed-variant": "#005236",
+                      "tertiary-fixed-dim": "#4edea3",
+                      "on-tertiary": "#003824",
+                      "on-secondary-fixed": "#23005c",
+                      "secondary": "#d0bcff",
+                      "on-surface-variant": "#b9cacb",
+                      "on-error": "#690005",
+                      "tertiary": "#d8ffe7",
+                      "surface-container-highest": "#333539",
+                      "on-secondary-container": "#c4abff",
+                      "on-surface": "#e2e2e8",
+                      "surface-variant": "#333539",
+                      "secondary-fixed": "#e9ddff",
+                      "inverse-on-surface": "#2f3035",
+                      "primary-container": "#00f0ff",
+                      "inverse-primary": "#006970",
+                      "surface": "#111317",
+                      "outline": "#849495",
+                      "primary-fixed": "#7df4ff",
+                      "on-primary-fixed-variant": "#004f54",
+                      "error": "#ffb4ab",
+                      "tertiary-container": "#65f2b5",
+                      "secondary-fixed-dim": "#d0bcff",
+                      "on-background": "#e2e2e8",
+                      "on-error-container": "#ffdad6",
+                      "surface-dim": "#111317",
+                      "error-container": "#93000a",
+                      "surface-container-high": "#282a2e",
+                      "surface-tint": "#00dbe9",
+                      "outline-variant": "#3b494b",
+                      "on-primary-fixed": "#002022",
+                      "background": "#111317",
+                      "surface-container-lowest": "#0c0e12",
+                      "primary": "#dbfcff",
+                      "on-tertiary-container": "#006d4a",
+                      "surface-bright": "#37393e",
+                      "on-secondary-fixed-variant": "#5516be"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "xs": "4px",
+                      "margin-desktop": "32px",
+                      "gutter": "16px",
+                      "lg": "24px",
+                      "xl": "32px",
+                      "margin-mobile": "16px",
+                      "sm": "8px",
+                      "base": "4px"
+              },
+              "fontFamily": {
+                      "mono-code": [
+                              "JetBrains Mono"
+                      ],
+                      "mono-label": [
+                              "JetBrains Mono"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Geist"
+                      ],
+                      "headline-lg-mobile": [
+                              "Geist"
+                      ],
+                      "headline-md": [
+                              "Geist"
+                      ]
+              },
+              "fontSize": {
+                      "mono-code": [
+                              "13px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "mono-label": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+            },
+          }
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background h-[844px] w-[390px] overflow-hidden relative font-body-sm flex flex-col justify-end mx-auto border border-outline-variant/30">
+<!-- Simüle edilmiş arka plan içeriği (Bulanık) -->
+<div class="absolute inset-0 z-0 bg-surface-container-lowest flex flex-col p-md gap-lg pointer-events-none opacity-40 blur-sm">
+<div class="flex items-center justify-between mb-xl mt-xl">
+<div class="font-headline-lg-mobile text-headline-lg-mobile text-primary-fixed-dim">TeknoAkış</div>
+</div>
+<div class="bg-surface-container-low p-md rounded-xl border border-outline-variant/30">
+<div class="flex items-center gap-sm mb-sm">
+<div class="w-10 h-10 rounded-full bg-surface-variant"></div>
+<div class="h-4 w-32 bg-surface-variant rounded"></div>
+</div>
+<div class="h-20 w-full bg-surface-variant rounded mb-sm"></div>
+<div class="flex gap-sm">
+<div class="h-6 w-16 bg-surface-variant rounded-full"></div>
+<div class="h-6 w-16 bg-surface-variant rounded-full"></div>
+</div>
+</div>
+<div class="bg-surface-container-low p-md rounded-xl border border-outline-variant/30">
+<div class="flex items-center gap-sm mb-sm">
+<div class="w-10 h-10 rounded-full bg-surface-variant"></div>
+<div class="h-4 w-24 bg-surface-variant rounded"></div>
+</div>
+<div class="h-12 w-full bg-surface-variant rounded mb-sm"></div>
+</div>
+</div>
+<!-- Scrim (Yarı saydam siyah arka plan) -->
+<div class="absolute inset-0 bg-black/60 z-40 backdrop-blur-[2px]"></div>
+<!-- Bottom Sheet / Dialog -->
+<div class="z-50 w-full bg-surface-container rounded-t-[24px] border-t border-outline-variant/30 flex flex-col pt-sm pb-xl px-md shadow-[0_-8px_32px_rgba(0,0,0,0.5)] transform transition-transform duration-300 ease-out translate-y-0">
+<!-- Sürükleme Çubuğu (Drag Handle) -->
+<div class="w-12 h-1.5 bg-outline-variant/50 rounded-full mx-auto mb-lg"></div>
+<!-- Dialog İçeriği -->
+<div class="flex flex-col items-center text-center">
+<!-- Kullanıcı Avatarı -->
+<div class="relative mb-md">
+<img alt="Kullanıcı Avatarı" class="w-20 h-20 rounded-full object-cover border-2 border-surface-variant bg-surface-container-high" data-alt="A highly detailed close up portrait of a futuristic cyberpunk hacker avatar, wearing neon glowing visors, neon tech blue and deep blacks, hyper-technical minimalist aesthetic, professional lighting, intense and focused mood, sharp details." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHJLps2LBMTHHG5rnDo5It2jrYnsTQfPeNWSINb7KIk7bx1KB_TF9koarMwdBxyQkrYHMU0bJ5L0LElAwGDJ1zUXO22dN7_QNJM0hFu_rOp15aKCutIU47-LXvpR-NOcdb3d6e6QurOsqLYLv8iW6Nz3HKtFiYsHHIxugoVJ6rJs1RVBrvMw6lWLktsNadhnYCgF867AEyVS4Mysa4Qey2fIS1SyCBULlPTG7tXyKJ1J0H3UIjkoCF8MEqagAO1S-_n77BYBKoTLs"/>
+<!-- Engelleme İkonu Rozeti (Küçük kırmızı ikon) -->
+<div class="absolute bottom-0 right-0 w-6 h-6 bg-error text-on-error rounded-full flex items-center justify-center border-2 border-surface-container">
+<span class="material-symbols-outlined text-[14px] font-bold" style="font-variation-settings: 'FILL' 1;">block</span>
+</div>
+</div>
+<!-- Kullanıcı Adı & ID (Teknik görünüm) -->
+<h2 class="font-headline-md text-headline-md text-on-surface mb-xs">dev_hacker99</h2>
+<div class="font-mono-label text-mono-label text-on-surface-variant mb-lg bg-surface-container-high px-sm py-xs rounded-full border border-outline-variant/30 inline-flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">fingerprint</span>
+                 ID: 0x8F9A...2C41
+            </div>
+<!-- Bilgilendirme Metni -->
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-xl px-md">
+                Engellediğinizde bu kullanıcı ile gönderileriniz <span class="text-on-surface font-medium">karşılıklı olarak gizlenecek</span> ve iletişim kuramayacaksınız.
+            </p>
+<!-- Aksiyon Butonları -->
+<div class="w-full flex flex-col gap-sm">
+<!-- Kritik Aksiyon (Engelle) -->
+<button class="w-full h-12 bg-error/10 hover:bg-error/20 active:scale-[0.98] transition-all flex items-center justify-center gap-sm rounded-xl border border-error/30 text-error font-body-lg text-body-lg font-medium">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">block</span>
+                    Kullanıcıyı Engelle
+                </button>
+<!-- İkincil Aksiyon (Vazgeç) -->
+<button class="w-full h-12 bg-transparent hover:bg-surface-variant/50 active:scale-[0.98] transition-all flex items-center justify-center rounded-xl border border-outline-variant text-on-surface font-body-lg text-body-lg">
+                    Vazgeç
+                </button>
+</div>
+</div>
+<!-- Alt Boşluk (Safe Area için) -->
+<div class="h-safe pb-md"></div>
+</div>
+</body></html>

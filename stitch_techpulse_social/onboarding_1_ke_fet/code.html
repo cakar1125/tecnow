@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TeknoAkış - Onboarding</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;family=Inter:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#0c0e12",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "inverse-surface": "#e2e2e8",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "surface-container": "#1e2024",
+                        "on-secondary-container": "#c4abff",
+                        "on-tertiary-container": "#006d4a",
+                        "on-primary-container": "#006970",
+                        "inverse-primary": "#006970",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed": "#6ffbbe",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "surface-tint": "#00dbe9",
+                        "primary-container": "#00f0ff",
+                        "surface-variant": "#333539",
+                        "on-tertiary-fixed": "#002113",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "on-error": "#690005",
+                        "surface-container-high": "#282a2e",
+                        "primary-fixed-dim": "#00dbe9",
+                        "surface": "#111317",
+                        "on-primary-fixed": "#002022",
+                        "tertiary-container": "#65f2b5",
+                        "primary": "#dbfcff",
+                        "error-container": "#93000a",
+                        "on-primary-fixed-variant": "#004f54",
+                        "surface-container-highest": "#333539",
+                        "on-surface-variant": "#b9cacb",
+                        "inverse-on-surface": "#2f3035",
+                        "on-secondary": "#3c0091",
+                        "secondary-container": "#571bc1",
+                        "surface-dim": "#111317",
+                        "surface-container-low": "#1a1c20",
+                        "on-tertiary": "#003824",
+                        "tertiary": "#d8ffe7",
+                        "surface-bright": "#37393e",
+                        "secondary-fixed": "#e9ddff",
+                        "secondary": "#d0bcff",
+                        "primary-fixed": "#7df4ff",
+                        "outline": "#849495",
+                        "error": "#ffb4ab",
+                        "on-background": "#e2e2e8",
+                        "on-surface": "#e2e2e8",
+                        "on-primary": "#00363a",
+                        "background": "#111317",
+                        "outline-variant": "#3b494b",
+                        "on-secondary-fixed": "#23005c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-desktop": "32px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "base": "4px",
+                        "xl": "32px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Geist"],
+                        "headline-md": ["Geist"],
+                        "mono-label": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Geist"],
+                        "mono-code": ["JetBrains Mono"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["20px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "mono-label": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "mono-code": ["13px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.surface-container-lowest');
+            color: theme('colors.on-surface');
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+<!-- Background Elements for Atmospheric Depth -->
+<div class="absolute inset-0 z-0 pointer-events-none opacity-20 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary-container/20 via-surface-container-lowest to-surface-container-lowest"></div>
+<div class="absolute inset-0 z-0 pointer-events-none opacity-10" style="background-image: radial-gradient(theme('colors.outline-variant') 1px, transparent 1px); background-size: 32px 32px;"></div>
+<main class="w-full max-w-md mx-auto px-margin-mobile md:px-margin-desktop py-xl h-screen flex flex-col justify-between relative z-10">
+<!-- Header / Logo Area -->
+<header class="w-full flex justify-center pt-8">
+<img alt="TeknoAkış Logo" class="h-12 w-auto object-contain rounded-DEFAULT" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSZk1drDs57sSOE__28ndbQTEQyYPGJuB_2D7MdZ0R9a6aL38eojPJshp6_oEZzQ6-cmVWLu42NjAbr7CgZws079QBgSFtUPl6oZlHpYBKKQkCDEhgKPkKLuLRW7plLQouQDDUf6M9mmq51xw-atIwSDvPieTJSWjnrZ9eA08RGFwzxsCYqrDpMIo5VYQXtYCevcTcvB_21w-yiDn1Ju4SIbpBXe4b3eWLRY_aM8AYoKOpAIHOSbKjFmdRdlfQCZr8N-CliM2ij9I"/>
+</header>
+<!-- Central Content Area -->
+<div class="flex-1 flex flex-col items-center justify-center w-full space-y-lg mt-8">
+<!-- Hero Image Container (Glassmorphism Frame) -->
+<div class="relative w-full aspect-[4/5] max-h-[50vh] rounded-xl overflow-hidden border border-outline-variant/50 bg-surface-container-low/30 backdrop-blur-sm shadow-2xl p-sm">
+<!-- Data-driven Placeholder for the main visual -->
+<div class="w-full h-full rounded-lg bg-surface overflow-hidden relative border border-surface-variant">
+<img class="absolute inset-0 w-full h-full object-cover opacity-90 mix-blend-screen" data-alt="A highly detailed, futuristic digital artwork showing a glowing, interconnected global network globe. The aesthetic is hyper-technical minimalism with deep space blacks, bright cyan (#00f0ff) glowing nodes, and sharp neon blue connection lines spanning across a subtle wireframe earth. Complex, microscopic data grids and UI overlays float in the background. The mood is cutting-edge, professional, and dense with information, capturing the essence of global technological discovery in dark mode." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPUm3aDy-Cx0sbDCtyxT5Ou2bAn6U8fq2vgBGq7wgDnd1mkZ8dA7_i7RSS-hE8j2xqPiLSBwcEkPJfucBTvD6JO3tTwEWlangHZEa_upU0Qlscd6nt2Rp-KnINnI-T4kwcylcF8bW3ZvTcBBAF6pMzKt7VPyxp-MkSnrNlaGZ1VsBOBuMod4sf4-t3xFTCupOYcoTAJrQgn3PD-HzJG99kO3-vpRbhYzw3mYc5vckea3nkatz9IxEXb9jrgdn2OsE5fNQyMuOogkQ"/>
+<!-- Decorative Tech Overlays on Image -->
+<div class="absolute top-4 left-4 font-mono-code text-mono-code text-primary-fixed-dim/70">
+                        INIT_SEQ: 0x4F2A<br/>
+                        LAT: 41.0082<br/>
+                        LON: 28.9784
+                    </div>
+<div class="absolute bottom-4 right-4 flex space-x-1">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<div class="w-2 h-2 rounded-full bg-primary/40"></div>
+<div class="w-2 h-2 rounded-full bg-primary/40"></div>
+</div>
+</div>
+</div>
+<!-- Typography & Messaging -->
+<div class="text-center w-full max-w-sm space-y-md">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary tracking-tight">
+                    Dünyadaki yeni teknolojileri keşfet
+                </h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                    En güncel geliştirici araçları, yapay zeka modelleri ve global teknoloji trendlerine anında erişim sağlayın.
+                </p>
+</div>
+</div>
+<!-- Bottom Navigation & Actions -->
+<footer class="w-full flex flex-col items-center pb-8 space-y-lg">
+<!-- Progress Indicator -->
+<div class="flex space-x-sm items-center">
+<div class="w-8 h-1 bg-primary rounded-full"></div>
+<div class="w-2 h-1 bg-surface-variant rounded-full transition-colors duration-300"></div>
+<div class="w-2 h-1 bg-surface-variant rounded-full transition-colors duration-300"></div>
+</div>
+<!-- Action Button -->
+<button class="w-full py-4 px-6 bg-primary text-on-primary font-mono-label text-mono-label rounded-lg flex items-center justify-center space-x-sm hover:bg-primary-fixed transition-colors border border-transparent focus:outline-none focus:border-primary-fixed-dim focus:ring-1 focus:ring-primary-fixed-dim group">
+<span class="uppercase tracking-widest font-bold">İleri</span>
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<!-- Skip Option (Ghost Button Style) -->
+<button class="font-mono-label text-mono-label text-on-surface-variant hover:text-primary transition-colors uppercase tracking-widest bg-transparent border border-transparent hover:border-outline-variant py-2 px-4 rounded-DEFAULT">
+                Atla
+            </button>
+</footer>
+</main>
+</body></html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>E-posta Doğrulama - TeknoAkış</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#d0bcff",
+                        "on-primary-fixed": "#002022",
+                        "tertiary": "#d8ffe7",
+                        "on-background": "#e2e2e8",
+                        "inverse-primary": "#006970",
+                        "primary-container": "#00f0ff",
+                        "on-surface-variant": "#b9cacb",
+                        "error-container": "#93000a",
+                        "tertiary-fixed": "#6ffbbe",
+                        "secondary": "#d0bcff",
+                        "tertiary-container": "#65f2b5",
+                        "background": "#111317",
+                        "surface-container-lowest": "#0c0e12",
+                        "surface-dim": "#111317",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-surface": "#e2e2e8",
+                        "inverse-on-surface": "#2f3035",
+                        "surface-bright": "#37393e",
+                        "on-tertiary": "#003824",
+                        "primary": "#dbfcff",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "on-secondary": "#3c0091",
+                        "surface-variant": "#333539",
+                        "surface-tint": "#00dbe9",
+                        "on-primary": "#00363a",
+                        "on-error-container": "#ffdad6",
+                        "secondary-fixed": "#e9ddff",
+                        "outline-variant": "#3b494b",
+                        "inverse-surface": "#e2e2e8",
+                        "outline": "#849495",
+                        "on-tertiary-container": "#006d4a",
+                        "secondary-container": "#571bc1",
+                        "error": "#ffb4ab",
+                        "surface-container-low": "#1a1c20",
+                        "surface-container-highest": "#333539",
+                        "primary-fixed-dim": "#00dbe9",
+                        "on-tertiary-fixed": "#002113",
+                        "surface-container-high": "#282a2e",
+                        "surface-container": "#1e2024",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "primary-fixed": "#7df4ff",
+                        "on-secondary-fixed": "#23005c",
+                        "surface": "#111317",
+                        "on-primary-container": "#006970",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-error": "#690005",
+                        "on-secondary-container": "#c4abff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "margin-desktop": "32px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "margin-mobile": "16px",
+                        "gutter": "16px",
+                        "base": "4px",
+                        "md": "16px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Geist"],
+                        "mono-code": ["JetBrains Mono"],
+                        "body-sm": ["Inter"],
+                        "headline-md": ["Geist"],
+                        "mono-label": ["JetBrains Mono"],
+                        "headline-lg": ["Geist"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "mono-code": ["13px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "mono-label": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(26, 28, 32, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(59, 73, 75, 0.5);
+        }
+        
+        .pin-input::-webkit-outer-spin-button,
+        .pin-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        .pin-input[type=number] {
+            -moz-appearance: textfield;
+        }
+        
+        .glow-effect:focus {
+            box-shadow: 0 0 15px rgba(0, 219, 233, 0.2);
+            border-color: #00dbe9;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+<!-- Top Navigation (Contextual Suppressed per instructions as this is a transactional screen, but standard Header is added for brand presence) -->
+<header class="fixed top-0 w-full z-50 flex justify-center items-center px-margin-mobile h-16 backdrop-blur-xl border-b border-outline-variant bg-surface/60">
+<div class="font-headline-md text-headline-md font-bold text-primary tracking-tight">TeknoAkış</div>
+</header>
+<!-- Main Content -->
+<main class="w-full max-w-md px-margin-mobile md:px-0 z-10 mt-16 md:mt-0 flex-grow flex flex-col justify-center">
+<div class="glass-panel rounded-xl p-lg flex flex-col items-center text-center relative overflow-hidden">
+<!-- Subtle background accent -->
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary-container to-transparent opacity-50"></div>
+<!-- Security Icon -->
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-lg border border-outline-variant relative">
+<div class="absolute inset-0 rounded-full border border-primary-container/30 animate-pulse"></div>
+<span class="material-symbols-outlined text-primary-container" data-icon="shield_lock" style="font-variation-settings: 'FILL' 1; font-size: 32px;">shield_lock</span>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary mb-md">E-posta Doğrulama</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-xl">
+                E-postanıza gelen 6 haneli kodu giriniz.
+            </p>
+<form class="w-full flex flex-col items-center">
+<!-- PIN Inputs -->
+<div class="flex justify-between w-full gap-sm md:gap-md mb-xl" id="pin-container">
+<input aria-label="Digit 1" class="pin-input w-12 h-14 md:w-14 md:h-16 rounded bg-surface-container-highest border border-outline-variant text-center font-mono-code text-mono-code text-on-surface glow-effect transition-all focus:outline-none focus:ring-0" maxlength="1" type="number"/>
+<input aria-label="Digit 2" class="pin-input w-12 h-14 md:w-14 md:h-16 rounded bg-surface-container-highest border border-outline-variant text-center font-mono-code text-mono-code text-on-surface glow-effect transition-all focus:outline-none focus:ring-0" maxlength="1" type="number"/>
+<input aria-label="Digit 3" class="pin-input w-12 h-14 md:w-14 md:h-16 rounded bg-surface-container-highest border border-outline-variant text-center font-mono-code text-mono-code text-on-surface glow-effect transition-all focus:outline-none focus:ring-0" maxlength="1" type="number"/>
+<input aria-label="Digit 4" class="pin-input w-12 h-14 md:w-14 md:h-16 rounded bg-surface-container-highest border border-outline-variant text-center font-mono-code text-mono-code text-on-surface glow-effect transition-all focus:outline-none focus:ring-0" maxlength="1" type="number"/>
+<input aria-label="Digit 5" class="pin-input w-12 h-14 md:w-14 md:h-16 rounded bg-surface-container-highest border border-outline-variant text-center font-mono-code text-mono-code text-on-surface glow-effect transition-all focus:outline-none focus:ring-0" maxlength="1" type="number"/>
+<input aria-label="Digit 6" class="pin-input w-12 h-14 md:w-14 md:h-16 rounded bg-surface-container-highest border border-outline-variant text-center font-mono-code text-mono-code text-on-surface glow-effect transition-all focus:outline-none focus:ring-0" maxlength="1" type="number"/>
+</div>
+<!-- Verify Button -->
+<button class="w-full bg-primary-fixed-dim text-on-primary-fixed font-headline-md text-headline-md py-sm px-lg rounded hover:bg-primary-fixed transition-colors active:scale-95 duration-150 mb-lg flex justify-center items-center gap-sm" type="button">
+                    Doğrula
+                    <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<!-- Resend Link -->
+<button class="font-mono-label text-mono-label text-primary-container hover:text-primary transition-colors underline decoration-primary-container/30 underline-offset-4" type="button">
+                    Kodu Tekrar Gönder
+                </button>
+</form>
+</div>
+<!-- Tech Decorative element -->
+<div class="mt-xl flex justify-center space-x-2 opacity-30">
+<div class="w-2 h-2 rounded-full bg-primary-container"></div>
+<div class="w-2 h-2 rounded-full bg-surface-variant"></div>
+<div class="w-2 h-2 rounded-full bg-surface-variant"></div>
+</div>
+</main>
+<script>
+        // PIN input logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('.pin-input');
+            
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    // Limit to 1 digit
+                    if (e.target.value.length > 1) {
+                        e.target.value = e.target.value.slice(0, 1);
+                    }
+                    // Move to next input if filled
+                    if (e.target.value !== '' && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                });
+
+                input.addEventListener('keydown', (e) => {
+                    // Move to previous input on backspace
+                    if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+            });
+            
+            // Focus first input on load
+            if (inputs.length > 0) {
+                inputs[0].focus();
+            }
+        });
+    </script>
+</body></html>

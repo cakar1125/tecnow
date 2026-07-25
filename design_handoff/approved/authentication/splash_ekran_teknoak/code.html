@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TeknoAkış - Yeni Nesil Teknoloji Sosyal Ağı</title>
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration (Provided via Anchor) -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#d0bcff",
+                    "on-primary-fixed": "#002022",
+                    "tertiary": "#d8ffe7",
+                    "on-background": "#e2e2e8",
+                    "inverse-primary": "#006970",
+                    "primary-container": "#00f0ff",
+                    "on-surface-variant": "#b9cacb",
+                    "error-container": "#93000a",
+                    "tertiary-fixed": "#6ffbbe",
+                    "secondary": "#d0bcff",
+                    "tertiary-container": "#65f2b5",
+                    "background": "#111317",
+                    "surface-container-lowest": "#0c0e12",
+                    "surface-dim": "#111317",
+                    "on-tertiary-fixed-variant": "#005236",
+                    "on-surface": "#e2e2e8",
+                    "inverse-on-surface": "#2f3035",
+                    "surface-bright": "#37393e",
+                    "on-tertiary": "#003824",
+                    "primary": "#dbfcff",
+                    "tertiary-fixed-dim": "#4edea3",
+                    "on-secondary": "#3c0091",
+                    "surface-variant": "#333539",
+                    "surface-tint": "#00dbe9",
+                    "on-primary": "#00363a",
+                    "on-error-container": "#ffdad6",
+                    "secondary-fixed": "#e9ddff",
+                    "outline-variant": "#3b494b",
+                    "inverse-surface": "#e2e2e8",
+                    "outline": "#849495",
+                    "on-tertiary-container": "#006d4a",
+                    "secondary-container": "#571bc1",
+                    "error": "#ffb4ab",
+                    "surface-container-low": "#1a1c20",
+                    "surface-container-highest": "#333539",
+                    "primary-fixed-dim": "#00dbe9",
+                    "on-tertiary-fixed": "#002113",
+                    "surface-container-high": "#282a2e",
+                    "surface-container": "#1e2024",
+                    "on-secondary-fixed-variant": "#5516be",
+                    "primary-fixed": "#7df4ff",
+                    "on-secondary-fixed": "#23005c",
+                    "surface": "#111317",
+                    "on-primary-container": "#006970",
+                    "on-primary-fixed-variant": "#004f54",
+                    "on-error": "#690005",
+                    "on-secondary-container": "#c4abff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "margin-desktop": "32px",
+                    "xs": "4px",
+                    "xl": "32px",
+                    "margin-mobile": "16px",
+                    "gutter": "16px",
+                    "base": "4px",
+                    "md": "16px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": [
+                            "Geist"
+                    ],
+                    "mono-code": [
+                            "JetBrains Mono"
+                    ],
+                    "body-sm": [
+                            "Inter"
+                    ],
+                    "headline-md": [
+                            "Geist"
+                    ],
+                    "mono-label": [
+                            "JetBrains Mono"
+                    ],
+                    "headline-lg": [
+                            "Geist"
+                    ],
+                    "body-lg": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": [
+                            "24px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "mono-code": [
+                            "13px",
+                            {
+                                    "lineHeight": "1.5",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "1.5",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-md": [
+                            "20px",
+                            {
+                                    "lineHeight": "1.3",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "mono-label": [
+                            "12px",
+                            {
+                                    "lineHeight": "1.4",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "1.2",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-lg": [
+                            "16px",
+                            {
+                                    "lineHeight": "1.6",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+        },
+        },
+      }
+    </script>
+<style>
+        /* Custom Keyframes for Subtle Pulse */
+        @keyframes subtle-pulse {
+            0%, 100% {
+                opacity: 0.8;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+        }
+        .animate-subtle-pulse {
+            animation: subtle-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* Ambient Glow Behind Logo */
+        .ambient-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        /* Loading Bar Animation */
+        @keyframes load {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        .animate-load {
+            animation: load 2.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+        }
+    </style>
+</head>
+<body class="bg-[#0A0C10] text-on-surface h-screen w-screen overflow-hidden flex flex-col justify-center items-center relative font-sans">
+<!-- Subtle Background Grid/Texture (Hyper-Technical Minimalism) -->
+<div class="absolute inset-0 z-0 opacity-[0.03]" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 24px 24px;"></div>
+<!-- Main Content Container -->
+<div class="relative z-10 flex flex-col items-center justify-center space-y-md">
+<!-- Logo Wrapper with Ambient Glow -->
+<div class="relative w-48 h-48 md:w-64 md:h-64 flex justify-center items-center">
+<div class="ambient-glow animate-subtle-pulse"></div>
+<img alt="TeknoAkış Logo" class="relative z-10 w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-[0_0_15px_rgba(0,240,255,0.3)]" src="https://lh3.googleusercontent.com/aida/AP1WRLvM1deoBVLuZYCQRVQMTnNGOMABdPE0fhws2mCTUtLmhhBOOXd5wFA6AOTzRJq2rIqUSdq-dGfItcXJIJe2YvDNvePPkwLA8qVj3xOuQTJkf57vh3FNOmE9fMQlvQybi3f1nTgCoKYv8zMm2OSZg1dtNDWVnctI3lpIyw1vrZX0rL7fYnYsShd005zLHkCag9-jSaivlJgoAsjE8piZv2LD1913HFKzvApL7zbMLszpFXAXfibbEjOKwlM"/>
+</div>
+<!-- Typography Cluster -->
+<div class="text-center space-y-xs opacity-0 animate-[fadeIn_1s_ease-out_0.5s_forwards]">
+<!-- Brand Name -->
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary tracking-tight">
+                TeknoAkış
+            </h1>
+<!-- Slogan (Mono Label for Technical Feel) -->
+<p class="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-wider">
+                Yeni Nesil Teknoloji Sosyal Ağı
+            </p>
+</div>
+</div>
+<!-- Technical Loading Progress (Bottom Attached) -->
+<div class="absolute bottom-12 w-full max-w-[200px] flex flex-col items-center space-y-2 opacity-0 animate-[fadeIn_1s_ease-out_1s_forwards]">
+<!-- System Status Text -->
+<div class="w-full flex justify-between font-mono-code text-[10px] text-outline">
+<span>SYS_INIT</span>
+<span>[OK]</span>
+</div>
+<!-- Progress Bar Track -->
+<div class="w-full h-[2px] bg-surface-container-highest rounded-full overflow-hidden">
+<!-- Progress Bar Fill -->
+<div class="h-full bg-primary-container animate-load"></div>
+</div>
+</div>
+<style>
+        /* Fade In Keyframe */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+<script>
+        // Simulate splash screen duration and fade out effect before theoretical redirect
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.8s ease-out';
+                document.body.style.opacity = '0';
+                // In a real app, window.location.href = '/home' or similar would happen here
+            }, 3500);
+        });
+    </script>
+</body></html>

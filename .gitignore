@@ -1,0 +1,47 @@
+# Flutter / Dart generated files
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+**/.pub-cache/
+**/build/
+**/coverage/
+**/doc/api/
+**/ios/Flutter/.last_build_id
+
+# IDE caches
+.idea/
+*.iml
+.vscode/
+*.code-workspace
+
+# Android / Gradle local state
+**/.gradle/
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+**/android/key.properties
+*.jks
+*.keystore
+
+# Apple generated state and secrets
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/ephemeral/
+**/macos/Pods/
+**/macos/Flutter/ephemeral/
+*.mobileprovision
+
+# Environment and local secrets
+.env
+.env.*
+!.env.example
+*.secret
+*.secrets
+
+# OS / temporary files
+.DS_Store
+Thumbs.db
+*.tmp
+*.log
+
+# Temporary setup artifacts are kept outside the repository.

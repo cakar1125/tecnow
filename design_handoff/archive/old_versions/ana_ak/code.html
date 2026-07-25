@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevPulse - Home Feed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Geist:wght@600;700&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#dbfcff",
+                        "surface-container-highest": "#333539",
+                        "on-primary": "#00363a",
+                        "secondary-container": "#7d01b1",
+                        "inverse-on-surface": "#2f3035",
+                        "tertiary": "#deffd6",
+                        "surface-container-low": "#1a1c20",
+                        "on-error-container": "#ffdad6",
+                        "surface-tint": "#00dbe9",
+                        "on-background": "#e2e2e8",
+                        "error-container": "#93000a",
+                        "on-primary-fixed": "#002022",
+                        "primary-fixed-dim": "#00dbe9",
+                        "error": "#ffb4ab",
+                        "on-secondary": "#510074",
+                        "surface-variant": "#333539",
+                        "tertiary-fixed-dim": "#42e355",
+                        "outline": "#849495",
+                        "secondary-fixed": "#f6d9ff",
+                        "on-tertiary": "#00390a",
+                        "surface-dim": "#111317",
+                        "background": "#111317",
+                        "surface-bright": "#37393e",
+                        "secondary-fixed-dim": "#e9b3ff",
+                        "tertiary-fixed": "#70ff76",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-secondary-fixed": "#310048",
+                        "surface-container-lowest": "#0c0e12",
+                        "tertiary-container": "#59f766",
+                        "on-secondary-container": "#e5a9ff",
+                        "on-error": "#690005",
+                        "surface": "#111317",
+                        "on-tertiary-container": "#006e1c",
+                        "primary-container": "#00f0ff",
+                        "primary-fixed": "#7df4ff",
+                        "on-surface-variant": "#b9cacb",
+                        "inverse-primary": "#006970",
+                        "on-primary-container": "#006970",
+                        "secondary": "#e9b3ff",
+                        "on-tertiary-fixed": "#002204",
+                        "outline-variant": "#3b494b",
+                        "surface-container": "#1e2024",
+                        "on-secondary-fixed-variant": "#7200a3",
+                        "on-tertiary-fixed-variant": "#005313",
+                        "surface-container-high": "#282a2e",
+                        "on-surface": "#e2e2e8",
+                        "inverse-surface": "#e2e2e8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "8px",
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "base-unit": "4px",
+                        "margin-mobile": "20px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Geist"],
+                        "body-sm": ["Inter"],
+                        "headline-xl": ["Geist"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Geist"],
+                        "code-snippet": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-caps": ["11px", { "lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "600" }],
+                        "code-snippet": ["13px", { "lineHeight": "20px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #0F1115; color: #e2e2e8; }
+        .glass-card {
+            background-color: #1C1E26;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-body-md bg-background text-on-background min-h-screen pb-24 md:pb-0">
+<!-- TopAppBar Mobile -->
+<header class="md:hidden bg-surface/70 backdrop-blur-xl border-b border-white/10 fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16">
+<div class="flex items-center gap-stack-sm cursor-pointer hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="A close up, high-resolution portrait photo of a young, stylish software developer with short dark hair, wearing a sleek black turtleneck, illuminated by cool cyan and purple neon rim lighting in a moody, dark tech environment. The aesthetic is modern, cyberpunk, and professional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8YXFuEVW5iFdlMZNRdcH3lP6ch73vZ3BQDc83jC0i7kXHdIUurKhstn8OAQvWrOpSUi5qPDJBGXIT54RlDR4en-a9NK6kz2oilmhfClvqIuEGPCXXqu4Y_9FV1z9tFxDQsdtYcvuZ7HhK1Kg58Ymohz3U-wAEI6zyIIILC7KoJaV5kzXVS7vomIQEp1ytcNATH36tsYKf9CVpIFZ8WjpwV9MywsaJlO9Yj2ApVJPvi-vSFRF9Q-FO-Fr12ZElcs25oeeyVCY7Gto"/>
+</div>
+<div class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">DevPulse</div>
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[24px]">notifications</span>
+</button>
+</header>
+<!-- TopAppBar Web -->
+<header class="hidden md:flex bg-surface/70 backdrop-blur-xl border-b border-white/10 fixed top-0 w-full z-50 justify-between items-center px-8 h-16">
+<div class="flex items-center gap-4">
+<div class="font-headline-lg text-headline-lg font-bold text-primary">DevPulse</div>
+</div>
+<nav class="flex gap-8">
+<a class="text-primary font-body-sm text-body-sm font-semibold hover:opacity-80 transition-opacity" href="#">Feed</a>
+<a class="text-on-surface-variant font-body-sm text-body-sm hover:opacity-80 transition-opacity" href="#">Trending</a>
+<a class="text-on-surface-variant font-body-sm text-body-sm hover:opacity-80 transition-opacity" href="#">AI Hub</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-[24px]">notifications</span>
+</button>
+<img class="w-8 h-8 rounded-full object-cover cursor-pointer hover:opacity-80 transition-opacity" data-alt="A close up, high-resolution portrait photo of a young, stylish software developer with short dark hair, wearing a sleek black turtleneck, illuminated by cool cyan and purple neon rim lighting in a moody, dark tech environment. The aesthetic is modern, cyberpunk, and professional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbn21KQtVEF8767igAUWGqplQRkwdKjdmSRqQuQnxx_zqI_0tSklh6g2z31p4cWVTt1MbPWZ_8Vcfj5_0pwwTlvmahhyzyFgBjd5RtQ_KX00qNEkKceQVYp6gxHiJt6zioCeI2bBpcnph2-JXxqA8DmNlSYaJcQJTY3_9BPnKkJiEfUIoGMEiXJOpQ9zmoc22a8cbQvl6mR6jWLgODeXYFC63HZaLJrscGM-ELsKRLxw24xaIwBzHG-K6WqMwduhkgS9g0El4Ny5E"/>
+</div>
+</header>
+<main class="pt-20 px-margin-mobile md:px-8 max-w-4xl mx-auto flex flex-col gap-stack-lg">
+<!-- Hot AI News Carousel -->
+<section>
+<h2 class="font-label-caps text-label-caps text-on-surface-variant mb-stack-sm uppercase tracking-wider">Hot AI News</h2>
+<div class="flex overflow-x-auto gap-stack-md hide-scrollbar pb-2">
+<div class="glass-card rounded-xl p-4 min-w-[280px] flex-shrink-0 flex flex-col gap-2 relative overflow-hidden group cursor-pointer hover:bg-surface-container transition-colors">
+<div class="absolute -inset-1 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity blur-xl rounded-xl z-0"></div>
+<div class="relative z-10 flex justify-between items-start">
+<span class="font-label-caps text-label-caps text-primary border border-primary/30 bg-primary/10 px-2 py-1 rounded">BREAKING</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-[12px]">2h ago</span>
+</div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface relative z-10 mt-1">Claude 3.5 Sonnet Released: New Benchmarks Shattered</h3>
+<div class="flex items-center gap-2 mt-auto pt-2 relative z-10">
+<span class="w-4 h-4 rounded-full bg-secondary-container flex items-center justify-center font-label-caps text-[8px] text-on-secondary-container">A</span>
+<span class="font-body-sm text-body-sm text-[12px] text-on-surface-variant">Anthropic Blog</span>
+</div>
+</div>
+<div class="glass-card rounded-xl p-4 min-w-[280px] flex-shrink-0 flex flex-col gap-2 relative overflow-hidden group cursor-pointer hover:bg-surface-container transition-colors">
+<div class="absolute -inset-1 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity blur-xl rounded-xl z-0"></div>
+<div class="relative z-10 flex justify-between items-start">
+<span class="font-label-caps text-label-caps text-secondary border border-secondary/30 bg-secondary/10 px-2 py-1 rounded">LLM</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-[12px]">4h ago</span>
+</div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface relative z-10 mt-1">GPT-4o Mini: Cost-Effective Edge Inference</h3>
+<div class="flex items-center gap-2 mt-auto pt-2 relative z-10">
+<span class="w-4 h-4 rounded-full bg-primary-container flex items-center justify-center font-label-caps text-[8px] text-on-primary-container">O</span>
+<span class="font-body-sm text-body-sm text-[12px] text-on-surface-variant">OpenAI News</span>
+</div>
+</div>
+<div class="glass-card rounded-xl p-4 min-w-[280px] flex-shrink-0 flex flex-col gap-2 relative overflow-hidden group cursor-pointer hover:bg-surface-container transition-colors">
+<div class="absolute -inset-1 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity blur-xl rounded-xl z-0"></div>
+<div class="relative z-10 flex justify-between items-start">
+<span class="font-label-caps text-label-caps text-tertiary-fixed border border-tertiary-fixed/30 bg-tertiary-fixed/10 px-2 py-1 rounded">OPEN SOURCE</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-[12px]">6h ago</span>
+</div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface relative z-10 mt-1">Llama 3 400B Training Run Completed</h3>
+<div class="flex items-center gap-2 mt-auto pt-2 relative z-10">
+<span class="w-4 h-4 rounded-full bg-blue-900 flex items-center justify-center font-label-caps text-[8px] text-blue-100">M</span>
+<span class="font-body-sm text-body-sm text-[12px] text-on-surface-variant">Meta AI</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Feed -->
+<section class="flex flex-col gap-stack-md">
+<!-- Repo Card -->
+<div class="glass-card rounded-xl p-5 flex flex-col gap-4 relative overflow-hidden group">
+<div class="absolute -inset-2 bg-primary/5 opacity-0 group-focus-within:opacity-100 transition-opacity blur-2xl rounded-xl z-0"></div>
+<div class="relative z-10 flex justify-between items-start">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-md object-cover" data-alt="A stylized, flat-vector logo icon of a futuristic metallic fox head rendered in high contrast cyber-blue and deep purple, set against a dark grey background, representing an open-source software project avatar. The style is modern, minimalist, and tech-focused." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAYGwQAZx-ilpgRrViU9zmiBMNmq7oeIHdAWkhtXBZVk8tG96YFguKuWCofDJwsDJ0Fr0MOt98rYMB--D5kJiAr0FPdPcyhGssrw1r1M5Pw0xGXE--jiCO-4L5KJ3JJXeaBwwMNfnb2GNMlEsUeZ9Tf-N-3W2cH0D0eJXaW6Lz4eVynZXe-Z8RoG8dh6_P4-GUigq2qmcT63HZRdnV2rZPGTskG8RZ2BXnE2tYR2f6gJqdRSjBmEufkTg5Wx88hzFYFzKn65Bw1gM"/>
+<div>
+<h3 class="font-body-md text-body-md font-semibold text-primary">vllm-project / vllm</h3>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-[12px]">Updated 30m ago</span>
+</div>
+</div>
+<button class="bg-surface-container-high hover:bg-surface-container-highest border border-outline-variant text-on-surface px-3 py-1.5 rounded-lg flex items-center gap-1 transition-colors group/btn">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant group-hover/btn:text-primary transition-colors">star</span>
+<span class="font-body-sm text-body-sm font-medium">Star</span>
+</button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface relative z-10">
+                    A high-throughput and memory-efficient LLM serving engine with PagedAttention.
+                </p>
+<div class="bg-black/50 border border-white/5 rounded-lg p-3 font-code-snippet text-code-snippet overflow-x-auto relative z-10">
+<span class="text-secondary">pip</span> install vllm
+                </div>
+<div class="flex items-center gap-4 relative z-10 mt-2">
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-3 rounded-full bg-yellow-400"></span>
+<span class="font-body-sm text-body-sm text-[13px] text-on-surface-variant">Python</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">star</span>
+<span class="font-body-sm text-body-sm text-[13px]">12.4k</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">call_split</span>
+<span class="font-body-sm text-body-sm text-[13px]">1.2k</span>
+</div>
+</div>
+</div>
+<!-- News Card -->
+<div class="glass-card rounded-xl p-5 flex flex-col gap-3 relative overflow-hidden group cursor-pointer hover:bg-surface-container transition-colors">
+<div class="relative z-10 flex gap-4">
+<div class="flex-1 flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<span class="font-label-caps text-label-caps text-secondary border border-secondary/30 bg-secondary/10 px-2 py-0.5 rounded text-[10px]">RESEARCH</span>
+</div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface leading-tight">Mamba: Linear-Time Sequence Modeling with Selective State Spaces</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mt-1">
+                            A new architecture that challenges the dominance of Transformers by achieving superior performance with linear scaling.
+                        </p>
+</div>
+<div class="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border border-white/10">
+<img class="w-full h-full object-cover" data-alt="An abstract, high-tech 3D render of glowing neon data streams flowing rapidly through a sleek, dark metallic conduit. The visual represents fast, linear data processing, using a color palette of deep cyber-blue, vibrant cyan, and rich blacks. The style is hyper-realistic and futuristic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzs6xgxMd40yyxagucQJMgkaiOhfz2bqTKk7-dtOV8GCDTMsm5PXnaQITqL-cUlvK6cwbSonG-VqkK5lES8OycEx7K5dwrZhZC-C06kWXsUukE3qkqLmipFJm8xF1WQn3jnbmj3outS1kiIVLvABdW4HYejg7OZL5O-bUFtdtFJoIAcMSvdNHe3quUoaJwoTOasnExoMv88GPrirnXNfvRcDN_AMUStzEL3jFakvYKWVMeB4nucCc7LAVlh33VSLQMOJmWMT-dBgo"/>
+</div>
+</div>
+<div class="flex items-center justify-between mt-2 pt-3 border-t border-white/5 relative z-10">
+<div class="flex items-center gap-2">
+<img class="w-5 h-5 rounded-full" data-alt="A small, minimalist circular logo icon consisting of white interlocking geometric shapes on a solid dark red background, representing a generic academic research institution. The style is clean, vector-based, and flat." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsKQX6WtoLpKhkXY3xaOJ8kqYLUXwFzlwSx-KPREsguknk8iCe3AMGRUMOiozDECesHdPrYIkuENSFQj5n5J5MgXbYIOl_xAc3_nBwJ7EIP6PthvOlk7sY7j73kIfquCRgEI-k3COmyrRyBlirHC_3aYu4qaHZxKkuu9-rYIJvUEENKr5DvAGqI1sKyfhXPRw9CJFmjlbnorBnOOKnXFg6Cgv_POC_21LvVynnna0dBXONcdWzQaJnONbeeotTBUBb-nCXc44hFp0"/>
+<span class="font-body-sm text-body-sm text-[13px] text-on-surface-variant">arXiv</span>
+<span class="font-body-sm text-body-sm text-[12px] text-on-surface-variant opacity-50">• 1d ago</span>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">bookmark_border</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- FAB (Mobile) -->
+<button class="md:hidden fixed bottom-24 right-6 w-14 h-14 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center shadow-lg hover:opacity-90 active:scale-95 transition-all z-40">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+</button>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden bg-surface/70 backdrop-blur-xl border-t border-white/10 fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe">
+<a class="flex flex-col items-center justify-center text-primary relative after:content-[''] after:w-1 after:h-1 after:bg-primary after:rounded-full after:mt-1 hover:text-primary transition-colors active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">rss_feed</span>
+<span class="font-label-caps text-label-caps">Feed</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1">trending_up</span>
+<span class="font-label-caps text-label-caps">Trending</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1">smart_toy</span>
+<span class="font-label-caps text-label-caps">AI Hub</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="font-label-caps text-label-caps">Profile</span>
+</a>
+</nav>
+</body></html>

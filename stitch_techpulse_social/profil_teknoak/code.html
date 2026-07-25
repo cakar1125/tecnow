@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;family=Geist:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .backdrop-blur-xl { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#111317",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-container-lowest": "#0c0e12",
+                        "secondary-container": "#571bc1",
+                        "surface-tint": "#00dbe9",
+                        "on-primary-container": "#006970",
+                        "on-background": "#e2e2e8",
+                        "surface": "#111317",
+                        "on-surface-variant": "#b9cacb",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "on-error": "#690005",
+                        "secondary-fixed": "#e9ddff",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-primary-fixed-variant": "#004f54",
+                        "error-container": "#93000a",
+                        "primary-container": "#00f0ff",
+                        "outline": "#849495",
+                        "inverse-surface": "#e2e2e8",
+                        "surface-container-low": "#1a1c20",
+                        "on-surface": "#e2e2e8",
+                        "on-secondary": "#3c0091",
+                        "primary-fixed-dim": "#00dbe9",
+                        "surface-container": "#1e2024",
+                        "inverse-primary": "#006970",
+                        "primary": "#dbfcff",
+                        "tertiary-container": "#65f2b5",
+                        "surface-variant": "#333539",
+                        "on-primary-fixed": "#002022",
+                        "surface-dim": "#111317",
+                        "surface-container-highest": "#333539",
+                        "surface-bright": "#37393e",
+                        "tertiary": "#d8ffe7",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#006d4a",
+                        "on-secondary-fixed": "#23005c",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "on-tertiary-fixed": "#002113",
+                        "on-secondary-container": "#c4abff",
+                        "surface-container-high": "#282a2e",
+                        "primary-fixed": "#7df4ff",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-primary": "#00363a",
+                        "on-tertiary": "#003824",
+                        "inverse-on-surface": "#2f3035",
+                        "on-error-container": "#ffdad6",
+                        "secondary": "#d0bcff",
+                        "outline-variant": "#3b494b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-desktop": "32px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "base": "4px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "margin-mobile": "16px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "mono-code": ["JetBrains Mono"],
+                        "headline-lg": ["Geist"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Geist"],
+                        "headline-lg-mobile": ["Geist"],
+                        "mono-label": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "mono-code": ["13px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "mono-label": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-sm selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation Bar (Shared Component: TopAppBar) -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface/60 dark:bg-surface/60 backdrop-blur-xl border-b border-outline-variant">
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-primary dark:text-primary-fixed hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-150">menu</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed tracking-tight">TeknoAkış</h1>
+</div>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-primary dark:text-primary-fixed hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-150">search</button>
+</div>
+</header>
+<main class="pt-16 pb-24 max-w-4xl mx-auto px-margin-mobile">
+<!-- Profile Header Section -->
+<section class="mt-lg flex flex-col items-center md:items-start md:flex-row gap-lg">
+<div class="relative">
+<div class="w-24 h-24 md:w-32 md:h-32 rounded-full border-2 border-primary overflow-hidden bg-surface-container-high p-1">
+<img class="w-full h-full object-cover rounded-full" data-alt="Professional studio portrait of a high-tech software architect with short hair, wearing a minimalist black techwear jacket. The background is a dimly lit server room with soft blue neon atmospheric lighting. The photo has a sharp, cinematic digital quality with high contrast and sophisticated tech-minimalist aesthetic, perfectly aligned with a premium developer social network." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsVEBOkd_5Lm52xMK5Xs2GMQf45oilGVDdJerFgby_HSfKXZtjjb2Inlgjtk918RQCOHeVvTZWTmNSEbVUseOxH5RfylV4us3LDVu3Voy8Nx0Qjw5tYAxgMgubUYHZcOFyf7p2QacFg3U82SbnKvwvqi2VVuFkK75pjERZK2czTY7CQDSLYs-U3514OXbirb9Ql_eDvBIr9a6N3W6Kl3UPu9GkZqXeP3gJFf1AbvnCZccayLrErN4_QeDFsTz3ebu-41QaPosYjk4"/>
+</div>
+<div class="absolute bottom-1 right-1 w-6 h-6 bg-tertiary-fixed-dim rounded-full flex items-center justify-center border-2 border-background">
+<span class="material-symbols-outlined text-[14px] text-on-tertiary font-bold">verified</span>
+</div>
+</div>
+<div class="flex-1 text-center md:text-left">
+<div class="flex flex-col md:flex-row md:items-center gap-sm mb-base">
+<h2 class="font-headline-md text-headline-md text-on-surface">TeknoKullanıcı</h2>
+<span class="font-mono-label text-mono-label text-on-surface-variant">@dev_expert</span>
+<button class="ml-auto hidden md:block px-md py-xs bg-primary text-on-primary font-mono-label rounded-lg hover:opacity-90 active:scale-95 transition-all">
+                        Profili Düzenle
+                    </button>
+</div>
+<p class="font-body-sm text-on-surface-variant mb-md max-w-lg">
+                    Level 42 Architect. Full-stack developer specializing in AI infrastructure and high-performance hardware systems. Always building the future.
+                </p>
+<div class="flex flex-wrap gap-xs justify-center md:justify-start">
+<span class="px-sm py-[2px] bg-surface-variant text-primary-fixed-dim font-mono-label rounded border border-outline-variant">Yapay Zeka</span>
+<span class="px-sm py-[2px] bg-surface-variant text-primary-fixed-dim font-mono-label rounded border border-outline-variant">GitHub</span>
+<span class="px-sm py-[2px] bg-surface-variant text-primary-fixed-dim font-mono-label rounded border border-outline-variant">Donanım</span>
+<span class="px-sm py-[2px] bg-surface-variant text-primary-fixed-dim font-mono-label rounded border border-outline-variant">Rust</span>
+</div>
+</div>
+</section>
+<!-- Stats Grid -->
+<section class="mt-xl grid grid-cols-3 gap-gutter py-md border-y border-outline-variant">
+<div class="flex flex-col items-center">
+<span class="font-headline-md text-on-surface">128</span>
+<span class="font-mono-label text-on-surface-variant uppercase tracking-widest text-[10px]">Paylaşımlar</span>
+</div>
+<div class="flex flex-col items-center border-x border-outline-variant">
+<span class="font-headline-md text-on-surface">2.4k</span>
+<span class="font-mono-label text-on-surface-variant uppercase tracking-widest text-[10px]">Takipçi</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-headline-md text-on-surface">450</span>
+<span class="font-mono-label text-on-surface-variant uppercase tracking-widest text-[10px]">Takip Edilen</span>
+</div>
+</section>
+<!-- Tabs Section -->
+<nav class="mt-lg flex justify-around items-center border-b border-outline-variant">
+<button class="flex flex-col items-center pb-md px-md group">
+<span class="font-mono-label text-on-surface-variant group-hover:text-primary transition-colors">Gönderilerim</span>
+<div class="h-[2px] w-0 bg-primary group-hover:w-full transition-all duration-300"></div>
+</button>
+<button class="flex flex-col items-center pb-md px-md relative">
+<span class="font-mono-label text-primary font-bold">Kaydedilenler</span>
+<div class="absolute bottom-0 h-[2px] w-full bg-primary shadow-[0_-4px_10px_rgba(0,219,233,0.3)]"></div>
+</button>
+<button class="flex flex-col items-center pb-md px-md group">
+<span class="font-mono-label text-on-surface-variant group-hover:text-primary transition-colors">Koleksiyonlar</span>
+<div class="h-[2px] w-0 bg-primary group-hover:w-full transition-all duration-300"></div>
+</button>
+</nav>
+<!-- Content Area: Saved Items -->
+<div class="mt-lg grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- GitHub Card (High-End Technical Pattern) -->
+<div class="bg-surface-container border border-outline-variant rounded-xl p-md group hover:border-primary-fixed transition-colors duration-300">
+<div class="flex justify-between items-start mb-sm">
+<span class="material-symbols-outlined text-primary-fixed-dim">terminal</span>
+<span class="font-mono-label text-tertiary-fixed-dim bg-on-tertiary-fixed-variant/20 px-sm py-xs rounded">Public</span>
+</div>
+<h3 class="font-headline-md text-on-surface mb-xs group-hover:text-primary transition-colors">hyper-core-engine</h3>
+<p class="font-body-sm text-on-surface-variant mb-md line-clamp-2">A high-performance asynchronous runtime for distributed systems written in Rust.</p>
+<div class="flex flex-wrap gap-xs mb-md">
+<div class="flex items-center gap-[4px] px-sm py-1 bg-surface-variant rounded">
+<span class="material-symbols-outlined text-[14px] text-tertiary">star</span>
+<span class="font-mono-label text-tertiary">12.4k</span>
+</div>
+<div class="flex items-center gap-[4px] px-sm py-1 bg-surface-variant rounded">
+<span class="w-2 h-2 rounded-full bg-orange-500"></span>
+<span class="font-mono-label">Rust</span>
+</div>
+<div class="flex items-center gap-[4px] px-sm py-1 bg-surface-variant rounded">
+<span class="material-symbols-outlined text-[14px]">balance</span>
+<span class="font-mono-label">MIT</span>
+</div>
+</div>
+<!-- Technical Sparkline Visual -->
+<div class="h-12 w-full flex items-end gap-[2px] opacity-40 group-hover:opacity-100 transition-opacity">
+<div class="bg-primary flex-1 h-1/4 rounded-t-sm"></div>
+<div class="bg-primary flex-1 h-1/2 rounded-t-sm"></div>
+<div class="bg-primary flex-1 h-3/4 rounded-t-sm"></div>
+<div class="bg-primary flex-1 h-full rounded-t-sm"></div>
+<div class="bg-primary flex-1 h-2/3 rounded-t-sm"></div>
+<div class="bg-primary flex-1 h-1/2 rounded-t-sm"></div>
+<div class="bg-primary flex-1 h-3/4 rounded-t-sm"></div>
+<div class="bg-primary flex-1 h-5/6 rounded-t-sm"></div>
+<div class="bg-primary flex-1 h-full rounded-t-sm"></div>
+<div class="bg-primary flex-1 h-1/3 rounded-t-sm"></div>
+</div>
+</div>
+<!-- AI Model Card -->
+<div class="bg-surface-container border border-outline-variant rounded-xl p-md group hover:border-primary-fixed transition-colors duration-300">
+<div class="flex justify-between items-start mb-sm">
+<span class="material-symbols-outlined text-primary-fixed-dim">psychology</span>
+<div class="flex gap-xs">
+<span class="font-mono-label bg-secondary-container text-on-secondary-container px-sm py-xs rounded">LLM</span>
+<span class="font-mono-label bg-surface-variant text-on-surface-variant px-sm py-xs rounded">v2.4.1</span>
+</div>
+</div>
+<h3 class="font-headline-md text-on-surface mb-xs group-hover:text-primary transition-colors">NeuralNexus-70B</h3>
+<p class="font-body-sm text-on-surface-variant mb-md">Advanced reasoning model optimized for code generation and mathematical proofing.</p>
+<div class="space-y-sm">
+<div class="flex justify-between items-center text-mono-label font-mono-label">
+<span class="text-on-surface-variant">Provider</span>
+<span class="text-primary-fixed">HuggingFace / Meta</span>
+</div>
+<div class="flex justify-between items-center text-mono-label font-mono-label">
+<span class="text-on-surface-variant">Context Length</span>
+<span class="text-on-surface">128k tokens</span>
+</div>
+<div class="flex justify-between items-center text-mono-label font-mono-label">
+<span class="text-on-surface-variant">Inference Latency</span>
+<span class="text-tertiary-fixed-dim">12ms/tok</span>
+</div>
+</div>
+<div class="mt-md pt-md border-t border-outline-variant flex gap-sm">
+<button class="flex-1 py-xs border border-outline-variant text-on-surface font-mono-label rounded hover:bg-surface-variant transition-colors">Details</button>
+<button class="flex-1 py-xs bg-primary text-on-primary font-mono-label rounded hover:opacity-90">Test Model</button>
+</div>
+</div>
+<!-- Research Paper Card -->
+<div class="bg-surface-container border border-outline-variant rounded-xl p-md group hover:border-primary-fixed transition-colors duration-300 md:col-span-2">
+<div class="flex gap-md">
+<div class="w-16 h-20 bg-surface-container-highest border border-outline-variant flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-outline">description</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<span class="font-mono-label text-tertiary bg-on-tertiary-fixed-variant/20 px-sm py-[2px] rounded mb-sm">Peer Reviewed</span>
+<span class="font-mono-label text-on-surface-variant">arXiv:2403.123</span>
+</div>
+<h3 class="font-headline-md text-on-surface group-hover:text-primary transition-colors">Quantum Decoherence in Silicon-Based Architectures</h3>
+<p class="font-body-sm text-on-surface-variant mt-sm">Exploring the limits of classical computing within the 2nm transistor threshold and potential mitigations using quantum tunneling suppression.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Shared Component: BottomNavBar) -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-margin-mobile py-sm pb-safe bg-surface/60 dark:bg-surface/60 backdrop-blur-xl border-t border-outline-variant">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-mono-label text-mono-label">Ana Sayfa</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-mono-label text-mono-label">Keşfet</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-mono-label text-mono-label">Paylaş</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-mono-label text-mono-label">Bildirimler</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed font-bold active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-mono-label text-mono-label">Profil</span>
+</a>
+</nav>
+<script>
+        // Simple logic for tab switching simulation
+        const tabs = document.querySelectorAll('nav button');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Logic can be added here for dynamic tab content switching
+                console.log('Tab clicked:', tab.innerText.trim());
+            });
+        });
+    </script>
+</body></html>

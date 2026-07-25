@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=390, height=844, initial-scale=1.0" name="viewport"/>
+<title>Oturum Süresi Doldu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Inter:wght@400&amp;family=Geist:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed": "#6ffbbe",
+                      "on-secondary": "#3c0091",
+                      "on-tertiary-fixed": "#002113",
+                      "surface-container-low": "#1a1c20",
+                      "primary-fixed-dim": "#00dbe9",
+                      "on-primary-container": "#006970",
+                      "inverse-surface": "#e2e2e8",
+                      "on-primary": "#00363a",
+                      "secondary-container": "#571bc1",
+                      "surface-container": "#1e2024",
+                      "on-tertiary-fixed-variant": "#005236",
+                      "tertiary-fixed-dim": "#4edea3",
+                      "on-tertiary": "#003824",
+                      "on-secondary-fixed": "#23005c",
+                      "secondary": "#d0bcff",
+                      "on-surface-variant": "#b9cacb",
+                      "on-error": "#690005",
+                      "tertiary": "#d8ffe7",
+                      "surface-container-highest": "#333539",
+                      "on-secondary-container": "#c4abff",
+                      "on-surface": "#e2e2e8",
+                      "surface-variant": "#333539",
+                      "secondary-fixed": "#e9ddff",
+                      "inverse-on-surface": "#2f3035",
+                      "primary-container": "#00f0ff",
+                      "inverse-primary": "#006970",
+                      "surface": "#111317",
+                      "outline": "#849495",
+                      "primary-fixed": "#7df4ff",
+                      "on-primary-fixed-variant": "#004f54",
+                      "error": "#ffb4ab",
+                      "tertiary-container": "#65f2b5",
+                      "secondary-fixed-dim": "#d0bcff",
+                      "on-background": "#e2e2e8",
+                      "on-error-container": "#ffdad6",
+                      "surface-dim": "#111317",
+                      "error-container": "#93000a",
+                      "surface-container-high": "#282a2e",
+                      "surface-tint": "#00dbe9",
+                      "outline-variant": "#3b494b",
+                      "on-primary-fixed": "#002022",
+                      "background": "#111317",
+                      "surface-container-lowest": "#0c0e12",
+                      "primary": "#dbfcff",
+                      "on-tertiary-container": "#006d4a",
+                      "surface-bright": "#37393e",
+                      "on-secondary-fixed-variant": "#5516be"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "xs": "4px",
+                      "margin-desktop": "32px",
+                      "gutter": "16px",
+                      "lg": "24px",
+                      "xl": "32px",
+                      "margin-mobile": "16px",
+                      "sm": "8px",
+                      "base": "4px"
+              },
+              "fontFamily": {
+                      "mono-code": [
+                              "JetBrains Mono"
+                      ],
+                      "mono-label": [
+                              "JetBrains Mono"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Geist"
+                      ],
+                      "headline-lg-mobile": [
+                              "Geist"
+                      ],
+                      "headline-md": [
+                              "Geist"
+                      ]
+              },
+              "fontSize": {
+                      "mono-code": [
+                              "13px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "mono-label": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface min-h-screen w-full flex flex-col items-center justify-center relative overflow-hidden" style="width: 390px; height: 844px; margin: 0 auto;">
+<!-- Background Grid Pattern -->
+<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, #3b494b 1px, transparent 0); background-size: 24px 24px;"></div>
+<!-- Central Content Container -->
+<div class="z-10 flex flex-col items-center justify-center p-margin-mobile w-full max-w-[390px]">
+<!-- Animated Lock Icon Container -->
+<div class="relative w-32 h-32 mb-xl flex items-center justify-center">
+<!-- Glowing ring -->
+<div class="absolute inset-0 rounded-full border border-primary-fixed-dim/30 shadow-[0_0_20px_rgba(0,219,233,0.1)] animate-pulse"></div>
+<!-- Inner ring -->
+<div class="absolute inset-2 rounded-full border border-primary-fixed-dim/10 animate-[spin_10s_linear_infinite]"></div>
+<div class="bg-surface-container-low p-md rounded-full border border-outline-variant/30 flex items-center justify-center z-10 relative overflow-hidden">
+<span class="material-symbols-outlined text-[48px] text-primary-fixed-dim" style="font-variation-settings: 'FILL' 1;">
+                    lock_reset
+                </span>
+</div>
+<!-- Technical embellishments -->
+<div class="absolute -top-2 -right-2 bg-surface text-primary-fixed-dim px-1 font-mono-code text-[10px] border border-primary-fixed-dim/30">
+                0xTIMEOUT
+            </div>
+</div>
+<!-- Typography -->
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary-fixed-dim mb-md text-center tracking-tighter">
+            Oturumun Sona Erdi
+        </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant text-center mb-xl max-w-xs">
+            Güvenlik nedeniyle oturumun sona erdi. Lütfen tekrar giriş yap.
+        </p>
+<!-- Action Area -->
+<div class="w-full flex flex-col gap-md mt-xl">
+<!-- Primary Action -->
+<button class="w-full bg-primary-fixed-dim text-on-primary-fixed font-mono-label text-mono-label py-md px-lg rounded-DEFAULT hover:bg-primary-fixed transition-colors active:scale-[0.98] border-none outline-none flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined text-[18px]">login</span>
+                Tekrar Giriş Yap
+            </button>
+<!-- Secondary Action -->
+<button class="w-full bg-transparent text-primary-fixed-dim font-mono-label text-mono-label py-sm px-lg rounded-DEFAULT hover:bg-surface-container-low transition-colors active:scale-[0.98] border border-transparent hover:border-outline-variant/30 flex items-center justify-center gap-sm mt-sm">
+                Misafir Olarak Devam Et
+                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<!-- System Status Footer -->
+<div class="absolute bottom-margin-mobile left-margin-mobile right-margin-mobile flex justify-between items-center border-t border-outline-variant/30 pt-sm mt-xl">
+<span class="font-mono-code text-mono-code text-on-surface-variant/50 text-[10px]">SYS.STATE: EXP</span>
+<span class="font-mono-code text-mono-code text-on-surface-variant/50 text-[10px]">TeknoAkış_V2.4</span>
+</div>
+</div>
+</body></html>

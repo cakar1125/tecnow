@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Model Details - TeknoAkış</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Geist:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#690005",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-tint": "#00dbe9",
+                        "primary-fixed": "#7df4ff",
+                        "surface-container-highest": "#333539",
+                        "on-primary-fixed-variant": "#004f54",
+                        "surface": "#111317",
+                        "tertiary-fixed": "#6ffbbe",
+                        "surface-container": "#1e2024",
+                        "tertiary": "#d8ffe7",
+                        "surface-bright": "#37393e",
+                        "on-secondary-fixed": "#23005c",
+                        "outline": "#849495",
+                        "surface-dim": "#111317",
+                        "secondary-container": "#571bc1",
+                        "error-container": "#93000a",
+                        "on-tertiary": "#003824",
+                        "error": "#ffb4ab",
+                        "background": "#111317",
+                        "surface-container-high": "#282a2e",
+                        "tertiary-container": "#65f2b5",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "surface-container-lowest": "#0c0e12",
+                        "on-secondary-container": "#c4abff",
+                        "on-secondary": "#3c0091",
+                        "surface-container-low": "#1a1c20",
+                        "on-primary-container": "#006970",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "on-tertiary-fixed": "#002113",
+                        "primary-container": "#00f0ff",
+                        "inverse-surface": "#e2e2e8",
+                        "on-background": "#e2e2e8",
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#3b494b",
+                        "secondary-fixed": "#e9ddff",
+                        "on-tertiary-container": "#006d4a",
+                        "primary": "#dbfcff",
+                        "on-primary": "#00363a",
+                        "primary-fixed-dim": "#00dbe9",
+                        "surface-variant": "#333539",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "on-primary-fixed": "#002022",
+                        "inverse-primary": "#006970",
+                        "inverse-on-surface": "#2f3035",
+                        "secondary": "#d0bcff",
+                        "on-surface": "#e2e2e8",
+                        "on-surface-variant": "#b9cacb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "margin-desktop": "32px",
+                        "lg": "24px",
+                        "md": "16px",
+                        "base": "4px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "mono-code": ["JetBrains Mono"],
+                        "mono-label": ["JetBrains Mono"],
+                        "headline-md": ["Geist"],
+                        "headline-lg": ["Geist"],
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Geist"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "mono-code": ["13px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "mono-label": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-md": ["20px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #0c0e12; color: #e2e2e8; }
+        .glass-panel { background: rgba(26, 28, 32, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid #2d3139; }
+        .tech-card { border: 1px solid #2d3139; transition: all 0.3s ease; }
+        .tech-card:hover { border-color: #00dbe9; box-shadow: 0 0 15px rgba(0, 219, 233, 0.1); }
+        .grid-bg { background-image: linear-gradient(to right, #1e2024 1px, transparent 1px), linear-gradient(to bottom, #1e2024 1px, transparent 1px); background-size: 24px 24px; }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0c0e12; }
+        ::-webkit-scrollbar-thumb { background: #333539; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00dbe9; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface font-body-sm min-h-screen flex flex-col relative grid-bg">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface/60 backdrop-blur-xl border-b border-outline-variant">
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary tracking-tight">TeknoAkış</h1>
+</div>
+<div class="flex items-center gap-sm">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-sm">
+<span class="material-symbols-outlined">share</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors p-sm">
+<span class="material-symbols-outlined">bookmark_border</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-[88px] pb-[88px] px-margin-mobile md:px-margin-desktop w-full max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-lg">
+<!-- Hero Section / Header -->
+<div class="md:col-span-12 flex flex-col gap-md mb-lg">
+<div class="flex items-center gap-sm">
+<span class="font-mono-label text-mono-label px-sm py-xs bg-surface-variant text-on-surface-variant rounded-DEFAULT border border-outline-variant">Google DeepMind</span>
+<span class="font-mono-label text-mono-label px-sm py-xs bg-tertiary-container/20 text-tertiary-fixed-dim rounded-DEFAULT border border-tertiary-fixed-dim/30">Stable Release</span>
+</div>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary-fixed">Gemini 1.5 Pro</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-3xl">Google'ın en gelişmiş ve yetenekli çok modlu yapay zeka modeli. Benzersiz 1 milyon tokenlık bağlam penceresi ile uzun metin, video ve ses verilerini işleyebilir.</p>
+<div class="flex flex-wrap gap-md mt-sm">
+<button class="bg-primary text-on-primary font-mono-label text-mono-label px-lg py-sm rounded-DEFAULT hover:bg-primary-fixed-dim transition-colors flex items-center gap-sm">
+<span class="material-symbols-outlined text-[16px]">open_in_new</span>
+                    API DÖKÜMANTASYONU
+                </button>
+<button class="border border-outline-variant text-on-surface font-mono-label text-mono-label px-lg py-sm rounded-DEFAULT hover:border-primary-fixed hover:text-primary-fixed transition-colors flex items-center gap-sm bg-surface-container">
+<span class="material-symbols-outlined text-[16px]">terminal</span>
+                    PLAYGROUND
+                </button>
+</div>
+</div>
+<!-- Left Column (Main Specs) -->
+<div class="md:col-span-8 flex flex-col gap-lg">
+<!-- Model Capabilities -->
+<section class="tech-card bg-surface-container p-md md:p-lg rounded-xl">
+<h3 class="font-headline-md text-headline-md text-primary mb-md border-b border-outline-variant pb-sm">Model Ne Yapıyor?</h3>
+<p class="text-on-surface-variant mb-md">Gemini 1.5 Pro, MoE (Mixture-of-Experts) mimarisi üzerine kurulu devrim niteliğinde bir modeldir. Standart modellere kıyasla çok daha verimli çalışarak karmaşık görevleri üstün performansla yerine getirir. Sadece metin değil, yerleşik olarak ses, görsel ve kod verilerini anlayıp işleyebilir.</p>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-sm">
+<div class="bg-surface-container-high p-sm rounded-DEFAULT border border-outline-variant flex flex-col items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-primary-fixed" data-weight="fill">description</span>
+<span class="font-mono-label text-mono-label text-on-surface">Metin (1M Token)</span>
+</div>
+<div class="bg-surface-container-high p-sm rounded-DEFAULT border border-outline-variant flex flex-col items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-tertiary-fixed-dim" data-weight="fill">image</span>
+<span class="font-mono-label text-mono-label text-on-surface">Görsel İşleme</span>
+</div>
+<div class="bg-surface-container-high p-sm rounded-DEFAULT border border-outline-variant flex flex-col items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-surface-tint" data-weight="fill">smart_display</span>
+<span class="font-mono-label text-mono-label text-on-surface">Video Analizi</span>
+</div>
+<div class="bg-surface-container-high p-sm rounded-DEFAULT border border-outline-variant flex flex-col items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-secondary-fixed-dim" data-weight="fill">code</span>
+<span class="font-mono-label text-mono-label text-on-surface">Kod Üretimi</span>
+</div>
+</div>
+</section>
+<!-- Diff / Changes -->
+<section class="tech-card bg-surface-container p-md md:p-lg rounded-xl">
+<h3 class="font-headline-md text-headline-md text-primary mb-md border-b border-outline-variant pb-sm">Önceki Sürümden Farkları (v1.0 vs v1.5)</h3>
+<div class="bg-black rounded-lg p-md font-mono-code text-mono-code overflow-x-auto border border-outline-variant">
+<div class="text-error-container mb-1">- Model Mimarisi: Standart Transformer</div>
+<div class="text-tertiary-fixed-dim mb-3">+ Model Mimarisi: Sparse Mixture-of-Experts (MoE)</div>
+<div class="text-error-container mb-1">- Bağlam Penceresi: 32K Token</div>
+<div class="text-tertiary-fixed-dim mb-3">+ Bağlam Penceresi: 1.000.000 Token (Üretime Hazır)</div>
+<div class="text-error-container mb-1">- Multimodalite: Ayrı modellerin birleşimi (Kısmi)</div>
+<div class="text-tertiary-fixed-dim mb-1">+ Multimodalite: Yerel, baştan sona çok modlu (Ses, Video, Metin)</div>
+</div>
+</section>
+<!-- Use Cases Bento Grid -->
+<section class="tech-card bg-surface-container p-md md:p-lg rounded-xl">
+<h3 class="font-headline-md text-headline-md text-primary mb-md border-b border-outline-variant pb-sm">Kullanım Alanları</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="bg-surface-container-high p-md rounded-lg border border-outline-variant hover:border-primary-fixed/50 transition-colors">
+<div class="flex items-center gap-sm mb-sm text-primary-fixed">
+<span class="material-symbols-outlined">library_books</span>
+<h4 class="font-headline-md text-[16px]">Büyük Belge Analizi</h4>
+</div>
+<p class="text-on-surface-variant text-[13px]">Binlerce sayfalık PDF'leri, kitapları veya araştırma makalelerini tek bir komutla özetleme ve analiz etme.</p>
+</div>
+<div class="bg-surface-container-high p-md rounded-lg border border-outline-variant hover:border-tertiary-fixed-dim/50 transition-colors">
+<div class="flex items-center gap-sm mb-sm text-tertiary-fixed-dim">
+<span class="material-symbols-outlined">movie</span>
+<h4 class="font-headline-md text-[16px]">Uzun Video İşleme</h4>
+</div>
+<p class="text-on-surface-variant text-[13px]">1 saate kadar olan videoları yükleyip belirli sahneleri bulma veya içerik hakkında mantıksal çıkarımlar yapma.</p>
+</div>
+<div class="bg-surface-container-high p-md rounded-lg border border-outline-variant hover:border-secondary-fixed-dim/50 transition-colors">
+<div class="flex items-center gap-sm mb-sm text-secondary-fixed-dim">
+<span class="material-symbols-outlined">developer_mode</span>
+<h4 class="font-headline-md text-[16px]">Kod Tabanı İncelemesi</h4>
+</div>
+<p class="text-on-surface-variant text-[13px]">Bütün bir repoyu bağlama dahil ederek, hataları bulma, yeni özellikler önerme ve mimari analizi yapma.</p>
+</div>
+<div class="bg-surface-container-high p-md rounded-lg border border-outline-variant hover:border-surface-tint/50 transition-colors">
+<div class="flex items-center gap-sm mb-sm text-surface-tint">
+<span class="material-symbols-outlined">translate</span>
+<h4 class="font-headline-md text-[16px]">Kayıp Dil Çevirisi</h4>
+</div>
+<p class="text-on-surface-variant text-[13px]">Kalamang gibi kaynakları sınırlı dilleri, sadece referans belgeleri okuyarak sıfırdan öğrenme ve akıcı çeviri yapma.</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column (Sidebar / Benchmarks) -->
+<div class="md:col-span-4 flex flex-col gap-lg">
+<!-- Metadata Card -->
+<div class="tech-card bg-surface-container p-md rounded-xl border border-outline-variant">
+<h4 class="font-mono-label text-mono-label text-on-surface-variant mb-sm uppercase tracking-wider">Model Meta Verileri</h4>
+<div class="flex flex-col gap-sm">
+<div class="flex justify-between items-center py-xs border-b border-outline-variant/50">
+<span class="text-on-surface-variant text-[13px]">Lisans</span>
+<span class="font-mono-code text-mono-code text-on-surface">Proprietary</span>
+</div>
+<div class="flex justify-between items-center py-xs border-b border-outline-variant/50">
+<span class="text-on-surface-variant text-[13px]">Erişim</span>
+<span class="font-mono-code text-mono-code text-on-surface">API / Web</span>
+</div>
+<div class="flex justify-between items-center py-xs border-b border-outline-variant/50">
+<span class="text-on-surface-variant text-[13px]">Parametre</span>
+<span class="font-mono-code text-mono-code text-on-surface">Bilinmiyor (MoE)</span>
+</div>
+<div class="flex justify-between items-center py-xs">
+<span class="text-on-surface-variant text-[13px]">Bağlam</span>
+<span class="font-mono-code text-mono-code text-tertiary-fixed-dim">1,000,000 Token</span>
+</div>
+</div>
+</div>
+<!-- Benchmarks -->
+<div class="tech-card bg-surface-container p-md rounded-xl border border-outline-variant">
+<div class="flex justify-between items-center mb-md border-b border-outline-variant pb-sm">
+<h4 class="font-headline-md text-[16px] text-primary">Benchmark Sonuçları</h4>
+<span class="font-mono-label text-[10px] text-on-surface-variant">v1.0 Pro'ya Karşı</span>
+</div>
+<div class="flex flex-col gap-md">
+<!-- Bench Item -->
+<div>
+<div class="flex justify-between items-end mb-xs">
+<span class="font-mono-label text-mono-label text-on-surface">MMLU (Genel Bilgi)</span>
+<span class="font-mono-code text-mono-code text-tertiary-fixed-dim">81.9%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden">
+<div class="bg-tertiary-fixed-dim h-full w-[81.9%] rounded-full"></div>
+</div>
+</div>
+<!-- Bench Item -->
+<div>
+<div class="flex justify-between items-end mb-xs">
+<span class="font-mono-label text-mono-label text-on-surface">HumanEval (Kodlama)</span>
+<span class="font-mono-code text-mono-code text-surface-tint">84.1%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden">
+<div class="bg-surface-tint h-full w-[84.1%] rounded-full"></div>
+</div>
+</div>
+<!-- Bench Item -->
+<div>
+<div class="flex justify-between items-end mb-xs">
+<span class="font-mono-label text-mono-label text-on-surface">GSM8K (Matematik)</span>
+<span class="font-mono-code text-mono-code text-secondary-fixed-dim">91.7%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden">
+<div class="bg-secondary-fixed-dim h-full w-[91.7%] rounded-full"></div>
+</div>
+</div>
+<!-- Bench Item -->
+<div>
+<div class="flex justify-between items-end mb-xs">
+<span class="font-mono-label text-mono-label text-on-surface">NIAH (Bağlamda Arama)</span>
+<span class="font-mono-code text-mono-code text-primary-fixed">99.0%</span>
+</div>
+<div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden">
+<div class="bg-primary-fixed h-full w-[99.0%] rounded-full shadow-[0_0_8px_rgba(125,244,255,0.5)]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Follow Action -->
+<button class="w-full bg-surface-container-high border border-outline-variant text-on-surface font-mono-label text-mono-label py-md rounded-xl hover:border-primary-fixed hover:text-primary-fixed transition-colors flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined">notifications_active</span>
+                GÜNCELLEMELERİ TAKİP ET
+            </button>
+</div>
+</main>
+</body></html>

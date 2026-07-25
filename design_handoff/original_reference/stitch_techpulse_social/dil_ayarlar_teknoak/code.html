@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Dil Ayarları - TeknoAkış</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=Inter:wght@400;500&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary": "#d8ffe7",
+                        "surface-variant": "#333539",
+                        "surface-bright": "#37393e",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "on-primary-fixed": "#002022",
+                        "secondary-container": "#571bc1",
+                        "primary-fixed": "#7df4ff",
+                        "on-surface-variant": "#b9cacb",
+                        "surface": "#111317",
+                        "error": "#ffb4ab",
+                        "primary": "#dbfcff",
+                        "tertiary-fixed": "#6ffbbe",
+                        "surface-container-low": "#1a1c20",
+                        "surface-container": "#1e2024",
+                        "on-primary": "#00363a",
+                        "tertiary-container": "#65f2b5",
+                        "surface-container-highest": "#333539",
+                        "primary-fixed-dim": "#00dbe9",
+                        "outline-variant": "#3b494b",
+                        "primary-container": "#00f0ff",
+                        "outline": "#849495",
+                        "on-tertiary-fixed": "#002113",
+                        "on-secondary-container": "#c4abff",
+                        "background": "#111317",
+                        "on-tertiary": "#003824",
+                        "on-secondary-fixed": "#23005c",
+                        "on-tertiary-container": "#006d4a",
+                        "surface-tint": "#00dbe9",
+                        "on-error": "#690005",
+                        "surface-container-lowest": "#0c0e12",
+                        "secondary-fixed": "#e9ddff",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-surface": "#e2e2e8",
+                        "secondary": "#d0bcff",
+                        "inverse-surface": "#e2e2e8",
+                        "surface-dim": "#111317",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "on-primary-container": "#006970",
+                        "error-container": "#93000a",
+                        "on-secondary": "#3c0091",
+                        "inverse-primary": "#006970",
+                        "inverse-on-surface": "#2f3035",
+                        "surface-container-high": "#282a2e",
+                        "on-background": "#e2e2e8",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#004f54"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    spacing: {
+                        "base": "4px",
+                        "xl": "32px",
+                        "margin-mobile": "16px",
+                        "gutter": "16px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "margin-desktop": "32px"
+                    },
+                    fontFamily: {
+                        "headline-lg": ["Geist"],
+                        "mono-code": ["JetBrains Mono"],
+                        "headline-md": ["Geist"],
+                        "headline-lg-mobile": ["Geist"],
+                        "mono-label": ["JetBrains Mono"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    fontSize: {
+                        "headline-lg": ["32px", { lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "mono-code": ["13px", { lineHeight: "1.5", fontWeight: "400" }],
+                        "headline-md": ["20px", { lineHeight: "1.3", fontWeight: "600" }],
+                        "headline-lg-mobile": ["24px", { lineHeight: "1.2", fontWeight: "700" }],
+                        "mono-label": ["12px", { lineHeight: "1.4", letterSpacing: "0.05em", fontWeight: "500" }],
+                        "body-sm": ["14px", { lineHeight: "1.5", fontWeight: "400" }],
+                        "body-lg": ["16px", { lineHeight: "1.6", fontWeight: "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Base styles to enforce mobile viewport for preview purposes */
+        body {
+            max-width: 390px;
+            height: 844px;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.1);
+        }
+        
+        .switch-toggle {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .switch-knob {
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .switch-active .switch-toggle {
+            background-color: theme('colors.primary-container');
+        }
+        
+        .switch-active .switch-knob {
+            transform: translateX(16px);
+            background-color: theme('colors.on-primary-container');
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface flex flex-col font-body-sm overflow-hidden">
+<!-- Top App Bar (Task-Focused: No global nav) -->
+<header class="h-16 flex items-center px-margin-mobile border-b border-outline-variant bg-surface-container-lowest/80 backdrop-blur-md z-10 shrink-0">
+<button class="w-10 h-10 flex items-center justify-center rounded-full active:bg-surface-variant transition-colors -ml-2 group">
+<span class="material-symbols-outlined text-on-surface group-hover:text-primary-fixed transition-colors">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md ml-2 tracking-tight">Dil</h1>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 overflow-y-auto px-margin-mobile py-lg pb-32">
+<!-- Section: Uygulama Dili -->
+<section class="mb-lg">
+<h2 class="font-mono-label text-mono-label text-primary-fixed mb-sm uppercase">Uygulama Dili</h2>
+<div class="bg-surface-container rounded-xl border border-outline-variant overflow-hidden">
+<!-- Turkish Option (Selected) -->
+<button class="w-full flex items-center justify-between p-md border-b border-outline-variant bg-surface-variant/30 transition-colors active:bg-surface-variant/50">
+<span class="font-body-lg text-body-lg text-primary">Türkçe</span>
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</button>
+<!-- English Option (Coming Soon) -->
+<div class="w-full flex items-center justify-between p-md opacity-60">
+<span class="font-body-lg text-body-lg text-on-surface-variant">English</span>
+<span class="font-mono-label text-mono-label bg-surface-variant text-on-surface px-2 py-1 rounded-sm border border-outline-variant">Yakında</span>
+</div>
+</div>
+</section>
+<!-- Section: İçerik Tercihleri -->
+<section class="mb-lg">
+<h2 class="font-mono-label text-mono-label text-primary-fixed mb-sm uppercase">İçerik Tercihleri</h2>
+<div class="bg-surface-container rounded-xl border border-outline-variant overflow-hidden">
+<!-- Switch 1 -->
+<label class="flex items-center justify-between p-md border-b border-outline-variant cursor-pointer group hover:bg-surface-variant/20 transition-colors">
+<span class="font-body-lg text-body-lg">Orijinal başlıkları göster</span>
+<div class="relative w-10 h-6 bg-surface-variant rounded-full switch-toggle border border-outline-variant">
+<div class="absolute top-1 left-1 w-4 h-4 bg-on-surface-variant rounded-full switch-knob shadow-sm"></div>
+</div>
+</label>
+<!-- Switch 2 (Active state demo) -->
+<label class="flex items-center justify-between p-md cursor-pointer group hover:bg-surface-variant/20 transition-colors switch-active">
+<span class="font-body-lg text-body-lg">Otomatik Türkçe özetle</span>
+<div class="relative w-10 h-6 bg-surface-variant rounded-full switch-toggle border border-primary-fixed-dim/30">
+<div class="absolute top-1 left-1 w-4 h-4 bg-on-surface-variant rounded-full switch-knob shadow-sm"></div>
+</div>
+</label>
+</div>
+</section>
+<!-- Explanation Text -->
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Otomatik çeviri ve özetleme özellikleri cihazınızın işlem gücünü kullanarak yerel AI modelleri üzerinden çalışır. Orijinal içerikleri görmek, teknik terimlerin bağlamını korumak için önerilir.
+        </p>
+</main>
+<!-- Bottom Action Bar (Fixed relative to the container) -->
+<div class="absolute bottom-0 w-full px-margin-mobile py-md pb-safe bg-surface-container-lowest/90 backdrop-blur-xl border-t border-outline-variant z-20">
+<button class="w-full bg-primary-container text-on-primary-container font-mono-label text-mono-label py-4 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-[0_0_15px_rgba(0,240,255,0.1)]">
+<span class="material-symbols-outlined text-[18px]">save</span>
+            Değişiklikleri Kaydet
+        </button>
+</div>
+<script>
+        // Simple toggle logic for the presentation
+        document.querySelectorAll('label').forEach(label => {
+            label.addEventListener('click', function(e) {
+                // Prevent default label click behavior triggering multiple times if there were an actual input inside
+                e.preventDefault(); 
+                this.classList.toggle('switch-active');
+                
+                // Toggle visual border color for active state
+                const toggle = this.querySelector('.switch-toggle');
+                if(this.classList.contains('switch-active')) {
+                    toggle.classList.remove('border-outline-variant');
+                    toggle.classList.add('border-primary-fixed-dim/30');
+                } else {
+                    toggle.classList.add('border-outline-variant');
+                    toggle.classList.remove('border-primary-fixed-dim/30');
+                }
+            });
+        });
+    </script>
+</body></html>

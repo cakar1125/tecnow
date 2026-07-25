@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Model Comparison - TeknoAkış</title>
+<!-- Google Fonts & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#0c0e12",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "on-primary-fixed-variant": "#004f54",
+                        "tertiary-fixed": "#6ffbbe",
+                        "outline": "#849495",
+                        "inverse-primary": "#006970",
+                        "on-secondary-fixed": "#23005c",
+                        "on-background": "#e2e2e8",
+                        "on-secondary-container": "#c4abff",
+                        "on-error-container": "#ffdad6",
+                        "on-surface-variant": "#b9cacb",
+                        "surface-container-low": "#1a1c20",
+                        "surface-tint": "#00dbe9",
+                        "surface-container-high": "#282a2e",
+                        "on-secondary": "#3c0091",
+                        "surface-dim": "#111317",
+                        "surface-container-highest": "#333539",
+                        "on-surface": "#e2e2e8",
+                        "secondary": "#d0bcff",
+                        "on-tertiary-fixed": "#002113",
+                        "primary-container": "#00f0ff",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "on-primary": "#00363a",
+                        "on-error": "#690005",
+                        "on-tertiary": "#003824",
+                        "surface-container": "#1e2024",
+                        "primary-fixed-dim": "#00dbe9",
+                        "surface-variant": "#333539",
+                        "outline-variant": "#3b494b",
+                        "error-container": "#93000a",
+                        "primary": "#dbfcff",
+                        "secondary-container": "#571bc1",
+                        "background": "#111317",
+                        "tertiary": "#d8ffe7",
+                        "surface": "#111317",
+                        "on-primary-container": "#006970",
+                        "error": "#ffb4ab",
+                        "inverse-surface": "#e2e2e8",
+                        "tertiary-container": "#65f2b5",
+                        "primary-fixed": "#7df4ff",
+                        "surface-bright": "#37393e",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-tertiary-container": "#006d4a",
+                        "inverse-on-surface": "#2f3035",
+                        "on-primary-fixed": "#002022",
+                        "secondary-fixed": "#e9ddff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "margin-mobile": "16px",
+                        "md": "16px",
+                        "gutter": "16px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "margin-desktop": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Geist"],
+                        "body-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "mono-label": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Geist"],
+                        "mono-code": ["JetBrains Mono"],
+                        "headline-lg": ["Geist"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["20px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "mono-label": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "mono-code": ["13px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom thin scrollbar for a cleaner look */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333539; border-radius: 4px; }
+        
+        .bar-fill-cyan { background: linear-gradient(90deg, rgba(0,219,233,0.2) 0%, #00dbe9 100%); }
+        .bar-fill-purple { background: linear-gradient(90deg, rgba(208,188,255,0.2) 0%, #d0bcff 100%); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface font-body-lg antialiased selection:bg-primary-container selection:text-on-primary-container">
+<!-- Mobile TopAppBar -->
+<header class="md:hidden bg-surface/60 dark:bg-surface/60 backdrop-blur-xl border-b border-outline-variant fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16">
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 duration-150">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed tracking-tight">
+            TeknoAkış
+        </div>
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 duration-150">
+<span class="material-symbols-outlined">search</span>
+</button>
+</header>
+<!-- Desktop Navigation Drawer -->
+<nav class="hidden md:flex bg-surface-container dark:bg-surface-container border-r border-outline-variant h-full w-80 flex-col p-md fixed left-0 top-0 z-40 rounded-r-full">
+<div class="flex items-center gap-md mb-xl p-md">
+<div class="w-12 h-12 rounded-full bg-surface-variant overflow-hidden border border-outline">
+<img class="w-full h-full object-cover" data-alt="A futuristic, minimalist avatar featuring glowing cyan geometry against a deep black background, conveying a high-tech developer persona in a dark mode UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAs_QMhHgpGh6XCBZE9FaNho_uQnvNnykj8xbojftT0-GWekAGoUtbLnbbn3EA57ziYPMezesmN-7o_YDVUijxmcwjVPdgJaTjrSUSDgleVqaOGOQ-ajJXgv8wDx0YhjKDc5R-3b45nXIYl9e9mzoSq4inXlY4etvKF2XAZeJ3HhNDyK3kwn6FFqcnqjKB-uG_bo72DFz2Yj1xxCJSjvrS6cb2CpZ1-rBejXplOfjb3mYCQ5bpozbBpOgKHBVj_jEPHXhxolhLwIY"/>
+</div>
+<div>
+<div class="font-headline-md text-headline-md text-primary">TeknoKullanıcı</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">@dev_expert</div>
+<div class="font-mono-label text-mono-label text-surface-tint mt-1">Level 42 Architect</div>
+</div>
+</div>
+<div class="flex flex-col gap-sm flex-1">
+<a class="flex items-center gap-md p-md rounded-full text-on-surface-variant hover:bg-surface-variant transition-colors active:opacity-70 font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">terminal</span> GitHub
+            </a>
+<a class="flex items-center gap-md p-md bg-secondary-container text-on-secondary-container rounded-full active:opacity-70 font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">psychology</span> AI
+            </a>
+<a class="flex items-center gap-md p-md rounded-full text-on-surface-variant hover:bg-surface-variant transition-colors active:opacity-70 font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">science</span> Research
+            </a>
+<a class="flex items-center gap-md p-md rounded-full text-on-surface-variant hover:bg-surface-variant transition-colors active:opacity-70 font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">settings_ethernet</span> Dev Tool
+            </a>
+<a class="flex items-center gap-md p-md rounded-full text-on-surface-variant hover:bg-surface-variant transition-colors active:opacity-70 font-body-sm text-body-sm" href="#">
+<span class="material-symbols-outlined">memory</span> Hardware
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="pt-20 pb-24 md:pt-margin-desktop md:pb-margin-desktop md:pl-[352px] px-margin-mobile md:pr-margin-desktop min-h-screen">
+<header class="mb-lg">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg mb-sm">Model Architecture Comparison</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-2xl">A high-level technical analysis of leading foundation models, focusing on context handling, architectural paradigms, and raw benchmark throughput.</p>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter lg:gap-lg">
+<!-- MODEL A: Gemini 1.5 Pro (Cyan Theme) -->
+<div class="flex flex-col gap-gutter bg-surface-container-low border border-outline-variant rounded-xl p-md lg:p-lg relative overflow-hidden group hover:border-primary-fixed-dim transition-colors">
+<!-- Subtle glow effect -->
+<div class="absolute -top-24 -right-24 w-48 h-48 bg-primary-fixed-dim/10 rounded-full blur-3xl group-hover:bg-primary-fixed-dim/20 transition-all duration-500 pointer-events-none"></div>
+<div class="flex justify-between items-start">
+<div>
+<div class="font-mono-label text-mono-label text-primary-fixed-dim mb-1">GOOGLE DEEPMIND</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Gemini 1.5 Pro</h2>
+</div>
+<span class="px-2 py-1 bg-primary-fixed-dim/10 text-primary-fixed-dim border border-primary-fixed-dim/30 rounded font-mono-label text-mono-label">v1.5-preview</span>
+</div>
+<div class="grid grid-cols-2 gap-sm mt-md">
+<div class="bg-surface-container rounded-lg p-sm border border-outline-variant/50">
+<div class="font-mono-label text-mono-label text-on-surface-variant mb-1">CONTEXT WINDOW</div>
+<div class="font-headline-md text-headline-md text-primary-fixed-dim">1M+ <span class="font-body-sm text-body-sm text-on-surface-variant">Tokens</span></div>
+</div>
+<div class="bg-surface-container rounded-lg p-sm border border-outline-variant/50">
+<div class="font-mono-label text-mono-label text-on-surface-variant mb-1">ARCHITECTURE</div>
+<div class="font-headline-md text-headline-md text-on-surface">MoE <span class="font-body-sm text-body-sm text-on-surface-variant">Sparse</span></div>
+</div>
+</div>
+<div class="mt-auto pt-md border-t border-outline-variant/50">
+<div class="font-body-sm text-body-sm text-on-surface-variant mb-sm">Key Technical Strength</div>
+<p class="font-body-sm text-body-sm">Unprecedented long-context recall via Ring Attention mechanisms, enabling seamless ingestion of entire codebases or lengthy video context.</p>
+</div>
+</div>
+<!-- MODEL B: GPT-4o (Purple Theme) -->
+<div class="flex flex-col gap-gutter bg-surface-container-low border border-outline-variant rounded-xl p-md lg:p-lg relative overflow-hidden group hover:border-secondary transition-colors">
+<!-- Subtle glow effect -->
+<div class="absolute -top-24 -left-24 w-48 h-48 bg-secondary/10 rounded-full blur-3xl group-hover:bg-secondary/20 transition-all duration-500 pointer-events-none"></div>
+<div class="flex justify-between items-start">
+<div>
+<div class="font-mono-label text-mono-label text-secondary mb-1">OPENAI</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">GPT-4o</h2>
+</div>
+<span class="px-2 py-1 bg-secondary/10 text-secondary border border-secondary/30 rounded font-mono-label text-mono-label">omni</span>
+</div>
+<div class="grid grid-cols-2 gap-sm mt-md">
+<div class="bg-surface-container rounded-lg p-sm border border-outline-variant/50">
+<div class="font-mono-label text-mono-label text-on-surface-variant mb-1">CONTEXT WINDOW</div>
+<div class="font-headline-md text-headline-md text-secondary">128k <span class="font-body-sm text-body-sm text-on-surface-variant">Tokens</span></div>
+</div>
+<div class="bg-surface-container rounded-lg p-sm border border-outline-variant/50">
+<div class="font-mono-label text-mono-label text-on-surface-variant mb-1">ARCHITECTURE</div>
+<div class="font-headline-md text-headline-md text-on-surface">Dense <span class="font-body-sm text-body-sm text-on-surface-variant">Multimodal</span></div>
+</div>
+</div>
+<div class="mt-auto pt-md border-t border-outline-variant/50">
+<div class="font-body-sm text-body-sm text-on-surface-variant mb-sm">Key Technical Strength</div>
+<p class="font-body-sm text-body-sm">Native end-to-end multimodal processing (audio/vision/text) within a single neural network, drastically reducing latency in cross-modal generation.</p>
+</div>
+</div>
+<!-- Full Width Benchmark Section -->
+<div class="lg:col-span-2 bg-surface-container-low border border-outline-variant rounded-xl p-md lg:p-lg">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-on-surface-variant">bar_chart</span>
+<h3 class="font-headline-md text-headline-md">Benchmark Telemetry</h3>
+</div>
+<div class="space-y-lg">
+<!-- MMLU Benchmark -->
+<div>
+<div class="flex justify-between items-end mb-sm">
+<div class="font-mono-label text-mono-label">MMLU (Massive Multitask Language Understanding)</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant">Zero-shot CoT</div>
+</div>
+<!-- Gemini Bar -->
+<div class="flex items-center gap-md mb-xs">
+<div class="w-16 font-mono-label text-mono-label text-primary-fixed-dim text-right">81.9%</div>
+<div class="flex-1 h-3 bg-surface-container-highest rounded-full overflow-hidden border border-outline-variant/30">
+<div class="h-full bar-fill-cyan rounded-r-full" style="width: 81.9%"></div>
+</div>
+</div>
+<!-- GPT-4o Bar -->
+<div class="flex items-center gap-md">
+<div class="w-16 font-mono-label text-mono-label text-secondary text-right">88.7%</div>
+<div class="flex-1 h-3 bg-surface-container-highest rounded-full overflow-hidden border border-outline-variant/30">
+<div class="h-full bar-fill-purple rounded-r-full" style="width: 88.7%"></div>
+</div>
+</div>
+</div>
+<!-- HumanEval Benchmark -->
+<div>
+<div class="flex justify-between items-end mb-sm">
+<div class="font-mono-label text-mono-label">HumanEval (Coding Proficiency)</div>
+<div class="font-mono-code text-mono-code text-on-surface-variant">Pass@1</div>
+</div>
+<!-- Gemini Bar -->
+<div class="flex items-center gap-md mb-xs">
+<div class="w-16 font-mono-label text-mono-label text-primary-fixed-dim text-right">84.1%</div>
+<div class="flex-1 h-3 bg-surface-container-highest rounded-full overflow-hidden border border-outline-variant/30">
+<div class="h-full bar-fill-cyan rounded-r-full" style="width: 84.1%"></div>
+</div>
+</div>
+<!-- GPT-4o Bar -->
+<div class="flex items-center gap-md">
+<div class="w-16 font-mono-label text-mono-label text-secondary text-right">90.2%</div>
+<div class="flex-1 h-3 bg-surface-container-highest rounded-full overflow-hidden border border-outline-variant/30">
+<div class="h-full bar-fill-purple rounded-r-full" style="width: 90.2%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Training Cutoff Info Block -->
+<div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-sm">
+<div class="flex items-center justify-between p-sm bg-surface-container border border-outline-variant rounded-lg">
+<span class="font-mono-label text-mono-label text-on-surface-variant">GEMINI KNOWLEDGE CUTOFF</span>
+<span class="font-mono-code text-mono-code text-primary-fixed-dim">Nov 2023 + Live Web</span>
+</div>
+<div class="flex items-center justify-between p-sm bg-surface-container border border-outline-variant rounded-lg">
+<span class="font-mono-label text-mono-label text-on-surface-variant">GPT-4O KNOWLEDGE CUTOFF</span>
+<span class="font-mono-code text-mono-code text-secondary">Oct 2023 + Live Web</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Mobile BottomNavBar -->
+<nav class="md:hidden bg-surface/60 dark:bg-surface/60 backdrop-blur-xl border-t border-outline-variant fixed bottom-0 w-full z-50 flex justify-around items-center px-margin-mobile py-sm pb-safe">
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined">home</span>
+<span class="font-mono-label text-mono-label">Ana Sayfa</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed font-bold hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-mono-label text-mono-label">Keşfet</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-mono-label text-mono-label">Paylaş</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-mono-label text-mono-label">Bildirimler</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined">person_outline</span>
+<span class="font-mono-label text-mono-label">Profil</span>
+</button>
+</nav>
+</body></html>

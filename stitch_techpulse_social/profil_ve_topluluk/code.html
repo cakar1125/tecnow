@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Profile - DevPulse</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#dbfcff",
+                        "surface-container-highest": "#333539",
+                        "on-primary": "#00363a",
+                        "secondary-container": "#7d01b1",
+                        "inverse-on-surface": "#2f3035",
+                        "tertiary": "#deffd6",
+                        "surface-container-low": "#1a1c20",
+                        "on-error-container": "#ffdad6",
+                        "surface-tint": "#00dbe9",
+                        "on-background": "#e2e2e8",
+                        "error-container": "#93000a",
+                        "on-primary-fixed": "#002022",
+                        "primary-fixed-dim": "#00dbe9",
+                        "error": "#ffb4ab",
+                        "on-secondary": "#510074",
+                        "surface-variant": "#333539",
+                        "tertiary-fixed-dim": "#42e355",
+                        "outline": "#849495",
+                        "secondary-fixed": "#f6d9ff",
+                        "on-tertiary": "#00390a",
+                        "surface-dim": "#111317",
+                        "background": "#111317",
+                        "surface-bright": "#37393e",
+                        "secondary-fixed-dim": "#e9b3ff",
+                        "tertiary-fixed": "#70ff76",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-secondary-fixed": "#310048",
+                        "surface-container-lowest": "#0c0e12",
+                        "tertiary-container": "#59f766",
+                        "on-secondary-container": "#e5a9ff",
+                        "on-error": "#690005",
+                        "surface": "#111317",
+                        "on-tertiary-container": "#006e1c",
+                        "primary-container": "#00f0ff",
+                        "primary-fixed": "#7df4ff",
+                        "on-surface-variant": "#b9cacb",
+                        "inverse-primary": "#006970",
+                        "on-primary-container": "#006970",
+                        "secondary": "#e9b3ff",
+                        "on-tertiary-fixed": "#002204",
+                        "outline-variant": "#3b494b",
+                        "surface-container": "#1e2024",
+                        "on-secondary-fixed-variant": "#7200a3",
+                        "on-tertiary-fixed-variant": "#005313",
+                        "surface-container-high": "#282a2e",
+                        "on-surface": "#e2e2e8",
+                        "inverse-surface": "#e2e2e8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "8px",
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "base-unit": "4px",
+                        "margin-mobile": "20px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Geist"],
+                        "body-sm": ["Inter"],
+                        "headline-xl": ["Geist"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Geist"],
+                        "code-snippet": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-caps": ["11px", { "lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "600" }],
+                        "code-snippet": ["13px", { "lineHeight": "20px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .glass-panel {
+            background: rgba(28, 30, 38, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .cyber-glow-active {
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.05);
+        }
+        
+        /* Hide scrollbar for tabs */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/70 backdrop-blur-xl border-b border-white/10 flex justify-between items-center px-margin-mobile h-16 md:hidden">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-highest border border-outline-variant">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A macro photography shot of a futuristic cyberpunk style avatar, glowing neon cyan and purple accents against a deep dark grey background. High contrast, sharp details, glossy metallic finish on a 3D rendered character headshot." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVrCNVD41y8sPzfB6S63Xeg44u_Xv-N492TKp4WcZe79dmUDU0rhPHT0par3EeAzdSCo6CzipOw5RmhvNUOeYli0_NmW59SogcC7htt9T_RTLJx4lRVkoEuDf12z1r_B4nXQBFV6_teo1dbJRw7s6hju-OZEU0tWGkaU6iSSPVmFPuvBiwnYsXnF3Qr8osHrVbwL_eRyjpC6vKL0ciS51IlzzOmqRh14qvstilXfwsDRN2mlK8Rl33m8hc27cOgDXq7LQ2lfu8WRo"/>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">DevPulse</h1>
+</div>
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 transition-transform flex items-center justify-center p-2 rounded-full">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-20 px-margin-mobile md:pt-12 md:px-8 max-w-5xl mx-auto flex flex-col gap-stack-lg">
+<!-- Profile Header Section -->
+<section class="flex flex-col gap-stack-md mt-4">
+<div class="flex flex-col md:flex-row gap-6 items-start md:items-center">
+<div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-2 border-primary/30 p-1 relative cyber-glow-active flex-shrink-0">
+<img alt="Alex Chen" class="w-full h-full rounded-full object-cover" data-alt="A high-quality profile picture of a software engineer, illuminated by soft rim lighting with a subtle blue hue. The background is a blurred dark tech environment. The person looks focused and professional, modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3S6q-P08Ml9-DHUlJZQSXtHhJBkFYefIwBpuUnVSpDOhILylhzKYPR_XGVSz47XLIaavKz0tR1L7bj5hixX0ezo6RJgv8cmmrBp5FIRv0QmTnsCW8ul46wUgm16etJYfNs10w8Zt-_6RNOApctrrl2zYNK_6cuxwf0897dijYsgEQ4bIr9mqTaXqqi69PzC9-_nyYTA_F096esafebvBZY7FlHDNyOTwMzKsKc-z_4dba0ZUSO9cvpUmv0CSYpQ1um5tnMS_GNeg"/>
+<div class="absolute bottom-0 right-0 w-6 h-6 bg-surface border-2 border-primary rounded-full flex items-center justify-center">
+<span class="w-3 h-3 bg-tertiary-container rounded-full animate-pulse"></span>
+</div>
+</div>
+<div class="flex flex-col flex-1">
+<div class="flex justify-between items-start w-full">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-primary">Alex Chen</h2>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-1">@alexc_dev</p>
+</div>
+<button class="hidden md:flex bg-primary-container text-on-primary-container px-4 py-2 rounded-lg font-body-sm text-body-sm font-semibold hover:opacity-90 active:scale-95 transition-all">
+                            Edit Profile
+                        </button>
+</div>
+<p class="font-body-md text-body-md mt-4 text-on-background max-w-2xl leading-relaxed">
+                        Full-stack engineer exploring the intersection of AI and distributed systems. 
+                        Building open-source tools for the next generation of web applications.
+                    </p>
+<div class="flex flex-wrap gap-2 mt-4">
+<span class="glass-panel px-3 py-1.5 rounded-full font-label-caps text-label-caps text-secondary">React</span>
+<span class="glass-panel px-3 py-1.5 rounded-full font-label-caps text-label-caps text-primary">Python</span>
+<span class="glass-panel px-3 py-1.5 rounded-full font-label-caps text-label-caps text-tertiary">TensorFlow</span>
+<span class="glass-panel px-3 py-1.5 rounded-full font-label-caps text-label-caps text-on-surface-variant">Rust</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Stats Bento Box -->
+<section class="grid grid-cols-3 gap-4 md:gap-gutter mt-2">
+<div class="glass-panel rounded-xl p-4 flex flex-col items-center justify-center text-center">
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-primary">248</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant mt-1">Repos Starred</span>
+</div>
+<div class="glass-panel rounded-xl p-4 flex flex-col items-center justify-center text-center">
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-primary">56</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant mt-1">Posts Shared</span>
+</div>
+<div class="glass-panel rounded-xl p-4 flex flex-col items-center justify-center text-center">
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-primary">1.2k</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant mt-1">Following</span>
+</div>
+</section>
+<!-- Tabs Navigation -->
+<nav class="border-b border-surface-container-highest mt-4 flex overflow-x-auto hide-scrollbar">
+<div class="flex gap-8 px-2 min-w-max">
+<button class="pb-3 border-b-2 border-primary font-body-sm text-body-sm text-primary font-medium px-2">Saved</button>
+<button class="pb-3 border-b-2 border-transparent font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface px-2 transition-colors">My Posts</button>
+<button class="pb-3 border-b-2 border-transparent font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface px-2 transition-colors">Contributions</button>
+</div>
+</nav>
+<!-- List Content: Recently Starred Repos -->
+<section class="flex flex-col gap-4 mt-2">
+<!-- Repo Card 1 -->
+<article class="glass-panel rounded-xl p-5 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">book</span>
+<h3 class="font-body-md text-body-md font-semibold text-primary">auto-gpt-next</h3>
+</div>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase">AI / Framework</p>
+</div>
+<button class="text-primary hover:text-primary-fixed transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-1 line-clamp-2">
+                    An experimental open-source attempt to make GPT-4 fully autonomous. Includes memory management and tool usage out of the box.
+                </p>
+<div class="flex items-center gap-4 mt-2 border-t border-surface-container-highest pt-3">
+<div class="flex items-center gap-1 font-code-snippet text-code-snippet text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-primary inline-block"></span> Python
+                    </div>
+<div class="flex items-center gap-1 font-code-snippet text-code-snippet text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">star</span> 14.2k
+                    </div>
+<div class="flex items-center gap-1 font-code-snippet text-code-snippet text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">call_split</span> 2.1k
+                    </div>
+</div>
+</article>
+<!-- Repo Card 2 -->
+<article class="glass-panel rounded-xl p-5 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">book</span>
+<h3 class="font-body-md text-body-md font-semibold text-primary">rust-wasm-bindgen</h3>
+</div>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase">Web / Rust</p>
+</div>
+<button class="text-primary hover:text-primary-fixed transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-1 line-clamp-2">
+                    Facilitating high-level interactions between Wasm modules and JavaScript. Crucial for modern high-performance web apps.
+                </p>
+<div class="flex items-center gap-4 mt-2 border-t border-surface-container-highest pt-3">
+<div class="flex items-center gap-1 font-code-snippet text-code-snippet text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-secondary inline-block"></span> Rust
+                    </div>
+<div class="flex items-center gap-1 font-code-snippet text-code-snippet text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">star</span> 8.9k
+                    </div>
+<div class="flex items-center gap-1 font-code-snippet text-code-snippet text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">call_split</span> 842
+                    </div>
+</div>
+</article>
+<!-- Repo Card 3 -->
+<article class="glass-panel rounded-xl p-5 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">book</span>
+<h3 class="font-body-md text-body-md font-semibold text-primary">ui-glass-components</h3>
+</div>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase">Design / Frontend</p>
+</div>
+<button class="text-primary hover:text-primary-fixed transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-1 line-clamp-2">
+                    A curated collection of Tailwind CSS glassmorphism UI components designed for modern, sleek web applications.
+                </p>
+<div class="flex items-center gap-4 mt-2 border-t border-surface-container-highest pt-3">
+<div class="flex items-center gap-1 font-code-snippet text-code-snippet text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-tertiary inline-block"></span> TypeScript
+                    </div>
+<div class="flex items-center gap-1 font-code-snippet text-code-snippet text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">star</span> 3.4k
+                    </div>
+</div>
+</article>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-surface/70 backdrop-blur-xl border-t border-white/10 md:hidden">
+<button class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors active:scale-90 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">rss_feed</span>
+<span class="font-label-caps text-label-caps mt-1">Feed</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors active:scale-90 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">trending_up</span>
+<span class="font-label-caps text-label-caps mt-1">Trending</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors active:scale-90 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">smart_toy</span>
+<span class="font-label-caps text-label-caps mt-1">AI Hub</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary relative after:content-[''] after:w-1 after:h-1 after:bg-primary after:rounded-full after:mt-1 hover:text-primary transition-colors active:scale-90 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-caps text-label-caps mt-1">Profile</span>
+</button>
+</nav>
+</body></html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TeknoAkış - Giriş Yap</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed-dim": "#d0bcff",
+                      "on-primary-fixed": "#002022",
+                      "tertiary": "#d8ffe7",
+                      "on-background": "#e2e2e8",
+                      "inverse-primary": "#006970",
+                      "primary-container": "#00f0ff",
+                      "on-surface-variant": "#b9cacb",
+                      "error-container": "#93000a",
+                      "tertiary-fixed": "#6ffbbe",
+                      "secondary": "#d0bcff",
+                      "tertiary-container": "#65f2b5",
+                      "background": "#111317",
+                      "surface-container-lowest": "#0c0e12",
+                      "surface-dim": "#111317",
+                      "on-tertiary-fixed-variant": "#005236",
+                      "on-surface": "#e2e2e8",
+                      "inverse-on-surface": "#2f3035",
+                      "surface-bright": "#37393e",
+                      "on-tertiary": "#003824",
+                      "primary": "#dbfcff",
+                      "tertiary-fixed-dim": "#4edea3",
+                      "on-secondary": "#3c0091",
+                      "surface-variant": "#333539",
+                      "surface-tint": "#00dbe9",
+                      "on-primary": "#00363a",
+                      "on-error-container": "#ffdad6",
+                      "secondary-fixed": "#e9ddff",
+                      "outline-variant": "#3b494b",
+                      "inverse-surface": "#e2e2e8",
+                      "outline": "#849495",
+                      "on-tertiary-container": "#006d4a",
+                      "secondary-container": "#571bc1",
+                      "error": "#ffb4ab",
+                      "surface-container-low": "#1a1c20",
+                      "surface-container-highest": "#333539",
+                      "primary-fixed-dim": "#00dbe9",
+                      "on-tertiary-fixed": "#002113",
+                      "surface-container-high": "#282a2e",
+                      "surface-container": "#1e2024",
+                      "on-secondary-fixed-variant": "#5516be",
+                      "primary-fixed": "#7df4ff",
+                      "on-secondary-fixed": "#23005c",
+                      "surface": "#111317",
+                      "on-primary-container": "#006970",
+                      "on-primary-fixed-variant": "#004f54",
+                      "on-error": "#690005",
+                      "on-secondary-container": "#c4abff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "lg": "24px",
+                      "margin-desktop": "32px",
+                      "xs": "4px",
+                      "xl": "32px",
+                      "margin-mobile": "16px",
+                      "gutter": "16px",
+                      "base": "4px",
+                      "md": "16px",
+                      "sm": "8px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": [
+                              "Geist"
+                      ],
+                      "mono-code": [
+                              "JetBrains Mono"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Geist"
+                      ],
+                      "mono-label": [
+                              "JetBrains Mono"
+                      ],
+                      "headline-lg": [
+                              "Geist"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "mono-code": [
+                              "13px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "mono-label": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for a technical feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0c0e12; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b494b; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00dbe9; 
+        }
+        
+        /* Subtle grid background */
+        .bg-tech-grid {
+            background-image: 
+                linear-gradient(to right, rgba(59, 73, 75, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(59, 73, 75, 0.1) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-tech-grid">
+<!-- Ambient glow behind the login card -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
+<!-- Main Login Container -->
+<main class="w-full max-w-md px-margin-mobile z-10">
+<!-- Brand Header -->
+<div class="flex flex-col items-center mb-xl">
+<div class="flex items-center gap-sm mb-lg">
+<span class="material-symbols-outlined text-primary text-3xl" data-weight="fill" style="font-variation-settings: 'FILL' 1;">terminal</span>
+<h1 class="font-headline-lg text-headline-lg font-extrabold text-primary tracking-tight">TeknoAkış</h1>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Giriş Yap</h2>
+<p class="font-mono-label text-mono-label text-on-surface-variant mt-sm uppercase tracking-widest">Sistem Erişimi</p>
+</div>
+<!-- Login Card -->
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-lg shadow-2xl backdrop-blur-sm relative group transition-all duration-300 focus-within:border-primary focus-within:shadow-[0_0_15px_rgba(0,240,255,0.1)]">
+<form action="#" class="flex flex-col gap-md" method="POST">
+<!-- Email Field -->
+<div class="flex flex-col gap-xs">
+<label class="font-mono-label text-mono-label text-on-surface-variant" for="email">E-posta</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline text-sm pointer-events-none">mail</span>
+<input autocomplete="email" class="w-full bg-surface-container border border-outline-variant rounded-md py-sm pl-xl pr-sm text-on-surface font-mono-code text-mono-code focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder:text-outline/50" id="email" name="email" placeholder="kullanici@domain.com" required="" type="email"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="flex flex-col gap-xs mt-sm">
+<div class="flex justify-between items-end">
+<label class="font-mono-label text-mono-label text-on-surface-variant" for="password">Şifre</label>
+<a class="font-mono-label text-mono-label text-primary-fixed hover:text-primary transition-colors hover:underline underline-offset-2" href="#">Şifremi Unuttum</a>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline text-sm pointer-events-none">lock</span>
+<input autocomplete="current-password" class="w-full bg-surface-container border border-outline-variant rounded-md py-sm pl-xl pr-sm text-on-surface font-mono-code text-mono-code focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder:text-outline/50" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+</div>
+</div>
+<!-- Primary CTA -->
+<button class="mt-lg w-full bg-primary text-on-primary font-mono-label text-mono-label py-md rounded-md hover:bg-primary-fixed transition-colors active:scale-[0.98] flex items-center justify-center gap-sm" type="submit">
+                    Giriş Yap
+                    <span class="material-symbols-outlined text-sm">login</span>
+</button>
+</form>
+<div class="mt-lg pt-lg border-t border-outline-variant flex flex-col gap-md">
+<!-- Secondary CTA: Create Account -->
+<button class="w-full border border-primary text-primary hover:bg-primary/10 font-mono-label text-mono-label py-sm rounded-md transition-colors flex items-center justify-center gap-sm" type="button">
+<span class="material-symbols-outlined text-sm">person_add</span>
+                    Hesap Oluştur
+                </button>
+<!-- Tertiary Action: Guest -->
+<a class="text-center font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">
+                    Misafir Olarak Devam Et
+                </a>
+</div>
+</div>
+</main>
+<!-- Technical Footer -->
+<footer class="absolute bottom-lg left-0 w-full text-center pointer-events-none">
+<div class="inline-flex items-center gap-md px-md py-xs bg-surface-container/50 border border-outline-variant/50 rounded-full backdrop-blur-md">
+<span class="flex h-2 w-2 relative">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary-fixed opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-tertiary-fixed"></span>
+</span>
+<p class="font-mono-code text-[10px] text-outline-variant uppercase tracking-widest">
+                v2.4.1-beta <span class="mx-sm text-outline-variant/30">|</span> SYS.STATUS: ONLINE
+            </p>
+</div>
+</footer>
+<script>
+        // Simple script to add an active glow effect based on mouse position for the login card
+        const card = document.querySelector('.group');
+        
+        document.addEventListener('mousemove', (e) => {
+            if(!card) return;
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Check if mouse is near the card
+            if (e.clientX > rect.left - 100 && e.clientX < rect.right + 100 &&
+                e.clientY > rect.top - 100 && e.clientY < rect.bottom + 100) {
+                card.style.boxShadow = `0 0 30px rgba(0, 240, 255, 0.05), inset 0 0 20px rgba(0, 240, 255, 0.02)`;
+                card.style.borderColor = 'var(--tw-colors-primary)';
+            } else {
+                card.style.boxShadow = '';
+                card.style.borderColor = '';
+            }
+        });
+        
+        // Remove style when mouse leaves the document to clean up
+        document.addEventListener('mouseleave', () => {
+             if(!card) return;
+             card.style.boxShadow = '';
+             card.style.borderColor = '';
+        });
+    </script>
+</body></html>

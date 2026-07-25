@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TeknoAkış - Keşfet</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#690005",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-tint": "#00dbe9",
+                        "primary-fixed": "#7df4ff",
+                        "surface-container-highest": "#333539",
+                        "on-primary-fixed-variant": "#004f54",
+                        "surface": "#111317",
+                        "tertiary-fixed": "#6ffbbe",
+                        "surface-container": "#1e2024",
+                        "tertiary": "#d8ffe7",
+                        "surface-bright": "#37393e",
+                        "on-secondary-fixed": "#23005c",
+                        "outline": "#849495",
+                        "surface-dim": "#111317",
+                        "secondary-container": "#571bc1",
+                        "error-container": "#93000a",
+                        "on-tertiary": "#003824",
+                        "error": "#ffb4ab",
+                        "background": "#111317",
+                        "surface-container-high": "#282a2e",
+                        "tertiary-container": "#65f2b5",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "surface-container-lowest": "#0c0e12",
+                        "on-secondary-container": "#c4abff",
+                        "on-secondary": "#3c0091",
+                        "surface-container-low": "#1a1c20",
+                        "on-primary-container": "#006970",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "on-tertiary-fixed": "#002113",
+                        "primary-container": "#00f0ff",
+                        "inverse-surface": "#e2e2e8",
+                        "on-background": "#e2e2e8",
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#3b494b",
+                        "secondary-fixed": "#e9ddff",
+                        "on-tertiary-container": "#006d4a",
+                        "primary": "#dbfcff",
+                        "on-primary": "#00363a",
+                        "primary-fixed-dim": "#00dbe9",
+                        "surface-variant": "#333539",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "on-primary-fixed": "#002022",
+                        "inverse-primary": "#006970",
+                        "inverse-on-surface": "#2f3035",
+                        "secondary": "#d0bcff",
+                        "on-surface": "#e2e2e8",
+                        "on-surface-variant": "#b9cacb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "margin-desktop": "32px",
+                        "lg": "24px",
+                        "md": "16px",
+                        "base": "4px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "gutter": "16px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "mono-code": ["JetBrains Mono"],
+                        "mono-label": ["JetBrains Mono"],
+                        "headline-md": ["Geist"],
+                        "headline-lg": ["Geist"],
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Geist"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "mono-code": ["13px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "mono-label": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-md": ["20px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #0c0e12; color: #e2e2e8; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface antialiased min-h-screen flex flex-col md:flex-row pb-[80px] md:pb-0 pt-[64px] md:pt-0">
+<!-- Mobile Top App Bar -->
+<header class="md:hidden bg-surface/60 dark:bg-surface/60 backdrop-blur-xl border-b border-outline-variant fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16">
+<button class="text-on-surface-variant dark:text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed tracking-tight">TeknoAkış</span>
+<button class="text-on-surface-variant dark:text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined">search</span>
+</button>
+</header>
+<!-- Desktop Navigation Drawer -->
+<aside class="hidden md:flex h-screen w-80 flex-col p-md bg-surface-container dark:bg-surface-container border-r border-outline-variant sticky top-0">
+<div class="mb-lg flex items-center justify-between">
+<span class="font-headline-md text-headline-md text-primary font-bold tracking-tight">TeknoAkış</span>
+</div>
+<div class="flex items-center space-x-md mb-xl p-md rounded-xl hover:bg-surface-variant transition-colors cursor-pointer">
+<img class="w-10 h-10 rounded-full object-cover border border-outline-variant" data-alt="A futuristic minimalist avatar profile picture for a tech expert, featuring subtle neon blue data streams overlaid on a dark silhouette against a pure black background. The lighting is highly controlled, giving a sense of cutting-edge technology and artificial intelligence expertise. The overall aesthetic is hyper-technical and professional, optimized for a sleek dark mode user interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcaoe-sBuRWQIsVVT6UjB6IHcSTyR4WmM-_jyEdTcZmvLElzRNovmsP8OsLa7rzK3WxV6fr9wul6pgraCqzzmu-eqWV_WrRpfNXmNCT-CPAGBtXDZs_JSY53o8kr-ckwg_j5paP_mPR_9RybSJ_IiAutBAmD_-p0iahTLfDY5AydH51N-vVC9b1aKkHzTN2c0EJJ77vjqXhziQc9NCkR7HmgQDAe4-Ar60DIz-kcjkRXc20kHxHZOgLsUytgmV5_OGGQuwhETauKs"/>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-primary dark:text-primary-fixed font-semibold">TeknoKullanıcı</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant">@dev_expert</span>
+</div>
+</div>
+<nav class="flex-1 space-y-sm overflow-y-auto hide-scrollbar pr-xs">
+<a class="flex items-center space-x-md px-md py-sm rounded-full text-on-surface-variant hover:bg-surface-variant transition-colors active:opacity-70" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-body-sm text-body-sm">Ana Sayfa</span>
+</a>
+<a class="flex items-center space-x-md px-md py-sm rounded-full bg-secondary-container text-on-secondary-container active:opacity-70" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-body-sm text-body-sm font-semibold">Keşfet</span>
+</a>
+<a class="flex items-center space-x-md px-md py-sm rounded-full text-on-surface-variant hover:bg-surface-variant transition-colors active:opacity-70" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-body-sm text-body-sm">Bildirimler</span>
+</a>
+<a class="flex items-center space-x-md px-md py-sm rounded-full text-on-surface-variant hover:bg-surface-variant transition-colors active:opacity-70" href="#">
+<span class="material-symbols-outlined">bookmark</span>
+<span class="font-body-sm text-body-sm">Kaydedilenler</span>
+</a>
+<div class="pt-lg pb-sm px-md">
+<span class="font-mono-label text-mono-label text-outline uppercase tracking-wider">Kategoriler</span>
+</div>
+<a class="flex items-center space-x-md px-md py-sm rounded-full text-on-surface-variant hover:bg-surface-variant transition-colors active:opacity-70" href="#">
+<span class="material-symbols-outlined">terminal</span>
+<span class="font-body-sm text-body-sm">GitHub</span>
+</a>
+<a class="flex items-center space-x-md px-md py-sm rounded-full text-on-surface-variant hover:bg-surface-variant transition-colors active:opacity-70" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span class="font-body-sm text-body-sm">AI</span>
+</a>
+<a class="flex items-center space-x-md px-md py-sm rounded-full text-on-surface-variant hover:bg-surface-variant transition-colors active:opacity-70" href="#">
+<span class="material-symbols-outlined">science</span>
+<span class="font-body-sm text-body-sm">Research</span>
+</a>
+<a class="flex items-center space-x-md px-md py-sm rounded-full text-on-surface-variant hover:bg-surface-variant transition-colors active:opacity-70" href="#">
+<span class="material-symbols-outlined">memory</span>
+<span class="font-body-sm text-body-sm">Hardware</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 w-full max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop py-lg overflow-x-hidden">
+<!-- Search & Filters -->
+<div class="mb-xl sticky top-[72px] md:top-lg z-40 bg-surface-container-lowest/90 backdrop-blur-md pt-sm pb-md border-b border-surface-container-highest">
+<div class="relative w-full mb-md group">
+<span class="material-symbols-outlined absolute left-md top-1/2 transform -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-full py-3 pl-[48px] pr-md font-mono-code text-mono-code text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all placeholder-outline shadow-inner" placeholder="Gelişmiş arama... (Repolar, Modeller, Makaleler)" type="text"/>
+<button class="absolute right-md top-1/2 transform -translate-y-1/2 text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+<div class="flex space-x-sm overflow-x-auto hide-scrollbar pb-xs">
+<button class="flex items-center space-x-xs bg-primary/10 border border-primary text-primary px-sm py-1.5 rounded-md whitespace-nowrap hover:bg-primary/20 transition-colors">
+<span class="font-mono-label text-mono-label">Kategori: Tümü</span>
+<span class="material-symbols-outlined" style="font-size: 16px;">arrow_drop_down</span>
+</button>
+<button class="flex items-center space-x-xs bg-surface border border-outline-variant text-on-surface-variant px-sm py-1.5 rounded-md whitespace-nowrap hover:border-primary hover:text-primary transition-colors">
+<span class="font-mono-label text-mono-label">Trend: Yükselen</span>
+<span class="material-symbols-outlined" style="font-size: 16px;">arrow_drop_down</span>
+</button>
+<button class="flex items-center space-x-xs bg-surface border border-outline-variant text-on-surface-variant px-sm py-1.5 rounded-md whitespace-nowrap hover:border-primary hover:text-primary transition-colors">
+<span class="font-mono-label text-mono-label">Zaman: Bu Hafta</span>
+<span class="material-symbols-outlined" style="font-size: 16px;">arrow_drop_down</span>
+</button>
+<button class="flex items-center space-x-xs bg-surface border border-outline-variant text-on-surface-variant px-sm py-1.5 rounded-md whitespace-nowrap hover:border-primary hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-size: 14px;">view_module</span>
+<span class="font-mono-label text-mono-label">Izgara</span>
+</button>
+</div>
+</div>
+<!-- Yükselenler (Trending) - Bento Grid -->
+<section class="mb-xl">
+<h2 class="font-headline-md text-headline-md font-semibold text-primary mb-md flex items-center">
+<span class="material-symbols-outlined mr-sm" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+                Şu Anda Yükselenler
+            </h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<!-- Large Feature Card -->
+<article class="md:col-span-2 bg-surface-container-low border border-outline-variant rounded-xl p-md flex flex-col justify-between hover:border-primary/50 transition-colors group relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="relative z-10">
+<div class="flex items-center justify-between mb-sm">
+<span class="bg-secondary-container/20 text-on-secondary-container font-mono-label text-mono-label px-2 py-0.5 rounded">AI MODEL</span>
+<span class="text-on-surface-variant font-mono-label text-mono-label flex items-center"><span class="material-symbols-outlined mr-xs" style="font-size: 14px;">visibility</span> 12.4k</span>
+</div>
+<h3 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-xs">Llama-3-Vision-Instruct</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md line-clamp-2">Meta's latest highly capable open multimodal model, fine-tuned for complex visual reasoning and instruction following across diverse domains.</p>
+</div>
+<div class="relative z-10 mt-auto pt-md border-t border-outline-variant flex justify-between items-center">
+<div class="flex space-x-sm">
+<span class="font-mono-label text-mono-label text-outline bg-surface px-2 py-1 rounded border border-outline-variant">HuggingFace</span>
+<span class="font-mono-label text-mono-label text-tertiary-fixed-dim bg-tertiary-fixed-dim/10 px-2 py-1 rounded border border-tertiary-fixed-dim/20">v3.1.0</span>
+</div>
+<button class="text-primary hover:text-primary-fixed transition-colors">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</article>
+<!-- Small Card 1 -->
+<article class="bg-surface-container-low border border-outline-variant rounded-xl p-md hover:border-primary/50 transition-colors flex flex-col">
+<div class="flex items-center justify-between mb-sm">
+<span class="bg-primary/10 text-primary font-mono-label text-mono-label px-2 py-0.5 rounded">GITHUB</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs break-all">vercel/next.js</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-sm line-clamp-2">The React Framework for the Web.</p>
+<div class="mt-auto flex flex-wrap gap-xs">
+<span class="font-mono-label text-mono-label text-tertiary-fixed-dim flex items-center"><span class="material-symbols-outlined mr-xs" style="font-size: 14px;">star</span>124k</span>
+<span class="font-mono-label text-mono-label text-outline">TypeScript</span>
+</div>
+</article>
+</div>
+</section>
+<!-- Bugünün Gelişmeleri -->
+<section class="mb-xl">
+<h2 class="font-headline-md text-headline-md font-semibold text-primary mb-md flex items-center">
+<span class="material-symbols-outlined mr-sm">article</span>
+                Bugünün En Önemli Gelişmeleri
+            </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<article class="flex bg-surface-container-low border border-outline-variant rounded-xl overflow-hidden hover:border-primary/50 transition-colors">
+<div class="bg-cover bg-center" data-alt="A highly detailed, hyper-realistic close-up of a glowing quantum processor chip floating in a dark, minimalist laboratory setting. Fine gold wiring connects to a translucent crystalline core emitting a faint neon blue light. The background is pure black with subtle grid reflections, emphasizing high-end hardware technology and advanced computational research in a sleek dark mode aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDcJjGpBoz7cJQKKdS8yAazxsGjsVqbTc3BXgf9-wQir81F0PU7mXZ-9aKBDjm7M0yFeh83le80WLLXVNtTbsIlF1kmy-V2vrsQGGXu6Fv6igIzR1NFmGXrtEnGZwDjZUu62j9D6rsPMDumydtNvGgR1cUpwv_zYDhy-w9nfXA83Eq_CFBt1CKf4x1cO0mVavShrzYLZySGZINGRU_PeBWokrVSrVYowY_Sxcyr0b_xtPndNaQFaNJ7OZsCa7ww7DJpHz_0rNxYBew')"></div>
+<div class="w-2/3 p-md flex flex-col justify-center">
+<span class="font-mono-label text-mono-label text-outline mb-xs">HARDWARE</span>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs leading-tight">Quantum Superiority Achieved in Room Temp</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">Researchers at MIT demonstrate stable qubits without extreme cooling.</p>
+</div>
+</article>
+<article class="flex bg-surface-container-low border border-outline-variant rounded-xl overflow-hidden hover:border-primary/50 transition-colors">
+<div class="bg-cover bg-center" data-alt="A sophisticated abstract data visualization representing a complex neural network topology. Thin, sharp lines of bright cyan and deep purple interweave on a pure black canvas. Small glowing nodes pulsate with data flow. The style is strictly technical and minimalist, resembling high-end scientific analysis software designed for dark mode interfaces." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDV0RLt9G_xcK4QYbeEOiLrvZT5hVz7j1RUV6RXSg8XgCB5PUPUxyo2rtIVewKryG4nfF53nCKeYk1SGIX8kno8kZ63d1kdG-Z2fd8w9O_av38cnK3pwiSFAmtTo3mY_gEThLz77vYcEIV2E2llbnFuieQbowavmu8S_aJ7d-JoinKdOyO7Wtx9Ws7fe3Sp7Va2bJr4rk0KXAQXsQv2diFYqmfh6YhXH_kCtYzW9v4jJ5WvIdTiyzpY_HtpF1W9WCsKpZkpnkMrkwk')"></div>
+<div class="w-2/3 p-md flex flex-col justify-center">
+<span class="font-mono-label text-mono-label text-outline mb-xs">RESEARCH</span>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs leading-tight">New Attention Mechanism Reduces VRAM by 40%</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">A novel approach to Transformer architectures optimizes memory usage for edge devices.</p>
+</div>
+</article>
+</div>
+</section>
+<!-- Hızla Büyüyen GitHub Projeleri -->
+<section class="mb-xl">
+<div class="flex justify-between items-end mb-md">
+<h2 class="font-headline-md text-headline-md font-semibold text-primary flex items-center">
+<span class="material-symbols-outlined mr-sm">terminal</span>
+                    Hızla Büyüyen GitHub Projeleri
+                </h2>
+<a class="font-mono-label text-mono-label text-primary hover:underline" href="#">Tümünü Gör</a>
+</div>
+<div class="bg-surface-container-low border border-outline-variant rounded-xl divide-y divide-outline-variant">
+<!-- Repo Item -->
+<div class="p-md hover:bg-surface-container transition-colors flex items-center justify-between group">
+<div class="flex flex-col">
+<a class="font-body-lg text-body-lg text-on-surface font-semibold group-hover:text-primary transition-colors mb-xs" href="#">astral-sh/uv</a>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1 mb-sm">An extremely fast Python package installer and resolver, written in Rust.</p>
+<div class="flex space-x-sm">
+<span class="font-mono-label text-mono-label text-tertiary-fixed-dim flex items-center"><span class="material-symbols-outlined mr-xs" style="font-size: 14px;">star</span>+2.1k bugün</span>
+<span class="font-mono-label text-mono-label text-outline flex items-center"><span class="w-2 h-2 rounded-full bg-[#dea584] mr-xs"></span>Rust</span>
+</div>
+</div>
+<button class="hidden md:flex items-center justify-center w-10 h-10 rounded border border-outline-variant text-outline hover:text-primary hover:border-primary transition-colors">
+<span class="material-symbols-outlined">star</span>
+</button>
+</div>
+<!-- Repo Item -->
+<div class="p-md hover:bg-surface-container transition-colors flex items-center justify-between group">
+<div class="flex flex-col">
+<a class="font-body-lg text-body-lg text-on-surface font-semibold group-hover:text-primary transition-colors mb-xs" href="#">abi/screenshot-to-code</a>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1 mb-sm">Drop in a screenshot and convert it to clean HTML/Tailwind/JS code.</p>
+<div class="flex space-x-sm">
+<span class="font-mono-label text-mono-label text-tertiary-fixed-dim flex items-center"><span class="material-symbols-outlined mr-xs" style="font-size: 14px;">star</span>+1.5k bugün</span>
+<span class="font-mono-label text-mono-label text-outline flex items-center"><span class="w-2 h-2 rounded-full bg-[#f1e05a] mr-xs"></span>JavaScript</span>
+</div>
+</div>
+<button class="hidden md:flex items-center justify-center w-10 h-10 rounded border border-outline-variant text-outline hover:text-primary hover:border-primary transition-colors">
+<span class="material-symbols-outlined">star</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Mobile Bottom Nav Bar -->
+<nav class="md:hidden bg-surface/60 dark:bg-surface/60 backdrop-blur-xl border-t border-outline-variant fixed bottom-0 w-full z-50 flex justify-around items-center px-margin-mobile py-sm pb-safe h-[80px]">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200 w-16" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-mono-label text-mono-label text-[10px]">Ana Sayfa</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed font-bold hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200 w-16" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-mono-label text-mono-label text-[10px]">Keşfet</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200 w-16" href="#">
+<span class="material-symbols-outlined mb-1 text-primary">add_circle</span>
+<span class="font-mono-label text-mono-label text-[10px]">Paylaş</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200 w-16" href="#">
+<span class="material-symbols-outlined mb-1">notifications</span>
+<span class="font-mono-label text-mono-label text-[10px]">Bildirimler</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200 w-16" href="#">
+<span class="material-symbols-outlined mb-1">person_outline</span>
+<span class="font-mono-label text-mono-label text-[10px]">Profil</span>
+</a>
+</nav>
+</body></html>

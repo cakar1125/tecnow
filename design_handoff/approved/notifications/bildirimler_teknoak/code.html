@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TeknoAkış - Bildirimler</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Inter:wght@400;500;600&amp;family=Geist:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #111317;
+            color: #e2e2e8;
+            -webkit-font-smoothing: antialiased;
+        }
+        .backdrop-blur-xl {
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+        .notification-gradient {
+            background: linear-gradient(90deg, rgba(0, 219, 233, 0.1) 0%, rgba(17, 19, 23, 0) 100%);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1a1c20;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #3b494b;
+            border-radius: 10px;
+        }
+        .active-tab-indicator {
+            height: 2px;
+            background: #00dbe9;
+            box-shadow: 0 0 8px rgba(0, 219, 233, 0.6);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#111317",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-container-lowest": "#0c0e12",
+                        "secondary-container": "#571bc1",
+                        "surface-tint": "#00dbe9",
+                        "on-primary-container": "#006970",
+                        "on-background": "#e2e2e8",
+                        "surface": "#111317",
+                        "on-surface-variant": "#b9cacb",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "on-error": "#690005",
+                        "secondary-fixed": "#e9ddff",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-primary-fixed-variant": "#004f54",
+                        "error-container": "#93000a",
+                        "primary-container": "#00f0ff",
+                        "outline": "#849495",
+                        "inverse-surface": "#e2e2e8",
+                        "surface-container-low": "#1a1c20",
+                        "on-surface": "#e2e2e8",
+                        "on-secondary": "#3c0091",
+                        "primary-fixed-dim": "#00dbe9",
+                        "surface-container": "#1e2024",
+                        "inverse-primary": "#006970",
+                        "primary": "#dbfcff",
+                        "tertiary-container": "#65f2b5",
+                        "surface-variant": "#333539",
+                        "on-primary-fixed": "#002022",
+                        "surface-dim": "#111317",
+                        "surface-container-highest": "#333539",
+                        "surface-bright": "#37393e",
+                        "tertiary": "#d8ffe7",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#006d4a",
+                        "on-secondary-fixed": "#23005c",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "on-tertiary-fixed": "#002113",
+                        "on-secondary-container": "#c4abff",
+                        "surface-container-high": "#282a2e",
+                        "primary-fixed": "#7df4ff",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-primary": "#00363a",
+                        "on-tertiary": "#003824",
+                        "inverse-on-surface": "#2f3035",
+                        "on-error-container": "#ffdad6",
+                        "secondary": "#d0bcff",
+                        "outline-variant": "#3b494b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-desktop": "32px",
+                        "xl": "32px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "base": "4px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "margin-mobile": "16px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "mono-code": ["JetBrains Mono"],
+                        "headline-lg": ["Geist"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Geist"],
+                        "headline-lg-mobile": ["Geist"],
+                        "mono-label": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "mono-code": ["13px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-md": ["20px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "mono-label": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface/60 dark:bg-surface/60 backdrop-blur-xl border-b border-outline-variant">
+<div class="flex items-center gap-md">
+<button class="hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-150 text-primary dark:text-primary-fixed">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed tracking-tight">Bildirimler</h1>
+</div>
+<button class="hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-150 text-primary dark:text-primary-fixed" title="Tümünü okundu işaretle">
+<span class="material-symbols-outlined">done_all</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-20 pb-24 min-h-screen px-margin-mobile max-w-2xl mx-auto">
+<!-- Filter Tabs -->
+<div class="flex items-center gap-md mb-lg border-b border-outline-variant/30 overflow-x-auto no-scrollbar">
+<button class="relative py-md font-mono-label text-mono-label text-primary dark:text-primary-fixed transition-colors whitespace-nowrap active:opacity-70">
+                Tümü
+                <div class="absolute bottom-0 left-0 w-full active-tab-indicator"></div>
+</button>
+<button class="relative py-md font-mono-label text-mono-label text-on-surface-variant hover:text-primary transition-colors whitespace-nowrap active:opacity-70">
+                Önemli
+            </button>
+<button class="relative py-md font-mono-label text-mono-label text-on-surface-variant hover:text-primary transition-colors whitespace-nowrap active:opacity-70">
+                Etkileşim
+            </button>
+</div>
+<!-- Notification List -->
+<div class="space-y-gutter">
+<!-- GitHub Notification (Unread) -->
+<div class="group relative bg-surface-container-low border border-outline-variant rounded-xl p-md flex gap-md transition-all hover:bg-surface-container-high active:scale-[0.98] cursor-pointer">
+<!-- Unread Indicator -->
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary-fixed-dim rounded-r-full"></div>
+<div class="flex-shrink-0 w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-primary-fixed-dim">terminal</span>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-start mb-xs">
+<span class="font-mono-label text-mono-label text-primary-fixed-dim">GITHUB REPOSITORY</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant">2dk önce</span>
+</div>
+<h3 class="font-headline-md text-body-lg font-semibold text-on-surface truncate">Yeni bir Fork oluşturuldu</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">"NextGen-AI-Framework" projeniz @tech_pioneer tarafından forklandı. 12 yeni yıldız eklendi.</p>
+<div class="mt-sm flex gap-sm">
+<span class="bg-surface-container-highest text-on-surface-variant px-sm py-1 rounded text-[10px] font-mono-label border border-outline-variant">v4.2.0-alpha</span>
+</div>
+</div>
+</div>
+<!-- AI System Notification -->
+<div class="group relative bg-surface-container-low/50 border border-outline-variant/50 rounded-xl p-md flex gap-md transition-all hover:bg-surface-container-high active:scale-[0.98] cursor-pointer opacity-80">
+<div class="flex-shrink-0 w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-tertiary-fixed-dim">psychology</span>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-start mb-xs">
+<span class="font-mono-label text-mono-label text-tertiary-fixed-dim">AI MODEL STATUS</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant">15dk önce</span>
+</div>
+<h3 class="font-headline-md text-body-lg font-semibold text-on-surface truncate">Eğitim Tamamlandı</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Model 'Nexus-7B' eğitimi başarıyla sonuçlandı. Validasyon kaybı: 0.042. Model deploy edilmeye hazır.</p>
+</div>
+</div>
+<!-- Interaction Notification (Unread) -->
+<div class="group relative bg-surface-container-low border border-outline-variant rounded-xl p-md flex gap-md transition-all hover:bg-surface-container-high active:scale-[0.98] cursor-pointer">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary-fixed-dim rounded-r-full"></div>
+<div class="flex-shrink-0 w-12 h-12 rounded-full border-2 border-primary-fixed-dim p-0.5 overflow-hidden">
+<img class="w-full h-full object-cover rounded-full" data-alt="A futuristic professional portrait of a tech expert in a minimalist dark setting with neon cyan highlights, wearing high-tech glasses, focused expression, cinematic lighting with deep shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgcSIPrJ3nwm-0EC3FdwJ9u3ct5tRata-wWEGaLOw0bcNpOU_IaBjWO7R8-EnIhGf6buGz5HyKcn61DXjC2Eh35oPUX-SuyAImQTeZzaINpZU1ksA7_2aOTu75jtwHDsNi0C1oqzOAqmKNSY2JRTtApYxHRICPyS9SSf_4wI4JKcvcy2KLHzOqbgHo_c1IzQMI1K2OW2xrKQ22JyQpMJA7C3ucPGvhl6zE8bcvMcC0AQGHXizYcA2kzKLlhTzjYzJZ4X3-eq82KIQ"/>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-start mb-xs">
+<span class="font-mono-label text-mono-label text-primary-fixed-dim">ETKİLEŞİM</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant">1sa önce</span>
+</div>
+<h3 class="font-headline-md text-body-lg font-semibold text-on-surface truncate">@dev_expert bir yorum bıraktı</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">"Bu mimari yaklaşımı gerçekten beğendim, özellikle CUDA optimizasyonları harika görünüyor."</p>
+</div>
+</div>
+<!-- System Notification -->
+<div class="group relative bg-surface-container-low/50 border border-outline-variant/50 rounded-xl p-md flex gap-md transition-all hover:bg-surface-container-high active:scale-[0.98] cursor-pointer opacity-80">
+<div class="flex-shrink-0 w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-secondary">memory</span>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-start mb-xs">
+<span class="font-mono-label text-mono-label text-secondary">SYSTEM UPDATE</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant">3sa önce</span>
+</div>
+<h3 class="font-headline-md text-body-lg font-semibold text-on-surface truncate">Sunucu Bakımı Tamamlandı</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Bölgesel node'lar güncellendi. Yeni API endpoint'leri artık aktif: v3.1.0-release.</p>
+</div>
+</div>
+<!-- GitHub Notification -->
+<div class="group relative bg-surface-container-low/50 border border-outline-variant/50 rounded-xl p-md flex gap-md transition-all hover:bg-surface-container-high active:scale-[0.98] cursor-pointer opacity-80">
+<div class="flex-shrink-0 w-12 h-12 rounded-lg bg-surface-container-highest flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-primary-fixed-dim">terminal</span>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-start mb-xs">
+<span class="font-mono-label text-mono-label text-primary-fixed-dim">GITHUB REPOSITORY</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant">Dün</span>
+</div>
+<h3 class="font-headline-md text-body-lg font-semibold text-on-surface truncate">Pull Request Onaylandı</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">"Fix: Kernel Panic on Multi-GPU" adlı PR'ınız @main_maintainer tarafından merge edildi.</p>
+</div>
+</div>
+</div>
+<!-- Empty State (Hidden) -->
+<div class="hidden flex-col items-center justify-center py-24 text-center">
+<span class="material-symbols-outlined text-6xl text-outline-variant mb-md">notifications_none</span>
+<h3 class="font-headline-md text-headline-md text-on-surface-variant">Henüz bildirim yok</h3>
+<p class="font-body-sm text-body-sm text-outline">Yeni teknik gelişmelerden haberdar olduğunuzda burada göreceksiniz.</p>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-margin-mobile py-sm pb-safe bg-surface/60 dark:bg-surface/60 backdrop-blur-xl border-t border-outline-variant">
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined">home</span>
+<span class="font-mono-label text-mono-label">Ana Sayfa</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-mono-label text-mono-label">Keşfet</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-mono-label text-mono-label">Paylaş</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed font-bold active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="font-mono-label text-mono-label">Bildirimler</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary-fixed active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined">person_outline</span>
+<span class="font-mono-label text-mono-label">Profil</span>
+</button>
+</nav>
+<!-- Background Atmospheric Effect -->
+<div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+<div class="absolute -top-1/4 -right-1/4 w-1/2 h-1/2 bg-primary/5 blur-[120px] rounded-full"></div>
+<div class="absolute -bottom-1/4 -left-1/4 w-1/2 h-1/2 bg-secondary-container/10 blur-[120px] rounded-full"></div>
+</div>
+<script>
+        // Simple Micro-interaction for notification cards
+        document.querySelectorAll('.group').forEach(card => {
+            card.addEventListener('click', () => {
+                // Mark as read visual logic
+                const indicator = card.querySelector('.absolute.left-0');
+                if (indicator) {
+                    indicator.style.opacity = '0';
+                    card.style.opacity = '0.8';
+                }
+            });
+        });
+
+        // Tab switching visual feedback
+        const tabs = document.querySelectorAll('.filter-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                tabs.forEach(t => {
+                    t.classList.remove('text-primary');
+                    t.classList.add('text-on-surface-variant');
+                    const ind = t.querySelector('.active-tab-indicator');
+                    if(ind) ind.remove();
+                });
+                this.classList.add('text-primary');
+                this.classList.remove('text-on-surface-variant');
+                const indicator = document.createElement('div');
+                indicator.className = 'absolute bottom-0 left-0 w-full active-tab-indicator';
+                this.appendChild(indicator);
+            });
+        });
+    </script>
+</body></html>

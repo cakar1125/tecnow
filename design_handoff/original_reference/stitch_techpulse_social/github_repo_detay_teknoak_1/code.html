@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TeknoAkış - Repo Detayı</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "outline-variant": "#3b494b",
+                      "on-tertiary-fixed": "#002113",
+                      "tertiary": "#d8ffe7",
+                      "surface-container-high": "#282a2e",
+                      "surface-container": "#1e2024",
+                      "inverse-surface": "#e2e2e8",
+                      "inverse-on-surface": "#2f3035",
+                      "on-secondary-fixed-variant": "#5516be",
+                      "surface": "#111317",
+                      "secondary-fixed": "#e9ddff",
+                      "surface-variant": "#333539",
+                      "on-primary-fixed-variant": "#004f54",
+                      "on-primary": "#00363a",
+                      "primary-fixed": "#7df4ff",
+                      "on-secondary-container": "#c4abff",
+                      "on-tertiary-container": "#006d4a",
+                      "on-surface-variant": "#b9cacb",
+                      "secondary-fixed-dim": "#d0bcff",
+                      "surface-tint": "#00dbe9",
+                      "tertiary-container": "#65f2b5",
+                      "on-secondary": "#3c0091",
+                      "on-primary-fixed": "#002022",
+                      "surface-container-low": "#1a1c20",
+                      "on-tertiary-fixed-variant": "#005236",
+                      "outline": "#849495",
+                      "primary-fixed-dim": "#00dbe9",
+                      "surface-container-highest": "#333539",
+                      "primary": "#dbfcff",
+                      "inverse-primary": "#006970",
+                      "surface-bright": "#37393e",
+                      "surface-container-lowest": "#0c0e12",
+                      "on-primary-container": "#006970",
+                      "secondary": "#d0bcff",
+                      "error-container": "#93000a",
+                      "on-secondary-fixed": "#23005c",
+                      "on-tertiary": "#003824",
+                      "on-surface": "#e2e2e8",
+                      "surface-dim": "#111317",
+                      "tertiary-fixed": "#6ffbbe",
+                      "tertiary-fixed-dim": "#4edea3",
+                      "primary-container": "#00f0ff",
+                      "background": "#111317",
+                      "secondary-container": "#571bc1",
+                      "on-error-container": "#ffdad6",
+                      "error": "#ffb4ab",
+                      "on-error": "#690005",
+                      "on-background": "#e2e2e8"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "margin-desktop": "32px",
+                      "lg": "24px",
+                      "xs": "4px",
+                      "xl": "32px",
+                      "gutter": "16px",
+                      "md": "16px",
+                      "base": "4px",
+                      "sm": "8px"
+              },
+              "fontFamily": {
+                      "headline-lg": [
+                              "Geist"
+                      ],
+                      "headline-md": [
+                              "Geist"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Geist"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "mono-label": [
+                              "JetBrains Mono"
+                      ],
+                      "mono-code": [
+                              "JetBrains Mono"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "mono-label": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "mono-code": [
+                              "13px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+            },
+          }
+      </script>
+<style>
+        body {
+            background-color: #111317;
+            color: #e2e2e8;
+        }
+        .glass-card {
+            background: rgba(30, 32, 36, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid #3b494b;
+        }
+        .glow-accent {
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+        }
+        .bg-gradient-tech {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.1) 0%, rgba(17, 19, 23, 0) 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-sm min-h-screen flex flex-col pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface/60 backdrop-blur-xl border-b border-outline-variant">
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary tracking-tight">auto-dev-agent</h1>
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 mt-16 px-margin-mobile pt-lg flex flex-col gap-lg md:hidden"> <!-- Suppress on desktop -->
+<!-- Header Section -->
+<section class="flex flex-col gap-sm">
+<div class="flex items-center gap-xs text-on-surface-variant font-mono-label text-mono-label">
+<span>tekno-labs</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-primary-fixed">auto-dev-agent</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface">
+                Autonomous AI agent for complex developer tasks. Uses LLMs to navigate codebases, write tests, and submit PRs.
+            </p>
+<div class="flex items-center gap-sm mt-xs">
+<span class="material-symbols-outlined text-outline" data-icon="link">link</span>
+<a class="text-primary font-mono-label text-mono-label hover:underline" href="#">docs.tekno-labs.ai</a>
+</div>
+</section>
+<!-- Action Row -->
+<section class="grid grid-cols-3 gap-sm">
+<button class="glass-card rounded-lg flex flex-col items-center justify-center py-sm gap-xs hover:border-primary-fixed transition-colors active:scale-95">
+<span class="material-symbols-outlined text-tertiary-fixed-dim" data-icon="star">star</span>
+<span class="font-mono-label text-mono-label text-on-surface">12.8k</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant text-[10px]">Star</span>
+</button>
+<button class="glass-card rounded-lg flex flex-col items-center justify-center py-sm gap-xs hover:border-primary-fixed transition-colors active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="fork_right">fork_right</span>
+<span class="font-mono-label text-mono-label text-on-surface">1.2k</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant text-[10px]">Fork</span>
+</button>
+<button class="glass-card rounded-lg flex flex-col items-center justify-center py-sm gap-xs hover:border-primary-fixed transition-colors active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="visibility">visibility</span>
+<span class="font-mono-label text-mono-label text-on-surface">342</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant text-[10px]">Watch</span>
+</button>
+</section>
+<!-- Tech Stack -->
+<section class="flex flex-col gap-sm">
+<h2 class="font-headline-md text-headline-md text-primary">Tech Stack</h2>
+<div class="flex flex-wrap gap-sm">
+<div class="px-sm py-base rounded border border-outline-variant bg-surface-container flex items-center gap-xs">
+<div class="w-2 h-2 rounded-full bg-[#3572A5]"></div>
+<span class="font-mono-label text-mono-label text-on-surface">Python 65%</span>
+</div>
+<div class="px-sm py-base rounded border border-outline-variant bg-surface-container flex items-center gap-xs">
+<div class="w-2 h-2 rounded-full bg-[#dea584]"></div>
+<span class="font-mono-label text-mono-label text-on-surface">Rust 25%</span>
+</div>
+<div class="px-sm py-base rounded border border-outline-variant bg-surface-container flex items-center gap-xs">
+<div class="w-2 h-2 rounded-full bg-[#f1e05a]"></div>
+<span class="font-mono-label text-mono-label text-on-surface">JavaScript 10%</span>
+</div>
+</div>
+</section>
+<!-- Activity Sparkline -->
+<section class="glass-card rounded-xl p-md flex flex-col gap-sm">
+<div class="flex justify-between items-center">
+<h2 class="font-headline-md text-headline-md text-primary">Activity</h2>
+<span class="font-mono-label text-mono-label text-tertiary-fixed-dim">Active</span>
+</div>
+<div class="h-16 w-full flex items-end gap-1 opacity-80">
+<!-- Simple CSS Bar Chart for Sparkline -->
+<div class="flex-1 bg-outline-variant h-[20%] rounded-t-sm"></div>
+<div class="flex-1 bg-outline-variant h-[40%] rounded-t-sm"></div>
+<div class="flex-1 bg-outline-variant h-[30%] rounded-t-sm"></div>
+<div class="flex-1 bg-outline-variant h-[60%] rounded-t-sm"></div>
+<div class="flex-1 bg-outline-variant h-[50%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary-fixed h-[80%] rounded-t-sm glow-accent"></div>
+<div class="flex-1 bg-outline-variant h-[40%] rounded-t-sm"></div>
+<div class="flex-1 bg-outline-variant h-[70%] rounded-t-sm"></div>
+<div class="flex-1 bg-outline-variant h-[90%] rounded-t-sm"></div>
+<div class="flex-1 bg-outline-variant h-[30%] rounded-t-sm"></div>
+<div class="flex-1 bg-primary-fixed h-[100%] rounded-t-sm glow-accent"></div>
+<div class="flex-1 bg-outline-variant h-[50%] rounded-t-sm"></div>
+</div>
+<p class="font-mono-label text-mono-label text-on-surface-variant text-right">Last 30 days</p>
+</section>
+<!-- Stats Bento Grid -->
+<section class="grid grid-cols-2 gap-sm">
+<div class="glass-card rounded-xl p-md flex flex-col justify-between h-24 bg-gradient-tech">
+<span class="material-symbols-outlined text-primary-fixed" data-icon="bug_report">bug_report</span>
+<div class="flex justify-between items-end">
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">42</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant">Issues</span>
+</div>
+</div>
+<div class="glass-card rounded-xl p-md flex flex-col justify-between h-24 bg-gradient-tech">
+<span class="material-symbols-outlined text-tertiary-fixed-dim" data-icon="call_merge">call_merge</span>
+<div class="flex justify-between items-end">
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">12</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant">PRs</span>
+</div>
+</div>
+<div class="glass-card rounded-xl p-md flex flex-col justify-between h-24 col-span-2">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="group">group</span>
+<span class="font-mono-label text-mono-label text-on-surface-variant">Contributors</span>
+</div>
+<div class="flex justify-between items-center mt-xs">
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">156</span>
+<div class="flex -space-x-2">
+<img class="w-8 h-8 rounded-full border border-surface" data-alt="A small circular avatar of a tech developer in a dark modern style, high contrast." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCm-faePCNCTMssdl_IZI9tPJIRF7chK6HaXnwrM8Va8TiY_Z43ef91cY17lGzzG7tmDO7pYUXkax2L32KubEl7rZrJtVhJD3C9IfZ8zvfkqwhveFbopqoqImTFhfIfXHisOT1wNGFTtupg2JmIh579jSbl0SAcwzhsMon0ar5vxfJPB2vTyuLHmii8DcuW8IbV4NR80AhOVCyAd2vC0pS6MyEJhAOSDnV3JY0_r2OpRkFmmriNL-CvlUAK7J4irpfsJ4-z-4hlDJ4"/>
+<img class="w-8 h-8 rounded-full border border-surface" data-alt="A small circular avatar of an AI researcher in a dark modern style, neon accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSmlnIrlLg4q8Z-VDmFIC0RNFXelDrF-XEc82AFsrWAPvJnB9lnPRNHYlXOBqAru_9NBQWpMVjUuurspttrO3meuttimEx3DBbgeVHetnBnT-prwNq4j0OiA51eYGBWQ6de7LuFjeU1X8wCrpviJliEnUnh2rRi3w48Zvjq9vuWneLV8MJUThUvf9Fw9sSoa_aNOjfklAPXZrTKh1W_Nn6e2Nm9jEWmP2oToXaMAYSceVT-yYr41bzAx31evDCs0jMOhv2VrAFsbE"/>
+<img class="w-8 h-8 rounded-full border border-surface" data-alt="A small circular avatar of a programmer in a dark minimalist style, professional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5E0I98mPTnsA6F1FI038JxmXV6qBbeilI_RenrtMCOAG8oT53dTOXix5wpHqNSkvSzc7p85CQjhY2dmZvIZvRy0J32W0GZ2igZ0F3neoz8aOEXV-TszSiHnGVvBVzorT_cvk3KamAYWUxVSR4k6RVZWeirGDIAcxX7kXbcz5UoMgI_Smr7J675irfCT_i3ZPriXYX75hcz6xh7LxEGfrFOnn52w2ujhKqPdgIF2ujuLGlnPCatkRC2oFHZSz2b7ckbRQ0PDQhYco"/>
+<div class="w-8 h-8 rounded-full border border-surface bg-surface-container-high flex items-center justify-center font-mono-label text-[10px]">+153</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Code Snippet -->
+<section class="flex flex-col gap-sm">
+<div class="flex justify-between items-center">
+<h2 class="font-headline-md text-headline-md text-primary">README.md</h2>
+<button class="font-mono-label text-mono-label text-primary-fixed flex items-center gap-xs hover:underline">
+                    View Full <span class="material-symbols-outlined text-[14px]" data-icon="open_in_new">open_in_new</span>
+</button>
+</div>
+<div class="glass-card rounded-xl p-md bg-[#000000] border-outline-variant overflow-x-auto">
+<pre class="font-mono-code text-mono-code text-on-surface"><code class="text-tertiary-fixed-dim">from</code> auto_dev <code class="text-tertiary-fixed-dim">import</code> Agent
+
+<span class="text-outline-variant"># Initialize the autonomous agent</span>
+agent = Agent(
+    repo_path=<span class="text-[#f1e05a]">"./my-project"</span>,
+    model=<span class="text-[#f1e05a]">"gpt-4-turbo"</span>
+)
+
+<span class="text-outline-variant"># Provide a complex task</span>
+agent.execute(
+    task=<span class="text-[#f1e05a]">"Refactor auth module and add unit tests"</span>,
+    auto_pr=<code class="text-tertiary-fixed-dim">True</code>
+)
+</pre>
+</div>
+</section>
+<div class="h-8"></div> <!-- Bottom spacer -->
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-margin-mobile py-sm pb-safe bg-surface/60 backdrop-blur-xl border-t border-outline-variant md:hidden">
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-mono-label text-mono-label mt-xs">Ana Sayfa</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary font-bold active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="explore" data-weight="fill">explore</span>
+<span class="font-mono-label text-mono-label mt-xs">Keşfet</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-mono-label text-mono-label mt-xs">Paylaş</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-mono-label text-mono-label mt-xs">Bildirimler</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="person_outline">person_outline</span>
+<span class="font-mono-label text-mono-label mt-xs">Profil</span>
+</button>
+</nav>
+</body></html>

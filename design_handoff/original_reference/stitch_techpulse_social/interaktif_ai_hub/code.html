@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DevPulse - AI Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&amp;family=Geist:wght@600;700&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#dbfcff",
+                        "surface-container-highest": "#333539",
+                        "on-primary": "#00363a",
+                        "secondary-container": "#7d01b1",
+                        "inverse-on-surface": "#2f3035",
+                        "tertiary": "#deffd6",
+                        "surface-container-low": "#1a1c20",
+                        "on-error-container": "#ffdad6",
+                        "surface-tint": "#00dbe9",
+                        "on-background": "#e2e2e8",
+                        "error-container": "#93000a",
+                        "on-primary-fixed": "#002022",
+                        "primary-fixed-dim": "#00dbe9",
+                        "error": "#ffb4ab",
+                        "on-secondary": "#510074",
+                        "surface-variant": "#333539",
+                        "tertiary-fixed-dim": "#42e355",
+                        "outline": "#849495",
+                        "secondary-fixed": "#f6d9ff",
+                        "on-tertiary": "#00390a",
+                        "surface-dim": "#111317",
+                        "background": "#111317",
+                        "surface-bright": "#37393e",
+                        "secondary-fixed-dim": "#e9b3ff",
+                        "tertiary-fixed": "#70ff76",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-secondary-fixed": "#310048",
+                        "surface-container-lowest": "#0c0e12",
+                        "tertiary-container": "#59f766",
+                        "on-secondary-container": "#e5a9ff",
+                        "on-error": "#690005",
+                        "surface": "#111317",
+                        "on-tertiary-container": "#006e1c",
+                        "primary-container": "#00f0ff",
+                        "primary-fixed": "#7df4ff",
+                        "on-surface-variant": "#b9cacb",
+                        "inverse-primary": "#006970",
+                        "on-primary-container": "#006970",
+                        "secondary": "#e9b3ff",
+                        "on-tertiary-fixed": "#002204",
+                        "outline-variant": "#3b494b",
+                        "surface-container": "#1e2024",
+                        "on-secondary-fixed-variant": "#7200a3",
+                        "on-tertiary-fixed-variant": "#005313",
+                        "surface-container-high": "#282a2e",
+                        "on-surface": "#e2e2e8",
+                        "inverse-surface": "#e2e2e8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "8px",
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "base-unit": "4px",
+                        "margin-mobile": "20px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Geist"],
+                        "body-sm": ["Inter"],
+                        "headline-xl": ["Geist"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Geist"],
+                        "code-snippet": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-caps": ["11px", { "lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "600" }],
+                        "code-snippet": ["13px", { "lineHeight": "20px", "fontWeight": "500" }]
+                    }
+                },
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            min-height: max(884px, 100dvh);
+        }
+        .glass-panel {
+            background-color: theme('colors.surface-container-low');
+            backdrop-filter: blur(20px);
+            border: 1px solid theme('colors.outline-variant');
+        }
+        .neon-text-glow {
+            text-shadow: 0 0 10px theme('colors.primary');
+        }
+        .neon-box-glow {
+            box-shadow: 0 0 15px theme('colors.primary-container');
+        }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        .pt-safe { padding-top: env(safe-area-inset-top); }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+        .delay-500 { animation-delay: 500ms; }
+
+        @keyframes subtlePulse {
+            0%, 100% { box-shadow: 0 0 10px theme('colors.tertiary-container/10'); border-color: theme('colors.tertiary-container/20'); }
+            50% { box-shadow: 0 0 25px theme('colors.tertiary-container/30'); border-color: theme('colors.tertiary-container/50'); }
+        }
+        .animate-subtle-pulse {
+            animation: subtlePulse 3s infinite ease-in-out;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .shimmer-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer-effect::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2.5s infinite linear;
+            pointer-events: none;
+        }
+
+        /* Particle Background & Mouse Tracking */
+        #particle-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+            background: radial-gradient(circle at calc(var(--mouse-x, 0.5) * 100%) calc(var(--mouse-y, 0.5) * 100%), rgba(0, 240, 255, 0.03) 0%, transparent 40%);
+            transition: background 0.2s ease-out;
+        }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background-color: theme('colors.primary/20');
+            animation: float var(--float-duration, 10s) linear infinite;
+            opacity: var(--particle-opacity, 0.3);
+            bottom: -20px;
+        }
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: var(--particle-opacity, 0.3); }
+            90% { opacity: var(--particle-opacity, 0.3); }
+            100% { transform: translateY(calc(-100vh - 50px)) translateX(var(--drift, 20px)); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="antialiased pb-24 md:pb-0 pt-16 md:pt-20 overflow-x-hidden">
+<div id="particle-container"></div>
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/70 backdrop-blur-xl border-b border-white/10 pt-safe flex justify-between items-center px-margin-mobile h-16 md:hidden">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A futuristic minimalist avatar placeholder featuring neon blue geometric shapes on a dark charcoal background, evoking a cyberpunk tech aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuABocagorKUZEV2B3VWJu0TN-Nj7eVMvoZAvk85abGszc7j-EoCd-hxQCU54juYT00oB7vuB11fIf2OfyHIWsDYuANHT_OuISVk4Gu0EwBT_kRPgn7sMVgxOqaJ5B5di_PqCH7DmWKHjYX2ae-XZMYFq3BIQn98QDdqfZXSBfm0_sgO4pYz2kO1YyJ1VI1WSLFdDFKvVvT0fUlnwlxZaLMCqYJrPUrvla2kjhVMSDElbLaO6sPxwyFj8iawayf1SAhXtAkRmDr1VPo"/>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">DevPulse</h1>
+</div>
+<button class="text-on-surface-variant hover:text-primary hover:scale-110 active:scale-90 transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</header>
+<!-- Desktop Navigation (Hidden on Mobile) -->
+<nav class="hidden md:flex fixed top-0 w-full z-50 bg-surface/70 backdrop-blur-xl border-b border-white/10 px-6 h-20 items-center justify-between">
+<div class="flex items-center gap-8">
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary hover:scale-[1.02] transition-transform cursor-pointer">DevPulse</h1>
+<div class="flex gap-6">
+<a class="text-on-surface-variant hover:text-primary hover:-translate-y-0.5 transition-all flex items-center gap-2" href="#">
+<span class="material-symbols-outlined" data-icon="rss_feed">rss_feed</span>
+<span class="font-body-sm text-body-sm">Feed</span>
+</a>
+<a class="text-on-surface-variant hover:text-primary hover:-translate-y-0.5 transition-all flex items-center gap-2" href="#">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+<span class="font-body-sm text-body-sm">Trending</span>
+</a>
+<a class="text-primary flex items-center gap-2 relative after:content-[''] after:absolute after:-bottom-5 after:left-0 after:w-full after:h-1 after:bg-primary after:rounded-t-lg hover:-translate-y-0.5 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+<span class="font-body-sm text-body-sm font-semibold">AI Hub</span>
+</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary hover:scale-110 active:scale-90 transition-all">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary hover:scale-110 active:scale-90 transition-all">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden hover:scale-110 transition-transform cursor-pointer">
+<img class="w-full h-full object-cover" data-alt="A futuristic minimalist avatar placeholder featuring neon blue geometric shapes on a dark charcoal background, evoking a cyberpunk tech aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAihIErtn2ZfsQBf7sxOTjj4HWCS8tJARk9mQbeIkv3MYnxdO0UQdUjdQ10fAsu2M3fSRJGO6OxpJR3qEa1J_E72pRSQUMzrLWoGglxkCW6pUU51oBIGy-V4aD653sFJSst7X_l15clf1i1WRkq09qCKIkIoz3wGAiDvzNJPZnck1baY24kHJ8pzW7Gf6qhor2HRmz5nTr0BKhcQUH0sRr_AXGj18YIXu7rZ_oqPab4pgkNCqAsLtwRSybfuIwjjFkV-nVXCE4U8gs"/>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="container mx-auto px-margin-mobile md:px-gutter max-w-7xl pt-stack-md">
+<!-- Header Section -->
+<section class="mb-stack-lg text-center md:text-left pt-6 animate-fade-in-up">
+<h2 class="font-headline-xl text-headline-xl text-primary neon-text-glow mb-stack-sm">Intelligence Core</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Monitor the edge of artificial intelligence. Track foundation models, explore advanced prompting, and integrate next-gen dev tools.</p>
+</section>
+<!-- Categories / Filter Chips -->
+<section class="mb-stack-lg overflow-x-auto pb-4 hide-scrollbar animate-fade-in-up delay-100">
+<div class="flex gap-3 md:flex-wrap w-max md:w-full">
+<button class="px-4 py-2 rounded-full border border-primary bg-primary/10 text-primary font-label-caps text-label-caps whitespace-nowrap backdrop-blur-sm flex items-center gap-2 hover:scale-105 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[16px]" data-icon="memory">memory</span>
+                    Large Language Models
+                </button>
+<button class="px-4 py-2 rounded-full border border-outline-variant bg-surface-container-low text-on-surface-variant hover:text-primary hover:border-primary/50 transition-colors font-label-caps text-label-caps whitespace-nowrap backdrop-blur-sm flex items-center gap-2 hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[16px]" data-icon="image">image</span>
+                    Image Generation
+                </button>
+<button class="px-4 py-2 rounded-full border border-outline-variant bg-surface-container-low text-on-surface-variant hover:text-primary hover:border-primary/50 transition-colors font-label-caps text-label-caps whitespace-nowrap backdrop-blur-sm flex items-center gap-2 hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[16px]" data-icon="terminal">terminal</span>
+                    Developer Tools
+                </button>
+</div>
+</section>
+<!-- Foundation Models Bento Grid -->
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-stack-md animate-fade-in-up delay-200">Foundation Models</h3>
+<section class="grid grid-cols-1 md:grid-cols-12 gap-gutter mb-stack-lg">
+<!-- GPT-4 Card -->
+<div class="md:col-span-8 glass-panel rounded-xl p-6 relative overflow-hidden group hover:border-primary/50 hover:shadow-[0_8px_30px_rgb(0,0,0,0.5)] hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 animate-fade-in-up delay-200">
+<div class="absolute -right-20 -top-20 w-64 h-64 bg-secondary/10 rounded-full blur-3xl group-hover:bg-secondary/30 transition-all duration-500"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<span class="font-label-caps text-label-caps text-secondary border border-secondary/30 px-2 py-1 rounded bg-secondary/5">OPENAI</span>
+<button class="text-on-surface-variant hover:text-primary hover:scale-110 active:scale-90 transition-all"><span class="material-symbols-outlined" data-icon="bookmark">bookmark</span></button>
+</div>
+<div class="relative z-10">
+<h4 class="font-headline-lg text-headline-lg text-primary mb-2">GPT-4 Turbo</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6 max-w-lg">The latest iteration offering 128k context window, lower pricing, and improved instruction following capabilities. Ideal for complex coding tasks and lengthy document analysis.</p>
+<div class="flex gap-4">
+<div class="bg-surface-dim rounded-lg p-3 border border-outline-variant group-hover:border-secondary/30 transition-colors">
+<span class="block font-label-caps text-label-caps text-on-surface-variant mb-1">CONTEXT</span>
+<span class="font-code-snippet text-code-snippet text-secondary-fixed">128k Tokens</span>
+</div>
+<div class="bg-surface-dim rounded-lg p-3 border border-outline-variant group-hover:border-secondary/30 transition-colors">
+<span class="block font-label-caps text-label-caps text-on-surface-variant mb-1">KNOWLEDGE CUTOFF</span>
+<span class="font-code-snippet text-code-snippet text-secondary-fixed">Dec 2023</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Claude Card -->
+<div class="md:col-span-4 glass-panel rounded-xl p-6 relative overflow-hidden group hover:border-tertiary-container/50 hover:shadow-[0_8px_30px_rgb(0,0,0,0.5)] hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 animate-fade-in-up delay-300">
+<div class="absolute -right-10 -bottom-10 w-40 h-40 bg-tertiary-container/10 rounded-full blur-2xl group-hover:bg-tertiary-container/30 transition-all duration-500"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<span class="font-label-caps text-label-caps text-tertiary-container border border-tertiary-container/30 px-2 py-1 rounded bg-tertiary-container/5">ANTHROPIC</span>
+<button class="text-on-surface-variant hover:text-primary hover:scale-110 active:scale-90 transition-all"><span class="material-symbols-outlined" data-icon="bookmark">bookmark</span></button>
+</div>
+<div class="relative z-10">
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-2">Claude 3 Opus</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6">Exhibits near-human levels of comprehension and fluency on highly complex tasks. Exceptional nuanced reasoning.</p>
+<div class="bg-surface-dim rounded-lg p-3 border border-outline-variant inline-block group-hover:border-tertiary-container/30 transition-colors">
+<span class="block font-label-caps text-label-caps text-on-surface-variant mb-1">BENCHMARK</span>
+<span class="font-code-snippet text-code-snippet text-tertiary-container">MMLU: 86.8%</span>
+</div>
+</div>
+</div>
+<!-- Gemini Card -->
+<div class="md:col-span-5 glass-panel rounded-xl p-6 relative overflow-hidden group hover:border-primary-container/50 hover:shadow-[0_8px_30px_rgb(0,0,0,0.5)] hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 animate-fade-in-up delay-400">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary-container/5 rounded-bl-full blur-2xl group-hover:bg-primary-container/20 transition-all duration-500"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<span class="font-label-caps text-label-caps text-primary-container border border-primary-container/30 px-2 py-1 rounded bg-primary-container/5">GOOGLE</span>
+<button class="text-on-surface-variant hover:text-primary hover:scale-110 active:scale-90 transition-all"><span class="material-symbols-outlined" data-icon="bookmark_add">bookmark_add</span></button>
+</div>
+<div class="relative z-10">
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-2">Gemini 1.5 Pro</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">Breakthrough native multimodal capabilities with a massive context window.</p>
+<div class="bg-surface-dim rounded-lg p-3 border border-outline-variant inline-block group-hover:border-primary-container/30 transition-colors">
+<span class="block font-label-caps text-label-caps text-on-surface-variant mb-1">MAX CONTEXT</span>
+<span class="font-code-snippet text-code-snippet text-primary-container">1M Tokens</span>
+</div>
+</div>
+</div>
+<!-- Llama Card -->
+<div class="md:col-span-7 glass-panel rounded-xl p-6 relative overflow-hidden group hover:border-primary/50 hover:shadow-[0_8px_30px_rgb(0,0,0,0.5)] hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 animate-fade-in-up delay-500">
+<div class="flex justify-between items-start mb-4 relative z-10">
+<span class="font-label-caps text-label-caps text-on-surface border border-outline px-2 py-1 rounded bg-surface">META / OPEN SOURCE</span>
+<button class="text-on-surface-variant hover:text-primary hover:scale-110 active:scale-90 transition-all"><span class="material-symbols-outlined" data-icon="bookmark_add">bookmark_add</span></button>
+</div>
+<div class="relative z-10">
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-2">Llama 3 (Upcoming)</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-4">The next generation of open-weight models. Expected to feature significantly improved reasoning and coding performance over Llama 2.</p>
+<button class="bg-primary text-on-primary font-code-snippet text-code-snippet px-4 py-2 rounded font-bold hover:shadow-[0_0_20px_rgba(219,252,255,0.7)] hover:scale-105 active:scale-95 transition-all">Track Development</button>
+</div>
+</div>
+</section>
+<!-- Lower Section Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter mb-stack-lg">
+<!-- New Tool Alerts -->
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-stack-md flex items-center gap-2 animate-fade-in-up delay-200">
+<span class="material-symbols-outlined text-secondary" data-icon="bolt">bolt</span>
+                    New Tool Alerts
+                </h3>
+<div class="flex flex-col gap-3">
+<!-- Tool 1 -->
+<div class="glass-panel rounded-lg p-4 flex items-center justify-between group hover:bg-surface-container-high hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer border-l-2 border-l-primary animate-fade-in-up delay-300">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-surface-dim flex items-center justify-center border border-outline-variant group-hover:border-primary/50 transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="api">api</span>
+</div>
+<div>
+<h5 class="font-code-snippet text-code-snippet text-primary font-bold">Devin by Cognition</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant">The first autonomous AI software engineer.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary group-hover:translate-x-1 transition-all" data-icon="arrow_forward">arrow_forward</span>
+</div>
+<!-- Tool 2 -->
+<div class="glass-panel rounded-lg p-4 flex items-center justify-between group hover:bg-surface-container-high hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer animate-fade-in-up delay-300">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-surface-dim flex items-center justify-center border border-outline-variant group-hover:border-secondary/50 transition-colors">
+<span class="material-symbols-outlined text-secondary" data-icon="database">database</span>
+</div>
+<div>
+<h5 class="font-code-snippet text-code-snippet text-primary font-bold">Groq LPU API</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Ultra-fast inference engine for open models.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary group-hover:translate-x-1 transition-all" data-icon="arrow_forward">arrow_forward</span>
+</div>
+<!-- Tool 3 -->
+<div class="glass-panel rounded-lg p-4 flex items-center justify-between group hover:bg-surface-container-high hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer animate-fade-in-up delay-400">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-surface-dim flex items-center justify-center border border-outline-variant group-hover:border-tertiary-container/50 transition-colors">
+<span class="material-symbols-outlined text-tertiary-container" data-icon="edit_document">edit_document</span>
+</div>
+<div>
+<h5 class="font-code-snippet text-code-snippet text-primary font-bold">Cursor Update</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant">New codebase-wide refactoring tools added.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary group-hover:translate-x-1 transition-all" data-icon="arrow_forward">arrow_forward</span>
+</div>
+<div class="glass-panel rounded-lg p-4 flex items-center justify-between group hover:bg-surface-container-high hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer animate-fade-in-up delay-400">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-surface-dim flex items-center justify-center border border-outline-variant group-hover:border-primary/50 transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="image">image</span>
+</div>
+<div>
+<h5 class="font-code-snippet text-code-snippet text-primary font-bold">Midjourney v6</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Latest photorealistic image generation model with improved text rendering.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary group-hover:translate-x-1 transition-all" data-icon="arrow_forward">arrow_forward</span>
+</div><div class="glass-panel rounded-lg p-4 flex items-center justify-between group hover:bg-surface-container-high hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer animate-fade-in-up delay-500">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-surface-dim flex items-center justify-center border border-outline-variant group-hover:border-secondary/50 transition-colors">
+<span class="material-symbols-outlined text-secondary" data-icon="record_voice_over">record_voice_over</span>
+</div>
+<div>
+<h5 class="font-code-snippet text-code-snippet text-primary font-bold">ElevenLabs API</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant">High-fidelity speech synthesis and voice cloning for developers.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary group-hover:translate-x-1 transition-all" data-icon="arrow_forward">arrow_forward</span>
+</div><div class="glass-panel rounded-lg p-4 flex items-center justify-between group hover:bg-surface-container-high hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer animate-fade-in-up delay-500">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-surface-dim flex items-center justify-center border border-outline-variant group-hover:border-tertiary-container/50 transition-colors">
+<span class="material-symbols-outlined text-tertiary-container" data-icon="link">link</span>
+</div>
+<div>
+<h5 class="font-code-snippet text-code-snippet text-primary font-bold">LangChain</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Building context-aware applications with LLM orchestration and tools.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary group-hover:translate-x-1 transition-all" data-icon="arrow_forward">arrow_forward</span>
+</div></div>
+</div>
+<!-- Prompt of the Day -->
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-stack-md flex items-center gap-2 animate-fade-in-up delay-200">
+<span class="material-symbols-outlined text-primary" data-icon="auto_awesome">auto_awesome</span>
+                    Emerging Models
+                </h3>
+<div class="flex flex-col gap-3 mb-stack-lg">
+<div class="glass-panel rounded-lg p-4 flex items-center justify-between group hover:bg-surface-container-high hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer animate-fade-in-up delay-300">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-surface-dim flex items-center justify-center border border-outline-variant group-hover:border-primary/50 transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="brush">brush</span>
+</div>
+<div>
+<h5 class="font-code-snippet text-code-snippet text-primary font-bold">Stable Diffusion 3</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Multimodal diffusion transformer for high-quality images.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary group-hover:translate-x-1 transition-all" data-icon="arrow_forward">arrow_forward</span>
+</div>
+<div class="glass-panel rounded-lg p-4 flex items-center justify-between group hover:bg-surface-container-high hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer animate-fade-in-up delay-400">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded bg-surface-dim flex items-center justify-center border border-outline-variant group-hover:border-secondary/50 transition-colors">
+<span class="material-symbols-outlined text-secondary" data-icon="psychology">psychology</span>
+</div>
+<div>
+<h5 class="font-code-snippet text-code-snippet text-primary font-bold">Mistral Large</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Top-tier open-weight performance for complex reasoning tasks.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-primary group-hover:translate-x-1 transition-all" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+<div class="animate-fade-in-up delay-500">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-stack-md flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary-container" data-icon="tips_and_updates">tips_and_updates</span>
+                    Prompt of the Day
+                </h3>
+<div class="glass-panel rounded-xl p-6 h-full flex flex-col border border-tertiary-container/20 relative animate-subtle-pulse group hover:scale-[1.01] transition-transform">
+<div class="absolute top-0 right-0 w-32 h-32 bg-tertiary-container/5 rounded-bl-full blur-xl pointer-events-none group-hover:bg-tertiary-container/10 transition-colors"></div>
+<div class="flex justify-between items-center mb-4">
+<span class="font-label-caps text-label-caps text-tertiary-container">SYS PROMPT • SECURITY</span>
+<button class="text-on-surface-variant hover:text-primary hover:scale-110 active:scale-90 transition-all" title="Copy Prompt">
+<span class="material-symbols-outlined" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+<div class="bg-surface-dim rounded border border-outline-variant p-4 font-code-snippet text-code-snippet text-on-surface-variant flex-grow overflow-y-auto mb-4 shimmer-effect">
+<span class="text-tertiary-container">You are a strict security analysis AI.</span><br/><br/>
+                        Review the following code snippet for potential OWASP Top 10 vulnerabilities. <br/>
+                        Format your response as a JSON array where each object contains:<br/>
+<span class="text-secondary">- "severity" (High, Med, Low)</span><br/>
+<span class="text-secondary">- "type" (e.g., Injection, XSS)</span><br/>
+<span class="text-secondary">- "line_number" (if applicable)</span><br/>
+<span class="text-secondary">- "remediation_suggestion"</span><br/><br/>
+                        If no vulnerabilities are found, return an empty array [].
+                    </div>
+<div class="flex gap-2">
+<span class="px-2 py-1 rounded bg-surface border border-outline-variant font-label-caps text-label-caps text-on-surface-variant">JSON OUTPUT</span>
+<span class="px-2 py-1 rounded bg-surface border border-outline-variant font-label-caps text-label-caps text-on-surface-variant">CODE REVIEW</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-surface/70 backdrop-blur-xl border-t border-white/10">
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary hover:-translate-y-1 hover:scale-110 transition-all active:scale-90" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="rss_feed">rss_feed</span>
+<span class="font-label-caps text-label-caps">Feed</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary hover:-translate-y-1 hover:scale-110 transition-all active:scale-90" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="trending_up">trending_up</span>
+<span class="font-label-caps text-label-caps">Trending</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary relative after:content-[''] after:w-1 after:h-1 after:bg-primary after:rounded-full after:mt-1 hover:opacity-80 hover:-translate-y-1 hover:scale-110 transition-all active:scale-90" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="smart_toy" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<span class="font-label-caps text-label-caps">AI Hub</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary hover:-translate-y-1 hover:scale-110 transition-all active:scale-90" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-label-caps text-label-caps">Profile</span>
+</a>
+</nav>
+<script>
+    // Particle System
+    const particleContainer = document.getElementById('particle-container');
+    const particleCount = 20;
+
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        // Randomize particle properties
+        const size = Math.random() * 4 + 2;
+        const left = Math.random() * 100;
+        const duration = Math.random() * 15 + 10;
+        const drift = (Math.random() - 0.5) * 100;
+        const delay = Math.random() * 20;
+        const opacity = Math.random() * 0.4 + 0.1;
+
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${left}vw`;
+        particle.style.setProperty('--float-duration', `${duration}s`);
+        particle.style.setProperty('--drift', `${drift}px`);
+        particle.style.setProperty('--particle-opacity', opacity);
+        particle.style.animationDelay = `-${delay}s`;
+
+        particleContainer.appendChild(particle);
+    }
+
+    // Mouse Tracking
+    document.addEventListener('mousemove', (e) => {
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        document.body.style.setProperty('--mouse-x', x);
+        document.body.style.setProperty('--mouse-y', y);
+    });
+</script>
+</body></html>

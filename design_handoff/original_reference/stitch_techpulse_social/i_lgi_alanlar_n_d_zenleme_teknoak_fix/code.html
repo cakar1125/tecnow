@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>İlgi Alanlarını Düzenle - TeknoAkış</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#d8ffe7",
+                        "surface-variant": "#333539",
+                        "surface-bright": "#37393e",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "on-primary-fixed": "#002022",
+                        "secondary-container": "#571bc1",
+                        "primary-fixed": "#7df4ff",
+                        "on-surface-variant": "#b9cacb",
+                        "surface": "#111317",
+                        "error": "#ffb4ab",
+                        "primary": "#dbfcff",
+                        "tertiary-fixed": "#6ffbbe",
+                        "surface-container-low": "#1a1c20",
+                        "surface-container": "#1e2024",
+                        "on-primary": "#00363a",
+                        "tertiary-container": "#65f2b5",
+                        "surface-container-highest": "#333539",
+                        "primary-fixed-dim": "#00dbe9",
+                        "outline-variant": "#3b494b",
+                        "primary-container": "#00f0ff",
+                        "outline": "#849495",
+                        "on-tertiary-fixed": "#002113",
+                        "on-secondary-container": "#c4abff",
+                        "background": "#111317",
+                        "on-tertiary": "#003824",
+                        "on-secondary-fixed": "#23005c",
+                        "on-tertiary-container": "#006d4a",
+                        "surface-tint": "#00dbe9",
+                        "on-error": "#690005",
+                        "surface-container-lowest": "#0c0e12",
+                        "secondary-fixed": "#e9ddff",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-surface": "#e2e2e8",
+                        "secondary": "#d0bcff",
+                        "inverse-surface": "#e2e2e8",
+                        "surface-dim": "#111317",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "on-primary-container": "#006970",
+                        "error-container": "#93000a",
+                        "on-secondary": "#3c0091",
+                        "inverse-primary": "#006970",
+                        "inverse-on-surface": "#2f3035",
+                        "surface-container-high": "#282a2e",
+                        "on-background": "#e2e2e8",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#004f54"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "xl": "32px",
+                        "margin-mobile": "16px",
+                        "gutter": "16px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "margin-desktop": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Geist"],
+                        "mono-code": ["JetBrains Mono"],
+                        "headline-md": ["Geist"],
+                        "headline-lg-mobile": ["Geist"],
+                        "mono-label": ["JetBrains Mono"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "mono-code": ["13px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "mono-label": ["12px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@600;700&amp;family=JetBrains+Mono:wght@400;500&amp;family=Inter:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333539; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3b494b; }
+        
+        /* Hide scrollbar for clean chip container */
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .chip-checkbox:checked + label {
+            background-color: #00f0ff;
+            color: #00363a;
+            border-color: #00f0ff;
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-sm relative selection:bg-primary-container selection:text-on-primary-container" style="background-color: #0A0C10;">
+<!-- Top App Bar (Task-focused, linear flow, minimal nav) -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface/60 dark:bg-surface/60 backdrop-blur-xl border-b border-outline-variant">
+<button aria-label="Geri" class="p-2 -ml-2 text-primary dark:text-primary-fixed hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-150 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-container">
+<span class="material-symbols-outlined">close</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed tracking-tight truncate max-w-[200px] text-center">İlgi Alanları</h1>
+<div class="w-10"></div> <!-- Spacer for centering -->
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow pt-24 pb-32 px-margin-mobile md:px-margin-desktop max-w-[600px] mx-auto w-full flex flex-col gap-lg">
+<!-- Header Info -->
+<section class="flex flex-col gap-sm">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Akışını Özelleştir</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Sana en uygun içerikleri gösterebilmemiz için ilgilendiğin teknik konuları seç.</p><p class="font-mono-label text-mono-label text-primary-fixed/80 italic">* En az üç konu seçmeniz önerilir.</p>
+</section>
+<!-- Search Bar -->
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary-container transition-colors pointer-events-none">search</span>
+<input aria-label="Konu ara" class="w-full bg-surface-container border border-outline-variant rounded-lg py-3 pl-10 pr-4 font-mono-code text-mono-code text-on-surface placeholder-on-surface-variant focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" placeholder="Konu ara..." type="text"/>
+</div>
+<!-- Selected Count Info -->
+<div class="flex justify-between items-end border-b border-surface-variant pb-2">
+<h3 class="font-mono-label text-mono-label text-on-surface-variant uppercase">Önerilen Konular</h3>
+<span class="font-mono-code text-mono-code text-primary-fixed bg-primary-fixed/10 px-2 py-0.5 rounded"><span id="selected-count">4</span> Seçildi</span>
+</div>
+<!-- Interests Grid (High accessibility 44px touch targets) -->
+<div class="flex flex-wrap gap-sm"><!-- Yapay Zeka -->
+<div class="relative">
+<input checked="" class="chip-checkbox sr-only" id="chip-ai" type="checkbox"/>
+<label class="flex items-center gap-2 h-11 px-4 border border-outline-variant rounded-full font-body-sm text-body-sm text-on-surface bg-surface-container cursor-pointer transition-all hover:bg-surface-variant select-none" for="chip-ai">
+<span class="material-symbols-outlined text-[18px]">psychology</span>
+                    Yapay Zekâ
+                </label>
+</div>
+<!-- GitHub / Git -->
+<div class="relative">
+<input class="chip-checkbox sr-only" id="chip-git" type="checkbox"/>
+<label class="flex items-center gap-2 h-11 px-4 border border-outline-variant rounded-full font-body-sm text-body-sm text-on-surface bg-surface-container cursor-pointer transition-all hover:bg-surface-variant select-none" for="chip-git">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+                    GitHub ve Git
+                </label>
+</div>
+<!-- Açık Kaynak -->
+<div class="relative">
+<input checked="" class="chip-checkbox sr-only" id="chip-opensource" type="checkbox"/>
+<label class="flex items-center gap-2 h-11 px-4 border border-outline-variant rounded-full font-body-sm text-body-sm text-on-surface bg-surface-container cursor-pointer transition-all hover:bg-surface-variant select-none" for="chip-opensource">
+<span class="material-symbols-outlined text-[18px]">public</span>
+                    Açık Kaynak
+                </label>
+</div>
+<!-- Web Geliştirme -->
+<div class="relative">
+<input class="chip-checkbox sr-only" id="chip-web" type="checkbox"/>
+<label class="flex items-center gap-2 h-11 px-4 border border-outline-variant rounded-full font-body-sm text-body-sm text-on-surface bg-surface-container cursor-pointer transition-all hover:bg-surface-variant select-none" for="chip-web">
+<span class="material-symbols-outlined text-[18px]">web</span>
+                    Web Geliştirme
+                </label>
+</div>
+<!-- Mobil Geliştirme -->
+<div class="relative">
+<input class="chip-checkbox sr-only" id="chip-mobile" type="checkbox"/>
+<label class="flex items-center gap-2 h-11 px-4 border border-outline-variant rounded-full font-body-sm text-body-sm text-on-surface bg-surface-container cursor-pointer transition-all hover:bg-surface-variant select-none" for="chip-mobile">
+<span class="material-symbols-outlined text-[18px]">smartphone</span>
+                    Mobil Geliştirme
+                </label>
+</div>
+<!-- Oyun Geliştirme -->
+<div class="relative">
+<input class="chip-checkbox sr-only" id="chip-game-dev" type="checkbox"/>
+<label class="flex items-center gap-2 h-11 px-4 border border-outline-variant rounded-full font-body-sm text-body-sm text-on-surface bg-surface-container cursor-pointer transition-all hover:bg-surface-variant select-none" for="chip-game-dev">
+<span class="material-symbols-outlined text-[18px]">sports_esports</span>
+                    Oyun Geliştirme
+                </label>
+</div>
+<!-- 3D ve Tasarım -->
+<div class="relative">
+<input class="chip-checkbox sr-only" id="chip-3d" type="checkbox"/>
+<label class="flex items-center gap-2 h-11 px-4 border border-outline-variant rounded-full font-body-sm text-body-sm text-on-surface bg-surface-container cursor-pointer transition-all hover:bg-surface-variant select-none" for="chip-3d">
+<span class="material-symbols-outlined text-[18px]">3d_rotation</span>
+                    3D ve Tasarım
+                </label>
+</div>
+<!-- Robotik -->
+<div class="relative">
+<input checked="" class="chip-checkbox sr-only" id="chip-robotics" type="checkbox"/>
+<label class="flex items-center gap-2 h-11 px-4 border border-outline-variant rounded-full font-body-sm text-body-sm text-on-surface bg-surface-container cursor-pointer transition-all hover:bg-surface-variant select-none" for="chip-robotics">
+<span class="material-symbols-outlined text-[18px]">smart_toy</span>
+                    Robotik
+                </label>
+</div>
+<!-- Siber Güvenlik -->
+<div class="relative">
+<input checked="" class="chip-checkbox sr-only" id="chip-security" type="checkbox"/>
+<label class="flex items-center gap-2 h-11 px-4 border border-outline-variant rounded-full font-body-sm text-body-sm text-on-surface bg-surface-container cursor-pointer transition-all hover:bg-surface-variant select-none" for="chip-security">
+<span class="material-symbols-outlined text-[18px]">security</span>
+                    Siber Güvenlik
+                </label>
+</div>
+<!-- Donanım -->
+<div class="relative">
+<input class="chip-checkbox sr-only" id="chip-hardware" type="checkbox"/>
+<label class="flex items-center gap-2 h-11 px-4 border border-outline-variant rounded-full font-body-sm text-body-sm text-on-surface bg-surface-container cursor-pointer transition-all hover:bg-surface-variant select-none" for="chip-hardware">
+<span class="material-symbols-outlined text-[18px]">memory</span>
+                    Donanım
+                </label>
+</div>
+<!-- Bilimsel Araştırmalar -->
+<div class="relative">
+<input class="chip-checkbox sr-only" id="chip-science" type="checkbox"/>
+<label class="flex items-center gap-2 h-11 px-4 border border-outline-variant rounded-full font-body-sm text-body-sm text-on-surface bg-surface-container cursor-pointer transition-all hover:bg-surface-variant select-none" for="chip-science">
+<span class="material-symbols-outlined text-[18px]">science</span>
+                    Bilimsel Araştırmalar
+                </label>
+</div>
+<!-- No-code ve Otomasyon -->
+<div class="relative">
+<input class="chip-checkbox sr-only" id="chip-nocode" type="checkbox"/>
+<label class="flex items-center gap-2 h-11 px-4 border border-outline-variant rounded-full font-body-sm text-body-sm text-on-surface bg-surface-container cursor-pointer transition-all hover:bg-surface-variant select-none" for="chip-nocode">
+<span class="material-symbols-outlined text-[18px]">automation</span>
+                    No-code ve Otomasyon
+                </label>
+</div>
+<!-- AR/VR -->
+<div class="relative">
+<input class="chip-checkbox sr-only" id="chip-arvr" type="checkbox"/>
+<label class="flex items-center gap-2 h-11 px-4 border border-outline-variant rounded-full font-body-sm text-body-sm text-on-surface bg-surface-container cursor-pointer transition-all hover:bg-surface-variant select-none" for="chip-arvr">
+<span class="material-symbols-outlined text-[18px]">view_in_ar</span>
+                    AR/VR
+                </label>
+</div></div>
+</main>
+<!-- Bottom Action Bar (Fixed) -->
+<div class="fixed bottom-0 w-full bg-surface-container/90 backdrop-blur-md border-t border-outline-variant p-margin-mobile z-40 pb-safe">
+<div class="max-w-[600px] mx-auto flex gap-md">
+<button class="flex-1 h-12 rounded-lg border border-primary-container text-primary-container font-mono-label text-mono-label uppercase tracking-widest hover:bg-primary-container/10 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-container focus:ring-offset-2 focus:ring-offset-surface">
+                İptal
+            </button>
+<button class="flex-[2] h-12 rounded-lg bg-primary-container text-on-primary-container font-mono-label text-mono-label uppercase tracking-widest font-bold hover:bg-primary-fixed transition-colors shadow-[0_0_15px_rgba(0,240,255,0.15)] focus:outline-none focus:ring-2 focus:ring-primary-container focus:ring-offset-2 focus:ring-offset-surface">
+                Değişiklikleri Kaydet
+            </button>
+</div>
+</div>
+<script>
+        // Simple script to update selected count
+        const checkboxes = document.querySelectorAll('.chip-checkbox');
+        const countDisplay = document.getElementById('selected-count');
+
+        checkboxes.forEach(box => {
+            box.addEventListener('change', () => {
+                const checkedCount = document.querySelectorAll('.chip-checkbox:checked').length;
+                countDisplay.textContent = checkedCount;
+            });
+        });
+    </script>
+</body></html>

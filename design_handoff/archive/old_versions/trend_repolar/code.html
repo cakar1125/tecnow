@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Trending Repositories</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&amp;family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#dbfcff",
+                        "surface-container-highest": "#333539",
+                        "on-primary": "#00363a",
+                        "secondary-container": "#7d01b1",
+                        "inverse-on-surface": "#2f3035",
+                        "tertiary": "#deffd6",
+                        "surface-container-low": "#1a1c20",
+                        "on-error-container": "#ffdad6",
+                        "surface-tint": "#00dbe9",
+                        "on-background": "#e2e2e8",
+                        "error-container": "#93000a",
+                        "on-primary-fixed": "#002022",
+                        "primary-fixed-dim": "#00dbe9",
+                        "error": "#ffb4ab",
+                        "on-secondary": "#510074",
+                        "surface-variant": "#333539",
+                        "tertiary-fixed-dim": "#42e355",
+                        "outline": "#849495",
+                        "secondary-fixed": "#f6d9ff",
+                        "on-tertiary": "#00390a",
+                        "surface-dim": "#111317",
+                        "background": "#111317",
+                        "surface-bright": "#37393e",
+                        "secondary-fixed-dim": "#e9b3ff",
+                        "tertiary-fixed": "#70ff76",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-secondary-fixed": "#310048",
+                        "surface-container-lowest": "#0c0e12",
+                        "tertiary-container": "#59f766",
+                        "on-secondary-container": "#e5a9ff",
+                        "on-error": "#690005",
+                        "surface": "#111317",
+                        "on-tertiary-container": "#006e1c",
+                        "primary-container": "#00f0ff",
+                        "primary-fixed": "#7df4ff",
+                        "on-surface-variant": "#b9cacb",
+                        "inverse-primary": "#006970",
+                        "on-primary-container": "#006970",
+                        "secondary": "#e9b3ff",
+                        "on-tertiary-fixed": "#002204",
+                        "outline-variant": "#3b494b",
+                        "surface-container": "#1e2024",
+                        "on-secondary-fixed-variant": "#7200a3",
+                        "on-tertiary-fixed-variant": "#005313",
+                        "surface-container-high": "#282a2e",
+                        "on-surface": "#e2e2e8",
+                        "inverse-surface": "#e2e2e8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "8px",
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "base-unit": "4px",
+                        "margin-mobile": "20px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Geist"],
+                        "body-sm": ["Inter"],
+                        "headline-xl": ["Geist"],
+                        "label-caps": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Geist"],
+                        "code-snippet": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-caps": ["11px", { "lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "600" }],
+                        "code-snippet": ["13px", { "lineHeight": "20px", "fontWeight": "500" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for web */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333539; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00dbe9; }
+        
+        .glass-panel {
+            background: rgba(28, 30, 38, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .neon-glow-active:active {
+            box-shadow: 0 0 15px rgba(0, 219, 233, 0.5);
+        }
+        
+        body {
+            background-color: #111317;
+            color: #e2e2e8;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-body-md bg-background min-h-screen pb-24 selection:bg-primary selection:text-on-primary">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/70 backdrop-blur-xl border-b border-white/10 flex justify-between items-center px-margin-mobile h-16">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high border border-outline-variant flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity active:scale-95">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A macro shot of a sleek, futuristic avatar icon with cybernetic elements. Deep charcoal background, glowing cyan accents, glowing neural network patterns. High tech, corporate AI aesthetic. 8k resolution." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiVDcOE5bJNKQhBMw9mqvpGqGTzjUHb6rogyhiK-1nibv7EzYlpvmwxCxv2bxuuXOsh8Ml3pAVgcrP1RqMKH_Yr50gaXzlXDxNPEki5JoJYJnIFyvI-0YYylsI_OAFyNITlmjAt90nJPKswAW8lZa70oTjtLAkajeIGDFu8PDLARVJ_mg213gGN2Nt52E_ye2vBfBbsDqt6GEpeqJrjXhVYVBAqr4jhRhaJ-kRQKKlOg7M4eJf-VXvWORf3MyiseOM_n129WYSXBQ"/>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary tracking-tight">DevPulse</h1>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary hover:opacity-80 transition-all active:scale-95">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="pt-[88px] px-margin-mobile pb-stack-lg max-w-3xl mx-auto flex flex-col gap-stack-lg">
+<!-- Filter Chips -->
+<div class="flex gap-stack-sm overflow-x-auto pb-2 scrollbar-hide -mx-margin-mobile px-margin-mobile md:mx-0 md:px-0">
+<button class="px-4 py-2 rounded-full font-label-caps text-label-caps bg-primary text-on-primary flex-shrink-0 active:scale-95 transition-transform">
+                Daily
+            </button>
+<button class="px-4 py-2 rounded-full font-label-caps text-label-caps glass-panel text-on-surface-variant hover:text-primary transition-colors flex-shrink-0 active:scale-95">
+                Weekly
+            </button>
+<button class="px-4 py-2 rounded-full font-label-caps text-label-caps glass-panel text-on-surface-variant hover:text-primary transition-colors flex-shrink-0 active:scale-95">
+                Monthly
+            </button>
+</div>
+<!-- Trending List -->
+<div class="flex flex-col gap-stack-md">
+<!-- Repo Card 1 -->
+<article class="glass-panel rounded-xl p-stack-md flex gap-stack-md relative overflow-hidden group hover:bg-surface-container transition-colors">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-8 flex flex-col items-center pt-1 flex-shrink-0">
+<span class="font-headline-lg text-headline-lg text-primary opacity-50">1</span>
+</div>
+<div class="flex-1 min-w-0 flex flex-col gap-stack-sm">
+<div class="flex justify-between items-start gap-4">
+<div>
+<span class="font-label-caps text-label-caps text-on-surface-variant block mb-1">microsoft /</span>
+<h2 class="font-headline-lg-mobile text-[22px] leading-tight text-primary-fixed truncate hover:underline cursor-pointer">DeepSpeed</h2>
+</div>
+<button class="h-8 px-3 rounded-lg bg-surface-container-high border border-outline-variant flex items-center gap-2 text-on-surface hover:text-primary hover:border-primary/50 transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[18px]">star</span>
+<span class="font-body-sm text-body-sm font-medium hidden sm:inline">Star</span>
+</button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+                        DeepSpeed is a deep learning optimization library that makes distributed training and inference easy, efficient, and effective.
+                    </p>
+<div class="flex items-center gap-stack-md mt-1">
+<div class="flex items-center gap-1.5">
+<div class="w-2.5 h-2.5 rounded-full bg-secondary-container shadow-[0_0_8px_rgba(125,1,177,0.8)]"></div>
+<span class="font-code-snippet text-code-snippet text-on-surface-variant">Python</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant hover:text-primary cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-[16px]">star</span>
+<span class="font-code-snippet text-code-snippet">32.4k</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant hover:text-primary cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-[16px]">fork_right</span>
+<span class="font-code-snippet text-code-snippet">3.8k</span>
+</div>
+</div>
+</div>
+</article>
+<!-- Repo Card 2 -->
+<article class="glass-panel rounded-xl p-stack-md flex gap-stack-md relative overflow-hidden group hover:bg-surface-container transition-colors">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-8 flex flex-col items-center pt-1 flex-shrink-0">
+<span class="font-headline-lg text-headline-lg text-primary opacity-50">2</span>
+</div>
+<div class="flex-1 min-w-0 flex flex-col gap-stack-sm">
+<div class="flex justify-between items-start gap-4">
+<div>
+<span class="font-label-caps text-label-caps text-on-surface-variant block mb-1">facebookresearch /</span>
+<h2 class="font-headline-lg-mobile text-[22px] leading-tight text-primary-fixed truncate hover:underline cursor-pointer">llama</h2>
+</div>
+<button class="h-8 px-3 rounded-lg bg-surface-container-high border border-outline-variant flex items-center gap-2 text-on-surface hover:text-primary hover:border-primary/50 transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[18px]">star</span>
+<span class="font-body-sm text-body-sm font-medium hidden sm:inline">Star</span>
+</button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+                        Inference code for LLaMA models. A state-of-the-art foundational large language model designed to help researchers advance their work.
+                    </p>
+<div class="flex items-center gap-stack-md mt-1">
+<div class="flex items-center gap-1.5">
+<div class="w-2.5 h-2.5 rounded-full bg-secondary-container shadow-[0_0_8px_rgba(125,1,177,0.8)]"></div>
+<span class="font-code-snippet text-code-snippet text-on-surface-variant">Python</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant hover:text-primary cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-[16px]">star</span>
+<span class="font-code-snippet text-code-snippet">45.1k</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant hover:text-primary cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-[16px]">fork_right</span>
+<span class="font-code-snippet text-code-snippet">8.2k</span>
+</div>
+</div>
+</div>
+</article>
+<!-- Repo Card 3 -->
+<article class="glass-panel rounded-xl p-stack-md flex gap-stack-md relative overflow-hidden group hover:bg-surface-container transition-colors">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-8 flex flex-col items-center pt-1 flex-shrink-0">
+<span class="font-headline-lg text-headline-lg text-primary opacity-50">3</span>
+</div>
+<div class="flex-1 min-w-0 flex flex-col gap-stack-sm">
+<div class="flex justify-between items-start gap-4">
+<div>
+<span class="font-label-caps text-label-caps text-on-surface-variant block mb-1">vercel /</span>
+<h2 class="font-headline-lg-mobile text-[22px] leading-tight text-primary-fixed truncate hover:underline cursor-pointer">next.js</h2>
+</div>
+<button class="h-8 px-3 rounded-lg bg-surface-container-high border border-outline-variant flex items-center gap-2 text-on-surface hover:text-primary hover:border-primary/50 transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[18px]">star</span>
+<span class="font-body-sm text-body-sm font-medium hidden sm:inline">Star</span>
+</button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+                        The React Framework for the Web. Enables you to create high-quality web applications with the power of React components.
+                    </p>
+<div class="flex items-center gap-stack-md mt-1">
+<div class="flex items-center gap-1.5">
+<div class="w-2.5 h-2.5 rounded-full bg-[#f1e05a] shadow-[0_0_8px_rgba(241,224,90,0.6)]"></div>
+<span class="font-code-snippet text-code-snippet text-on-surface-variant">JavaScript</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant hover:text-primary cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-[16px]">star</span>
+<span class="font-code-snippet text-code-snippet">112k</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant hover:text-primary cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-[16px]">fork_right</span>
+<span class="font-code-snippet text-code-snippet">24.5k</span>
+</div>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-safe bg-surface/70 backdrop-blur-xl border-t border-white/10">
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors active:scale-90 w-16 gap-1 group" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">rss_feed</span>
+<span class="font-label-caps text-label-caps text-[10px]">Feed</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary relative after:content-[''] after:w-1 after:h-1 after:bg-primary after:rounded-full after:mt-1 hover:text-primary transition-colors active:scale-90 w-16 gap-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+<span class="font-label-caps text-label-caps text-[10px]">Trending</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors active:scale-90 w-16 gap-1 group" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">smart_toy</span>
+<span class="font-label-caps text-label-caps text-[10px]">AI Hub</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors active:scale-90 w-16 gap-1 group" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">person</span>
+<span class="font-label-caps text-label-caps text-[10px]">Profile</span>
+</a>
+</nav>
+<!-- Desktop Side Nav (Hidden on Mobile) -->
+<nav class="hidden md:flex fixed left-0 top-16 bottom-0 w-20 flex-col items-center py-stack-lg bg-surface-container-lowest/50 border-r border-white/5 backdrop-blur-md z-40 gap-stack-lg">
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors active:scale-90 gap-1 group" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">rss_feed</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary relative hover:text-primary transition-colors active:scale-90 gap-1 after:content-[''] after:w-1 after:h-1 after:bg-primary after:rounded-full after:absolute after:-right-3 after:top-1/2 after:-translate-y-1/2" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors active:scale-90 gap-1 group" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">smart_toy</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 hover:text-primary transition-colors active:scale-90 gap-1 group mt-auto" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">person</span>
+</a>
+</nav>
+</body></html>

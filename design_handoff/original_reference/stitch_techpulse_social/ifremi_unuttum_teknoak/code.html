@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Şifremi Unuttum | TeknoAkış</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts for Design System -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@600;700&amp;family=Inter:wght@400&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#d0bcff",
+                    "on-primary-fixed": "#002022",
+                    "tertiary": "#d8ffe7",
+                    "on-background": "#e2e2e8",
+                    "inverse-primary": "#006970",
+                    "primary-container": "#00f0ff",
+                    "on-surface-variant": "#b9cacb",
+                    "error-container": "#93000a",
+                    "tertiary-fixed": "#6ffbbe",
+                    "secondary": "#d0bcff",
+                    "tertiary-container": "#65f2b5",
+                    "background": "#111317",
+                    "surface-container-lowest": "#0c0e12",
+                    "surface-dim": "#111317",
+                    "on-tertiary-fixed-variant": "#005236",
+                    "on-surface": "#e2e2e8",
+                    "inverse-on-surface": "#2f3035",
+                    "surface-bright": "#37393e",
+                    "on-tertiary": "#003824",
+                    "primary": "#dbfcff",
+                    "tertiary-fixed-dim": "#4edea3",
+                    "on-secondary": "#3c0091",
+                    "surface-variant": "#333539",
+                    "surface-tint": "#00dbe9",
+                    "on-primary": "#00363a",
+                    "on-error-container": "#ffdad6",
+                    "secondary-fixed": "#e9ddff",
+                    "outline-variant": "#3b494b",
+                    "inverse-surface": "#e2e2e8",
+                    "outline": "#849495",
+                    "on-tertiary-container": "#006d4a",
+                    "secondary-container": "#571bc1",
+                    "error": "#ffb4ab",
+                    "surface-container-low": "#1a1c20",
+                    "surface-container-highest": "#333539",
+                    "primary-fixed-dim": "#00dbe9",
+                    "on-tertiary-fixed": "#002113",
+                    "surface-container-high": "#282a2e",
+                    "surface-container": "#1e2024",
+                    "on-secondary-fixed-variant": "#5516be",
+                    "primary-fixed": "#7df4ff",
+                    "on-secondary-fixed": "#23005c",
+                    "surface": "#111317",
+                    "on-primary-container": "#006970",
+                    "on-primary-fixed-variant": "#004f54",
+                    "on-error": "#690005",
+                    "on-secondary-container": "#c4abff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "margin-desktop": "32px",
+                    "xs": "4px",
+                    "xl": "32px",
+                    "margin-mobile": "16px",
+                    "gutter": "16px",
+                    "base": "4px",
+                    "md": "16px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Geist"],
+                    "mono-code": ["JetBrains Mono"],
+                    "body-sm": ["Inter"],
+                    "headline-md": ["Geist"],
+                    "mono-label": ["JetBrains Mono"],
+                    "headline-lg": ["Geist"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "mono-code": ["13px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "mono-label": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        /* Hyper-Technical Grid Background Overlay */
+        body {
+            background-color: theme('colors.background');
+            background-image: 
+                linear-gradient(to right, theme('colors.surface-variant') 1px, transparent 1px),
+                linear-gradient(to bottom, theme('colors.surface-variant') 1px, transparent 1px);
+            background-size: 64px 64px;
+            background-position: center top;
+        }
+        
+        /* Subtle glow effect for focused inputs */
+        .tech-input:focus-within {
+            box-shadow: 0 0 12px 0px rgba(0, 219, 233, 0.15); /* primary-fixed-dim color base */
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-background min-h-screen flex items-center justify-center p-margin-mobile md:p-margin-desktop relative overflow-hidden">
+<!-- Ambient Glow behind the main container -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
+<!-- Main Content Container -->
+<main class="w-full max-w-md bg-surface-container-low border border-outline-variant rounded-xl p-xl shadow-2xl relative z-10 backdrop-blur-md">
+<!-- Top Decorative Element -->
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
+<!-- Back Navigation -->
+<a class="inline-flex items-center gap-sm text-on-surface-variant hover:text-primary transition-colors mb-xl group cursor-pointer" href="#">
+<span class="material-symbols-outlined text-[16px] group-hover:-translate-x-1 transition-transform">arrow_back</span>
+<span class="font-mono-label text-mono-label uppercase tracking-widest">Giriş'e Dön</span>
+</a>
+<!-- Header Section -->
+<header class="mb-xl">
+<div class="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-surface-container border border-outline-variant mb-md text-primary">
+<span class="material-symbols-outlined text-[24px]">lock_reset</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-sm tracking-tight">Şifremi Unuttum</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">E-posta adresinizi girin, size şifre sıfırlama bağlantısı gönderelim.</p>
+</header>
+<!-- Form Section -->
+<form action="#" class="flex flex-col gap-lg" method="POST" onsubmit="event.preventDefault(); alert('Simulated submission');">
+<!-- Email Input -->
+<div class="flex flex-col gap-xs">
+<label class="font-mono-label text-mono-label text-on-surface uppercase tracking-wider flex justify-between items-center" for="email">
+                    E-posta
+                    <span class="text-outline lowercase">Zorunlu</span>
+</label>
+<div class="relative tech-input transition-shadow duration-300 rounded-DEFAULT">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline-variant pointer-events-none">mail</span>
+<input autocomplete="email" class="w-full bg-surface-container border border-outline-variant rounded-DEFAULT py-md pl-[44px] pr-md font-mono-code text-mono-code text-primary focus:outline-none focus:border-primary focus:ring-0 transition-colors placeholder:text-outline/50" id="email" name="email" placeholder="kullanici@domain.com" required="" type="email"/>
+</div>
+</div>
+<!-- Submit Button -->
+<div class="mt-md">
+<button class="w-full bg-primary text-on-primary font-mono-label text-mono-label uppercase tracking-widest py-md rounded-DEFAULT hover:bg-primary-fixed transition-colors flex items-center justify-center gap-sm active:scale-[0.98] duration-150 relative overflow-hidden group" type="submit">
+<span class="relative z-10 flex items-center gap-sm">
+                        Bağlantı Gönder
+                        <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform" data-weight="fill">send</span>
+</span>
+<!-- Hover flare -->
+<div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-0"></div>
+</button>
+</div>
+</form>
+<!-- Technical Footer Metadata -->
+<footer class="mt-xl pt-lg border-t border-outline-variant flex justify-between items-center">
+<div class="font-mono-code text-[10px] text-outline-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-[12px]">encrypted</span>
+                SECURE_REQ_v1.2
+            </div>
+<div class="font-mono-code text-[10px] text-outline-variant">
+                SYS_STATUS: <span class="text-tertiary-fixed-dim">ONLINE</span>
+</div>
+</footer>
+</main>
+</body></html>

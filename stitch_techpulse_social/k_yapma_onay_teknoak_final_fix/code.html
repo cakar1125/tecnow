@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Çıkış Yapma Onayı</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Geist:wght@600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#571bc1",
+                    "on-tertiary-container": "#006d4a",
+                    "tertiary-fixed": "#6ffbbe",
+                    "inverse-surface": "#e2e2e8",
+                    "on-error": "#690005",
+                    "error-container": "#93000a",
+                    "error": "#ffb4ab",
+                    "on-secondary-fixed": "#23005c",
+                    "surface-tint": "#00dbe9",
+                    "surface-container-low": "#1a1c20",
+                    "primary-container": "#00f0ff",
+                    "surface-container-high": "#282a2e",
+                    "on-tertiary-fixed": "#002113",
+                    "inverse-on-surface": "#2f3035",
+                    "surface-variant": "#333539",
+                    "secondary-fixed-dim": "#d0bcff",
+                    "primary-fixed": "#7df4ff",
+                    "on-primary": "#00363a",
+                    "surface-dim": "#111317",
+                    "on-secondary": "#3c0091",
+                    "on-surface-variant": "#b9cacb",
+                    "on-primary-fixed-variant": "#004f54",
+                    "primary": "#dbfcff",
+                    "outline": "#849495",
+                    "on-tertiary-fixed-variant": "#005236",
+                    "on-background": "#e2e2e8",
+                    "background": "#0A0C10",
+                    "on-error-container": "#ffdad6",
+                    "on-primary-fixed": "#002022",
+                    "surface-container-lowest": "#0c0e12",
+                    "on-surface": "#e2e2e8",
+                    "on-secondary-fixed-variant": "#5516be",
+                    "tertiary-fixed-dim": "#4edea3",
+                    "on-primary-container": "#006970",
+                    "tertiary-container": "#65f2b5",
+                    "surface-container": "#1e2024",
+                    "on-tertiary": "#003824",
+                    "primary-fixed-dim": "#00dbe9",
+                    "on-secondary-container": "#c4abff",
+                    "tertiary": "#d8ffe7",
+                    "surface": "#111317",
+                    "surface-container-highest": "#333539",
+                    "outline-variant": "#3b494b",
+                    "secondary": "#d0bcff",
+                    "surface-bright": "#37393e",
+                    "inverse-primary": "#006970",
+                    "secondary-fixed": "#e9ddff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "xl": "32px",
+                    "sm": "8px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "32px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "md": "16px",
+                    "gutter": "16px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Inter"],
+                    "headline-lg-mobile": ["Geist"],
+                    "mono-label": ["JetBrains Mono"],
+                    "mono-code": ["JetBrains Mono"],
+                    "headline-md": ["Geist"],
+                    "headline-lg": ["Geist"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "mono-label": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "mono-code": ["13px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-md": ["20px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bottom-sheet-up {
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .mesh-background {
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(0, 219, 233, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(87, 27, 193, 0.05) 0px, transparent 50%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface flex items-center justify-center min-h-screen font-body-lg">
+<!-- Mock Background Interface (Dashboard) -->
+<div class="max-w-[390px] w-full h-[844px] bg-background relative overflow-hidden shadow-2xl border border-outline-variant/20 rounded-[40px] mesh-background">
+<!-- Status Bar Mock -->
+<div class="flex justify-between px-8 pt-4 pb-2 text-[12px] font-bold opacity-60">
+<span>9:41</span>
+<div class="flex gap-1.5 items-center">
+<span class="material-symbols-outlined text-[14px]">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[14px]">wifi</span>
+<span class="material-symbols-outlined text-[14px]">battery_full</span>
+</div>
+</div>
+<!-- Top App Bar (From Shared Components JSON) -->
+<header class="fixed top-0 max-w-[390px] w-full z-50 backdrop-blur-xl bg-surface/60 border-b border-outline-variant/30 flex items-center justify-between px-margin-mobile h-16">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-primary" data-icon="grid_view">grid_view</span>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold tracking-tighter text-primary">TEKNOAKIŞ</h1>
+<div class="w-6"></div>
+</header>
+<!-- Dummy Content to Show Context -->
+<div class="mt-20 px-margin-mobile space-y-lg opacity-40 select-none">
+<div class="p-md rounded-xl bg-surface-container border border-outline-variant/30">
+<div class="flex items-center gap-md mb-sm">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 border border-primary/20"></div>
+<div>
+<div class="h-3 w-24 bg-on-surface/20 rounded"></div>
+<div class="h-2 w-16 bg-on-surface/10 rounded mt-1"></div>
+</div>
+</div>
+<div class="h-20 w-full bg-on-surface/5 rounded-lg"></div>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="h-32 bg-surface-container rounded-xl border border-outline-variant/20"></div>
+<div class="h-32 bg-surface-container rounded-xl border border-outline-variant/20"></div>
+</div>
+<div class="p-md rounded-xl bg-surface-container border border-outline-variant/30">
+<div class="h-4 w-1/2 bg-on-surface/20 rounded mb-md"></div>
+<div class="h-2 w-full bg-on-surface/10 rounded mb-xs"></div>
+<div class="h-2 w-full bg-on-surface/10 rounded mb-xs"></div>
+<div class="h-2 w-2/3 bg-on-surface/10 rounded"></div>
+</div>
+</div>
+<!-- Bottom NavBar (From Shared Components JSON) -->
+<nav class="fixed bottom-0 max-w-[390px] w-full z-50 backdrop-blur-lg bg-surface/80 border-t border-outline-variant/20 flex justify-around items-center h-20 px-4 pb-safe">
+<div class="flex items-center justify-center text-on-surface-variant/60 p-3"><span class="material-symbols-outlined" data-icon="terminal">terminal</span></div>
+<div class="flex items-center justify-center text-on-surface-variant/60 p-3"><span class="material-symbols-outlined" data-icon="explore">explore</span></div>
+<div class="flex items-center justify-center text-on-surface-variant/60 p-3"><span class="material-symbols-outlined" data-icon="notifications">notifications</span></div>
+<div class="flex items-center justify-center text-on-surface-variant/60 p-3"><span class="material-symbols-outlined" data-icon="bookmark">bookmark</span></div>
+<div class="flex items-center justify-center bg-primary/10 text-primary rounded-xl p-3 shadow-[0_0_15px_rgba(0,219,233,0.2)]">
+<span class="material-symbols-outlined" data-icon="account_circle" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+</div>
+</nav>
+<!-- Overlay / Scrim -->
+<div class="absolute inset-0 bg-black/60 z-[60] backdrop-blur-[2px]"></div>
+<!-- Bottom Sheet (The Goal) -->
+<div class="absolute bottom-0 left-0 w-full z-[70] bottom-sheet-up">
+<!-- Handle -->
+<div class="w-full flex justify-center mb-2">
+<div class="w-12 h-1.5 bg-outline/30 rounded-full"></div>
+</div>
+<div class="bg-[#0A0C10] rounded-t-[32px] border-t border-x border-outline-variant/40 px-xl pt-xl pb-12 shadow-[0_-20px_40px_rgba(0,0,0,0.5)]">
+<!-- Icon Header -->
+<div class="mb-lg">
+<div class="w-16 h-16 bg-error-container/10 border border-error/20 rounded-full flex items-center justify-center mb-md">
+<span class="material-symbols-outlined text-error text-[32px]">logout</span>
+</div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight">Çıkış Yap</h2>
+</div>
+<!-- Content -->
+<div class="mb-xl"><p class="font-body-lg text-on-surface-variant leading-relaxed">Bu cihazdaki oturumun kapatılacak. Daha sonra yeniden giriş yapabilirsin.</p><p class="font-body-lg text-on-surface-variant leading-relaxed mt-2">Kaydedilmemiş bir taslağın varsa çıkış yaptığında kaybolabilir.</p></div>
+<!-- Info Box -->
+<!-- Action Buttons -->
+<div class="flex flex-col gap-md">
+<!-- Confirm Button -->
+<button class="w-full h-[56px] bg-primary-fixed-dim hover:bg-primary-container transition-all duration-300 rounded-xl flex items-center justify-center gap-sm group active:scale-[0.98]">
+<span class="font-headline-md text-on-primary-fixed font-bold">Çıkış Yap</span>
+<span class="material-symbols-outlined text-on-primary-fixed group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<!-- Cancel Button -->
+<button class="w-full h-[56px] bg-transparent border border-outline-variant/50 hover:bg-surface-variant/30 transition-all duration-300 rounded-xl flex items-center justify-center active:scale-[0.98]">
+<span class="font-headline-md text-on-surface-variant">Vazgeç</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', () => {
+                const ripple = document.createElement('div');
+                ripple.classList.add('ripple');
+                button.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+    </script>
+</body></html>

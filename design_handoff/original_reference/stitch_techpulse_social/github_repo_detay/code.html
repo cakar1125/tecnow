@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TeknoAkış - GitHub Repository Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Geist:wght@600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error": "#690005",
+                      "tertiary-fixed-dim": "#4edea3",
+                      "surface-tint": "#00dbe9",
+                      "primary-fixed": "#7df4ff",
+                      "surface-container-highest": "#333539",
+                      "on-primary-fixed-variant": "#004f54",
+                      "surface": "#111317",
+                      "tertiary-fixed": "#6ffbbe",
+                      "surface-container": "#1e2024",
+                      "tertiary": "#d8ffe7",
+                      "surface-bright": "#37393e",
+                      "on-secondary-fixed": "#23005c",
+                      "outline": "#849495",
+                      "surface-dim": "#111317",
+                      "secondary-container": "#571bc1",
+                      "error-container": "#93000a",
+                      "on-tertiary": "#003824",
+                      "error": "#ffb4ab",
+                      "background": "#111317",
+                      "surface-container-high": "#282a2e",
+                      "tertiary-container": "#65f2b5",
+                      "on-tertiary-fixed-variant": "#005236",
+                      "surface-container-lowest": "#0c0e12",
+                      "on-secondary-container": "#c4abff",
+                      "on-secondary": "#3c0091",
+                      "surface-container-low": "#1a1c20",
+                      "on-primary-container": "#006970",
+                      "secondary-fixed-dim": "#d0bcff",
+                      "on-tertiary-fixed": "#002113",
+                      "primary-container": "#00f0ff",
+                      "inverse-surface": "#e2e2e8",
+                      "on-background": "#e2e2e8",
+                      "on-error-container": "#ffdad6",
+                      "outline-variant": "#3b494b",
+                      "secondary-fixed": "#e9ddff",
+                      "on-tertiary-container": "#006d4a",
+                      "primary": "#dbfcff",
+                      "on-primary": "#00363a",
+                      "primary-fixed-dim": "#00dbe9",
+                      "surface-variant": "#333539",
+                      "on-secondary-fixed-variant": "#5516be",
+                      "on-primary-fixed": "#002022",
+                      "inverse-primary": "#006970",
+                      "inverse-on-surface": "#2f3035",
+                      "secondary": "#d0bcff",
+                      "on-surface": "#e2e2e8",
+                      "on-surface-variant": "#b9cacb"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "margin-desktop": "32px",
+                      "lg": "24px",
+                      "md": "16px",
+                      "base": "4px",
+                      "sm": "8px",
+                      "xs": "4px",
+                      "gutter": "16px",
+                      "xl": "32px"
+              },
+              "fontFamily": {
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "mono-code": [
+                              "JetBrains Mono"
+                      ],
+                      "mono-label": [
+                              "JetBrains Mono"
+                      ],
+                      "headline-md": [
+                              "Geist"
+                      ],
+                      "headline-lg": [
+                              "Geist"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Geist"
+                      ]
+              },
+              "fontSize": {
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "mono-code": [
+                              "13px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "mono-label": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-surface');
+        }
+      </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col md:flex-row min-h-screen">
+<!-- TopAppBar (Web & Mobile, adjusted for sub-page) -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface/60 backdrop-blur-xl border-b border-outline-variant md:hidden">
+<div class="flex items-center gap-md hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+<span class="font-headline-md text-headline-md font-bold text-primary tracking-tight">TeknoAkış</span>
+</div>
+<div class="flex items-center hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-on-surface-variant" style="font-variation-settings: 'FILL' 0;">search</span>
+</div>
+</header>
+<!-- Side Navigation Drawer (Web) -->
+<nav class="hidden md:flex h-full w-80 flex-col p-md bg-surface-container border-r border-outline-variant fixed left-0 top-0 z-40">
+<div class="flex items-center gap-md mb-xl pl-sm mt-md">
+<div class="w-10 h-10 rounded-full bg-surface-variant overflow-hidden border border-outline">
+<img class="w-full h-full object-cover" data-alt="A futuristic avatar of a developer in a cyberpunk setting, neon blue accents, dark mode aesthetic, highly detailed." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAk3O42EeL4AhcOzpswDMXTsruMY0AHLUDiT_seKVzqICYrEutoB2jbEec6RRRL5cROPyx7M2uVlcVr2VIwFdvVbUC6ZSgQBN_lM36IgE9y6LTlS9pnqQfEz5ZZdVFcuUY5x9ognF4gnDFKeTEu3UGRhwxxNv50o85dms8x_u2kI3cc5KbeeBb4dPuJD9prslo61PfZBvx6r2d1H_GKCLN27Us0suwcQWfyUqHxpuimL5EZev44E6joNigPvacNuEt3AOEs8rdOa1c"/>
+</div>
+<div>
+<div class="font-headline-md text-headline-md text-primary">TeknoKullanıcı</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">@dev_expert</div>
+<div class="font-mono-label text-mono-label text-tertiary-fixed-dim mt-xs">Level 42 Architect</div>
+</div>
+</div>
+<ul class="flex flex-col gap-sm">
+<li>
+<a class="flex items-center gap-md px-md py-sm bg-secondary-container text-on-secondary-container rounded-full active:opacity-70 transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">terminal</span>
+<span class="font-body-sm text-body-sm font-semibold">GitHub</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-variant transition-colors rounded-full active:opacity-70" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">psychology</span>
+<span class="font-body-sm text-body-sm">AI</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-variant transition-colors rounded-full active:opacity-70" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">science</span>
+<span class="font-body-sm text-body-sm">Research</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-variant transition-colors rounded-full active:opacity-70" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings_ethernet</span>
+<span class="font-body-sm text-body-sm">Dev Tool</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-variant transition-colors rounded-full active:opacity-70" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">memory</span>
+<span class="font-body-sm text-body-sm">Hardware</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-variant transition-colors rounded-full active:opacity-70" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">videogame_asset</span>
+<span class="font-body-sm text-body-sm">Game Tech</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-variant transition-colors rounded-full active:opacity-70" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">view_in_ar</span>
+<span class="font-body-sm text-body-sm">3D</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-variant transition-colors rounded-full active:opacity-70" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">smart_toy</span>
+<span class="font-body-sm text-body-sm">Robotics</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-variant transition-colors rounded-full active:opacity-70" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">security</span>
+<span class="font-body-sm text-body-sm">Security</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-80 pt-20 md:pt-lg px-margin-mobile md:px-margin-desktop pb-32 md:pb-lg max-w-[1200px] mx-auto w-full">
+<!-- Header Section -->
+<div class="mb-lg flex flex-col md:flex-row md:items-start justify-between gap-md">
+<div>
+<div class="flex items-center gap-sm mb-sm">
+<span class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">facebook / react</span>
+<span class="material-symbols-outlined text-primary-fixed-dim" style="font-variation-settings: 'FILL' 1;" title="Verified Source">verified</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">A declarative, efficient, and flexible JavaScript library for building user interfaces.</p>
+</div>
+<div class="flex items-center gap-sm">
+<button class="bg-primary text-on-primary font-mono-label text-mono-label px-md py-sm rounded flex items-center gap-xs hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 0;">open_in_new</span>
+                    GitHub'da Görüntüle
+                </button>
+<button class="border border-outline text-on-surface font-mono-label text-mono-label px-sm py-sm rounded flex items-center justify-center hover:border-primary transition-colors hover:text-primary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">bookmark</span>
+</button>
+<button class="border border-outline text-on-surface font-mono-label text-mono-label px-sm py-sm rounded flex items-center justify-center hover:border-primary transition-colors hover:text-primary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">share</span>
+</button>
+</div>
+</div>
+<!-- Meta Data Chips -->
+<div class="flex flex-wrap gap-sm mb-xl">
+<div class="flex items-center gap-xs bg-surface-container-high px-sm py-xs rounded border border-outline-variant">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-mono-label text-mono-label text-on-surface">224k</span>
+</div>
+<div class="flex items-center gap-xs bg-surface-container-high px-sm py-xs rounded border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant text-[14px]" style="font-variation-settings: 'FILL' 0;">fork_right</span>
+<span class="font-mono-label text-mono-label text-on-surface">45.2k</span>
+</div>
+<div class="flex items-center gap-xs bg-surface-container-high px-sm py-xs rounded border border-outline-variant">
+<span class="w-2 h-2 rounded-full bg-yellow-400"></span>
+<span class="font-mono-label text-mono-label text-on-surface">JavaScript</span>
+</div>
+<div class="flex items-center gap-xs bg-surface-container-high px-sm py-xs rounded border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant text-[14px]" style="font-variation-settings: 'FILL' 0;">balance</span>
+<span class="font-mono-label text-mono-label text-on-surface">MIT License</span>
+</div>
+<div class="flex items-center gap-xs bg-surface-container-high px-sm py-xs rounded border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant text-[14px]" style="font-variation-settings: 'FILL' 0;">update</span>
+<span class="font-mono-label text-mono-label text-on-surface">v18.3.1</span>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Main Details (Left Col) -->
+<div class="md:col-span-8 flex flex-col gap-lg">
+<!-- What is it? -->
+<section class="bg-surface-container p-md md:p-lg rounded-xl border border-outline-variant hover:border-primary/50 transition-colors">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-sm flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 0;">info</span>
+                        Ne işe yarar?
+                    </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                        React is a library for building user interfaces. It lets you create complex UIs from small and isolated pieces of code called "components". React components implement a `render()` method that takes input data and returns what to display. This approach allows developers to build large web applications that can change data, without reloading the page, aiming for high speed, simplicity, and scalability.
+                    </p>
+</section>
+<!-- Who should use it? -->
+<section class="bg-surface-container p-md md:p-lg rounded-xl border border-outline-variant hover:border-primary/50 transition-colors">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-sm flex items-center gap-xs">
+<span class="material-symbols-outlined text-secondary-container" style="font-variation-settings: 'FILL' 0;">group</span>
+                        Kimler kullanmalı?
+                    </h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
+<div class="flex items-start gap-sm bg-surface-container-high p-sm rounded border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant mt-1" style="font-variation-settings: 'FILL' 0;">web</span>
+<div>
+<h3 class="font-body-sm text-body-sm font-semibold text-on-surface">Frontend Developers</h3>
+<p class="font-mono-label text-mono-label text-on-surface-variant mt-xs">Building interactive web apps.</p>
+</div>
+</div>
+<div class="flex items-start gap-sm bg-surface-container-high p-sm rounded border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant mt-1" style="font-variation-settings: 'FILL' 0;">smartphone</span>
+<div>
+<h3 class="font-body-sm text-body-sm font-semibold text-on-surface">Mobile Developers</h3>
+<p class="font-mono-label text-mono-label text-on-surface-variant mt-xs">Via React Native ecosystem.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Key Features -->
+<section class="bg-surface-container p-md md:p-lg rounded-xl border border-outline-variant hover:border-primary/50 transition-colors">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-sm flex items-center gap-xs">
+<span class="material-symbols-outlined text-tertiary-fixed-dim" style="font-variation-settings: 'FILL' 0;">bolt</span>
+                        Temel Özellikler
+                    </h2>
+<ul class="flex flex-col gap-sm">
+<li class="flex items-center justify-between border-b border-outline-variant pb-sm">
+<span class="font-body-sm text-body-sm text-on-surface">Declarative Views</span>
+<span class="material-symbols-outlined text-primary text-[18px]">chevron_right</span>
+</li>
+<li class="flex items-center justify-between border-b border-outline-variant pb-sm">
+<span class="font-body-sm text-body-sm text-on-surface">Component-Based Architecture</span>
+<span class="material-symbols-outlined text-primary text-[18px]">chevron_right</span>
+</li>
+<li class="flex items-center justify-between border-b border-outline-variant pb-sm">
+<span class="font-body-sm text-body-sm text-on-surface">Virtual DOM for Performance</span>
+<span class="material-symbols-outlined text-primary text-[18px]">chevron_right</span>
+</li>
+<li class="flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface">Learn Once, Write Anywhere</span>
+<span class="material-symbols-outlined text-primary text-[18px]">chevron_right</span>
+</li>
+</ul>
+</section>
+<!-- Code Snippet Example -->
+<section class="bg-[#000000] p-md rounded-xl border border-outline-variant">
+<div class="flex justify-between items-center mb-sm border-b border-outline-variant pb-xs">
+<span class="font-mono-label text-mono-label text-on-surface-variant">example.jsx</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px] cursor-pointer hover:text-primary">content_copy</span>
+</div>
+<pre class="font-mono-code text-mono-code text-on-surface overflow-x-auto"><code class="language-jsx">
+import { useState } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;You clicked {count} times&lt;/p&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;
+        Click me
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+                    </code></pre>
+</section>
+</div>
+<!-- Side Stats & Graph (Right Col) -->
+<div class="md:col-span-4 flex flex-col gap-lg">
+<!-- Star Growth Graph Placeholder -->
+<div class="bg-surface-container p-md rounded-xl border border-outline-variant h-64 relative overflow-hidden group">
+<h3 class="font-mono-label text-mono-label text-on-surface-variant mb-sm relative z-10">Star Growth (30 Days)</h3>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-50"></div>
+<!-- Simulated sparkline -->
+<svg class="absolute bottom-0 w-full h-1/2 text-primary stroke-current" fill="none" preserveaspectratio="none" viewbox="0 0 100 50">
+<path d="M0 50 L 10 45 L 20 48 L 30 35 L 40 40 L 50 20 L 60 25 L 70 10 L 80 15 L 90 5 L 100 0" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+</svg>
+<div class="absolute bottom-md right-md font-mono-code text-mono-code text-primary bg-surface-container-high px-xs py-1 rounded border border-primary/30 opacity-0 group-hover:opacity-100 transition-opacity">
+                         +1,204
+                     </div>
+</div>
+<!-- Info Card -->
+<div class="bg-surface-container p-md rounded-xl border border-outline-variant">
+<h3 class="font-mono-label text-mono-label text-on-surface-variant mb-md border-b border-outline-variant pb-xs">Repository Details</h3>
+<div class="flex flex-col gap-sm">
+<div class="flex justify-between items-center">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Contributors</span>
+<span class="font-mono-code text-mono-code text-on-surface">1,682</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Issues</span>
+<span class="font-mono-code text-mono-code text-on-surface">1.2k</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Pull Requests</span>
+<span class="font-mono-code text-mono-code text-on-surface">345</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only, suppressed for detailed sub-page view based on instructions, but kept as required by JSON schema if this is considered a top-level explore view. Assuming detailed view, usually suppressed, but per JSON rule: "Only permitted if top-level". Given this is a specific repo detail, it should technically be suppressed. However, to fulfill the prompt's request to use the components, I will include it but logically it might be hidden in a real app flow for a detail page. I will exclude it to follow the "Semantic Shell" Mandate: "Automatic Suppression... Any sub-page featuring a Close or Back action". The Header has a Back action.) -->
+<!-- SUPPRESSED BottomNavBar as this is a Detail Page with a Back button -->
+</body></html>

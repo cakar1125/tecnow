@@ -11,18 +11,23 @@ import 'package:teknoakis/legacy/notifications_screen.dart';
 import '../test_harness.dart';
 
 void main() {
-  testWidgets('settings switches render on Android without an exception', (
+  // Switch'ler bu ekrandan kaldırıldı; Android Switch regresyon koruması
+  // test/design_system/switch_android_render_test.dart altında yaşıyor.
+  testWidgets('settings screen renders on Android without an exception', (
     tester,
   ) async {
     debugDefaultTargetPlatformOverride = TargetPlatform.android;
     try {
       await tester.pumpWidget(testHarness(const SettingsScreen()));
+      expect(find.text('KİŞİSELLEŞTİRME'), findsOneWidget);
+      expect(find.text('YEREL VERİLER'), findsOneWidget);
+      expect(find.text('GİZLİLİK'), findsOneWidget);
+      expect(find.text('HAKKINDA'), findsOneWidget);
+      expect(find.text('Verileri Sil'), findsOneWidget);
+      expect(tester.takeException(), isNull);
     } finally {
       debugDefaultTargetPlatformOverride = null;
     }
-
-    expect(find.byType(Switch), findsNWidgets(2));
-    expect(tester.takeException(), isNull);
   });
 
   testWidgets('notification actions provide local feedback', (tester) async {

@@ -210,16 +210,25 @@ class AppTextField extends StatelessWidget {
 }
 
 class AppSearchField extends StatelessWidget {
-  const AppSearchField({this.onChanged, super.key});
+  const AppSearchField({
+    this.controller,
+    this.hintText = 'Repository, model veya konu ara',
+    this.onChanged,
+    super.key,
+  });
+
+  final TextEditingController? controller;
+  final String hintText;
   final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) => TextField(
+    controller: controller,
     onChanged: onChanged,
-    decoration: const InputDecoration(
-      hintText: 'Repository, model veya konu ara',
-      prefixIcon: Icon(Icons.search_rounded),
-      suffixIcon: Icon(Icons.tune_rounded),
+    decoration: InputDecoration(
+      hintText: hintText,
+      prefixIcon: const Icon(Icons.search_rounded),
+      suffixIcon: const Icon(Icons.tune_rounded),
     ),
   );
 }
@@ -902,4 +911,277 @@ class _FeedItemCardState extends State<FeedItemCard> {
       ),
     );
   }
+}
+
+class ExploreResultCard extends StatefulWidget {
+  const ExploreResultCard({required this.item, super.key});
+
+  final ExploreResultFixture item;
+
+  @override
+  State<ExploreResultCard> createState() => _ExploreResultCardState();
+}
+
+class _ExploreResultCardState extends State<ExploreResultCard> {
+  bool _isSaved = false;
+
+  void _toggleSaved() {
+    setState(() => _isSaved = !_isSaved);
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        const SnackBar(
+          content: Text('Kaydetme yalnız yerel fixture etkileşimidir.'),
+        ),
+      );
+  }
+
+  @override
+  Widget build(BuildContext context) => _AppCard(
+    accent: AppColors.primary,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Text(
+                widget.item.categoryLine,
+                style: AppTypography.technical.copyWith(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Semantics(
+              button: true,
+              selected: _isSaved,
+              label: _isSaved ? 'Kaydı kaldır' : 'Kaydet',
+              child: IconButton(
+                key: Key('explore-bookmark-${widget.item.id}'),
+                tooltip: _isSaved ? 'Kaydı kaldır' : 'Kaydet',
+                onPressed: _toggleSaved,
+                icon: Icon(
+                  _isSaved ? Icons.bookmark : Icons.bookmark_outline,
+                  color: _isSaved ? AppColors.primary : AppColors.textSecondary,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Wrap(
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Text(widget.item.title, style: AppTypography.title),
+            const _Badge(label: 'ÖRNEK', color: AppColors.textSecondary),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Text(
+          widget.item.summary,
+          style: AppTypography.bodyMuted,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        const SizedBox(height: AppSpacing.md),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(AppSpacing.md),
+          decoration: const BoxDecoration(
+            color: AppColors.surfaceHigh,
+            borderRadius: AppRadius.smallBorder,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(
+                Icons.info_outline,
+                size: 20,
+                color: AppColors.warning,
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'NEDEN EŞLEŞTİ?',
+                      style: AppTypography.label.copyWith(
+                        color: AppColors.warning,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      widget.item.matchReason,
+                      style: AppTypography.bodyMuted,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        const Divider(height: 1, color: AppColors.outline),
+        const SizedBox(height: AppSpacing.md),
+        Row(
+          children: [
+            const Icon(Icons.public, size: 18, color: AppColors.textSecondary),
+            const SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Text(
+                widget.item.sourceLabel,
+                style: AppTypography.technical,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+class ExploreStarterCard extends StatelessWidget {
+  const ExploreStarterCard({
+    required this.item,
+    required this.onTap,
+    super.key,
+  });
+
+  final ExploreStarterFixture item;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: 260,
+    child: Semantics(
+      button: true,
+      label: item.title,
+      child: _AppCard(
+        onTap: onTap,
+        accent: AppColors.warning,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              item.categoryLine,
+              style: AppTypography.technical.copyWith(
+                color: AppColors.warning,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              item.title,
+              style: AppTypography.title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              item.summary,
+              style: AppTypography.bodyMuted,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const Spacer(),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(item.readingTime, style: AppTypography.technical),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                const Icon(
+                  Icons.arrow_forward_rounded,
+                  size: 20,
+                  color: AppColors.warning,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+class ExplorePopularRow extends StatelessWidget {
+  const ExplorePopularRow({required this.item, required this.onTap, super.key});
+
+  final ExplorePopularFixture item;
+  final VoidCallback onTap;
+
+  Color get _accent => switch (item.accentKind) {
+    ExploreAccentKind.primary => AppColors.primary,
+    ExploreAccentKind.ai => AppColors.aiAccent,
+    ExploreAccentKind.warning => AppColors.warning,
+  };
+
+  IconData get _icon => switch (item.accentKind) {
+    ExploreAccentKind.primary => Icons.phone_android_rounded,
+    ExploreAccentKind.ai => Icons.psychology_outlined,
+    ExploreAccentKind.warning => Icons.build_outlined,
+  };
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    label: item.title,
+    child: _AppCard(
+      onTap: onTap,
+      accent: _accent,
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: _accent.withValues(alpha: 0.14),
+              borderRadius: AppRadius.smallBorder,
+            ),
+            child: Icon(_icon, color: _accent),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Wrap(
+                  spacing: AppSpacing.sm,
+                  runSpacing: AppSpacing.xs,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Text(item.title, style: AppTypography.title),
+                    const _Badge(
+                      label: 'ÖRNEK',
+                      color: AppColors.textSecondary,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  item.summary,
+                  style: AppTypography.bodyMuted,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.sm),
+          const Icon(
+            Icons.chevron_right_rounded,
+            color: AppColors.textSecondary,
+          ),
+        ],
+      ),
+    ),
+  );
 }

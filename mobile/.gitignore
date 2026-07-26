@@ -43,3 +43,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Golden test diff artifacts (generated, not source)
+test/goldens/failures/

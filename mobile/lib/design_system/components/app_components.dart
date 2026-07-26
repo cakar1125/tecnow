@@ -756,3 +756,150 @@ class SavedItemCard extends StatelessWidget {
     );
   }
 }
+
+class FeedItemCard extends StatefulWidget {
+  const FeedItemCard({required this.item, this.onTap, super.key});
+
+  final FeedItemFixture item;
+  final VoidCallback? onTap;
+
+  @override
+  State<FeedItemCard> createState() => _FeedItemCardState();
+}
+
+class _FeedItemCardState extends State<FeedItemCard> {
+  bool _isSaved = false;
+
+  (String, Color, IconData) get _category => switch (widget.item.kind) {
+    FeedSourceKind.github => ('GİTHUB', AppColors.primary, Icons.code_rounded),
+    FeedSourceKind.aiModel => (
+      'AI MODEL',
+      AppColors.aiAccent,
+      Icons.psychology_outlined,
+    ),
+    FeedSourceKind.tool => ('ARAÇ', AppColors.warning, Icons.build_outlined),
+    FeedSourceKind.announcement => (
+      'DUYURU',
+      AppColors.success,
+      Icons.campaign_outlined,
+    ),
+  };
+
+  void _toggleSaved() {
+    setState(() => _isSaved = !_isSaved);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Kaydetme yalnız yerel fixture etkileşimidir.'),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final (label, color, icon) = _category;
+
+    return Semantics(
+      button: widget.onTap != null,
+      label: '${widget.item.title} akış kartı',
+      child: _AppCard(
+        onTap: widget.onTap,
+        accent: color,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.sm,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      _Badge(label: label, color: color, icon: icon),
+                      Text(
+                        widget.item.sourceLabel,
+                        style: AppTypography.technical,
+                      ),
+                      const _Badge(
+                        label: 'ÖRNEK',
+                        color: AppColors.textSecondary,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Semantics(
+                  button: true,
+                  selected: _isSaved,
+                  label: _isSaved ? 'Kaydı kaldır' : 'Kaydet',
+                  child: IconButton(
+                    key: Key('feed-bookmark-${widget.item.id}'),
+                    tooltip: _isSaved ? 'Kaydı kaldır' : 'Kaydet',
+                    onPressed: _toggleSaved,
+                    icon: Icon(
+                      _isSaved ? Icons.bookmark : Icons.bookmark_outline,
+                      color: _isSaved
+                          ? AppColors.primary
+                          : AppColors.textSecondary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(widget.item.title, style: AppTypography.headline),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              widget.item.summary,
+              style: AppTypography.bodyMuted,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(AppSpacing.md),
+              decoration: const BoxDecoration(
+                color: AppColors.surfaceHigh,
+                borderRadius: AppRadius.smallBorder,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'NE İŞE YARAR?',
+                    style: AppTypography.label.copyWith(
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(widget.item.whatItDoes, style: AppTypography.bodyMuted),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Wrap(
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
+              children: [
+                for (final tag in widget.item.tags)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.sm,
+                      vertical: AppSpacing.xs,
+                    ),
+                    decoration: const BoxDecoration(
+                      color: AppColors.surfaceHigh,
+                      borderRadius: AppRadius.smallBorder,
+                    ),
+                    child: Text(tag, style: AppTypography.technical),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

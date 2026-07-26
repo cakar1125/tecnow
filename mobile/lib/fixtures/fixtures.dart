@@ -54,6 +54,10 @@ class NotificationFixture {
 
 enum SavedItemKind { repository, aiModel, tool, skill, assistantProject }
 
+enum FeedSourceKind { github, aiModel, tool, announcement }
+
+enum FeedTab { sanaOzel, gundem, github, aiModelleri }
+
 class SavedItemFixture {
   const SavedItemFixture({
     required this.kind,
@@ -68,6 +72,28 @@ class SavedItemFixture {
   final String title;
   final String sourceLabel;
   final String summary;
+}
+
+class FeedItemFixture {
+  const FeedItemFixture({
+    required this.kind,
+    required this.id,
+    required this.title,
+    required this.sourceLabel,
+    required this.summary,
+    required this.whatItDoes,
+    required this.tags,
+    required this.tabs,
+  });
+
+  final FeedSourceKind kind;
+  final String id;
+  final String title;
+  final String sourceLabel;
+  final String summary;
+  final String whatItDoes;
+  final List<String> tags;
+  final Set<FeedTab> tabs;
 }
 
 const repositoryFixture = RepositoryFixture(
@@ -160,6 +186,105 @@ const savedItemFixtures = [
     sourceLabel: 'Örnek Asistan Stüdyosu',
     summary:
         'Yalnız fixture deneyimi için tanımlanmış hayalî asistan projesi kaydı.',
+  ),
+];
+
+const feedItemFixtures = [
+  FeedItemFixture(
+    kind: FeedSourceKind.github,
+    id: 'hayali-dalga-motoru',
+    title: 'örnek-lab/hayali-dalga-motoru',
+    sourceLabel: 'ornek-kod.test',
+    summary:
+        'Hayalî mobil arayüz akışlarını küçük ve anlaşılır parçalara ayıran örnek kod arşivi.',
+    whatItDoes:
+        'Ekran geçişlerini yerel fixture verileriyle denemek için örnek bir akış iskeleti sunar.',
+    tags: ['Dart', 'Mobil', 'Fixture'],
+    tabs: {FeedTab.sanaOzel, FeedTab.github},
+  ),
+  FeedItemFixture(
+    kind: FeedSourceKind.github,
+    id: 'kurgu-pusula',
+    title: 'örnek-lab/kurgu-pusula',
+    sourceLabel: 'hayali-arsiv.test',
+    summary:
+        'Erişilebilir bileşen denemelerini bir araya getiren tamamen hayalî bir repository kaydı.',
+    whatItDoes:
+        'Klavye odağı, anlam etiketleri ve büyük metin düzenlerini örnek senaryolarla gösterir.',
+    tags: ['Erişilebilirlik', 'UI', 'Örnek'],
+    tabs: {FeedTab.gundem, FeedTab.github},
+  ),
+  FeedItemFixture(
+    kind: FeedSourceKind.aiModel,
+    id: 'kivilcim-mini',
+    title: 'Hayalî Kıvılcım Mini',
+    sourceLabel: 'ornek-ai.test',
+    summary:
+        'Cihaz üstü sınıflandırma kartlarını göstermek amacıyla tanımlanmış hayalî model fixture kaydı.',
+    whatItDoes:
+        'Kısa örnek metinleri önceden tanımlı hayalî konu başlıklarına ayırma akışını temsil eder.',
+    tags: ['Hayalî Model', 'Cihaz Üstü', 'Metin'],
+    tabs: {FeedTab.sanaOzel, FeedTab.aiModelleri},
+  ),
+  FeedItemFixture(
+    kind: FeedSourceKind.aiModel,
+    id: 'yanki-modeli',
+    title: 'Örnek Yankı Modeli',
+    sourceLabel: 'hayali-model.test',
+    summary:
+        'Çok adımlı arayüz açıklamalarını sınamak için hazırlanmış, gerçek olmayan bir AI model kartı.',
+    whatItDoes:
+        'Fixture senaryolarındaki uzun açıklamaları kısa örnek maddelere dönüştürme davranışını temsil eder.',
+    tags: ['Örnek AI', 'Özetleme', 'Yerel'],
+    tabs: {FeedTab.gundem, FeedTab.aiModelleri},
+  ),
+  FeedItemFixture(
+    kind: FeedSourceKind.tool,
+    id: 'iz-atolyesi',
+    title: 'Hayalî İz Atölyesi',
+    sourceLabel: 'ornek-arac.test',
+    summary:
+        'Yerel ekran durumlarını inceleme akışını anlatan hayalî bir geliştirici aracı duyurusu.',
+    whatItDoes:
+        'Fixture tabanlı kullanıcı adımlarını görsel bir kontrol listesi halinde örnekler.',
+    tags: ['Araç', 'Arayüz', 'Kontrol'],
+    tabs: {FeedTab.gundem},
+  ),
+  FeedItemFixture(
+    kind: FeedSourceKind.tool,
+    id: 'akis-cetveli',
+    title: 'Örnek Akış Cetveli',
+    sourceLabel: 'hayali-atolye.test',
+    summary:
+        'Mobil yerleşim aralıklarını karşılaştırmak için tasarlanmış gerçek olmayan araç fixture kaydı.',
+    whatItDoes:
+        'Farklı ekran genişliklerinde boşluk ve kart ölçülerini örnek değerlerle karşılaştırır.',
+    tags: ['Mobil', 'Yerleşim', 'Ölçüm'],
+    tabs: {FeedTab.gundem},
+  ),
+  FeedItemFixture(
+    kind: FeedSourceKind.announcement,
+    id: 'deney-gunlugu',
+    title: 'Hayalî Deney Günlüğü',
+    sourceLabel: 'ornek-bulten.test',
+    summary:
+        'Teknoloji arayüzü denemelerinden kurgusal notlar paylaşan örnek bir duyuru kaydı.',
+    whatItDoes:
+        'Yeni fixture senaryolarındaki değişiklikleri kısa ve açık örnek notlarla özetler.',
+    tags: ['Duyuru', 'Deney', 'Fixture'],
+    tabs: {FeedTab.gundem},
+  ),
+  FeedItemFixture(
+    kind: FeedSourceKind.announcement,
+    id: 'teknoloji-notlari',
+    title: 'Örnek Teknoloji Notları',
+    sourceLabel: 'hayali-bulten.test',
+    summary:
+        'Tamamen hayalî geliştirme başlıklarını bir araya getiren yerel duyuru fixture kaydı.',
+    whatItDoes:
+        'Örnek teknik konuları okunabilir bir gündem listesi halinde sergiler.',
+    tags: ['Gündem', 'Teknoloji', 'Örnek'],
+    tabs: {FeedTab.gundem},
   ),
 ];
 

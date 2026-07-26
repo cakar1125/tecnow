@@ -180,9 +180,12 @@ class _FeedTabButton extends StatelessWidget {
               ),
             ),
           ),
+          // Sekme etiketi normal UI metnidir: monospace kullanılmaz
+          // (CLAUDE.md değişmez kural). Mono yalnız teknik metadata içindir.
           child: Text(
             label,
-            style: AppTypography.technical.copyWith(
+            style: AppTypography.label.copyWith(
+              fontSize: 13,
               color: selected ? AppColors.primary : AppColors.textSecondary,
               fontWeight: FontWeight.w600,
             ),

@@ -1,0 +1,158 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:teknoakis/data/local/app_database.dart';
+import 'package:teknoakis/data/local/schema.dart';
+import 'package:teknoakis/data/repositories/interests_repository.dart';
+import 'package:teknoakis/data/repositories/local_data_repository.dart';
+import 'package:teknoakis/data/repositories/read_history_repository.dart';
+import 'package:teknoakis/data/repositories/saved_items_repository.dart';
+
+void main() {
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
+
+  late Database db;
+  late SqfliteInterestsRepository interestsRepository;
+  late SqfliteSavedItemsRepository savedItemsRepository;
+  late SqfliteReadHistoryRepository readHistoryRepository;
+  late SqfliteLocalDataRepository localDataRepository;
+
+  setUp(() async {
+    db = await AppDatabase.open(
+      path: inMemoryDatabasePath,
+      factory: databaseFactoryFfi,
+    );
+    interestsRepository = SqfliteInterestsRepository(db);
+    savedItemsRepository = SqfliteSavedItemsRepository(db);
+    readHistoryRepository = SqfliteReadHistoryRepository(db);
+    localDataRepository = SqfliteLocalDataRepository(db);
+  });
+
+  tearDown(() async {
+    await db.close();
+  });
+
+  test('ilgi alanları replaceAll ve readAll ile gidiş-dönüş yapar', () async {
+    await interestsRepository.replaceAll(['Yapay Zekâ', 'Flutter']);
+
+    expect(await interestsRepository.readAll(), ['Yapay Zekâ', 'Flutter']);
+  });
+
+  test('kaydedilen öğe eklenir, okunur ve id ile silinir', () async {
+    final savedAt = DateTime.fromMillisecondsSinceEpoch(1700000000000);
+    await savedItemsRepository.add(
+      SavedItem(
+        id: 'item-1',
+        kind: 'article',
+        title: 'Yerel veri',
+        sourceLabel: 'TeknoAkış',
+        summary: 'SQLite temeli',
+        savedAt: savedAt,
+      ),
+    );
+
+    final items = await savedItemsRepository.readAll();
+    expect(items, hasLength(1));
+    expect(items.single.id, 'item-1');
+    expect(items.single.kind, 'article');
+    expect(items.single.title, 'Yerel veri');
+    expect(items.single.sourceLabel, 'TeknoAkış');
+    expect(items.single.summary, 'SQLite temeli');
+    expect(items.single.savedAt, savedAt);
+
+    await savedItemsRepository.removeById('item-1');
+    expect(await savedItemsRepository.readAll(), isEmpty);
+  });
+
+  test('aynı id ile ikinci add kaydı çoğaltmaz', () async {
+    await savedItemsRepository.add(
+      SavedItem(
+        id: 'item-1',
+        kind: 'article',
+        title: 'İlk başlık',
+        savedAt: DateTime.fromMillisecondsSinceEpoch(1),
+      ),
+    );
+    await savedItemsRepository.add(
+      SavedItem(
+        id: 'item-1',
+        kind: 'article',
+        title: 'Güncel başlık',
+        savedAt: DateTime.fromMillisecondsSinceEpoch(2),
+      ),
+    );
+
+    final items = await savedItemsRepository.readAll();
+    expect(items, hasLength(1));
+    expect(items.single.title, 'Güncel başlık');
+  });
+
+  test('okuma geçmişi en yeni kayıt önce olacak şekilde döner', () async {
+    await readHistoryRepository.record('item-1', 'article');
+    await readHistoryRepository.record('item-2', 'repository');
+
+    final entries = await readHistoryRepository.readRecent(limit: 2);
+
+    expect(entries.map((entry) => entry.itemId), ['item-2', 'item-1']);
+    expect(entries.map((entry) => entry.kind), ['repository', 'article']);
+  });
+
+  test('deleteEverything yedi tablonun tamamını boşaltır', () async {
+    await interestsRepository.replaceAll(['Flutter']);
+    await savedItemsRepository.add(
+      SavedItem(
+        id: 'item-1',
+        kind: 'article',
+        title: 'Kayıt',
+        savedAt: DateTime.fromMillisecondsSinceEpoch(1),
+      ),
+    );
+    await db.insert(FavoritesTable.name, {
+      FavoritesTable.itemId: 'item-1',
+      FavoritesTable.createdAt: 1,
+    });
+    await readHistoryRepository.record('item-1', 'article');
+    await db.insert(AssistantProjectsTable.name, {
+      AssistantProjectsTable.id: 'project-1',
+      AssistantProjectsTable.title: 'Proje',
+      AssistantProjectsTable.createdAt: 1,
+      AssistantProjectsTable.updatedAt: 1,
+    });
+    await db.insert(AssistantConversationsTable.name, {
+      AssistantConversationsTable.id: 'conversation-1',
+      AssistantConversationsTable.projectId: 'project-1',
+      AssistantConversationsTable.createdAt: 1,
+    });
+    await db.insert(AssistantMessagesTable.name, {
+      AssistantMessagesTable.conversationId: 'conversation-1',
+      AssistantMessagesTable.role: 'assistant',
+      AssistantMessagesTable.content: 'Yanıt',
+      AssistantMessagesTable.createdAt: 1,
+    });
+
+    for (final table in LocalTables.all) {
+      expect(
+        await _rowCount(db, table),
+        greaterThan(0),
+        reason: '$table test önkoşulunda dolu olmalı',
+      );
+    }
+
+    await localDataRepository.deleteEverything();
+
+    expect(await _rowCount(db, InterestsTable.name), 0);
+    expect(await _rowCount(db, SavedItemsTable.name), 0);
+    expect(await _rowCount(db, FavoritesTable.name), 0);
+    expect(await _rowCount(db, ReadHistoryTable.name), 0);
+    expect(await _rowCount(db, AssistantProjectsTable.name), 0);
+    expect(await _rowCount(db, AssistantConversationsTable.name), 0);
+    expect(await _rowCount(db, AssistantMessagesTable.name), 0);
+  });
+}
+
+Future<int> _rowCount(Database db, String table) async {
+  // Sqflite.firstIntValue yerine doğrudan okuma: sqflite_common_ffi üzerinden
+  // Sqflite yardımcı sınıfı görünmüyor, bu biçim her varyantta çalışır.
+  final rows = await db.rawQuery('SELECT COUNT(*) AS row_count FROM $table');
+  return (rows.first['row_count'] as int?) ?? 0;
+}

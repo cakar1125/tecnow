@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <item name="android:windowSplashScreenBackground">#0A0C10</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/teknoakis_splash_icon</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">#11151B</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">#0A0C10</item>
+    </style>
+</resources>

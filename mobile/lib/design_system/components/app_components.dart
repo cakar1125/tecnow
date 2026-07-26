@@ -228,7 +228,8 @@ class AppSearchField extends StatelessWidget {
     decoration: InputDecoration(
       hintText: hintText,
       prefixIcon: const Icon(Icons.search_rounded),
-      suffixIcon: const Icon(Icons.tune_rounded),
+      // Dekoratif bir filtre ikonu koymuyoruz: düğme değildi, hiçbir şey
+      // yapmıyordu ve gerçek filtre çipleriyle çelişiyordu (sahte affordance).
     ),
   );
 }

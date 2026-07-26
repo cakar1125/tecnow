@@ -670,3 +670,89 @@ class _AppCard extends StatelessWidget {
     ),
   );
 }
+
+class SavedItemCard extends StatelessWidget {
+  const SavedItemCard({
+    required this.item,
+    required this.onRemove,
+    required this.onOpenDetails,
+    super.key,
+  });
+
+  final SavedItemFixture item;
+  final VoidCallback onRemove;
+  final VoidCallback onOpenDetails;
+
+  (String, Color, IconData) get _category => switch (item.kind) {
+    SavedItemKind.repository => (
+      'REPOSITORY',
+      AppColors.primary,
+      Icons.code_rounded,
+    ),
+    SavedItemKind.aiModel => (
+      'AI',
+      AppColors.aiAccent,
+      Icons.psychology_outlined,
+    ),
+    SavedItemKind.tool => ('ARAÇLAR', AppColors.warning, Icons.build_outlined),
+    SavedItemKind.skill => ('SKILLS', AppColors.success, Icons.school_outlined),
+    SavedItemKind.assistantProject => (
+      'ASİSTAN PROJESİ',
+      AppColors.aiAccent,
+      Icons.auto_awesome_outlined,
+    ),
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final (label, color, icon) = _category;
+
+    return _AppCard(
+      accent: color,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: _Badge(label: label, color: color, icon: icon),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Text('Örnek kayıt', style: AppTypography.technical),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(item.title, style: AppTypography.title),
+          const SizedBox(height: AppSpacing.sm),
+          Text('Kaynak: ${item.sourceLabel}', style: AppTypography.technical),
+          const SizedBox(height: AppSpacing.sm),
+          Text(item.summary, style: AppTypography.bodyMuted),
+          const SizedBox(height: AppSpacing.lg),
+          const Divider(height: 1, color: AppColors.outline),
+          const SizedBox(height: AppSpacing.lg),
+          Row(
+            children: [
+              Expanded(
+                child: SecondaryButton(
+                  label: 'Kaydı Kaldır',
+                  onPressed: onRemove,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: PrimaryButton(
+                  label: 'Detaya Git',
+                  onPressed: onOpenDetails,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}

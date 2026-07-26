@@ -52,6 +52,24 @@ class NotificationFixture {
   final String time;
 }
 
+enum SavedItemKind { repository, aiModel, tool, skill, assistantProject }
+
+class SavedItemFixture {
+  const SavedItemFixture({
+    required this.kind,
+    required this.id,
+    required this.title,
+    required this.sourceLabel,
+    required this.summary,
+  });
+
+  final SavedItemKind kind;
+  final String id;
+  final String title;
+  final String sourceLabel;
+  final String summary;
+}
+
 const repositoryFixture = RepositoryFixture(
   name: 'örnek-lab/akış-motoru',
   description: 'Mobil teknoloji akışları için hayalî ve yerel bir örnek proje.',
@@ -99,6 +117,49 @@ const notificationFixtures = [
     'Takip edilen kaynak',
     'Hayalî Örnek Lab yeni bir not paylaştı.',
     'Dün',
+  ),
+];
+
+const savedItemFixtures = [
+  SavedItemFixture(
+    kind: SavedItemKind.repository,
+    id: 'akis-motoru',
+    title: 'örnek-lab/hayali-akis-motoru',
+    sourceLabel: 'Örnek Kod Arşivi',
+    summary:
+        'Hayalî mobil akışları göstermek için hazırlanmış örnek repository kaydı.',
+  ),
+  SavedItemFixture(
+    kind: SavedItemKind.aiModel,
+    id: 'sentez-mini',
+    title: 'Hayalî Sentez Mini',
+    sourceLabel: 'Örnek AI Laboratuvarı',
+    summary:
+        'Tamamen hayalî sınıflandırma denemelerini anlatan örnek AI model kaydı.',
+  ),
+  SavedItemFixture(
+    kind: SavedItemKind.tool,
+    id: 'akis-pusulasi',
+    title: 'Hayalî Akış Pusulası',
+    sourceLabel: 'Örnek Araç Atölyesi',
+    summary:
+        'Yerel arayüz akışlarını taslaklayan hayalî bir geliştirici aracı kaydı.',
+  ),
+  SavedItemFixture(
+    kind: SavedItemKind.skill,
+    id: 'erisilebilir-kartlar',
+    title: 'Örnek Erişilebilir Kartlar Becerisi',
+    sourceLabel: 'Hayalî Öğrenme Alanı',
+    summary:
+        'Kart erişilebilirliğini çalışmak için hazırlanmış hayalî beceri kaydı.',
+  ),
+  SavedItemFixture(
+    kind: SavedItemKind.assistantProject,
+    id: 'taslak-yardimci',
+    title: 'Hayalî Taslak Yardımcı',
+    sourceLabel: 'Örnek Asistan Stüdyosu',
+    summary:
+        'Yalnız fixture deneyimi için tanımlanmış hayalî asistan projesi kaydı.',
   ),
 ];
 

@@ -97,6 +97,9 @@ void main() {
               HttpHeaders.locationHeader,
               'ftp://ornek.test/feed.json',
             );
+          case '/asili':
+            // Bağlantı kabul edilir ama yanıt hiç kapatılmaz.
+            return;
           case '/buyuk':
             response.write('x' * 4096);
           case '/akan':
@@ -179,6 +182,18 @@ void main() {
       ).get(url('/buyuk'));
 
       expect(response.body, hasLength(4096));
+    });
+
+    /// Takılı kalmış bir bağlantı, zaman aşımı olmadan tazelemeyi süresiz
+    /// bekletirdi: durum satırı sonsuza dek "Güncelleniyor…" kalır ve ikinci
+    /// deneme de engellenmiş olurdu.
+    test('yanıt vermeyen sunucu zaman aşımına uğrar', () async {
+      await expectLater(
+        IoFeedHttpClient(
+          timeout: const Duration(milliseconds: 300),
+        ).get(url('/asili')),
+        throwsA(isA<FeedTransportException>()),
+      );
     });
 
     /// Çevrimdışı olmak beklenen bir durumdur; tek bir tipe indirgenir ki

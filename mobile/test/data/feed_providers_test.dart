@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:teknoakis/data/feed/feed_schema.dart';
+import 'package:teknoakis/data/feed/syncing_feed_repository.dart';
 import 'package:teknoakis/data/providers.dart';
 
 import '../support/test_overrides.dart';
@@ -97,6 +101,39 @@ void main() {
 
       expect(captured.read(feedProvider).hasError, isTrue);
       expect(captured.read(feedItemProvider('0000000000000001')), isNull);
+    });
+  });
+
+  /// Ekran testlerinin hepsi `feedRepositoryProvider`'ı sahte bir depoyla
+  /// değiştiriyor; gerçek bağlantının kendisi hiçbir yerde ölçülmüyordu.
+  /// Yanlış bağlanmış bir sağlayıcı ancak cihazda görünürdü.
+  group('varsayılan bağlantı', () {
+    ProviderContainer container() {
+      final scope = ProviderContainer(
+        overrides: [
+          // Gerçek sqflite açılışı testte yapılmaz; önbellek veritabanını
+          // yalnız okuma anında beklediği için hiç tamamlanmaması yeterli.
+          databaseProvider.overrideWith((ref) => Completer<Database>().future),
+        ],
+      );
+      addTearDown(scope.dispose);
+      return scope;
+    }
+
+    test('depo paketlenmiş dosya + önbellek + ağ bileşimidir', () {
+      expect(
+        container().read(feedRepositoryProvider),
+        isA<SyncingFeedRepository>(),
+      );
+    });
+
+    /// `--dart-define=FEED_URL` verilmediği için varsayılan derlemede ağ
+    /// tazelemesi **kapalı** olmalı.
+    test('adres verilmediğinde tazeleme kapalıdır', () {
+      final scope = container();
+
+      expect(scope.read(feedEndpointProvider), isNull);
+      expect(scope.read(feedRepositoryProvider).remoteEnabled, isFalse);
     });
   });
 

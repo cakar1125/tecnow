@@ -379,6 +379,27 @@ void main() {
       expect(cache.entry, same(good));
     });
 
+    /// Paketlenmiş dosya bozuksa karşılaştırma yapılamaz, ama başarılı bir
+    /// tazeleme yine de başarılıdır. İstisnanın yukarı çıkması, bozuk bir
+    /// varlık yüzünden çalışan bir tazelemeyi çökerten bir yol açardı.
+    test('paketlenmiş dosya bozuksa tazeleme yine de sonuç döner', () async {
+      final repository = _repository(
+        cache: _MemoryCache(),
+        bundleError: const FeedFormatException('bozuk paket'),
+        client: _FakeHttpClient(
+          response: FeedHttpResponse(
+            statusCode: 200,
+            body: _payload(generatedAt: DateTime.utc(2026, 7, 27, 6)),
+          ),
+        ),
+      );
+
+      final outcome = await repository.refresh();
+
+      expect(outcome.status, FeedSyncStatus.refreshed);
+      expect(outcome.feed!.items.single.title, 'Uzak kayıt');
+    });
+
     test('bilinmeyen şema sürümü yazılmaz', () async {
       final cache = _MemoryCache();
       final repository = _repository(

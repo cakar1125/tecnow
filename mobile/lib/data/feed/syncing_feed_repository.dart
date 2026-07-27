@@ -124,12 +124,25 @@ final class SyncingFeedRepository implements FeedRepository {
 
     return FeedSyncOutcome(
       status: isNew ? FeedSyncStatus.refreshed : FeedSyncStatus.unchanged,
-      // Çekilen feed değil, **etkin** feed dönüyor: uzak kopya paketlenmiş
-      // dosyadan eskiyse (bozuk bir yayın, CDN'de takılı kalmış eski dosya)
-      // onu göstermek içeriği geriye almak olurdu.
-      feed: await load(),
+      feed: await _effectiveFeed(fetched),
       syncedAt: now,
     );
+  }
+
+  /// Çekilen feed değil, **etkin** feed döner: uzak kopya paketlenmiş
+  /// dosyadan eskiyse (bozuk bir yayın, CDN'de takılı kalmış eski dosya)
+  /// onu göstermek içeriği geriye almak olurdu.
+  ///
+  /// Paketlenmiş dosya okunamıyorsa karşılaştırma yapılamaz ama başarılı bir
+  /// tazeleme yine de başarılıdır: yeni çekilen kopya elde kalan tek geçerli
+  /// içeriktir. İstisnanın buradan yukarı çıkması, bozuk bir varlık yüzünden
+  /// **çalışan** bir tazelemeyi çökerten bir yol açardı.
+  Future<Feed> _effectiveFeed(Feed fetched) async {
+    try {
+      return await load();
+    } on Object {
+      return fetched;
+    }
   }
 
   /// Yalnız **şu anki adrese ait** ve ayrıştırılabilen bir önbellek kullanılır.

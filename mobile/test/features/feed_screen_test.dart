@@ -232,6 +232,34 @@ void main() {
       expect(repository.refreshCount, 1);
     });
 
+    /// Kontrolün çizilmesi yetmez — jestin gerçekten tazelemeye bağlı olması
+    /// gerekir. `onRefresh` yanlış bağlansaydı ekranda her şey doğru görünür,
+    /// aşağı çekmek hiçbir şey yapmazdı.
+    testWidgets('aşağı çekmek tazelemeyi tetikler', (tester) async {
+      final repository = FakeFeedRepository(
+        testFeedItems(),
+        remoteEnabled: true,
+        // Bayat değil: sayılan tek çağrı jestin kendisi olsun.
+        lastSync: DateTime.now(),
+        syncOutcome: FeedSyncOutcome(
+          status: FeedSyncStatus.refreshed,
+          feed: testFeed(testFeedItems()),
+          syncedAt: DateTime.now(),
+        ),
+      );
+      await _pumpFeed(tester, repository: repository);
+      expect(repository.refreshCount, 0);
+
+      await tester.fling(
+        find.byKey(const Key('feed-scroll')),
+        const Offset(0, 400),
+        1000,
+      );
+      await tester.pumpAndSettle();
+
+      expect(repository.refreshCount, 1);
+    });
+
     /// Ağ hatası içeriği kaybettirmez: liste yerinde kalır, yalnız durum
     /// satırı değişir.
     testWidgets('başarısız tazeleme listeyi boşaltmaz', (tester) async {

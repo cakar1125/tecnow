@@ -3,14 +3,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:teknoakis/features/saved/saved_screen.dart';
 import 'package:teknoakis/fixtures/fixtures.dart';
 
-import '../test_harness.dart';
+import '../support/test_overrides.dart';
 
 Widget savedScreenHarness() =>
-    testHarness(const Scaffold(body: SafeArea(child: SavedScreen())));
+    memoryDataHarness(const Scaffold(body: SafeArea(child: SavedScreen())));
 
 void main() {
-  testWidgets('initially exposes every saved fixture card', (tester) async {
+  testWidgets('initially exposes every saved record card', (tester) async {
     await tester.pumpWidget(savedScreenHarness());
+    await tester.pumpAndSettle();
 
     for (final item in savedItemFixtures) {
       await tester.scrollUntilVisible(
@@ -22,8 +23,9 @@ void main() {
     }
   });
 
-  testWidgets('AI filter leaves only AI fixtures', (tester) async {
+  testWidgets('AI filter leaves only AI records', (tester) async {
     await tester.pumpWidget(savedScreenHarness());
+    await tester.pumpAndSettle();
 
     await tester.tap(find.widgetWithText(FilterChip, 'AI'));
     await tester.pump();
@@ -35,30 +37,29 @@ void main() {
     expect(find.text(savedItemFixtures[4].title), findsNothing);
   });
 
-  testWidgets('remove deletes a card and shows fixture-only feedback', (
+  testWidgets('remove deletes a card and reports a device-local removal', (
     tester,
   ) async {
     await tester.pumpWidget(savedScreenHarness());
+    await tester.pumpAndSettle();
     final removedTitle = savedItemFixtures.first.title;
 
     await tester.tap(find.text('Kaydı Kaldır').first);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(find.text(removedTitle), findsNothing);
-    expect(
-      find.text('Kaydı kaldırma yalnız yerel fixture etkileşimidir.'),
-      findsOneWidget,
-    );
+    expect(find.text('Kayıt bu cihazdan kaldırıldı.'), findsOneWidget);
   });
 
-  testWidgets('removing all fixtures reveals the empty state', (tester) async {
+  testWidgets('removing every record reveals the empty state', (tester) async {
     await tester.pumpWidget(savedScreenHarness());
+    await tester.pumpAndSettle();
 
     for (var index = 0; index < savedItemFixtures.length; index++) {
       final removeButton = find.text('Kaydı Kaldır').first;
       await tester.ensureVisible(removeButton);
       await tester.tap(removeButton);
-      await tester.pump();
+      await tester.pumpAndSettle();
     }
 
     expect(find.text('Bu filtrede kayıt kalmadı.'), findsOneWidget);
@@ -66,6 +67,7 @@ void main() {
 
   testWidgets('every card visibly marks fixture transparency', (tester) async {
     await tester.pumpWidget(savedScreenHarness());
+    await tester.pumpAndSettle();
 
     for (final item in savedItemFixtures) {
       await tester.scrollUntilVisible(
@@ -75,5 +77,20 @@ void main() {
       );
       expect(find.text('Örnek kayıt'), findsWidgets);
     }
+  });
+
+  testWidgets('an empty repository renders the empty state, not an error', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      memoryDataHarness(
+        const Scaffold(body: SafeArea(child: SavedScreen())),
+        savedItems: const [],
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Bu filtrede kayıt kalmadı.'), findsOneWidget);
+    expect(find.text('Kayıtlar okunamadı'), findsNothing);
   });
 }

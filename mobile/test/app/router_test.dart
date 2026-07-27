@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:teknoakis/app/router.dart';
 import 'package:teknoakis/design_system/theme/app_theme.dart';
+
+import '../support/test_overrides.dart';
 
 void main() {
   testWidgets('router changes shell tabs and exposes detail routes', (
@@ -11,8 +12,8 @@ void main() {
     final router = createRouter(initialLocation: '/home');
     addTearDown(router.dispose);
     await tester.pumpWidget(
-      ProviderScope(
-        child: MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
+      memoryDataScope(
+        MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
       ),
     );
     await tester.pumpAndSettle();

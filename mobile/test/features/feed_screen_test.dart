@@ -150,6 +150,23 @@ void main() {
     expect(find.byKey(const Key('feed-error')), findsNothing);
   });
 
+  /// Bu ekran **hiç ölçülmemişti**: testler yalnız "hata görünmesin" diye
+  /// bakıyordu. Riverpod 3 hatayı `AsyncLoading(error: …)` içinde taşıdığı
+  /// için `AsyncError()` deseni hiç eşleşmiyordu ve bozuk bir feed sonsuza
+  /// dek yükleme iskeleti gösteriyordu.
+  testWidgets('bozuk feed hata durumu gösterir', (tester) async {
+    await tester.pumpWidget(
+      memoryDataScopeWithFailingFeed(
+        const MaterialApp(home: Scaffold(body: FeedScreen())),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('feed-error')), findsOneWidget);
+    expect(find.text('İçerik okunamadı'), findsOneWidget);
+    expect(find.byKey(const Key('feed-loading')), findsNothing);
+  });
+
   testWidgets('kaydetme düğmesi yerel geri bildirim verir', (tester) async {
     await _pumpFeed(tester);
 

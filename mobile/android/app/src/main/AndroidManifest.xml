@@ -50,5 +50,13 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <!-- Orijinal kaynağı tarayıcıda açabilmek için. Android 11'den (API 30)
+             itibaren bu bildirim olmadan `canLaunchUrl` **false** döner ve
+             "Kaynağa git" düğmesi sessizce çalışmaz. Yalnız https: uygulama
+             başka şema açmaz. -->
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="https"/>
+        </intent>
     </queries>
 </manifest>

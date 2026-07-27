@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:teknoakis/features/ai_model_detail/ai_model_detail_screen.dart';
-import 'package:teknoakis/features/repository_detail/repository_detail_screen.dart';
+import 'package:teknoakis/features/detail/feed_detail_screen.dart';
 
 import '../support/test_overrides.dart';
 

@@ -194,36 +194,51 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
             ),
           ),
         ),
-        switch (feed) {
-          // `LoadingSkeleton`, iptal edilebilir bir Timer kullanır;
-          // `CircularProgressIndicator` sonsuz animasyonuyla her ekranın
-          // `pumpAndSettle`'ını zaman aşımına uğratıyordu.
-          AsyncLoading() => const SliverFillRemaining(
-            hasScrollBody: false,
-            child: Padding(
-              key: Key('feed-loading'),
-              padding: EdgeInsets.all(AppSpacing.lg),
-              child: LoadingSkeleton(),
-            ),
-          ),
-          // Bozuk bir feed sessizce boş liste gibi görünmez: hata olduğu
-          // söylenir, çünkü "içerik yok" ile "içerik okunamadı" farklı şeyler.
-          AsyncError() => const SliverFillRemaining(
-            hasScrollBody: false,
-            child: EmptyStateView(
-              key: Key('feed-error'),
-              title: 'İçerik okunamadı',
-              message:
-                  'Paketlenmiş içerik dosyası açılamadı. Uygulamayı '
-                  'güncellemek sorunu çözebilir.',
-            ),
-          ),
-          AsyncValue(:final value?) => _list(
-            _filter(value, interests),
-            context,
-          ),
-        },
+        _content(feed, interests, context),
       ],
+    );
+  }
+
+  /// Durum sırası **tipe göre değil, içeriğe göre**.
+  ///
+  /// `AsyncLoading()` deseniyle başlamak sessiz bir hataydı: Riverpod 3 hatayı
+  /// `AsyncLoading(error: …)` içinde taşıyabiliyor, bu yüzden `AsyncError()`
+  /// arm'ı hiç eşleşmiyordu ve **bozuk bir feed sonsuza dek yükleme iskeleti
+  /// gösteriyordu**. "İçerik okunamadı" ekranı ölü koddu.
+  Widget _content(
+    AsyncValue<List<FeedItem>> feed,
+    Set<String> interests,
+    BuildContext context,
+  ) {
+    if (feed.value case final items?) {
+      return _list(_filter(items, interests), context);
+    }
+
+    // Bozuk bir feed sessizce boş liste gibi görünmez: hata olduğu söylenir,
+    // çünkü "içerik yok" ile "içerik okunamadı" farklı şeyler.
+    if (feed.hasError) {
+      return const SliverFillRemaining(
+        hasScrollBody: false,
+        child: EmptyStateView(
+          key: Key('feed-error'),
+          title: 'İçerik okunamadı',
+          message:
+              'İçerik dosyası açılamadı. Uygulamayı güncellemek sorunu '
+              'çözebilir.',
+        ),
+      );
+    }
+
+    // `LoadingSkeleton`, iptal edilebilir bir Timer kullanır;
+    // `CircularProgressIndicator` sonsuz animasyonuyla her ekranın
+    // `pumpAndSettle`'ını zaman aşımına uğratıyordu.
+    return const SliverFillRemaining(
+      hasScrollBody: false,
+      child: Padding(
+        key: Key('feed-loading'),
+        padding: EdgeInsets.all(AppSpacing.lg),
+        child: LoadingSkeleton(),
+      ),
     );
   }
 

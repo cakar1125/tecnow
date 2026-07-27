@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../design_system/components/app_components.dart';
-import '../features/ai_model_detail/ai_model_detail_screen.dart';
+import '../features/detail/feed_detail_screen.dart';
 import '../features/assistant/assistant_screen.dart';
 import '../features/explore/explore_screen.dart';
 import '../features/feed/feed_screen.dart';
 import '../features/interests/interests_screen.dart';
 import '../features/onboarding/onboarding_screen.dart';
-import '../features/repository_detail/repository_detail_screen.dart';
 import '../features/saved/saved_screen.dart';
 import '../features/settings/settings_screen.dart';
 import '../features/splash/splash_screen.dart';

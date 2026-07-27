@@ -263,13 +263,13 @@ class CategoryBadge extends StatelessWidget {
   final String label;
   @override
   Widget build(BuildContext context) =>
-      _Badge(label: label, color: AppColors.primary);
+      AppBadge(label: label, color: AppColors.primary);
 }
 
 class VerifiedBadge extends StatelessWidget {
   const VerifiedBadge({super.key});
   @override
-  Widget build(BuildContext context) => const _Badge(
+  Widget build(BuildContext context) => const AppBadge(
     label: 'DOĞRULANMIŞ ÖRNEK',
     color: AppColors.success,
     icon: Icons.verified_outlined,
@@ -279,15 +279,21 @@ class VerifiedBadge extends StatelessWidget {
 class TrendingBadge extends StatelessWidget {
   const TrendingBadge({super.key});
   @override
-  Widget build(BuildContext context) => const _Badge(
+  Widget build(BuildContext context) => const AppBadge(
     label: 'YÜKSELEN',
     color: AppColors.warning,
     icon: Icons.trending_up_rounded,
   );
 }
 
-class _Badge extends StatelessWidget {
-  const _Badge({required this.label, required this.color, this.icon});
+/// Etiket rozeti. Detay ekranları da kullandığı için görünür.
+class AppBadge extends StatelessWidget {
+  const AppBadge({
+    required this.label,
+    required this.color,
+    this.icon,
+    super.key,
+  });
   final String label;
   final Color color;
   final IconData? icon;
@@ -726,7 +732,7 @@ class SavedItemCard extends StatelessWidget {
               Expanded(
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: _Badge(label: label, color: color, icon: icon),
+                  child: AppBadge(label: label, color: color, icon: icon),
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
@@ -842,7 +848,7 @@ class _FeedItemCardState extends State<FeedItemCard> {
                     runSpacing: AppSpacing.sm,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      _Badge(label: label, color: color, icon: icon),
+                      AppBadge(label: label, color: color, icon: icon),
                       Text(
                         widget.item.sourceLabel,
                         style: AppTypography.technical,
@@ -850,19 +856,19 @@ class _FeedItemCardState extends State<FeedItemCard> {
                       // Örnek işareti yalnız fixture kartlarında. Gerçek
                       // içerikte "ÖRNEK" yazmak yalan olurdu.
                       if (widget.item.isSample)
-                        const _Badge(
+                        const AppBadge(
                           label: 'ÖRNEK',
                           color: AppColors.textSecondary,
                         ),
                       // Politika: TeknoAkış özeti kaynağın kendi metninden
                       // görsel olarak ayrılır.
                       if (widget.item.summaryAuthor == SummaryAuthor.teknoakis)
-                        const _Badge(
+                        const AppBadge(
                           label: 'TEKNOAKIŞ ÖZETİ',
                           color: AppColors.aiAccent,
                         ),
                       if (languageBadge(widget.item) case final code?)
-                        _Badge(label: code, color: AppColors.textSecondary),
+                        AppBadge(label: code, color: AppColors.textSecondary),
                     ],
                   ),
                 ),
@@ -1011,7 +1017,7 @@ class _ExploreResultCardState extends State<ExploreResultCard> {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             Text(widget.item.title, style: AppTypography.title),
-            const _Badge(label: 'ÖRNEK', color: AppColors.textSecondary),
+            const AppBadge(label: 'ÖRNEK', color: AppColors.textSecondary),
           ],
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -1192,7 +1198,7 @@ class ExplorePopularRow extends StatelessWidget {
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     Text(item.title, style: AppTypography.title),
-                    const _Badge(
+                    const AppBadge(
                       label: 'ÖRNEK',
                       color: AppColors.textSecondary,
                     ),

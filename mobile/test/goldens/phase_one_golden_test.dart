@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:teknoakis/design_system/theme/app_theme.dart';
-import 'package:teknoakis/features/ai_model_detail/ai_model_detail_screen.dart';
+import 'package:teknoakis/features/detail/feed_detail_screen.dart';
 import 'package:teknoakis/features/feed/feed_screen.dart';
-import 'package:teknoakis/features/repository_detail/repository_detail_screen.dart';
 
 import '../support/test_overrides.dart';
 
@@ -27,23 +25,26 @@ void main() {
     await screenMatchesGolden(tester, 'home_390x844');
   });
 
+  /// Detay ekranları da artık gerçek kaydı gösteriyor; golden sabit test
+  /// verisiyle çekiliyor. Önceki hâlleri `id`'yi hiç okumadan bir fixture
+  /// çiziyordu, bu yüzden hangi kimlikle pump edildikleri önemsizdi.
   testGoldens('GOLDEN Repository Detayı 390x844', (tester) async {
     await tester.pumpWidgetBuilder(
-      // Detay ekranları artık okuma geçmişi yazdığı için `ProviderScope`
-      // gerekiyor. Görsel çıktı değişmez; kayıt başarısız olursa sessiz kalır.
-      const ProviderScope(child: RepositoryDetailScreen(id: 'golden')),
+      memoryDataScope(const RepositoryDetailScreen(id: '0000000000000001')),
       wrapper: materialAppWrapper(theme: AppTheme.dark),
       surfaceSize: const Size(390, 844),
     );
+    await tester.pumpAndSettle();
     await screenMatchesGolden(tester, 'repository_detail_390x844');
   });
 
   testGoldens('GOLDEN AI Model Detayı 390x844', (tester) async {
     await tester.pumpWidgetBuilder(
-      const ProviderScope(child: AiModelDetailScreen(id: 'golden')),
+      memoryDataScope(const AiModelDetailScreen(id: '0000000000000002')),
       wrapper: materialAppWrapper(theme: AppTheme.dark),
       surfaceSize: const Size(390, 844),
     );
+    await tester.pumpAndSettle();
     await screenMatchesGolden(tester, 'ai_model_detail_390x844');
   });
 }

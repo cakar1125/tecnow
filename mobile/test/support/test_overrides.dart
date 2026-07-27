@@ -138,6 +138,7 @@ Widget memoryDataHarness(
   ReadHistoryRepository? readHistory,
   List<FeedItem>? feed,
   FeedRepository? feedRepository,
+  UrlOpener? urlOpener,
   double textScale = 1,
 }) => memoryDataScope(
   testApp(child, textScale: textScale),
@@ -146,6 +147,7 @@ Widget memoryDataHarness(
   readHistory: readHistory,
   feed: feed,
   feedRepository: feedRepository,
+  urlOpener: urlOpener,
 );
 
 /// Router'ı kendisi kuran testler için: yalnız scope, kendi `MaterialApp`'ini
@@ -157,6 +159,7 @@ Widget memoryDataScope(
   ReadHistoryRepository? readHistory,
   List<FeedItem>? feed,
   FeedRepository? feedRepository,
+  UrlOpener? urlOpener,
 }) {
   // Örnekler önceden kurulur: `localDataRepositoryProvider` diğer üçüyle
   // **aynı** nesneleri görmeli, yoksa "Verileri Sil" testte hiçbir şeyi
@@ -181,6 +184,8 @@ Widget memoryDataScope(
       feedRepositoryProvider.overrideWithValue(
         feedRepository ?? FakeFeedRepository(feed ?? testFeedItems()),
       ),
+      // Testler gerçek tarayıcı açmaz; varsayılan olarak "açıldı" der.
+      urlOpenerProvider.overrideWithValue(urlOpener ?? (url) async => true),
     ],
     child: child,
   );
@@ -188,13 +193,16 @@ Widget memoryDataScope(
 
 /// Feed'in okunamadığı durumu kuran kabuk. Ekranların "içerik yok" ile
 /// "içerik okunamadı"yı ayırdığını doğrulamak için.
-Widget memoryDataScopeWithFailingFeed(Widget child) => ProviderScope(
-  overrides: [
-    feedRepositoryProvider.overrideWithValue(
-      FakeFeedRepository(const [], error: const FeedFormatException('bozuk')),
-    ),
-  ],
-  child: child,
+///
+/// [memoryDataScope] üzerinden kuruluyor: yalnız feed'i override etmek
+/// yetmiyordu, çünkü ekranlar okuma geçmişi de yazıyor ve o çağrı gerçek
+/// sqflite'a düşüp ekranı hiç yerleştirmiyordu.
+Widget memoryDataScopeWithFailingFeed(Widget child) => memoryDataScope(
+  child,
+  feedRepository: FakeFeedRepository(
+    const [],
+    error: const FeedFormatException('bozuk'),
+  ),
 );
 
 /// Paketlenmiş dosyaya dokunmayan feed deposu.

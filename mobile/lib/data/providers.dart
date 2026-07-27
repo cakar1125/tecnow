@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'app_preferences.dart';
 import 'feed/feed_cache.dart';
@@ -143,6 +144,24 @@ final feedItemProvider = Provider.family<FeedItem?, String>((ref, id) {
   }
   return null;
 });
+
+/// Orijinal kaynağı işletim sistemine devreder. `true` döndürürse açıldı.
+typedef UrlOpener = Future<bool> Function(Uri url);
+
+/// Testler gerçek tarayıcı açmadan düğmenin bağlı olduğunu ölçebilsin diye
+/// sağlayıcı olarak duruyor.
+final urlOpenerProvider = Provider<UrlOpener>((ref) => openExternalUrl);
+
+/// Yalnız `https` açılır.
+///
+/// Feed üreticisi zaten https dışını almıyor ama burası uygulamanın adresi
+/// **dışarıya** verdiği yer: `intent://`, `file://` ya da `javascript:` taşıyan
+/// bozuk bir kayıt buradan geçmemeli. Sınır, kaynağa güvenilen yerde değil
+/// devrin yapıldığı yerde kontrol edilir.
+Future<bool> openExternalUrl(Uri url) async {
+  if (url.scheme != 'https') return false;
+  return launchUrl(url, mode: LaunchMode.externalApplication);
+}
 
 final sharedPreferencesProvider = FutureProvider<SharedPreferences>(
   (ref) => SharedPreferences.getInstance(),

@@ -19,4 +19,27 @@ void main() {
     expect(activity.existsSync(), isTrue);
     expect(activity.readAsStringSync(), contains('package $packageName'));
   });
+
+  /// Bu izin yalnız `src/debug/AndroidManifest.xml` içinde duruyordu — orayı
+  /// Flutter aracı hot reload için kendisi ekliyor. Sonuç: ağ geliştirmede
+  /// çalışır, **yayın derlemesinde sessizce çalışmazdı** ve bu ancak
+  /// mağazadaki sürümde görünürdü.
+  test('yayın manifesti internet iznini bildirir', () {
+    final manifest = File(
+      'android/app/src/main/AndroidManifest.xml',
+    ).readAsStringSync();
+
+    expect(manifest, contains('android.permission.INTERNET'));
+  });
+
+  /// Feed yalnız `https` üzerinden çekilir (`parseFeedEndpoint`). Platform
+  /// tarafında da açıkça kapatılır: varsayılana güvenmek, `targetSdk` bir gün
+  /// düştüğünde sessizce düz metne izin vermek olurdu.
+  test('düz metin trafiği kapalıdır', () {
+    final manifest = File(
+      'android/app/src/main/AndroidManifest.xml',
+    ).readAsStringSync();
+
+    expect(manifest, contains('android:usesCleartextTraffic="false"'));
+  });
 }

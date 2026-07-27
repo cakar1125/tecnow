@@ -3,8 +3,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'app_preferences.dart';
+import 'feed/feed_cache.dart';
+import 'feed/feed_endpoint.dart';
+import 'feed/feed_http_client.dart';
 import 'feed/feed_repository.dart';
 import 'feed/feed_schema.dart';
+import 'feed/syncing_feed_repository.dart';
 import 'interests_migration.dart';
 import 'local/app_database.dart';
 import 'repositories/interests_repository.dart';
@@ -15,11 +19,32 @@ import 'saved_items_seeder.dart';
 
 final databaseProvider = FutureProvider<Database>((ref) => AppDatabase.open());
 
-final feedRepositoryProvider = Provider<FeedRepository>(
-  (ref) => BundledFeedRepository(),
+/// Uzak feed adresi. `--dart-define=FEED_URL=...` verilmediyse `null` —
+/// o durumda uygulama yalnız paketlenmiş içerikle çalışır.
+final feedEndpointProvider = Provider<Uri?>(
+  (ref) => parseFeedEndpoint(feedUrlFromEnvironment),
 );
 
-/// Paketlenmiş feed. Geri çekilmiş kayıtlar **gösterilmez** ama dosyadan
+final feedHttpClientProvider = Provider<FeedHttpClient>(
+  (ref) => IoFeedHttpClient(),
+);
+
+/// Veritabanını `Future` olarak geçirir; böylece bu sağlayıcı eşzamanlı kalır
+/// ve feed'i okuyan hiçbir ekran veritabanı açılışını beklemez.
+final feedCacheProvider = Provider<FeedCache>(
+  (ref) => SqfliteFeedCache(ref.watch(databaseProvider.future)),
+);
+
+final feedRepositoryProvider = Provider<FeedRepository>(
+  (ref) => SyncingFeedRepository(
+    bundled: BundledFeedRepository(),
+    cache: ref.watch(feedCacheProvider),
+    client: ref.watch(feedHttpClientProvider),
+    endpoint: ref.watch(feedEndpointProvider),
+  ),
+);
+
+/// Gösterilen içerik. Geri çekilmiş kayıtlar **gösterilmez** ama dosyadan
 /// silinmez: politika düzeltmeyi kayıtla yönetmeyi şart koşuyor.
 final feedProvider = AsyncNotifierProvider<FeedNotifier, List<FeedItem>>(
   FeedNotifier.new,
@@ -32,10 +57,24 @@ final class FeedNotifier extends AsyncNotifier<List<FeedItem>> {
     return feed.visibleItems;
   }
 
-  /// Ağ tazelemesi geldiğinde (TASK-0016) buradan tetiklenecek.
+  /// Yerel kaynağı baştan okur. Ağa çıkmaz.
   Future<void> reload() async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(build);
+  }
+
+  /// Uzak adresten tazelemeyi dener.
+  ///
+  /// **`AsyncLoading` yazılmaz.** Tazeleme sırasında ekranı boşaltmak,
+  /// çalışan bir listeyi ağ hatası ihtimali uğruna feda etmek olurdu:
+  /// kullanıcı eski içeriği görmeye devam eder, sonuç gelince liste yerinde
+  /// değişir. Başarısızlıkta durum hiç değişmez.
+  Future<FeedSyncOutcome> refresh() async {
+    final outcome = await ref.read(feedRepositoryProvider).refresh();
+    if (outcome.feed case final feed?) {
+      state = AsyncData(feed.visibleItems);
+    }
+    return outcome;
   }
 }
 

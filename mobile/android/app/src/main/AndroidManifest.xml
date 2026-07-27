@@ -1,8 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- İçerik feed'ini tazelemek için (TASK-0016). Yalnız debug manifestinde
+         bulunması bir tuzaktı: Flutter aracı onu geliştirme için kendisi
+         ekliyor, bu yüzden ağ geliştirmede çalışır ve yayın derlemesinde
+         sessizce çalışmazdı. Hesap ve bulut senkronizasyonu yok; ağ tek bir
+         salt-okunur JSON dosyası için kullanılıyor. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:label="teknoakis"
         android:name="${applicationName}"
         android:enableOnBackInvokedCallback="true"
+        android:usesCleartextTraffic="false"
         android:icon="@drawable/teknoakis_splash_icon">
         <activity
             android:name=".MainActivity"

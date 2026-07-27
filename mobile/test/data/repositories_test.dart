@@ -97,7 +97,7 @@ void main() {
     expect(entries.map((entry) => entry.kind), ['repository', 'article']);
   });
 
-  test('deleteEverything yedi tablonun tamamını boşaltır', () async {
+  test('deleteEverything her tabloyu boşaltır', () async {
     await interestsRepository.replaceAll(['Flutter']);
     await savedItemsRepository.add(
       SavedItem(
@@ -129,6 +129,16 @@ void main() {
       AssistantMessagesTable.content: 'Yanıt',
       AssistantMessagesTable.createdAt: 1,
     });
+    // Feed önbelleği de silinir: içerik kişisel veri değil ama satır **ne zaman
+    // senkronize edildiğini** taşır ve "tüm yerel verileri sil" diyen bir
+    // kullanıcıya kullanım zamanını gösteren bir kayıt bırakılmaz.
+    await db.insert(FeedCacheTable.name, {
+      FeedCacheTable.id: 1,
+      FeedCacheTable.payload: '{}',
+      FeedCacheTable.fetchedAt: 1,
+      FeedCacheTable.generatedAt: 1,
+      FeedCacheTable.sourceUrl: 'https://ornek.test/feed.json',
+    });
 
     for (final table in LocalTables.all) {
       expect(
@@ -140,13 +150,12 @@ void main() {
 
     await localDataRepository.deleteEverything();
 
-    expect(await _rowCount(db, InterestsTable.name), 0);
-    expect(await _rowCount(db, SavedItemsTable.name), 0);
-    expect(await _rowCount(db, FavoritesTable.name), 0);
-    expect(await _rowCount(db, ReadHistoryTable.name), 0);
-    expect(await _rowCount(db, AssistantProjectsTable.name), 0);
-    expect(await _rowCount(db, AssistantConversationsTable.name), 0);
-    expect(await _rowCount(db, AssistantMessagesTable.name), 0);
+    // Tek tek değil liste üzerinden: yeni bir tablo eklendiğinde bu test
+    // kendiliğinden onu da kapsar. Sabit bir liste yazılsaydı, unutulan tablo
+    // ancak kullanıcıda silinmeyen veri olarak görünürdü.
+    for (final table in LocalTables.all) {
+      expect(await _rowCount(db, table), 0, reason: '$table boşalmalı');
+    }
   });
 }
 

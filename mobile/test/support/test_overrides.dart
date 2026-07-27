@@ -137,6 +137,7 @@ Widget memoryDataHarness(
   List<String>? interests,
   ReadHistoryRepository? readHistory,
   List<FeedItem>? feed,
+  FeedRepository? feedRepository,
   double textScale = 1,
 }) => memoryDataScope(
   testApp(child, textScale: textScale),
@@ -144,6 +145,7 @@ Widget memoryDataHarness(
   interests: interests,
   readHistory: readHistory,
   feed: feed,
+  feedRepository: feedRepository,
 );
 
 /// Router'ı kendisi kuran testler için: yalnız scope, kendi `MaterialApp`'ini
@@ -154,6 +156,7 @@ Widget memoryDataScope(
   List<String>? interests,
   ReadHistoryRepository? readHistory,
   List<FeedItem>? feed,
+  FeedRepository? feedRepository,
 }) {
   // Örnekler önceden kurulur: `localDataRepositoryProvider` diğer üçüyle
   // **aynı** nesneleri görmeli, yoksa "Verileri Sil" testte hiçbir şeyi
@@ -176,7 +179,7 @@ Widget memoryDataScope(
             InMemoryLocalDataRepository(saved, interestsRepository, history),
       ),
       feedRepositoryProvider.overrideWithValue(
-        FakeFeedRepository(feed ?? testFeedItems()),
+        feedRepository ?? FakeFeedRepository(feed ?? testFeedItems()),
       ),
     ],
     child: child,
@@ -201,23 +204,53 @@ Widget memoryDataScopeWithFailingFeed(Widget child) => ProviderScope(
 /// varlığın ayrıştırılabildiği ayrıca `test/data/feed_repository_test.dart`
 /// içinde ölçülüyor.
 final class FakeFeedRepository implements FeedRepository {
-  FakeFeedRepository(this.items, {this.error});
+  FakeFeedRepository(
+    this.items, {
+    this.error,
+    this.syncOutcome,
+    this.lastSync,
+    this.remoteEnabled = false,
+  });
 
   final List<FeedItem> items;
 
   /// Verilirse [load] bunu fırlatır — hata durumu ekranları için.
   final Object? error;
 
+  /// Verilirse [refresh] bunu döndürür. Ağ katmanı gerçekten kurulmaz:
+  /// ekranların sonuca **nasıl tepki verdiği** ölçülür, ağın kendisi değil.
+  final FeedSyncOutcome? syncOutcome;
+
+  final DateTime? lastSync;
+
+  @override
+  final bool remoteEnabled;
+
+  /// Kaç kez tazeleme istendiği. Açılışta bayat içeriğin bir kez — ve yalnız
+  /// bir kez — tazelenmesini ölçmek için.
+  int refreshCount = 0;
+
   @override
   Future<Feed> load() async {
     if (error case final failure?) throw failure;
-    return Feed(
-      schemaVersion: feedSchemaVersion,
-      generatedAt: DateTime.utc(2026, 7, 27),
-      items: items,
-    );
+    return testFeed(items);
   }
+
+  @override
+  Future<FeedSyncOutcome> refresh() async {
+    refreshCount++;
+    return syncOutcome ?? FeedSyncOutcome.disabled;
+  }
+
+  @override
+  Future<DateTime?> lastSyncAt() async => lastSync;
 }
+
+Feed testFeed(List<FeedItem> items, {DateTime? generatedAt}) => Feed(
+  schemaVersion: feedSchemaVersion,
+  generatedAt: generatedAt ?? DateTime.utc(2026, 7, 27),
+  items: items,
+);
 
 /// Ekran testlerinin belirlenimci feed'i.
 ///

@@ -21,12 +21,11 @@ abstract final class AppDatabase {
           await db.execute('PRAGMA foreign_keys = ON');
         },
         onCreate: (db, version) async {
-          await LocalSchema.createV1(db);
+          await LocalSchema.createLatest(db);
         },
         onUpgrade: (db, oldVersion, newVersion) async {
-          for (var version = oldVersion + 1; version <= newVersion; version++) {
-            // Add each future migration here, for example:
-            // if (version == 2) await LocalSchema.migrateToV2(db);
+          for (var target = oldVersion + 1; target <= newVersion; target++) {
+            await LocalSchema.upgradeTo(db, target);
           }
         },
       ),

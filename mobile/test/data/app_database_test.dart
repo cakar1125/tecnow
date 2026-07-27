@@ -23,7 +23,7 @@ void main() {
     await db.close();
   });
 
-  test('v1 şeması yedi tablonun tamamını oluşturur', () async {
+  test('kurulum şemadaki bütün tabloları oluşturur', () async {
     final rows = await db.query(
       'sqlite_master',
       columns: ['name'],
@@ -84,6 +84,97 @@ void main() {
     }
   });
 
+  /// Migration iskeleti TASK-0008'de yazıldı ama v2'ye kadar hiç çalışmadı.
+  /// Yükseltme yolu ilk kez burada ölçülüyor: kurulu bir uygulamanın verisi
+  /// güncellemeden sağ çıkmazsa bu ancak kullanıcıda görünürdü.
+  group('v1 → v2 yükseltmesi', () {
+    late String databasePath;
+
+    setUp(() async {
+      await db.close();
+      databasePath = p.join(
+        Directory.systemTemp.path,
+        'teknoakis_v1_${DateTime.now().microsecondsSinceEpoch}.db',
+      );
+      final legacy = await databaseFactoryFfi.openDatabase(
+        databasePath,
+        options: OpenDatabaseOptions(
+          version: 1,
+          onCreate: (database, _) => LocalSchema.createV1(database),
+        ),
+      );
+      await legacy.insert(SavedItemsTable.name, {
+        SavedItemsTable.id: 'eski-kayit',
+        SavedItemsTable.kind: 'repository',
+        SavedItemsTable.title: 'Yükseltmeden önce kaydedildi',
+        SavedItemsTable.savedAt: 1,
+      });
+      await legacy.close();
+    });
+
+    tearDown(() async {
+      if (db.isOpen) await db.close();
+      await databaseFactoryFfi.deleteDatabase(databasePath);
+      db = await AppDatabase.open(
+        path: inMemoryDatabasePath,
+        factory: databaseFactoryFfi,
+      );
+    });
+
+    test('kullanıcı verisi korunur ve sürüm yükselir', () async {
+      db = await AppDatabase.open(
+        path: databasePath,
+        factory: databaseFactoryFfi,
+      );
+
+      expect(await db.getVersion(), 2);
+      final rows = await db.query(SavedItemsTable.name);
+      expect(rows, hasLength(1));
+      expect(
+        rows.single[SavedItemsTable.title],
+        'Yükseltmeden önce kaydedildi',
+      );
+    });
+
+    test('v2 tablosu yükseltmeden sonra yazılabilir', () async {
+      db = await AppDatabase.open(
+        path: databasePath,
+        factory: databaseFactoryFfi,
+      );
+
+      await db.insert(FeedCacheTable.name, {
+        FeedCacheTable.id: 1,
+        FeedCacheTable.payload: '{}',
+        FeedCacheTable.fetchedAt: 1,
+        FeedCacheTable.generatedAt: 1,
+        FeedCacheTable.sourceUrl: 'https://ornek.test/feed.json',
+      });
+
+      expect(await db.query(FeedCacheTable.name), hasLength(1));
+    });
+
+    /// Sıfırdan kurulan cihaz ile yükseltilen cihaz **aynı** şemaya varmalı.
+    /// İki ayrı yol olsaydı aradaki fark ancak birinde bozuk bir sorgu
+    /// olarak görünürdü.
+    test('yükseltilen şema, sıfırdan kurulanla aynı', () async {
+      final upgraded = await AppDatabase.open(
+        path: databasePath,
+        factory: databaseFactoryFfi,
+      );
+      final upgradedObjects = await _schemaObjects(upgraded);
+      await upgraded.close();
+
+      final fresh = await AppDatabase.open(
+        path: inMemoryDatabasePath,
+        factory: databaseFactoryFfi,
+      );
+      final freshObjects = await _schemaObjects(fresh);
+      await fresh.close();
+
+      expect(upgradedObjects, freshObjects);
+    });
+  });
+
   test('NOT NULL ve yabancı anahtar ihlalleri hata verir', () async {
     await expectLater(
       db.insert(SavedItemsTable.name, {
@@ -132,6 +223,18 @@ void main() {
     expect(await _rowCount(db, AssistantConversationsTable.name), 0);
     expect(await _rowCount(db, AssistantMessagesTable.name), 0);
   });
+}
+
+/// Tablo ve indeks tanımları. `sqlite_master.sql` metni karşılaştırıldığı için
+/// yalnız adlar değil sütunlar ve kısıtlar da kapsanır.
+Future<Set<String>> _schemaObjects(Database db) async {
+  final rows = await db.query(
+    'sqlite_master',
+    columns: ['sql'],
+    where: 'sql IS NOT NULL AND name NOT LIKE ?',
+    whereArgs: ['sqlite_%'],
+  );
+  return rows.map((row) => row['sql']! as String).toSet();
 }
 
 Future<int> _rowCount(Database db, String table) async {

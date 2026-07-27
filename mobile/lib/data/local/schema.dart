@@ -1,8 +1,48 @@
 import 'package:sqflite/sqflite.dart';
 
 abstract final class LocalSchema {
-  static const version = 1;
+  static const version = 2;
   static const databaseName = 'teknoakis.db';
+
+  /// Yeni kurulum da **migration yolundan** geçer.
+  ///
+  /// En güncel şemayı tek parça yazmak daha kısa olurdu ama iki ayrı gerçek
+  /// üretirdi: sıfırdan kurulan cihaz ile yükseltilen cihaz farklı yollardan
+  /// gelirdi ve aradaki fark ancak kullanıcıdaki bozuk sorguyla görünürdü.
+  /// Aynı adımları izleyerek ikisinin **yakınsadığı** garanti edilir ve
+  /// migration kodu her kurulumda çalıştığı için ölü kalmaz.
+  static Future<void> createLatest(Database db) async {
+    await createV1(db);
+    for (var target = 2; target <= version; target++) {
+      await upgradeTo(db, target);
+    }
+  }
+
+  /// Tek bir sürüm adımı. `onUpgrade` ve [createLatest] aynı fonksiyonu çağırır.
+  static Future<void> upgradeTo(Database db, int target) async {
+    switch (target) {
+      case 2:
+        await _createFeedCacheV2(db);
+    }
+  }
+
+  /// v2: uzaktan çekilen feed'in yerel kopyası.
+  ///
+  /// Tek satır: `CHECK (id = 1)` ikinci bir kaydın yazılmasını **veritabanı
+  /// seviyesinde** engeller. "Son çekilen feed" tanımı gereği tekildir;
+  /// bunu yalnız uygulama kodunda varsaymak, bir hata durumunda sessizce
+  /// büyüyen bir tablo bırakırdı.
+  static Future<void> _createFeedCacheV2(Database db) async {
+    await db.execute('''
+      CREATE TABLE ${FeedCacheTable.name} (
+        ${FeedCacheTable.id} INTEGER PRIMARY KEY CHECK (${FeedCacheTable.id} = 1),
+        ${FeedCacheTable.payload} TEXT NOT NULL,
+        ${FeedCacheTable.fetchedAt} INTEGER NOT NULL,
+        ${FeedCacheTable.generatedAt} INTEGER NOT NULL,
+        ${FeedCacheTable.sourceUrl} TEXT NOT NULL
+      )
+    ''');
+  }
 
   static Future<void> createV1(Database db) async {
     await db.execute('''
@@ -140,6 +180,27 @@ abstract final class AssistantMessagesTable {
   static const createdAt = 'created_at';
 }
 
+abstract final class FeedCacheTable {
+  static const name = 'feed_cache';
+  static const id = 'id';
+
+  /// Ham JSON. Ayrıştırılmış hâli değil: şema sürümü doğrulaması okuma anında
+  /// yapılır, böylece uygulama güncellenip şema kuralları değiştiğinde
+  /// önbellekteki kayıt da yeni kurallardan geçer.
+  static const payload = 'payload';
+
+  /// Çekme anı — **son başarılı senkronizasyon** budur.
+  static const fetchedAt = 'fetched_at';
+
+  /// Feed'in kendi üretim anı. Paketlenmiş dosyayla karşılaştırmak için
+  /// ayrıca tutulur: 184 KB'lık JSON'u yalnız tarihe bakmak için ayrıştırmak
+  /// gerekmesin.
+  static const generatedAt = 'generated_at';
+
+  /// Hangi adresten geldiği. Adres değişirse eski kopya kullanılmaz.
+  static const sourceUrl = 'source_url';
+}
+
 abstract final class LocalIndexes {
   static const readHistoryItemId = 'idx_read_history_item_id';
   static const assistantConversationsProjectId =
@@ -157,9 +218,18 @@ abstract final class LocalTables {
     AssistantProjectsTable.name,
     AssistantConversationsTable.name,
     AssistantMessagesTable.name,
+    FeedCacheTable.name,
   ];
 
+  /// `Verileri Sil` feed önbelleğini de boşaltır.
+  ///
+  /// İçerik kişisel veri değil ve silinmesi bir kayıp sayılmaz — uygulama
+  /// paketlenmiş dosyaya düşer ve ilk tazelemede yeniden dolar. Ama satır
+  /// **ne zaman senkronize edildiğini** taşır; "tüm yerel verileri sil"
+  /// diyen bir kullanıcıya geriye kullanım zamanını gösteren bir kayıt
+  /// bırakmak, verilen sözü tutmamaktır.
   static const deletionOrder = <String>[
+    FeedCacheTable.name,
     AssistantMessagesTable.name,
     AssistantConversationsTable.name,
     ReadHistoryTable.name,

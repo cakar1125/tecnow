@@ -1,0 +1,93 @@
+{
+  "total_count": 7,
+  "incomplete_results": false,
+  "items": [
+    {
+      "id": 1,
+      "name": "claude-code",
+      "full_name": "anthropics/claude-code",
+      "private": false,
+      "html_url": "https://github.com/anthropics/claude-code",
+      "description": "Claude Code is an agentic coding tool that lives in your terminal.",
+      "created_at": "2026-02-10T09:15:00Z",
+      "updated_at": "2026-07-21T11:00:00Z",
+      "pushed_at": "2026-07-20T18:42:11Z",
+      "stargazers_count": 31240,
+      "archived": false,
+      "disabled": false,
+      "license": { "key": "mit", "name": "MIT License", "spdx_id": "MIT" },
+      "topics": ["cli", "agents", "developer-tools"]
+    },
+    {
+      "id": 2,
+      "name": "servers",
+      "full_name": "modelcontextprotocol/servers",
+      "private": false,
+      "html_url": "https://github.com/modelcontextprotocol/servers",
+      "description": "Reference implementations of Model Context Protocol servers.",
+      "created_at": "2026-01-05T12:00:00Z",
+      "pushed_at": "2026-07-19T08:30:00Z",
+      "stargazers_count": 18800,
+      "archived": false,
+      "license": { "key": "mit", "spdx_id": "MIT" },
+      "topics": ["MCP", "mcp-servers", "protocol"]
+    },
+    {
+      "id": 3,
+      "name": "awesome-claude-skills",
+      "full_name": "birisi/awesome-claude-skills",
+      "private": false,
+      "html_url": "https://github.com/birisi/awesome-claude-skills",
+      "description": "   A curated list of Claude skills.   ",
+      "created_at": "2026-05-30T07:00:00Z",
+      "pushed_at": "2026-07-01T07:00:00Z",
+      "stargazers_count": 142,
+      "archived": false,
+      "license": null,
+      "topics": ["claude-skills", "awesome-list"]
+    },
+    {
+      "id": 4,
+      "name": "eski-arac",
+      "full_name": "birisi/eski-arac",
+      "private": false,
+      "html_url": "https://github.com/birisi/eski-arac",
+      "description": "An abandoned build tool. No longer maintained.",
+      "created_at": "2022-03-04T10:00:00Z",
+      "pushed_at": "2023-01-12T10:00:00Z",
+      "stargazers_count": 0,
+      "archived": true,
+      "license": { "key": "apache-2.0", "spdx_id": "Apache-2.0" },
+      "topics": []
+    },
+    {
+      "id": 5,
+      "name": "aciklamasiz",
+      "full_name": "birisi/aciklamasiz",
+      "private": false,
+      "html_url": "https://github.com/birisi/aciklamasiz",
+      "description": null,
+      "created_at": "2026-07-10T10:00:00Z",
+      "pushed_at": "2026-07-10T10:00:00Z",
+      "stargazers_count": 3,
+      "archived": false,
+      "license": null,
+      "topics": []
+    },
+    {
+      "id": 6,
+      "name": "gizli",
+      "full_name": "birisi/gizli",
+      "private": true,
+      "html_url": "https://github.com/birisi/gizli",
+      "description": "Private repository.",
+      "created_at": "2026-07-01T10:00:00Z",
+      "pushed_at": "2026-07-02T10:00:00Z",
+      "stargazers_count": 0,
+      "archived": false,
+      "license": null,
+      "topics": []
+    },
+    "bozuk-kayit"
+  ]
+}

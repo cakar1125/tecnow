@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+  <title>Anthropic News</title>
+  <link rel="self" href="https://www.anthropic.com/news/rss.xml"/>
+  <updated>2026-07-24T12:00:00Z</updated>
+  <entry>
+    <title>Model context window doubled</title>
+    <link rel="self" href="https://www.anthropic.com/news/context.atom"/>
+    <link rel="alternate" href="https://www.anthropic.com/news/context-window"/>
+    <summary>The context window is now twice as large for long-document work.</summary>
+    <published>2026-07-24T09:00:00Z</published>
+    <category term="models"/>
+    <category term="Models"/>
+  </entry>
+  <entry>
+    <title>Documentation refresh</title>
+    <link href="https://dart.dev/guides/whats-new"/>
+    <content type="html">&lt;p&gt;The language tour was rewritten.&lt;/p&gt;</content>
+    <updated>2026-07-18T15:20:00Z</updated>
+  </entry>
+  <entry>
+    <title>Entry with no link</title>
+    <summary>Nothing to point at.</summary>
+    <published>2026-07-19T15:20:00Z</published>
+  </entry>
+</feed>

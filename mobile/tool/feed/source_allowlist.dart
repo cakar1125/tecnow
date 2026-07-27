@@ -8,6 +8,8 @@
 /// görünür — üreticinin bir yerinde sessizce genişleyemez.
 library;
 
+import 'package:teknoakis/data/feed/feed_schema.dart';
+
 /// Bir gelişmenin **sahibi** olan hostlar.
 ///
 /// Buradan gelen kayıtlar `TrustSignals.officialSource` alır: duyuruyu
@@ -33,6 +35,10 @@ const _officialHosts = <String>{
 /// kayıtlar varsayılan olarak resmi sayılmaz. İstisna: deponun sahibi
 /// [_officialGitHubOwners] içindeyse resmi kabul edilir.
 const _platformHosts = <String>{'github.com', 'huggingface.co'};
+
+/// Resmi dokümantasyon hostları. Blogdan ayrılırlar: dokümantasyon bir
+/// duyuru değil, sürekli güncellenen başvuru metnidir.
+const _documentationHosts = <String>{'docs.flutter.dev', 'dart.dev'};
 
 /// GitHub/Hugging Face üzerinde kurumun kendi hesabı.
 const _officialGitHubOwners = <String>{
@@ -91,6 +97,19 @@ abstract final class SourceAllowlist {
     }
     return _officialHosts.contains(host) ||
         _officialHosts.any((allowed) => host.endsWith('.$allowed'));
+  }
+
+  /// Adresin hangi kaynak türüne ait olduğunu söyler.
+  ///
+  /// Host bilgisi tek bir yerde dursun diye burada: bağlayıcılar kendi
+  /// içlerinde ayrı host listeleri tutsaydı, biri güncellenip diğeri
+  /// unutulurdu.
+  static FeedSourceKind sourceKindFor(Uri url) {
+    final host = _normalizeHost(url.host);
+    if (host == 'github.com') return FeedSourceKind.github;
+    if (host == 'huggingface.co') return FeedSourceKind.huggingFace;
+    if (_documentationHosts.contains(host)) return FeedSourceKind.documentation;
+    return FeedSourceKind.officialBlog;
   }
 
   /// Allowlist dışı kayıtları eler. Üretici, ayıklanan kayıtları günlüğe

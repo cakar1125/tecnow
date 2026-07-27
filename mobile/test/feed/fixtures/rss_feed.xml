@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>OpenAI Blog</title>
+    <link>https://openai.com/blog</link>
+    <language>en-US</language>
+    <item>
+      <title>Introducing a faster inference stack</title>
+      <link>https://openai.com/blog/faster-inference</link>
+      <description><![CDATA[<p>The new stack cuts latency for streaming responses. Read more about the <a href="https://openai.com/blog/faster-inference">rollout</a>.</p>]]></description>
+      <pubDate>Mon, 20 Jul 2026 10:00:00 GMT</pubDate>
+      <category>infrastructure</category>
+      <category>Inference</category>
+    </item>
+    <item>
+      <title>A third-party write-up</title>
+      <link>https://medium.com/@birisi/bir-yazi</link>
+      <description>Someone else&apos;s summary of the announcement.</description>
+      <pubDate>Tue, 21 Jul 2026 08:30:00 +0300</pubDate>
+    </item>
+    <item>
+      <title>Post with no description</title>
+      <link>https://openai.com/blog/bos</link>
+      <pubDate>Wed, 22 Jul 2026 09:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Escaped markup and comparisons</title>
+      <link>https://openai.com/blog/escaped</link>
+      <description>&lt;p&gt;Latency is now 1 &lt; 2 seconds &amp;amp; throughput is up.&lt;/p&gt;</description>
+      <content:encoded><![CDATA[<p>Longer body.</p>]]></content:encoded>
+      <pubDate>23 Jul 2026 11:15:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>

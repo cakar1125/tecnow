@@ -1,0 +1,71 @@
+[
+  {
+    "id": "meta-llama/Llama-4-8B-Instruct",
+    "modelId": "meta-llama/Llama-4-8B-Instruct",
+    "author": "meta-llama",
+    "private": false,
+    "gated": "auto",
+    "createdAt": "2026-06-01T08:00:00.000Z",
+    "lastModified": "2026-07-18T12:30:00.000Z",
+    "downloads": 912345,
+    "likes": 4210,
+    "pipeline_tag": "text-generation",
+    "tags": [
+      "transformers",
+      "text-generation",
+      "conversational",
+      "license:llama4",
+      "arxiv:2601.01234",
+      "base_model:meta-llama/Llama-4-8B",
+      "region:us"
+    ]
+  },
+  {
+    "id": "birisi/nexus-7b",
+    "author": "birisi",
+    "private": false,
+    "createdAt": "2026-07-05T10:00:00.000Z",
+    "lastModified": "2026-07-06T10:00:00.000Z",
+    "downloads": 1820,
+    "likes": 31,
+    "pipeline_tag": "text-generation",
+    "tags": ["safetensors", "text-generation", "license:apache-2.0"]
+  },
+  {
+    "id": "birisi/aciklamali-model",
+    "private": false,
+    "createdAt": "2026-06-20T10:00:00.000Z",
+    "lastModified": "2026-07-11T10:00:00.000Z",
+    "downloads": 500,
+    "pipeline_tag": "image-classification",
+    "tags": ["license:mit"],
+    "cardData": {
+      "description": "A compact image classifier trained on a public dataset."
+    }
+  },
+  {
+    "id": "birisi/eski-model",
+    "private": false,
+    "createdAt": "2023-11-02T10:00:00.000Z",
+    "lastModified": "2024-01-04T10:00:00.000Z",
+    "downloads": 12,
+    "pipeline_tag": "translation",
+    "tags": ["license:other"]
+  },
+  {
+    "id": "birisi/gizli-model",
+    "private": true,
+    "createdAt": "2026-07-20T10:00:00.000Z",
+    "lastModified": "2026-07-20T10:00:00.000Z",
+    "downloads": 0,
+    "tags": []
+  },
+  {
+    "id": "tekbasina-model",
+    "private": false,
+    "createdAt": "2026-07-12T10:00:00.000Z",
+    "lastModified": "2026-07-12T10:00:00.000Z",
+    "downloads": 7,
+    "tags": []
+  }
+]

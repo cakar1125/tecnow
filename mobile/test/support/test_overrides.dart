@@ -183,6 +183,17 @@ Widget memoryDataScope(
   );
 }
 
+/// Feed'in okunamadığı durumu kuran kabuk. Ekranların "içerik yok" ile
+/// "içerik okunamadı"yı ayırdığını doğrulamak için.
+Widget memoryDataScopeWithFailingFeed(Widget child) => ProviderScope(
+  overrides: [
+    feedRepositoryProvider.overrideWithValue(
+      FakeFeedRepository(const [], error: const FeedFormatException('bozuk')),
+    ),
+  ],
+  child: child,
+);
+
 /// Paketlenmiş dosyaya dokunmayan feed deposu.
 ///
 /// Ekran testleri **gerçek** `assets/feed/feed.json`'ı okumamalı: o dosya her
@@ -250,7 +261,9 @@ FeedItem testFeedItem({
   String language = 'en',
   List<String> topics = const [],
   DateTime? publishedAt,
+  DateTime? retractedAt,
 }) => FeedItem(
+  retractedAt: retractedAt,
   id: id,
   kind: kind,
   title: title,

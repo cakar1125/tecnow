@@ -208,26 +208,36 @@ final class AnthropicSummarizer implements Summarizer {
       if (response.statusCode != 200) {
         throw HttpException('Anthropic API ${response.statusCode}: $body');
       }
-      return _textOf(body);
+      return parseAnthropicText(body);
     } finally {
       client.close(force: true);
     }
   }
+}
 
-  /// Yanıttan metni çıkarır. Beklenmeyen bir biçimde `null` döner: kayıt
-  /// orijinal metniyle kalır, tahmin edilmez.
-  static String? _textOf(String body) {
-    final decoded = jsonDecode(body);
-    if (decoded is! Map) return null;
-    final content = decoded['content'];
-    if (content is! List) return null;
-    final buffer = StringBuffer();
-    for (final block in content) {
-      if (block is Map && block['type'] == 'text' && block['text'] is String) {
-        buffer.write(block['text']);
-      }
-    }
-    final text = buffer.toString().trim();
-    return text.isEmpty ? null : text;
+/// Anthropic yanıtından metni çıkarır.
+///
+/// Üst düzey ve genel: canlı çağrıyı test edemiyoruz ama **ayrıştırmayı**
+/// edebiliriz, ve gerçek bir hatanın oluşabileceği yer burası. Beklenmeyen bir
+/// biçimde `null` döner — kayıt orijinal metniyle kalır, tahmin edilmez.
+String? parseAnthropicText(String body) {
+  final Object? decoded;
+  try {
+    decoded = jsonDecode(body);
+  } on FormatException {
+    return null;
   }
+  if (decoded is! Map) return null;
+  final content = decoded['content'];
+  if (content is! List) return null;
+
+  final buffer = StringBuffer();
+  for (final block in content) {
+    // `thinking` gibi metin olmayan bloklar atlanır; yalnız `text` alınır.
+    if (block is Map && block['type'] == 'text' && block['text'] is String) {
+      buffer.write(block['text']);
+    }
+  }
+  final text = buffer.toString().trim();
+  return text.isEmpty ? null : text;
 }

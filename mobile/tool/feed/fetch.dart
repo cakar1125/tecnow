@@ -41,25 +41,31 @@ final class HttpFeedFetcher implements FeedFetcher {
 
   static const _githubHost = 'api.github.com';
 
+  /// İsteğe konacak başlıklar.
+  ///
+  /// Ayrı bir fonksiyon çünkü **sınanabilir olması şart**: token'ın yalnız
+  /// GitHub'a gitmesi bir güvenlik davranışıdır. Koşul gövdenin içinde
+  /// gömülü kalsaydı, ancak gerçek ağ isteğiyle doğrulanabilirdi — yani
+  /// pratikte hiç doğrulanmazdı.
+  ///
+  /// Aynı `Authorization` başlığını her hosta göndermek, kimlik bilgisini
+  /// üçüncü taraflara sızdırmaktır.
+  Map<String, String> headersFor(Uri url) {
+    final headers = {HttpHeaders.userAgentHeader: userAgent};
+    final token = githubToken;
+    if (token != null && token.isNotEmpty && url.host == _githubHost) {
+      headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
+      headers[HttpHeaders.acceptHeader] = 'application/vnd.github+json';
+    }
+    return headers;
+  }
+
   @override
   Future<FetchResponse> fetch(Uri url) async {
     final client = HttpClient()..connectionTimeout = timeout;
     try {
       final request = await client.getUrl(url);
-      request.headers.set(HttpHeaders.userAgentHeader, userAgent);
-
-      // Token **yalnız GitHub'a** gider. Aynı başlığı her hosta göndermek,
-      // kimlik bilgisini üçüncü taraflara sızdırmak olurdu.
-      if (githubToken != null && url.host == _githubHost) {
-        request.headers.set(
-          HttpHeaders.authorizationHeader,
-          'Bearer $githubToken',
-        );
-        request.headers.set(
-          HttpHeaders.acceptHeader,
-          'application/vnd.github+json',
-        );
-      }
+      headersFor(url).forEach(request.headers.set);
 
       final response = await request.close().timeout(timeout);
       final body = await response.transform(utf8.decoder).join();

@@ -253,14 +253,22 @@ class FeedFormatException implements Exception {
 /// kararlılığı garanti değildir, oysa kimliğin her üretimde aynı çıkması
 /// gerekir (kopya birleştirme ve okuma geçmişi buna bağlı).
 /// FNV-1a 64-bit, bağımlılıksız ve belirlenimcidir.
+///
+/// Sonuç **her zaman 16 haneli küçük harf onaltılıktır**. Dart tam sayıları
+/// 64-bit işaretli olduğu için karışım sonucu negatif olabilir ve
+/// `toRadixString(16)` başa `-` koyar; bu yüzden değer iki 32-bit yarıya
+/// bölünüp maskelenerek yazılır.
 String feedItemId(Uri url) {
   final canonical = canonicalizeUrl(url).toString();
   var hash = 0xcbf29ce484222325;
   for (final unit in canonical.codeUnits) {
     hash ^= unit;
-    hash = (hash * 0x100000001b3) & 0xFFFFFFFFFFFFFFFF;
+    hash = hash * 0x100000001b3;
   }
-  return hash.toRadixString(16).padLeft(16, '0');
+  final high = (hash >> 32) & 0xFFFFFFFF;
+  final low = hash & 0xFFFFFFFF;
+  return high.toRadixString(16).padLeft(8, '0') +
+      low.toRadixString(16).padLeft(8, '0');
 }
 
 /// Aynı gelişmenin farklı adreslerini eşleştirebilmek için URL'yi sadeleştirir:

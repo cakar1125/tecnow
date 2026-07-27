@@ -181,6 +181,29 @@ void main() {
         isNot(feedItemId(Uri.parse('https://github.com/ornek/baska'))),
       );
     });
+
+    /// Dart tam sayıları 64-bit **işaretlidir**: FNV-1a karışımı negatif bir
+    /// değere düşebilir ve `toRadixString(16)` başa `-` koyar. Sözleşme
+    /// incelemesinde `https://ornek.test/blog/yanlis-duyuru` tam olarak bunu
+    /// üretti (`-4e43c92b700b9ce0`). Kimlik biçimi burada kilitlenir.
+    test('kimlik her zaman 16 haneli küçük harf onaltılıktır', () {
+      final pattern = RegExp(r'^[0-9a-f]{16}$');
+      for (final url in [
+        'https://ornek.test/blog/yanlis-duyuru',
+        'https://github.com/ornek/depo',
+        'https://huggingface.co/nexus/Nexus-7B',
+        'https://ornek.test/a',
+        'https://ornek.test/',
+        'https://ornek.test/cok/uzun/bir/yol/parcasi/ile/deneme',
+      ]) {
+        final id = feedItemId(Uri.parse(url));
+        expect(
+          pattern.hasMatch(id),
+          isTrue,
+          reason: '$url -> "$id" biçime uymuyor',
+        );
+      }
+    });
   });
 
   group('güven puanı', () {

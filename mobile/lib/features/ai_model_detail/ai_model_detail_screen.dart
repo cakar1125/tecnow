@@ -1,11 +1,29 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../design_system/components/app_components.dart';
 import '../../design_system/tokens/app_tokens.dart';
 import '../../fixtures/fixtures.dart';
+import '../read_history/read_history_recorder.dart';
 
-class AiModelDetailScreen extends StatelessWidget {
-  const AiModelDetailScreen({super.key});
+class AiModelDetailScreen extends ConsumerStatefulWidget {
+  const AiModelDetailScreen({required this.id, super.key});
+
+  final String id;
+
+  @override
+  ConsumerState<AiModelDetailScreen> createState() =>
+      _AiModelDetailScreenState();
+}
+
+class _AiModelDetailScreenState extends ConsumerState<AiModelDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
+    unawaited(recordRead(ref, itemId: widget.id, kind: 'aiModel'));
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(

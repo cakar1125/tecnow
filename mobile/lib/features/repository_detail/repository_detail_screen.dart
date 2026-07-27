@@ -1,11 +1,30 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../design_system/components/app_components.dart';
 import '../../design_system/tokens/app_tokens.dart';
 import '../../fixtures/fixtures.dart';
+import '../read_history/read_history_recorder.dart';
 
-class RepositoryDetailScreen extends StatelessWidget {
-  const RepositoryDetailScreen({super.key});
+class RepositoryDetailScreen extends ConsumerStatefulWidget {
+  const RepositoryDetailScreen({required this.id, super.key});
+
+  final String id;
+
+  @override
+  ConsumerState<RepositoryDetailScreen> createState() =>
+      _RepositoryDetailScreenState();
+}
+
+class _RepositoryDetailScreenState
+    extends ConsumerState<RepositoryDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
+    unawaited(recordRead(ref, itemId: widget.id, kind: 'repository'));
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:teknoakis/data/providers.dart';
+import 'package:teknoakis/data/repositories/interests_repository.dart';
+import 'package:teknoakis/data/repositories/read_history_repository.dart';
 import 'package:teknoakis/data/repositories/saved_items_repository.dart';
 import 'package:teknoakis/fixtures/fixtures.dart';
 
@@ -37,6 +39,46 @@ final class InMemorySavedItemsRepository implements SavedItemsRepository {
   Future<void> clear() async => _items.clear();
 }
 
+final class InMemoryInterestsRepository implements InterestsRepository {
+  InMemoryInterestsRepository([List<String> initial = const []])
+    : _interests = List.of(initial);
+
+  List<String> _interests;
+
+  @override
+  Future<List<String>> readAll() async => List.unmodifiable(_interests);
+
+  @override
+  Future<void> replaceAll(List<String> interests) async {
+    _interests = List.of(interests);
+  }
+
+  @override
+  Future<void> clear() async => _interests = [];
+}
+
+final class InMemoryReadHistoryRepository implements ReadHistoryRepository {
+  final List<({String itemId, String? kind})> records = [];
+
+  @override
+  Future<void> record(String itemId, String? kind) async =>
+      records.add((itemId: itemId, kind: kind));
+
+  @override
+  Future<List<ReadHistoryEntry>> readRecent({int limit = 50}) async => [
+    for (var index = 0; index < records.length && index < limit; index++)
+      ReadHistoryEntry(
+        id: index,
+        itemId: records[index].itemId,
+        kind: records[index].kind,
+        readAt: DateTime(2026, 7, 27),
+      ),
+  ];
+
+  @override
+  Future<void> clear() async => records.clear();
+}
+
 /// `SavedItemsSeeder`'ın üreteceği listenin aynısı.
 ///
 /// Testler üretimdeki tohum sırasını (`savedAt DESC`) taklit etmelidir; aksi
@@ -64,26 +106,35 @@ List<SavedItem> seededSavedItems() {
 Widget memoryDataHarness(
   Widget child, {
   List<SavedItem>? savedItems,
+  List<String>? interests,
+  ReadHistoryRepository? readHistory,
   double textScale = 1,
+}) => memoryDataScope(
+  testApp(child, textScale: textScale),
+  savedItems: savedItems,
+  interests: interests,
+  readHistory: readHistory,
+);
+
+/// Router'ı kendisi kuran testler için: yalnız scope, kendi `MaterialApp`'ini
+/// getiren çağıranlar kullanır.
+Widget memoryDataScope(
+  Widget child, {
+  List<SavedItem>? savedItems,
+  List<String>? interests,
+  ReadHistoryRepository? readHistory,
 }) => ProviderScope(
   overrides: [
     savedItemsRepositoryProvider.overrideWith(
       (ref) async =>
           InMemorySavedItemsRepository(savedItems ?? seededSavedItems()),
     ),
+    interestsRepositoryProvider.overrideWith(
+      (ref) async => InMemoryInterestsRepository(interests ?? const []),
+    ),
+    readHistoryRepositoryProvider.overrideWith(
+      (ref) async => readHistory ?? InMemoryReadHistoryRepository(),
+    ),
   ],
-  child: testApp(child, textScale: textScale),
+  child: child,
 );
-
-/// Router'ı kendisi kuran testler için: yalnız scope, kendi `MaterialApp`'ini
-/// getiren çağıranlar kullanır.
-Widget memoryDataScope(Widget child, {List<SavedItem>? savedItems}) =>
-    ProviderScope(
-      overrides: [
-        savedItemsRepositoryProvider.overrideWith(
-          (ref) async =>
-              InMemorySavedItemsRepository(savedItems ?? seededSavedItems()),
-        ),
-      ],
-      child: child,
-    );

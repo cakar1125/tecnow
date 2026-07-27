@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:teknoakis/app/router.dart';
 import 'package:teknoakis/design_system/theme/app_theme.dart';
 import 'package:teknoakis/design_system/tokens/app_tokens.dart';
 
+import '../support/test_overrides.dart';
+
 Future<void> pumpSettingsScreen(WidgetTester tester) async {
   final router = createRouter(initialLocation: '/settings');
   addTearDown(router.dispose);
 
+  // Ayarlar'dan İlgi Alanları'na geçilebildiği için bu test de veri
+  // katmanına ulaşır; override'sız bir scope gerçek sqflite'ı arar.
   await tester.pumpWidget(
-    ProviderScope(
-      child: MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
+    memoryDataScope(
+      MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
     ),
   );
   await tester.pumpAndSettle();

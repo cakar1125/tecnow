@@ -68,13 +68,17 @@ GoRouter createRouter({String initialLocation = '/splash'}) => GoRouter(
         ),
       ],
     ),
+    // `id` ekrana geçirilir: içerik hâlâ fixture, ama okuma geçmişi hangi
+    // kaydın açıldığını bilmelidir.
     GoRoute(
       path: '/repository/:id',
-      builder: (_, _) => const RepositoryDetailScreen(),
+      builder: (_, state) =>
+          RepositoryDetailScreen(id: state.pathParameters['id'] ?? ''),
     ),
     GoRoute(
       path: '/ai-model/:id',
-      builder: (_, _) => const AiModelDetailScreen(),
+      builder: (_, state) =>
+          AiModelDetailScreen(id: state.pathParameters['id'] ?? ''),
     ),
   ],
   errorBuilder: (_, state) => Scaffold(

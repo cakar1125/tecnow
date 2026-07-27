@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:teknoakis/design_system/theme/app_theme.dart';
@@ -22,7 +23,9 @@ void main() {
 
   testGoldens('GOLDEN Repository Detayı 390x844', (tester) async {
     await tester.pumpWidgetBuilder(
-      const RepositoryDetailScreen(),
+      // Detay ekranları artık okuma geçmişi yazdığı için `ProviderScope`
+      // gerekiyor. Görsel çıktı değişmez; kayıt başarısız olursa sessiz kalır.
+      const ProviderScope(child: RepositoryDetailScreen(id: 'golden')),
       wrapper: materialAppWrapper(theme: AppTheme.dark),
       surfaceSize: const Size(390, 844),
     );
@@ -31,7 +34,7 @@ void main() {
 
   testGoldens('GOLDEN AI Model Detayı 390x844', (tester) async {
     await tester.pumpWidgetBuilder(
-      const AiModelDetailScreen(),
+      const ProviderScope(child: AiModelDetailScreen(id: 'golden')),
       wrapper: materialAppWrapper(theme: AppTheme.dark),
       surfaceSize: const Size(390, 844),
     );

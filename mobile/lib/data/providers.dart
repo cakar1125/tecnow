@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'app_preferences.dart';
+import 'interests_migration.dart';
 import 'local/app_database.dart';
 import 'repositories/interests_repository.dart';
 import 'repositories/local_data_repository.dart';
@@ -43,11 +45,59 @@ final localDataRepositoryProvider = FutureProvider<LocalDataRepository>((
   return SqfliteLocalDataRepository(database);
 });
 
+final appPreferencesProvider = FutureProvider<AppPreferences>((ref) async {
+  final preferences = await ref.watch(sharedPreferencesProvider.future);
+  return AppPreferences(preferences);
+});
+
 final savedItemsSeederProvider = FutureProvider<SavedItemsSeeder>((ref) async {
   final repository = await ref.watch(savedItemsRepositoryProvider.future);
   final preferences = await ref.watch(sharedPreferencesProvider.future);
   return SavedItemsSeeder(repository, preferences);
 });
+
+final interestsMigrationProvider = FutureProvider<InterestsMigration>((
+  ref,
+) async {
+  final repository = await ref.watch(interestsRepositoryProvider.future);
+  final preferences = await ref.watch(sharedPreferencesProvider.future);
+  return InterestsMigration(repository, preferences);
+});
+
+/// Seçili ilgi alanları.
+///
+/// TASK-0009-R deseni: `build` yalnız okur, mutasyonlar durumu doğrudan
+/// günceller, `invalidate` yoktur. [persist] açıkça çağrılır — çip'e her
+/// dokunuşta veritabanına yazmak, kullanıcı henüz seçimini bitirmeden
+/// kalıcı hale getirirdi.
+final interestsProvider = AsyncNotifierProvider<InterestsNotifier, Set<String>>(
+  InterestsNotifier.new,
+);
+
+final class InterestsNotifier extends AsyncNotifier<Set<String>> {
+  @override
+  Future<Set<String>> build() async {
+    final repository = await ref.watch(interestsRepositoryProvider.future);
+    return (await repository.readAll()).toSet();
+  }
+
+  void toggle(String value) {
+    final current = state.value;
+    if (current == null) return;
+    state = AsyncData(
+      current.contains(value)
+          ? ({...current}..remove(value))
+          : {...current, value},
+    );
+  }
+
+  Future<void> persist() async {
+    final current = state.value;
+    if (current == null) return;
+    final repository = await ref.read(interestsRepositoryProvider.future);
+    await repository.replaceAll(current.toList(growable: false));
+  }
+}
 
 /// Kaydedilenler listesi.
 ///

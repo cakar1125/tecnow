@@ -25,22 +25,34 @@ Future<void> bootstrap({
   );
 }
 
-/// Tohumlama başarısız olursa uygulama yine de açılır.
+/// Açılışta bir kez çalışan yerel veri hazırlıkları.
 ///
-/// Kaydedilenler o oturumda boş görünür; bu, açılışı tamamen engellemekten
-/// iyidir ve hata sessizce yutulmaz.
+/// Herhangi biri başarısız olursa uygulama yine de açılır: ilgili liste o
+/// oturumda boş görünür, bu açılışı tamamen engellemekten iyidir ve hata
+/// sessizce yutulmaz. Adımlar birbirinden bağımsızdır — taşıma düşerse
+/// tohumlama yine denenir.
 @visibleForTesting
 Future<void> seedLocalData(ProviderContainer container) async {
-  try {
+  await _step('ilgi alanları taşıması', () async {
+    final migration = await container.read(interestsMigrationProvider.future);
+    await migration.migrateIfNeeded();
+  });
+  await _step('kaydedilenler tohumlaması', () async {
     final seeder = await container.read(savedItemsSeederProvider.future);
     await seeder.seedIfNeeded();
+  });
+}
+
+Future<void> _step(String description, Future<void> Function() run) async {
+  try {
+    await run();
   } catch (error, stackTrace) {
     FlutterError.reportError(
       FlutterErrorDetails(
         exception: error,
         stack: stackTrace,
         library: 'teknoakis',
-        context: ErrorDescription('yerel veri tohumlaması sırasında'),
+        context: ErrorDescription('$description sırasında'),
       ),
     );
   }

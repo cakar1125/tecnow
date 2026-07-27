@@ -18,9 +18,17 @@ import 'package:xml/xml.dart';
 import '../source_allowlist.dart';
 import 'connector_support.dart';
 
+/// [sourceName] verilirse beslemenin kendi başlığı yerine o kullanılır.
+///
+/// Beslemelerin kendine verdiği ad kullanıcıya gösterilecek kalitede değil
+/// (ölçüldü 2026-07-28): `"Visual Studio Code - Code Editing. Redefined."`,
+/// `"Archive: 2026 - GitHub Changelog"`, `"AI"`, `"Artificial Intelligence"`.
+/// Hangi kurumun yayımladığını söylemesi gereken bir etiket için bunlar ya
+/// çok uzun ya da anlamsız. Küratörlü ad `officialFeeds` içinde duruyor.
 ConnectorResult parseSyndicationFeed(
   String body, {
   required DateTime checkedAt,
+  String? sourceName,
 }) {
   final XmlDocument document;
   try {
@@ -86,7 +94,9 @@ ConnectorResult parseSyndicationFeed(
         title: normalizeSpaces(title),
         summary: truncateSummary(summary),
         summaryOrigin: SummaryOrigin.original,
-        sourceName: feedTitle == null ? url.host : normalizeSpaces(feedTitle),
+        sourceName:
+            sourceName ??
+            (feedTitle == null ? url.host : normalizeSpaces(feedTitle)),
         sourceKind: SourceAllowlist.sourceKindFor(url),
         url: url,
         publishedAt: publishedAt,

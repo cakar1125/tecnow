@@ -5,6 +5,7 @@ import 'package:path/path.dart' as p;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:teknoakis/data/local/app_database.dart';
 import 'package:teknoakis/data/local/schema.dart';
+import 'package:teknoakis/data/repositories/read_history_repository.dart';
 
 void main() {
   sqfliteFfiInit();
@@ -85,9 +86,9 @@ void main() {
   });
 
   /// Migration iskeleti TASK-0008'de yazıldı ama v2'ye kadar hiç çalışmadı.
-  /// Yükseltme yolu ilk kez burada ölçülüyor: kurulu bir uygulamanın verisi
+  /// Yükseltme yolu ilk kez burada ölçüldü: kurulu bir uygulamanın verisi
   /// güncellemeden sağ çıkmazsa bu ancak kullanıcıda görünürdü.
-  group('v1 → v2 yükseltmesi', () {
+  group('v1 → güncel sürüme yükseltme', () {
     late String databasePath;
 
     setUp(() async {
@@ -109,6 +110,15 @@ void main() {
         SavedItemsTable.title: 'Yükseltmeden önce kaydedildi',
         SavedItemsTable.savedAt: 1,
       });
+      // v1'de aynı içerik birden çok satır üretebiliyordu; v3 migration'ı
+      // benzersiz indeksi kurabilmek için önce bunları temizlemek zorunda.
+      for (var readAt = 1; readAt <= 3; readAt++) {
+        await legacy.insert(ReadHistoryTable.name, {
+          ReadHistoryTable.itemId: 'ayni-icerik',
+          ReadHistoryTable.itemKind: 'repository',
+          ReadHistoryTable.readAt: readAt,
+        });
+      }
       await legacy.close();
     });
 
@@ -127,13 +137,40 @@ void main() {
         factory: databaseFactoryFfi,
       );
 
-      expect(await db.getVersion(), 2);
+      expect(await db.getVersion(), LocalSchema.version);
       final rows = await db.query(SavedItemsTable.name);
       expect(rows, hasLength(1));
       expect(
         rows.single[SavedItemsTable.title],
         'Yükseltmeden önce kaydedildi',
       );
+    });
+
+    /// v3 benzersiz indeksi kuramadan önce var olan kopyaları temizlemek
+    /// zorunda; temizlemeseydi migration hata verir ve uygulama güncellemeden
+    /// sonra **hiç açılmazdı**.
+    test('geçmişteki kopyalar temizlenir, en yenisi kalır', () async {
+      db = await AppDatabase.open(
+        path: databasePath,
+        factory: databaseFactoryFfi,
+      );
+
+      final rows = await db.query(ReadHistoryTable.name);
+      expect(rows, hasLength(1));
+      expect(rows.single[ReadHistoryTable.readAt], 3, reason: 'en yenisi');
+    });
+
+    test('yükseltmeden sonra aynı içerik ikinci satır açmaz', () async {
+      db = await AppDatabase.open(
+        path: databasePath,
+        factory: databaseFactoryFfi,
+      );
+      final history = SqfliteReadHistoryRepository(db);
+
+      await history.record('ayni-icerik', 'repository');
+      await history.record('ayni-icerik', 'repository');
+
+      expect(await _rowCount(db, ReadHistoryTable.name), 1);
     });
 
     test('v2 tablosu yükseltmeden sonra yazılabilir', () async {

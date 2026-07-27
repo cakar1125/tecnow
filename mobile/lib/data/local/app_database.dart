@@ -38,5 +38,12 @@ abstract final class AppDatabase {
         await transaction.delete(table);
       }
     });
+
+    // Satırları silmek dosyayı **küçültmez**: SQLite boşalan sayfaları kendine
+    // ayrılmış tutar ve veritabanı diskte eski boyutunda kalır. "Verileri Sil"
+    // diyen kullanıcıya yer açıldığını söylemek, yer açılmadıysa yalan olur.
+    //
+    // İşlemin **dışında**: VACUUM bir transaction içinde çalışamaz.
+    await db.execute('VACUUM');
   }
 }

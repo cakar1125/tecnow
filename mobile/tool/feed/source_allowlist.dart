@@ -15,16 +15,24 @@ import 'package:teknoakis/data/feed/feed_schema.dart';
 /// Buradan gelen kayıtlar `TrustSignals.officialSource` alır: duyuruyu
 /// yapan kurumun kendi adresi, üçüncü taraf aktarımı değil.
 const _officialHosts = <String>{
+  // Yapay zekâ laboratuvarları ve model sağlayıcılar
   'openai.com',
   'anthropic.com',
   'blog.google',
-  'ai.googleblog.com',
+  'googleblog.com', // developers. / android-developers. alt alanlarını kapsar
+  'deepmind.google',
   'ai.meta.com',
   'mistral.ai',
-  'deepmind.google',
   'huggingface.co',
+  // Çatılar ve altyapı
   'pytorch.org',
   'developer.nvidia.com',
+  'aws.amazon.com',
+  // Geliştirici platformları
+  'github.blog',
+  'developer.chrome.com',
+  'web.dev',
+  'code.visualstudio.com',
   'docs.flutter.dev',
   'dart.dev',
 };
@@ -48,6 +56,19 @@ const _apiHosts = <String>{'api.github.com'};
 /// duyuru değil, sürekli güncellenen başvuru metnidir.
 const _documentationHosts = <String>{'docs.flutter.dev', 'dart.dev'};
 
+/// Platform hostlarında **platformun kendisine** ait yollar.
+///
+/// `huggingface.co` iki şey birden: hem başkalarının modellerini barındıran
+/// bir platform hem de kendi blogunun yayıncısı. `huggingface.co/blog/...`
+/// Hugging Face'in kendi yazısıdır ve resmidir; `huggingface.co/biri/model`
+/// barındırılan içeriktir ve sahibine bakılarak karar verilir.
+///
+/// Bu ayrım olmadan kurumun kendi blogu "üçüncü taraf" sayılıyordu — ilk
+/// sahip segmenti `blog` olduğu ve sahip listesinde bulunmadığı için.
+const _platformOwnedPaths = <String, Set<String>>{
+  'huggingface.co': {'blog'},
+};
+
 /// GitHub/Hugging Face üzerinde kurumun kendi hesabı.
 const _officialGitHubOwners = <String>{
   'openai',
@@ -67,27 +88,176 @@ const _officialGitHubOwners = <String>{
   'modelcontextprotocol',
 };
 
+/// Küratörlü bir besleme.
+///
+/// Adres tek başına yetmez: bu listenin **denetlenebilir** olması gerekiyor.
+/// Kim yayımlıyor ve en önemlisi **ne zaman doğrulandı** — ikisi de
+/// kaydediliyor ki listeye bakan biri "bu adres hâlâ yaşıyor mu" sorusunu
+/// tarihe bakarak sorabilsin.
+final class CuratedFeed {
+  const CuratedFeed({
+    required this.url,
+    required this.name,
+    required this.publisher,
+    required this.verifiedOn,
+    required this.usableAtVerification,
+  });
+
+  final String url;
+
+  /// Raporda ve kayıt üzerinde görünen ad.
+  final String name;
+
+  /// Yayımlayan kurum.
+  final String publisher;
+
+  /// Adresin canlı olarak denendiği tarih.
+  final String verifiedOn;
+
+  /// Doğrulama anında beslemeden **kullanılabilir** çıkan kayıt sayısı.
+  ///
+  /// `<item>` etiketlerini saymak değil: üretici gerçekten çalıştırılıp
+  /// ayrıştırmadan sağ çıkan kayıtlar sayıldı. Fark önemli — Hugging Face
+  /// blogu 831 `<item>` döndürüyor ama hiçbirinde açıklama yok, yani
+  /// kullanılabilir sayısı **sıfır**. Ham etiket sayısına bakan bir doğrulama
+  /// bu kaynağı listeye alırdı.
+  final int usableAtVerification;
+
+  Uri get uri => Uri.parse(url);
+}
+
 /// Resmi RSS/Atom kaynakları.
 ///
 /// Her biri [_officialHosts] içindeki bir hosta ait olmalıdır; test bunu
 /// doğrular, böylece allowlist'e girmeyen bir blog feed listesine sızamaz.
 ///
 /// **Test üyeliği doğrular, varlığı değil.** Ağsız bir süit bir adresin
-/// gerçekten yanıt verdiğini ölçemez; ilk listede üç adres 404 dönüyordu.
-/// Aşağıdakiler 2026-07-27'de tek tek denendi ve 200 döndürdü. Yeni bir
-/// besleme eklenirken aynısı yapılmalı — bilgiden yazılan bir feed adresi,
-/// süit yeşilken sessizce ölü kalır.
+/// gerçekten yanıt verdiğini ölçemez. Aşağıdakilerin tamamı 2026-07-28'de
+/// tek tek denendi, 200 döndürdü, RSS/Atom olarak ayrıştırıldı **ve üretici
+/// koşusunda gerçekten kayıt verdi**. Yeni bir besleme eklenirken aynısı
+/// yapılmalı.
 ///
-/// Anthropic bilinçli olarak **yok**: dokuz aday adres denendi
-/// (`/news/rss.xml`, `/rss.xml`, `/index.xml`, `/atom.xml`, …), dokuzu da 404.
-/// Keşfedilebilir bir beslemesi olmadığı için liste, olmayan bir kaynakla
-/// doldurulmadı.
-const officialFeeds = <String>[
-  'https://openai.com/blog/rss.xml',
-  'https://blog.google/technology/ai/rss/',
-  'https://mistral.ai/rss.xml',
-  'https://pytorch.org/blog/feed.xml',
-  'https://developer.nvidia.com/blog/feed/',
+/// Denenip **listeye alınmayanlar** — aynı hatayı ikinci kez yapmamak için:
+///
+/// | Aday | Sonuç |
+/// |---|---|
+/// | `anthropic.com` (9 farklı yol) | hepsi 404, keşfedilebilir beslemesi yok |
+/// | `cohere.com/blog/rss.xml` | **200 ama HTML** — durum koduna bakmak yanıltır |
+/// | `stability.ai/news?format=rss` | 200 ama HTML |
+/// | `blog.langchain.dev/rss/` | 200 ama HTML |
+/// | `deepmind.google/discover/blog/rss.xml` | 404 (doğrusu `/blog/rss.xml`) |
+/// | `blog.cohere.com` | alan adı çözülmüyor |
+/// | `ai.meta.com/blog/rss/` | bağlantı kapanıyor, iki denemede de |
+/// | `openai.com/news/rss.xml` | çalışıyor ama `/blog/rss.xml` ile **birebir aynı** |
+/// | `huggingface.co/blog/feed.xml` | 200, geçerli RSS, 831 kayıt — **hiçbirinde açıklama yok** |
+/// | `developers.googleblog.com/feeds/posts/default` | 200, geçerli RSS, 20 kayıt — **hiçbirinde `pubDate` yok** |
+///
+/// Son iki satır bu listenin en pahalı dersi. İkisi de 200 döndü, ikisi de
+/// düzgün RSS'ti, ikisi de ayrıştırıldı — ve ikisi de feed'e **sıfır** kayıt
+/// verdi. Biri açıklama alanını hiç göndermiyor, diğeri tarih alanını.
+/// Eksik alanı `checkedAt` ile doldurmak teknik olarak kolaydı ve
+/// `CONTENT_TRUST_POLICY.md`'yi ihlal ederdi: yayın tarihi uydurmak, eski bir
+/// yazıyı bugün çıkmış gibi göstermek demektir. Kaynaklar çıkarıldı.
+///
+/// Çıkan ders: durum kodu yetmez, geçerli XML yetmez — bir kaynağın
+/// **kullanılabilir kayıt verdiği** ölçülmeden listeye alınmaz.
+const officialFeeds = <CuratedFeed>[
+  // --- Yapay zekâ laboratuvarları ------------------------------------------
+  CuratedFeed(
+    url: 'https://openai.com/blog/rss.xml',
+    name: 'OpenAI',
+    publisher: 'OpenAI',
+    verifiedOn: '2026-07-28',
+    usableAtVerification: 943,
+  ),
+  CuratedFeed(
+    url: 'https://blog.google/technology/ai/rss/',
+    name: 'Google AI',
+    publisher: 'Google',
+    verifiedOn: '2026-07-28',
+    usableAtVerification: 20,
+  ),
+  CuratedFeed(
+    url: 'https://deepmind.google/blog/rss.xml',
+    name: 'Google DeepMind',
+    publisher: 'Google DeepMind',
+    verifiedOn: '2026-07-28',
+    usableAtVerification: 83,
+  ),
+  CuratedFeed(
+    url: 'https://mistral.ai/rss.xml',
+    name: 'Mistral AI',
+    publisher: 'Mistral AI',
+    verifiedOn: '2026-07-28',
+    usableAtVerification: 19,
+  ),
+
+  // --- Çatılar ve altyapı ---------------------------------------------------
+  CuratedFeed(
+    url: 'https://pytorch.org/blog/feed.xml',
+    name: 'PyTorch',
+    publisher: 'PyTorch Foundation',
+    verifiedOn: '2026-07-28',
+    usableAtVerification: 10,
+  ),
+  CuratedFeed(
+    url: 'https://developer.nvidia.com/blog/feed/',
+    name: 'NVIDIA Geliştirici',
+    publisher: 'NVIDIA',
+    verifiedOn: '2026-07-28',
+    usableAtVerification: 100,
+  ),
+  CuratedFeed(
+    url: 'https://aws.amazon.com/blogs/machine-learning/feed/',
+    name: 'AWS Makine Öğrenmesi',
+    publisher: 'Amazon Web Services',
+    verifiedOn: '2026-07-28',
+    usableAtVerification: 20,
+  ),
+
+  // --- Geliştirici platformları ---------------------------------------------
+  CuratedFeed(
+    url: 'https://github.blog/feed/',
+    name: 'GitHub Blog',
+    publisher: 'GitHub',
+    verifiedOn: '2026-07-28',
+    usableAtVerification: 10,
+  ),
+  CuratedFeed(
+    url: 'https://github.blog/changelog/feed/',
+    name: 'GitHub Değişiklikler',
+    publisher: 'GitHub',
+    verifiedOn: '2026-07-28',
+    usableAtVerification: 10,
+  ),
+  CuratedFeed(
+    url: 'https://android-developers.googleblog.com/feeds/posts/default',
+    name: 'Android Geliştirici',
+    publisher: 'Google',
+    verifiedOn: '2026-07-28',
+    usableAtVerification: 25,
+  ),
+  CuratedFeed(
+    url: 'https://developer.chrome.com/static/blog/feed.xml',
+    name: 'Chrome Geliştirici',
+    publisher: 'Google',
+    verifiedOn: '2026-07-28',
+    usableAtVerification: 10,
+  ),
+  CuratedFeed(
+    url: 'https://web.dev/static/blog/feed.xml',
+    name: 'web.dev',
+    publisher: 'Google',
+    verifiedOn: '2026-07-28',
+    usableAtVerification: 10,
+  ),
+  CuratedFeed(
+    url: 'https://code.visualstudio.com/feed.xml',
+    name: 'Visual Studio Code',
+    publisher: 'Microsoft',
+    verifiedOn: '2026-07-28',
+    usableAtVerification: 48,
+  ),
 ];
 
 /// Bir host'un allowlist'te olup olmadığını ve resmi sayılıp sayılmadığını
@@ -106,12 +276,15 @@ abstract final class SourceAllowlist {
   ///
   /// Platform hostlarında (GitHub, Hugging Face) karar **sahibe** bakılarak
   /// verilir: `github.com/anthropics/...` resmidir, `github.com/biri/...`
-  /// değildir.
+  /// değildir. Platformun kendi bölümü ([_platformOwnedPaths]) ayrıdır.
   static bool isOfficial(Uri url) {
     final host = _normalizeHost(url.host);
     if (_platformHosts.contains(host)) {
       final owner = _firstPathSegment(url);
-      return owner != null && _officialGitHubOwners.contains(owner);
+      if (owner == null) return false;
+      // Platformun kendi bölümü mü, yoksa barındırdığı bir içerik mi?
+      if (_platformOwnedPaths[host]?.contains(owner) ?? false) return true;
+      return _officialGitHubOwners.contains(owner);
     }
     return _officialHosts.contains(host) ||
         _officialHosts.any((allowed) => host.endsWith('.$allowed'));

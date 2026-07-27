@@ -97,6 +97,43 @@ void main() {
     expect(entries.map((entry) => entry.kind), ['repository', 'article']);
   });
 
+  group('okuma geçmişi sınırlı', () {
+    /// Aynı içeriği elli kez açmak elli satır üretiyordu: hem yer harcıyor
+    /// hem de "okuma geçmişi" olarak anlamsız bir liste veriyordu.
+    test('aynı içerik tek satır tutar, zamanı güncellenir', () async {
+      await readHistoryRepository.record('item-1', 'repository');
+      await readHistoryRepository.record('item-1', 'repository');
+      await readHistoryRepository.record('item-1', 'repository');
+
+      expect(await _rowCount(db, ReadHistoryTable.name), 1);
+      expect(await readHistoryRepository.readRecent(), hasLength(1));
+    });
+
+    test('farklı içerikler ayrı satırlarda durur', () async {
+      await readHistoryRepository.record('item-1', 'repository');
+      await readHistoryRepository.record('item-2', 'aiModel');
+
+      expect(await _rowCount(db, ReadHistoryTable.name), 2);
+    });
+
+    /// Tekilleştirme tek başına yetmez: yeterince farklı içerik okuyan bir
+    /// kullanıcıda tablo yine sınırsız büyürdü.
+    test('sınır aşılınca en eskiler budanır', () async {
+      for (var index = 0; index < LocalSchema.readHistoryLimit + 25; index++) {
+        await readHistoryRepository.record('item-$index', 'repository');
+      }
+
+      expect(
+        await _rowCount(db, ReadHistoryTable.name),
+        LocalSchema.readHistoryLimit,
+      );
+
+      // Kalanlar **en yeniler** olmalı; budama en eskiden başlar.
+      final newest = await readHistoryRepository.readRecent(limit: 1);
+      expect(newest.single.itemId, 'item-${LocalSchema.readHistoryLimit + 24}');
+    });
+  });
+
   test('deleteEverything her tabloyu boşaltır', () async {
     await interestsRepository.replaceAll(['Flutter']);
     await savedItemsRepository.add(

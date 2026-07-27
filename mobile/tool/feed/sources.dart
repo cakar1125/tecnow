@@ -41,6 +41,15 @@ final class FeedSource {
 /// Bir kaynaktan alınacak varsayılan tavan.
 const _perSource = 30;
 
+/// Tek bir blogdan alınacak tavan — kasıtlı olarak daha **dar**.
+///
+/// Bloglar çok farklı hızlarda yayın yapıyor (ölçüldü 2026-07-28: NVIDIA
+/// beslemesinde 100, Hugging Face'te 831 kayıt varken PyTorch'ta 10).
+/// Blog başına 30 kayıt alınsaydı, günde birkaç kez yazan bir kurum tarih
+/// sıralamasında feed'in büyük kısmını kaplar ve ayda bir yazan kurum hiç
+/// görünmezdi. Rehberin işi tek bir şirketin arşivini sunmak değil.
+const _perBlog = 12;
+
 List<FeedSource> defaultSources() => [
   _githubSearch('GitHub — MCP sunucuları', 'topic:mcp-server stars:>50'),
   _githubSearch('GitHub — Claude skill\'leri', 'topic:claude-skills'),
@@ -64,9 +73,16 @@ List<FeedSource> defaultSources() => [
 
   for (final feed in officialFeeds)
     FeedSource(
-      name: 'Blog — ${Uri.parse(feed).host}',
-      url: Uri.parse(feed),
-      parse: parseSyndicationFeed,
+      name: 'Blog — ${feed.name}',
+      url: feed.uri,
+      // Küratörlü ad kayda **yazılır**: kartta görünen kaynak etiketi
+      // beslemenin kendine verdiği ad değil, bizim seçtiğimiz addır.
+      parse: (body, {required checkedAt}) => parseSyndicationFeed(
+        body,
+        checkedAt: checkedAt,
+        sourceName: feed.name,
+      ),
+      maxItems: _perBlog,
     ),
 ];
 

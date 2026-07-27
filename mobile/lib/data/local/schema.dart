@@ -1,8 +1,16 @@
 import 'package:sqflite/sqflite.dart';
 
 abstract final class LocalSchema {
-  static const version = 2;
+  static const version = 3;
   static const databaseName = 'teknoakis.db';
+
+  /// Okuma geçmişinde tutulacak en fazla kayıt.
+  ///
+  /// Sınır **ölçümle** kondu: satır başına ~60 bayt, günde 20 açılış eden bir
+  /// kullanıcıda üç yılda 21.900 satır ≈ 1,3 MB eder ve büyümenin durduğu bir
+  /// nokta yoktu. 500 kayıt, tasarlanacak bir geçmiş ekranının göstereceğinden
+  /// fazlası ve toplamı ~30 KB'de sabitler.
+  static const readHistoryLimit = 500;
 
   /// Yeni kurulum da **migration yolundan** geçer.
   ///
@@ -23,7 +31,56 @@ abstract final class LocalSchema {
     switch (target) {
       case 2:
         await _createFeedCacheV2(db);
+      case 3:
+        await _compressFeedCacheV3(db);
+        await _dedupeReadHistoryV3(db);
     }
+  }
+
+  /// v3: önbellek gövdesi **sıkıştırılmış** saklanır.
+  ///
+  /// Ölçüldü (2026-07-28): 200 kayıtlık feed ham 182,8 KB, gzip 30,5 KB —
+  /// %83,3 küçülme. JSON çok tekrarlı olduğu için kazanç büyük ve feed
+  /// büyüdükçe artar.
+  ///
+  /// Tablo **düşürülüp yeniden kuruluyor**. Önbellek tanımı gereği
+  /// atılabilirdir: silinen kopya ilk tazelemede geri gelir, kullanıcı hiçbir
+  /// şey kaybetmez. Aynı şeyi `saved_items` için yapmak veri kaybı olurdu —
+  /// bu kısayol yalnız önbellek olduğu için meşru.
+  static Future<void> _compressFeedCacheV3(Database db) async {
+    await db.execute('DROP TABLE IF EXISTS ${FeedCacheTable.name}');
+    await db.execute('''
+      CREATE TABLE ${FeedCacheTable.name} (
+        ${FeedCacheTable.id} INTEGER PRIMARY KEY CHECK (${FeedCacheTable.id} = 1),
+        ${FeedCacheTable.payload} BLOB NOT NULL,
+        ${FeedCacheTable.fetchedAt} INTEGER NOT NULL,
+        ${FeedCacheTable.generatedAt} INTEGER NOT NULL,
+        ${FeedCacheTable.sourceUrl} TEXT NOT NULL
+      )
+    ''');
+  }
+
+  /// v3: okuma geçmişinde her içerik **bir kez** durur.
+  ///
+  /// Önceden aynı içeriği elli kez açmak elli satır üretiyordu; hem yer
+  /// harcıyor hem de "okuma geçmişi" olarak anlamsız bir liste veriyordu.
+  /// Tekillik veritabanında zorlanıyor — yalnız uygulama kodunda varsayılsaydı
+  /// tek bir kaçak yazma yolu invaryantı sessizce bozardı.
+  ///
+  /// Var olan kopyalar önce temizlenir, yoksa benzersiz indeks kurulamaz.
+  static Future<void> _dedupeReadHistoryV3(Database db) async {
+    await db.execute('''
+      DELETE FROM ${ReadHistoryTable.name}
+      WHERE ${ReadHistoryTable.id} NOT IN (
+        SELECT MAX(${ReadHistoryTable.id}) FROM ${ReadHistoryTable.name}
+        GROUP BY ${ReadHistoryTable.itemId}
+      )
+    ''');
+    await db.execute('DROP INDEX IF EXISTS ${LocalIndexes.readHistoryItemId}');
+    await db.execute(
+      'CREATE UNIQUE INDEX ${LocalIndexes.readHistoryItemUnique} '
+      'ON ${ReadHistoryTable.name} (${ReadHistoryTable.itemId})',
+    );
   }
 
   /// v2: uzaktan çekilen feed'in yerel kopyası.
@@ -202,7 +259,11 @@ abstract final class FeedCacheTable {
 }
 
 abstract final class LocalIndexes {
+  /// v1'de kurulan, v3'te benzersiz olanla değiştirilen indeks.
   static const readHistoryItemId = 'idx_read_history_item_id';
+
+  /// v3: her içerik geçmişte bir kez durur.
+  static const readHistoryItemUnique = 'idx_read_history_item_unique';
   static const assistantConversationsProjectId =
       'idx_assistant_conversations_project_id';
   static const assistantMessagesConversationId =

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:teknoakis/data/feed/feed_cache.dart';
@@ -90,6 +93,77 @@ void main() {
         FeedCacheTable.sourceUrl: 'https://ornek.test/feed.json',
       }),
       throwsA(isA<DatabaseException>()),
+    );
+  });
+
+  /// Ölçüldü (2026-07-28): 200 kayıtlık gerçek feed ham 182,8 KB, gzip
+  /// 30,5 KB. Sıkıştırma sessizce kaybolursa önbellek yedi katına çıkar ve
+  /// bunu kimse fark etmez — bu yüzden kazanç testle sabitleniyor.
+  test('gövde sıkıştırılmış saklanır', () async {
+    // JSON'a benzeyen, tekrarlı bir gövde: gerçek feed de böyledir.
+    final payload = jsonEncode({
+      'schemaVersion': 1,
+      'items': [
+        for (var index = 0; index < 400; index++)
+          {
+            'id': 'kayit-$index',
+            'title': 'Örnek başlık',
+            'summary': 'Açıklama.',
+          },
+      ],
+    });
+
+    await cache.write(
+      CachedFeed(
+        payload: payload,
+        fetchedAt: DateTime.utc(2026, 7, 28),
+        generatedAt: DateTime.utc(2026, 7, 28),
+        sourceUrl: 'https://ornek.test/feed.json',
+      ),
+    );
+
+    final stored = (await db.query(FeedCacheTable.name)).single;
+    final blob = stored[FeedCacheTable.payload]! as List<int>;
+
+    expect(
+      blob.length,
+      lessThan(payload.length ~/ 4),
+      reason: 'gzip en az dörtte bire indirmeli',
+    );
+    // Ve kayıpsız: geri okunan metin birebir aynı olmalı.
+    expect((await cache.read())!.payload, payload);
+  });
+
+  test('Türkçe karakterler gidiş-dönüşte bozulmaz', () async {
+    const payload = '{"baslik":"Şığüöç İçerik — açıklama"}';
+    await cache.write(
+      CachedFeed(
+        payload: payload,
+        fetchedAt: DateTime.utc(2026, 7, 28),
+        generatedAt: DateTime.utc(2026, 7, 28),
+        sourceUrl: 'https://ornek.test/feed.json',
+      ),
+    );
+
+    expect((await cache.read())!.payload, payload);
+  });
+
+  /// Kendini onarır: bozuk bir satır silinmezse her açılışta yeniden
+  /// çözülmeye çalışılır ve önbellek kalıcı olarak ölü kalırdı.
+  test('çözülemeyen gövde silinir ve null döner', () async {
+    await db.insert(FeedCacheTable.name, {
+      FeedCacheTable.id: 1,
+      FeedCacheTable.payload: Uint8List.fromList([1, 2, 3, 4, 5]),
+      FeedCacheTable.fetchedAt: 1,
+      FeedCacheTable.generatedAt: 1,
+      FeedCacheTable.sourceUrl: 'https://ornek.test/feed.json',
+    });
+
+    expect(await cache.read(), isNull);
+    expect(
+      await db.query(FeedCacheTable.name),
+      isEmpty,
+      reason: 'bozuk satır silinmeli',
     );
   });
 

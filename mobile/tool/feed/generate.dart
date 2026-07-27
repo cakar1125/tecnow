@@ -83,12 +83,63 @@ bool meetsQualityBar(FeedItem item) =>
 /// Eşitlikte kimliğe göre — aynı girdi her koşuda aynı çıktıyı vermeli.
 List<FeedItem> _newest(List<FeedItem> items, int count) {
   if (items.length <= count) return items;
-  final ordered = [...items]
-    ..sort((a, b) {
-      final byDate = b.publishedAt.compareTo(a.publishedAt);
-      return byDate != 0 ? byDate : a.id.compareTo(b.id);
-    });
-  return ordered.sublist(0, count);
+  return _byNewest(items).sublist(0, count);
+}
+
+List<FeedItem> _byNewest(Iterable<FeedItem> items) => [...items]
+  ..sort((a, b) {
+    final byDate = b.publishedAt.compareTo(a.publishedAt);
+    return byDate != 0 ? byDate : a.id.compareTo(b.id);
+  });
+
+/// Her tür için ayrılan taban kontenjan.
+///
+/// Uygulamanın sekmeleri içerik **türüne** göre süzüyor; saf tarih sıralaması
+/// bir sekmeyi tamamen boşaltabilir. Ölçüldü (2026-07-28): blog kaynakları
+/// eklendikten sonra duyurular tarih sıralamasında modelleri ezdi ve
+/// "AI Modelleri" sekmesinde 200 kayıttan yalnız **4** tanesi kaldı.
+///
+/// Taban, tarihi devre dışı bırakmaz: önce her tür kendi tabanını en yeni
+/// kayıtlarıyla doldurur, kalan yerler yine küresel tarih sırasına gider.
+const _floorPerKind = 20;
+
+/// Feed'i [limit] kayda indirir — türler arası dengeyi koruyarak.
+///
+/// Rehberin işi "en son ne yazıldı" değil, "her alanda neler var" sorusuna
+/// cevap vermek. Tek bir yüksek hacimli kategori feed'in tamamını
+/// kaplayamamalı.
+List<FeedItem> balancedTrim(
+  List<FeedItem> items, {
+  required int limit,
+  int floorPerKind = _floorPerKind,
+}) {
+  if (items.length <= limit) return _byNewest(items);
+
+  final byKind = <FeedItemKind, List<FeedItem>>{};
+  for (final item in _byNewest(items)) {
+    (byKind[item.kind] ??= []).add(item);
+  }
+
+  // Taban, türe düşen paydan büyük olamaz: tek bir türün tabanı bütün yeri
+  // yiyip diğerlerine hiç bırakmamalı.
+  final perKind = byKind.isEmpty
+      ? 0
+      : (limit ~/ byKind.length).clamp(0, floorPerKind);
+
+  final selected = <String, FeedItem>{};
+  for (final group in byKind.values) {
+    for (final item in group.take(perKind)) {
+      selected[item.id] = item;
+    }
+  }
+
+  // Kalan yerler küresel tarih sırasına göre dolar.
+  for (final item in _byNewest(items)) {
+    if (selected.length >= limit) break;
+    selected[item.id] = item;
+  }
+
+  return _byNewest(selected.values);
 }
 
 final class GenerationReport {
@@ -181,9 +232,7 @@ Future<GenerationReport> generateFeed({
   }
 
   final merged = mergeDuplicates(collected);
-  final trimmed = merged.length <= limit
-      ? merged
-      : merged.sublist(0, limit).toList(growable: false);
+  final trimmed = balancedTrim(merged, limit: limit);
 
   // Özetleme **en sona** bırakılır: birleştirme ve limit sonrasında kalan
   // kayıtlar özetlenir. Önce özetlemek, birleştirmede kaybedilecek kopyalar

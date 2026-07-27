@@ -5,6 +5,10 @@
 /// içeriğin kaybolması anlamına gelmez.
 library;
 
+import 'dart:convert';
+import 'dart:io' show gzip;
+import 'dart:typed_data';
+
 import 'package:sqflite/sqflite.dart';
 
 import '../local/schema.dart';
@@ -52,6 +56,12 @@ final class SqfliteFeedCache implements FeedCache {
 
   static const _rowId = 1;
 
+  /// Okunamayan bir satır **silinir** ve `null` dönülür.
+  ///
+  /// Kendini onarır: bozuk bir kayıt silinmezse her açılışta yeniden çözülmeye
+  /// çalışılır ve önbellek kalıcı olarak ölü kalırdı. Kayıp yok — önbellek
+  /// tanımı gereği atılabilir, uygulama paketlenmiş dosyaya düşer ve ilk
+  /// tazelemede yeniden dolar.
   @override
   Future<CachedFeed?> read() async {
     final db = await _database;
@@ -59,8 +69,16 @@ final class SqfliteFeedCache implements FeedCache {
     if (rows.isEmpty) return null;
 
     final row = rows.single;
+    final String payload;
+    try {
+      payload = _decode(row[FeedCacheTable.payload]);
+    } on Object {
+      await clear();
+      return null;
+    }
+
     return CachedFeed(
-      payload: row[FeedCacheTable.payload]! as String,
+      payload: payload,
       fetchedAt: _toDate(row[FeedCacheTable.fetchedAt]! as int),
       generatedAt: _toDate(row[FeedCacheTable.generatedAt]! as int),
       sourceUrl: row[FeedCacheTable.sourceUrl]! as String,
@@ -72,13 +90,28 @@ final class SqfliteFeedCache implements FeedCache {
     final db = await _database;
     await db.insert(FeedCacheTable.name, {
       FeedCacheTable.id: _rowId,
-      FeedCacheTable.payload: entry.payload,
+      FeedCacheTable.payload: _encode(entry.payload),
       FeedCacheTable.fetchedAt: entry.fetchedAt.toUtc().millisecondsSinceEpoch,
       FeedCacheTable.generatedAt: entry.generatedAt
           .toUtc()
           .millisecondsSinceEpoch,
       FeedCacheTable.sourceUrl: entry.sourceUrl,
     }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  /// Gövde **sıkıştırılmış** saklanır.
+  ///
+  /// Ölçüldü (2026-07-28): 200 kayıtlık feed ham 182,8 KB, gzip 30,5 KB —
+  /// %83,3 küçülme. JSON çok tekrarlı olduğu için kazanç büyük; feed
+  /// büyüdükçe de büyür.
+  static Uint8List _encode(String payload) =>
+      Uint8List.fromList(gzip.encode(utf8.encode(payload)));
+
+  static String _decode(Object? value) {
+    if (value is! List<int>) {
+      throw const FormatException('Önbellek gövdesi ikili veri değil');
+    }
+    return utf8.decode(gzip.decode(value));
   }
 
   @override

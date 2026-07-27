@@ -29,13 +29,38 @@ final class SqfliteReadHistoryRepository implements ReadHistoryRepository {
 
   final Database _database;
 
+  /// Bir içeriği okundu olarak işaretler.
+  ///
+  /// Aynı içerik **tek satır** tutar: yeniden okumak zamanı günceller, yeni
+  /// kayıt eklemez. Öncesinde aynı içeriği elli kez açmak elli satır
+  /// üretiyordu — hem yer harcıyor hem de geçmişi anlamsız kılıyordu.
+  /// Tekillik v3'te benzersiz indeksle veritabanında zorlanıyor.
   @override
   Future<void> record(String itemId, String? kind) async {
     await _database.insert(ReadHistoryTable.name, {
       ReadHistoryTable.itemId: itemId,
       ReadHistoryTable.itemKind: kind,
       ReadHistoryTable.readAt: DateTime.now().millisecondsSinceEpoch,
-    });
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+
+    await _prune();
+  }
+
+  /// Geçmişi [LocalSchema.readHistoryLimit] kayıtta tutar.
+  ///
+  /// Tekilleştirme tek başına yetmez: yeterince farklı içerik okuyan bir
+  /// kullanıcıda tablo yine sınırsız büyürdü. Budama olmadan büyümenin
+  /// durduğu bir nokta yok.
+  Future<void> _prune() async {
+    await _database.rawDelete(
+      'DELETE FROM ${ReadHistoryTable.name} '
+      'WHERE ${ReadHistoryTable.id} NOT IN ('
+      '  SELECT ${ReadHistoryTable.id} FROM ${ReadHistoryTable.name}'
+      '  ORDER BY ${ReadHistoryTable.readAt} DESC, ${ReadHistoryTable.id} DESC'
+      '  LIMIT ?'
+      ')',
+      [LocalSchema.readHistoryLimit],
+    );
   }
 
   @override

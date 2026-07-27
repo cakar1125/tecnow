@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:teknoakis/data/feed/feed_schema.dart';
 
+import '../../tool/feed/connectors/connector_support.dart';
 import '../../tool/feed/connectors/github.dart';
 import '../../tool/feed/connectors/syndication.dart';
 import '../../tool/feed/fetch.dart';
@@ -70,9 +71,13 @@ void main() {
 
       final byName = {for (final o in report.outcomes) o.name: o};
       expect(byName['depolar']!.items, 4);
-      expect(byName['depolar']!.skipped, hasLength(3));
+      expect(
+        byName['depolar']!.skipped,
+        hasLength(4),
+        reason: '3 ayrıştırma elemesi + 1 kalite kapısı',
+      );
       expect(byName['blog']!.items, 2);
-      expect(report.skipped, hasLength(5), reason: 'rapor toplamı');
+      expect(report.skipped, hasLength(6), reason: 'rapor toplamı');
     });
 
     test('kayıtlar yeniden eskiye sıralanır', () async {
@@ -104,7 +109,7 @@ void main() {
 
       final outcome = report.outcomes.first;
       expect(outcome.items, 2);
-      expect(outcome.available, 4, reason: 'rapor kırpmayı göstermeli');
+      expect(outcome.available, 5, reason: 'rapor kırpmayı göstermeli');
 
       // Fixture'daki en yeni iki depo: 2026-07-10 ve 2026-05-30 elenmiş
       // olanlar hariç, kalan en yeniler.
@@ -125,6 +130,88 @@ void main() {
         limit: 2,
       );
       expect(report.feed.items, hasLength(2));
+    });
+  });
+
+  group('yayımlanabilirlik kapısı', () {
+    FeedItem itemWith({
+      bool official = false,
+      bool license = false,
+      int? popularity,
+    }) => FeedItem(
+      id: 'x',
+      kind: FeedItemKind.repository,
+      title: 'x',
+      summary: 'x',
+      summaryOrigin: SummaryOrigin.original,
+      sourceName: 'GitHub',
+      sourceKind: FeedSourceKind.github,
+      url: Uri.parse('https://github.com/a/b'),
+      publishedAt: _now,
+      checkedAt: _now,
+      language: 'en',
+      trust: TrustSignals(
+        officialSource: official,
+        hasLicense: license,
+        // Bakım ve güncellik bilerek `true`: bunlar dün açılmış boş bir
+        // depoda da sağlanır, o yüzden kapıya sayılmazlar.
+        recentlyUpdated: true,
+        maintained: true,
+        popularity: popularity,
+      ),
+    );
+
+    test('resmi kaynak koşulsuz geçer', () {
+      expect(meetsQualityBar(itemWith(official: true)), isTrue);
+    });
+
+    test('üçüncü tarafa lisans ya da popülerlik yeter', () {
+      expect(meetsQualityBar(itemWith(license: true)), isTrue);
+      expect(meetsQualityBar(itemWith(popularity: 3)), isTrue);
+    });
+
+    test('ikisi de yoksa geçemez', () {
+      expect(meetsQualityBar(itemWith()), isFalse);
+      expect(meetsQualityBar(itemWith(popularity: 0)), isFalse);
+    });
+
+    test('elenen kayıt raporda sebebiyle görünür', () async {
+      final report = await generateFeed(
+        fetcher: _fetcher(),
+        sources: _sources(),
+        now: _now,
+      );
+
+      final titles = report.feed.items.map((item) => item.title);
+      expect(titles, isNot(contains('birisi/sinyalsiz-depo')));
+      expect(
+        report.skipped
+            .where((record) => record.reason == SkipReason.lowSignal)
+            .map((record) => record.identifier),
+        ['birisi/sinyalsiz-depo'],
+      );
+    });
+
+    /// Kapı tavandan önce işlemezse tavan, yayımlanmayacak kayıtlarla dolar
+    /// ve iyi olanlar dışarıda kalır.
+    test('kapı tavandan önce işler', () async {
+      final report = await generateFeed(
+        fetcher: _fetcher(),
+        sources: [
+          FeedSource(
+            name: 'depolar',
+            url: Uri.https('test.invalid', '/repos'),
+            parse: parseGitHubRepositories,
+            maxItems: 1,
+          ),
+        ],
+        now: _now,
+      );
+
+      // Fixture'daki en yeni kayıt sinyalsiz olan (2026-07-26). Kapı sonra
+      // işleseydi tavan onu alır ve feed boş kalırdı.
+      expect(report.feed.items, hasLength(1));
+      expect(report.feed.items.single.title, isNot('birisi/sinyalsiz-depo'));
     });
   });
 

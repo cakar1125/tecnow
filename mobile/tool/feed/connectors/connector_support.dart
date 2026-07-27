@@ -33,6 +33,12 @@ enum SkipReason {
 
   /// Özel/erişilemez kayıt.
   private,
+
+  /// Yayımlanabilirlik kapısından geçemedi — bkz. `meetsQualityBar`.
+  ///
+  /// Ayrıştırma hatası **değildir**: kayıt düzgün okundu, editoryal olarak
+  /// yayımlanmadı. Rapor ikisini ayırt edebilsin diye ayrı bir sebep.
+  lowSignal,
 }
 
 final class SkippedRecord {

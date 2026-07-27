@@ -56,6 +56,26 @@ final class SourceOutcome {
             '${skipped.isEmpty ? '' : ', ${skipped.length} elendi'}';
 }
 
+/// Yayımlanabilirlik kapısı.
+///
+/// **Resmi kaynaklar koşulsuz geçer**: duyuruyu yapan kurumun kendisidir,
+/// yıldız sayısı sormaya gerek yok.
+///
+/// Üçüncü taraf içerik ise en az bir **dış** kalite sinyali göstermeli:
+/// lisans ya da popülerlik. Bakım ve güncellik yeterli sayılmaz — dün açılmış
+/// boş bir depo ikisini de sağlar. Ölçülen gerçek koşuda listenin başında
+/// `RafaelBatistaDev/Claude_Code-free-9router` vardı; açıklaması adının
+/// tekrarıydı, lisansı ve yıldızı yoktu ve tarih sıralamasında gerçek bir
+/// duyuruyu geçiyordu.
+///
+/// Kapı, popülerliği güven ölçütü hâline **getirmez**: hâlâ 100 puanın
+/// yalnız 10'unu veriyor. Buradaki soru "ne kadar iyi" değil, "dışarıdan
+/// bakan biri bunu hiç değerlendirmiş mi".
+bool meetsQualityBar(FeedItem item) =>
+    item.trust.officialSource ||
+    item.trust.hasLicense ||
+    (item.trust.popularity ?? 0) > 0;
+
 /// En yeni [count] kaydı verir.
 ///
 /// Beslemenin sırasına güvenilmez: kaynak istediği sırada döndürebilir.
@@ -114,14 +134,27 @@ Future<GenerationReport> generateFeed({
         continue;
       }
       final result = source.parse(response.body, checkedAt: now);
-      final taken = _newest(result.items, source.maxItems);
+
+      // Kapı **tavandan önce** işler: aksi hâlde tavan, zaten yayımlanmayacak
+      // kayıtlarla dolar ve iyi olanlar dışarıda kalırdı.
+      final publishable = <FeedItem>[];
+      final rejected = <SkippedRecord>[];
+      for (final item in result.items) {
+        if (meetsQualityBar(item)) {
+          publishable.add(item);
+        } else {
+          rejected.add(SkippedRecord(item.title, SkipReason.lowSignal));
+        }
+      }
+
+      final taken = _newest(publishable, source.maxItems);
       collected.addAll(taken);
       outcomes.add(
         SourceOutcome(
           name: source.name,
           items: taken.length,
           available: result.items.length,
-          skipped: result.skipped,
+          skipped: [...result.skipped, ...rejected],
         ),
       );
     } catch (error) {

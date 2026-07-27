@@ -29,6 +29,7 @@ void main() {
         'modelcontextprotocol/servers',
         'birisi/awesome-claude-skills',
         'birisi/eski-arac',
+        'birisi/sinyalsiz-depo',
       ]);
     });
 
@@ -136,7 +137,7 @@ void main() {
 
     /// Tek bozuk kayıt tüm çalışmayı düşürmemeli.
     test('bozuk kayıt diğerlerini etkilemez', () {
-      expect(_repositories().items, hasLength(4));
+      expect(_repositories().items, hasLength(5));
     });
 
     /// Yanıt gövdesine güvenilmez: adres allowlist'ten geçmeden feed'e giremez.

@@ -210,6 +210,7 @@ final class FakeFeedRepository implements FeedRepository {
     this.syncOutcome,
     this.lastSync,
     this.remoteEnabled = false,
+    this.stale = false,
   });
 
   final List<FeedItem> items;
@@ -219,12 +220,18 @@ final class FakeFeedRepository implements FeedRepository {
 
   /// Verilirse [refresh] bunu döndürür. Ağ katmanı gerçekten kurulmaz:
   /// ekranların sonuca **nasıl tepki verdiği** ölçülür, ağın kendisi değil.
-  final FeedSyncOutcome? syncOutcome;
+  ///
+  /// Değiştirilebilir: art arda gelen iki denemenin farklı sonuçlanması
+  /// (önce hata, sonra başarı) tek başına ölçülmesi gereken bir davranış.
+  FeedSyncOutcome? syncOutcome;
 
   final DateTime? lastSync;
 
   @override
   final bool remoteEnabled;
+
+  /// Açılışta kendiliğinden tazeleme yapılıp yapılmadığını ölçmek için.
+  final bool stale;
 
   /// Kaç kez tazeleme istendiği. Açılışta bayat içeriğin bir kez — ve yalnız
   /// bir kez — tazelenmesini ölçmek için.
@@ -244,6 +251,9 @@ final class FakeFeedRepository implements FeedRepository {
 
   @override
   Future<DateTime?> lastSyncAt() async => lastSync;
+
+  @override
+  Future<bool> isStale() async => stale;
 }
 
 Feed testFeed(List<FeedItem> items, {DateTime? generatedAt}) => Feed(

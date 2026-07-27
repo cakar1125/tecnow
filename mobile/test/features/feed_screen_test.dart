@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:teknoakis/data/feed/feed_repository.dart';
 import 'package:teknoakis/data/feed/feed_schema.dart';
 import 'package:teknoakis/design_system/components/app_components.dart';
 import 'package:teknoakis/features/feed/feed_screen.dart';
@@ -12,12 +13,14 @@ Future<void> _pumpFeed(
   WidgetTester tester, {
   List<FeedItem>? feed,
   List<String>? interests,
+  FakeFeedRepository? repository,
 }) async {
   await tester.pumpWidget(
     memoryDataHarness(
       const Scaffold(body: FeedScreen()),
       feed: feed,
       interests: interests,
+      feedRepository: repository,
     ),
   );
   await tester.pumpAndSettle();
@@ -154,5 +157,95 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(SnackBar), findsOneWidget);
+  });
+
+  group('içerik güncelliği', () {
+    /// Çalışmayacağı bilinen bir kontrol sahte bir işlev vaadidir: uzak adres
+    /// yapılandırılmamışken aşağı çekme jesti hiçbir şey yapmazdı.
+    testWidgets('ağ kapalıyken tazeleme kontrolü hiç çizilmez', (tester) async {
+      await _pumpFeed(tester);
+
+      expect(find.byKey(const Key('feed-refresh')), findsNothing);
+      expect(find.byType(RefreshIndicator), findsNothing);
+    });
+
+    testWidgets('ağ kapalıyken durum satırı tarih vaat etmez', (tester) async {
+      await _pumpFeed(tester);
+
+      expect(find.text('İçerik uygulamayla birlikte geliyor'), findsOneWidget);
+    });
+
+    testWidgets('ağ açıkken tazeleme kontrolü çizilir', (tester) async {
+      await _pumpFeed(
+        tester,
+        repository: FakeFeedRepository(testFeedItems(), remoteEnabled: true),
+      );
+
+      expect(find.byKey(const Key('feed-refresh')), findsOneWidget);
+      expect(find.text('Henüz güncellenmedi'), findsOneWidget);
+    });
+
+    testWidgets('senkronize edilmiş içerikte son güncelleme yazar', (
+      tester,
+    ) async {
+      await _pumpFeed(
+        tester,
+        repository: FakeFeedRepository(
+          testFeedItems(),
+          remoteEnabled: true,
+          // Gerçek saat kullanıldığı için tam metin değil, biçim ölçülüyor;
+          // ifadenin kendisi `feed_sync_label_test.dart` içinde kilitli.
+          lastSync: DateTime.now().subtract(const Duration(hours: 3)),
+        ),
+      );
+
+      expect(find.byKey(const Key('feed-sync-status')), findsOneWidget);
+      expect(find.textContaining('Son güncelleme:'), findsOneWidget);
+    });
+
+    /// Açılışta ağ beklenmez: içerik önce gelir, tazeleme ilk kareden sonra
+    /// ve yalnız içerik bayatsa denenir.
+    testWidgets('taze içerikte açılışta ağa çıkılmaz', (tester) async {
+      final repository = FakeFeedRepository(
+        testFeedItems(),
+        remoteEnabled: true,
+        lastSync: DateTime.now(),
+      );
+      await _pumpFeed(tester, repository: repository);
+
+      expect(repository.refreshCount, 0);
+    });
+
+    testWidgets('bayat içerikte açılışta bir kez tazelenir', (tester) async {
+      final repository = FakeFeedRepository(
+        testFeedItems(),
+        remoteEnabled: true,
+        stale: true,
+        syncOutcome: FeedSyncOutcome(
+          status: FeedSyncStatus.refreshed,
+          feed: testFeed(testFeedItems()),
+          syncedAt: DateTime.now(),
+        ),
+      );
+      await _pumpFeed(tester, repository: repository);
+
+      expect(repository.refreshCount, 1);
+    });
+
+    /// Ağ hatası içeriği kaybettirmez: liste yerinde kalır, yalnız durum
+    /// satırı değişir.
+    testWidgets('başarısız tazeleme listeyi boşaltmaz', (tester) async {
+      final repository = FakeFeedRepository(
+        testFeedItems(),
+        remoteEnabled: true,
+        stale: true,
+        syncOutcome: const FeedSyncOutcome.failed('Bağlantı kurulamadı'),
+      );
+      await _pumpFeed(tester, repository: repository);
+
+      expect(find.byType(FeedItemCard), findsNWidgets(3));
+      expect(find.textContaining('Güncellenemedi'), findsOneWidget);
+      expect(find.byKey(const Key('feed-error')), findsNothing);
+    });
   });
 }

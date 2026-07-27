@@ -69,6 +69,7 @@ final class SyncingFeedRepository implements FeedRepository {
   ///
   /// Uzak adres yoksa `false`: tazelenemeyen bir içerik bayat sayılmaz,
   /// yoksa arayüz kullanıcıya çözemeyeceği bir sorun bildirirdi.
+  @override
   Future<bool> isStale({Duration after = feedStaleAfter}) async {
     if (endpoint == null) return false;
     final last = await lastSyncAt();

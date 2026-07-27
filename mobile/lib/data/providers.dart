@@ -8,6 +8,7 @@ import 'feed/feed_endpoint.dart';
 import 'feed/feed_http_client.dart';
 import 'feed/feed_repository.dart';
 import 'feed/feed_schema.dart';
+import 'feed/feed_sync_state.dart';
 import 'feed/syncing_feed_repository.dart';
 import 'interests_migration.dart';
 import 'local/app_database.dart';
@@ -74,6 +75,58 @@ final class FeedNotifier extends AsyncNotifier<List<FeedItem>> {
     if (outcome.feed case final feed?) {
       state = AsyncData(feed.visibleItems);
     }
+    return outcome;
+  }
+}
+
+/// İçerik güncelliği. Arayüzün "son güncelleme" satırı ve tazeleme kontrolü
+/// buna bakar.
+final feedSyncProvider = AsyncNotifierProvider<FeedSyncNotifier, FeedSyncState>(
+  FeedSyncNotifier.new,
+);
+
+final class FeedSyncNotifier extends AsyncNotifier<FeedSyncState> {
+  @override
+  Future<FeedSyncState> build() async {
+    final repository = ref.watch(feedRepositoryProvider);
+    return FeedSyncState(
+      remoteEnabled: repository.remoteEnabled,
+      lastSyncAt: await repository.lastSyncAt(),
+    );
+  }
+
+  /// Açılışta yalnız **bayatsa** dener.
+  ///
+  /// Her açılışta ağa çıkmak, günde onlarca kez uygulamayı açan bir
+  /// kullanıcının verisini ve pilini içerik değişmeden harcardı.
+  Future<void> refreshIfStale() async {
+    // Önce durumun kurulmasını bekler. Ekran bunu ilk kareden sonra çağırıyor
+    // ve o an sağlayıcı hâlâ `AsyncLoading` olabilir; `state.value`a bakmak
+    // açılış denemesini sessizce hiç yapmamak demekti.
+    final current = await future;
+    if (current.refreshing) return;
+    if (!await ref.read(feedRepositoryProvider).isStale()) return;
+    await refresh();
+  }
+
+  Future<FeedSyncOutcome> refresh() async {
+    final current = state.value;
+    // Aynı anda iki tazeleme olmaz: kullanıcı aşağı çekerken açılış denemesi
+    // de tetiklenebilir ve aynı dosya iki kez indirilirdi.
+    if (current == null || current.refreshing) return FeedSyncOutcome.disabled;
+
+    state = AsyncData(current.copyWith(refreshing: true, clearFailure: true));
+    final outcome = await ref.read(feedProvider.notifier).refresh();
+
+    state = AsyncData(
+      FeedSyncState(
+        remoteEnabled: current.remoteEnabled,
+        lastSyncAt: outcome.syncedAt ?? current.lastSyncAt,
+        failure: outcome.status == FeedSyncStatus.failed
+            ? outcome.failure
+            : null,
+      ),
+    );
     return outcome;
   }
 }

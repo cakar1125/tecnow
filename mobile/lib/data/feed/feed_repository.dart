@@ -78,6 +78,9 @@ abstract interface class FeedRepository {
   /// Son **başarılı** senkronizasyon anı; hiç olmadıysa `null`.
   Future<DateTime?> lastSyncAt();
 
+  /// Açılışta kendiliğinden bir tazeleme denemeye değer mi.
+  Future<bool> isStale();
+
   /// Uzak adres yapılandırılmış mı. Arayüz, tazeleme kontrolünü hiç
   /// göstermemek için bunu bilmek zorundadır: çalışmayacağı bilinen bir
   /// düğme koymak sahte bir işlev vaadidir.
@@ -114,6 +117,9 @@ final class BundledFeedRepository implements FeedRepository {
 
   @override
   Future<DateTime?> lastSyncAt() async => null;
+
+  @override
+  Future<bool> isStale() async => false;
 
   @override
   bool get remoteEnabled => false;

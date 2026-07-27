@@ -88,6 +88,9 @@ final class _BundleStub implements FeedRepository {
   Future<DateTime?> lastSyncAt() async => null;
 
   @override
+  Future<bool> isStale() async => false;
+
+  @override
   bool get remoteEnabled => false;
 }
 

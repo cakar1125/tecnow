@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/feed/feed_schema.dart';
+import '../../data/feed/feed_sync_state.dart';
 import '../../data/providers.dart';
 import '../../design_system/components/app_components.dart';
 import '../../design_system/tokens/app_tokens.dart';
 import '../../ui/content_card_model.dart';
+import '../../ui/feed_sync_label.dart';
 
 /// Akış sekmeleri.
 ///
@@ -23,6 +25,17 @@ class FeedScreen extends ConsumerStatefulWidget {
 
 class _FeedScreenState extends ConsumerState<FeedScreen> {
   HomeTab _selectedTab = HomeTab.sanaOzel;
+
+  @override
+  void initState() {
+    super.initState();
+    // İlk kare çizildikten sonra: açılış ağ beklemez, içerik önce gelir.
+    // Deneme yalnız içerik bayatsa yapılır (`refreshIfStale`).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ref.read(feedSyncProvider.notifier).refreshIfStale();
+    });
+  }
 
   static const _tabLabels = {
     HomeTab.sanaOzel: 'SANA ÖZEL',
@@ -84,6 +97,24 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final sync = ref.watch(feedSyncProvider).value;
+    final scrollView = _scrollView(context, sync);
+
+    // Tazeleme kontrolü yalnız gerçekten çalışacağı zaman var. Uzak adres
+    // yapılandırılmamışken aşağı çekme jesti hiçbir şey yapmazdı; işlevsiz
+    // bir kontrol, sahte bir işlev vaadidir.
+    if (sync == null || !sync.remoteEnabled) return scrollView;
+
+    return RefreshIndicator(
+      key: const Key('feed-refresh'),
+      color: AppColors.primary,
+      backgroundColor: AppColors.surfaceHigh,
+      onRefresh: () => ref.read(feedSyncProvider.notifier).refresh(),
+      child: scrollView,
+    );
+  }
+
+  Widget _scrollView(BuildContext context, FeedSyncState? sync) {
     final feed = ref.watch(feedProvider);
     final interests = ref.watch(interestsProvider).value ?? const <String>{};
 
@@ -116,6 +147,16 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                         'Teknoloji dünyasında önemli olanları keşfet.',
                         style: AppTypography.bodyMuted,
                       ),
+                      if (sync != null) ...[
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          feedSyncLabel(sync, DateTime.now()),
+                          key: const Key('feed-sync-status'),
+                          style: AppTypography.label.copyWith(
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),

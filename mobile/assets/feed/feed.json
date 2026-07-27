@@ -1,0 +1,5529 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-27T19:32:38.594045Z",
+  "items": [
+    {
+      "id": "49fe44224fe7ec68",
+      "kind": "skill",
+      "title": "JoaoMonteiro100/ux-design-skills",
+      "summary": "A collection of 7 UX & product-design skills for Claude",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/JoaoMonteiro100/ux-design-skills",
+      "publishedAt": "2026-07-27T19:26:10.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 0
+      },
+      "topics": [
+        "claude",
+        "claude-skills",
+        "product-design",
+        "ux"
+      ]
+    },
+    {
+      "id": "abb8da63b683abb7",
+      "kind": "announcement",
+      "title": "NVIDIA Ising Enables Fully Automated Quantum Computer Calibration with Enhanced In-Context Learning",
+      "summary": "NVIDIA Ising Calibration is an open source vision language model (VLM) designed to interpret diagnostic outputs from quantum processors and determine how they...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/nvidia-ising-enables-fully-automated-quantum-computer-calibration-with-enhanced-in-context-learning/",
+      "publishedAt": "2026-07-27T16:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "data science",
+        "simulation / modeling / design",
+        "ai agent",
+        "dgx spark",
+        "ising",
+        "nvfp4",
+        "quantum computing",
+        "training ai models",
+        "vlms"
+      ]
+    },
+    {
+      "id": "6e88a189fac0eca7",
+      "kind": "skill",
+      "title": "jposluns/ai-language",
+      "summary": "A free cross-platform editorial standard for AI writing.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/jposluns/ai-language",
+      "publishedAt": "2026-07-27T12:31:43.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 0
+      },
+      "topics": [
+        "ai",
+        "ai-writing",
+        "ai-writing-tool",
+        "chatgpt",
+        "claude",
+        "claude-skills",
+        "editorial-standards",
+        "gemini",
+        "prompt-engineering",
+        "writing"
+      ]
+    },
+    {
+      "id": "2a19094d748c1d6b",
+      "kind": "announcement",
+      "title": "Six Agent Harness Capabilities for Higher Model Performance",
+      "summary": "Building a great AI agent isn’t just about choosing the right models. The harness is the architecture surrounding the model. How it renders context, executes...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/six-agent-harness-capabilities-for-higher-model-performance/",
+      "publishedAt": "2026-07-27T09:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "top stories",
+        "trustworthy ai / cybersecurity",
+        "ai agent",
+        "llms",
+        "open source",
+        "openshell",
+        "python",
+        "security for ai"
+      ]
+    },
+    {
+      "id": "abd2745fa065b40f",
+      "kind": "announcement",
+      "title": "How AI is expanding what people do at work",
+      "summary": "New OpenAI research shows how AI is expanding what workers do, with ChatGPT users taking on tasks across roles and reshaping job boundaries.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/how-ai-is-expanding-what-people-do-at-work",
+      "publishedAt": "2026-07-27T03:30:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "company"
+      ]
+    },
+    {
+      "id": "178f098f7887b03b",
+      "kind": "announcement",
+      "title": "Advancing Semiconductor Innovation Across Materials Engineering and Manufacturing",
+      "summary": "As AI workloads increase, explosive compute demand is pushing the semiconductor industry to meet unprecedented performance targets. Even small delays can have...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/advancing-semiconductor-innovation-across-materials-engineering-and-manufacturing/",
+      "publishedAt": "2026-07-27T00:45:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "data center / cloud",
+        "simulation / modeling / design",
+        "computational chemistry / materials science",
+        "cuda-x",
+        "industrial digitalization / digital twin"
+      ]
+    },
+    {
+      "id": "c0134950db0b4929",
+      "kind": "announcement",
+      "title": "NVIDIA Nemotron 3 Ultra Leads Open Models on Accuracy and Efficiency in Agentic RTL Coding",
+      "summary": "Modern chip design is increasingly limited by engineering time. Register transfer level (RTL) development and verification require specialized hardware...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/nvidia-nemotron-3-ultra-leads-open-models-on-accuracy-and-efficiency-in-agentic-rtl-coding/",
+      "publishedAt": "2026-07-27T00:45:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "developer tools & techniques",
+        "ai agent",
+        "hardware / semiconductor",
+        "llms",
+        "nemotron"
+      ]
+    },
+    {
+      "id": "3a15ad95397e8c88",
+      "kind": "skill",
+      "title": "tamasbege/staff-engineer-skills",
+      "summary": "Claude Code plugin marketplace for the hard, production-critical parts of engineering — backend reliability (API contracts, idempotency, rate limiting, resilience, caching, auth), adversarial code review, and frontend motion/UX.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/tamasbege/staff-engineer-skills",
+      "publishedAt": "2026-07-26T06:58:34.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 1
+      },
+      "topics": [
+        "agent",
+        "agent-skills",
+        "ai-agents",
+        "api-design",
+        "architecture",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "claude-code-skill",
+        "claude-skills",
+        "code-review",
+        "developer-tools",
+        "staff",
+        "staff-engineer",
+        "ux-design"
+      ]
+    },
+    {
+      "id": "90f053ee09d40149",
+      "kind": "skill",
+      "title": "byensitmagnus/sitesmith",
+      "summary": "A coding-agent skill for building websites that don't look AI-generated. Routes by mode, enforces a 12-step build loop, and renders and measures the result instead of stopping at the code.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/byensitmagnus/sitesmith",
+      "publishedAt": "2026-07-25T09:08:59.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 0
+      },
+      "topics": [
+        "accessibility",
+        "ai-agents",
+        "anti-slop",
+        "claude-code",
+        "claude-skills",
+        "design-system",
+        "frontend",
+        "playwright",
+        "ui-ux",
+        "web-design"
+      ]
+    },
+    {
+      "id": "d143b7eeaab97039",
+      "kind": "announcement",
+      "title": "ModelExpress: Distributing Model Artifacts at the Speed of Light",
+      "summary": "Every byte moved has a cost. As model checkpoints grow to hundreds of gigabytes or even a terabyte, that cost adds up quickly. To make things even worse, moving...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/modelexpress-distributing-model-artifacts-at-the-speed-of-light/",
+      "publishedAt": "2026-07-24T16:45:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "data center / cloud",
+        "developer tools & techniques",
+        "ai foundation models",
+        "ai inference",
+        "dynamo",
+        "inference performance",
+        "llms"
+      ]
+    },
+    {
+      "id": "04aae1c83d8be1be",
+      "kind": "announcement",
+      "title": "Helion on TPU: Towards Hardware Heterogeneous Kernel Authoring",
+      "summary": "TL;DR Helion is PyTorch’s high-level DSL for writing performance-portable ML kernels. Partnering with Google, we have built a TPU backend that compiles Helion kernels to Pallas, providing a PyTorch-friendly way...",
+      "summaryOrigin": "original",
+      "sourceName": "Blog – PyTorch",
+      "sourceKind": "officialBlog",
+      "url": "https://pytorch.org/blog/helion-on-tpu-towards-hardware-heterogeneous-kernel-authoring/",
+      "publishedAt": "2026-07-23T17:22:16.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "blog"
+      ]
+    },
+    {
+      "id": "ec1b9dfa0ccad633",
+      "kind": "announcement",
+      "title": "Debugging Ray Tracing Applications Using NVIDIA OptiX Toolkit",
+      "summary": "NVIDIA OptiX ray tracing engine is an application framework for achieving optimal ray tracing performance on the GPU. Applications using OptiX can fail in ways...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/debugging-ray-tracing-applications-using-nvidia-optix-toolkit/",
+      "publishedAt": "2026-07-23T16:07:03.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "developer tools & techniques",
+        "featured",
+        "gaming",
+        "ray tracing / path tracing"
+      ]
+    },
+    {
+      "id": "358b954963b63e0f",
+      "kind": "announcement",
+      "title": "Start Customizing NVIDIA Nemotron 3 Nano with Prime Intellect Lab in Minutes",
+      "summary": "Customization is what enables developers to take a general model and tailor it to use cases, domains, languages, and more. However, customization comes with a...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/start-customizing-nvidia-nemotron-3-nano-with-prime-intellect-lab-in-minutes/",
+      "publishedAt": "2026-07-23T16:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "developer tools & techniques",
+        "featured",
+        "python",
+        "reinforcement learning"
+      ]
+    },
+    {
+      "id": "672601f8244c7d17",
+      "kind": "skill",
+      "title": "Optim-Agent/optim-plans",
+      "summary": "Human-in-the-loop planning plugin for Claude and Codex: turn ideas into reviewed Markdown plans, record decisions, enforce explicit execution gates, and provide tested controller primitives for safer agent workflows.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/Optim-Agent/optim-plans",
+      "publishedAt": "2026-07-23T13:47:35.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 55
+      },
+      "topics": [
+        "agent-skills",
+        "brainstorming",
+        "claude-skills",
+        "codex-skills",
+        "developer-tools",
+        "grill-me",
+        "human-in-the-loop",
+        "loop",
+        "loop-engineering",
+        "planning"
+      ]
+    },
+    {
+      "id": "eb17574e2ca81d73",
+      "kind": "skill",
+      "title": "lenamonj/jeffy-loop",
+      "summary": "An autonomous improvement loop for Claude Code: audit, fix, verify, converge - one verified task per iteration, checkpointed in local commits it never pushes.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/lenamonj/jeffy-loop",
+      "publishedAt": "2026-07-23T01:21:16.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 2
+      },
+      "topics": [
+        "agentic-coding",
+        "ai-agents",
+        "anthropic",
+        "automation",
+        "autonomous-agent",
+        "claude",
+        "claude-code",
+        "claude-skills",
+        "code-audit",
+        "code-quality",
+        "developer-tools",
+        "llm"
+      ]
+    },
+    {
+      "id": "5a4bcfcc804082ff",
+      "kind": "announcement",
+      "title": "Launching Health in ChatGPT",
+      "summary": "Health in ChatGPT now lets eligible U.S. users securely connect medical records and Apple Health to get more personalized insights and better understand their health.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/health-in-chatgpt",
+      "publishedAt": "2026-07-23T00:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "product"
+      ]
+    },
+    {
+      "id": "cf633106e0c67612",
+      "kind": "skill",
+      "title": "donatassimkus/claude-ai-skills",
+      "summary": "Growth marketing skills for Claude Code, Cursor, and any AI agent: SEO, CRM, marketing automation, inbox triage, and pre-launch QA. Paste one prompt and your agent installs the method, then applies it to your own accounts.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/donatassimkus/claude-ai-skills",
+      "publishedAt": "2026-07-22T19:52:09.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 1
+      },
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "ai-skills",
+        "automation",
+        "claude-code",
+        "claude-code-skills",
+        "claude-skills",
+        "cursor",
+        "gohighlevel",
+        "growth-marketing",
+        "marketing",
+        "marketing-automation",
+        "n8n",
+        "prompts",
+        "seo",
+        "seo-tools"
+      ]
+    },
+    {
+      "id": "275c74ed3dcc527c",
+      "kind": "announcement",
+      "title": "Make Long-Running NVIDIA TensorRT Engine Builds Observable and Cancelable in Python or C++",
+      "summary": "A TensorRT engine build can take seconds to many minutes. Large strongly typed models, deep tactic search, and a cold timing cache on a brand-new GPU SKU can...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/make-long-running-nvidia-tensorrt-engine-builds-observable-and-cancelable-in-python-or-c/",
+      "publishedAt": "2026-07-22T16:35:04.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "developer tools & techniques",
+        "build ai agents",
+        "featured"
+      ]
+    },
+    {
+      "id": "a0a42a4a425313ce",
+      "kind": "announcement",
+      "title": "Driving the Future of Open Source AI: An Update from PyTorch Foundation Projects",
+      "summary": "TL;DR In April 2025, the PyTorch Foundation evolved into a multi-project Foundation, with the objective to support deeper collaboration across domains and help scale innovation throughout the AI lifecycle. Today,...",
+      "summaryOrigin": "original",
+      "sourceName": "Blog – PyTorch",
+      "sourceKind": "officialBlog",
+      "url": "https://pytorch.org/blog/driving-the-future-of-open-source-ai-an-update-from-pytorch-foundation-projects/",
+      "publishedAt": "2026-07-22T14:44:38.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "blog"
+      ]
+    },
+    {
+      "id": "1aa3b961234958b4",
+      "kind": "announcement",
+      "title": "Building AI infrastructure with the Effingham County community",
+      "summary": "OpenAI announces Project Camellia in Effingham County, Georgia, with commitments to responsible energy, community investment, jobs, and access to Codex.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/building-ai-infrastructure-with-the-effingham-county-community",
+      "publishedAt": "2026-07-22T13:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "global affairs"
+      ]
+    },
+    {
+      "id": "282b7a95f7297e45",
+      "kind": "announcement",
+      "title": "How news organizations are using AI to advance their vital missions",
+      "summary": "News organizations are using AI to strengthen reporting, grow audiences, and improve business operations, with OpenAI tools supporting journalists and publishers worldwide.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/how-news-organizations-are-using-ai",
+      "publishedAt": "2026-07-22T13:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "company"
+      ]
+    },
+    {
+      "id": "d962c3e9ed5a37ca",
+      "kind": "announcement",
+      "title": "3 Google updates from Galaxy Unpacked 2026",
+      "summary": "Gentle Monster glasses, Warby Parker glasses, a prompt asking for the history behind a pictured building, and a prompt asking to book a table at a pictured restaurant",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/products-and-platforms/platforms/android/galaxy-unpacked-2026/",
+      "publishedAt": "2026-07-22T13:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "gemini app",
+        "android",
+        "gemini notebook",
+        "ai"
+      ]
+    },
+    {
+      "id": "6f74ae4236f37c85",
+      "kind": "announcement",
+      "title": "Advancing the next era of national science",
+      "summary": "OpenAI outlines its commitment to advancing American science working with the U.S. Department of Energy and national labs to use frontier AI to accelerate discovery.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/advancing-the-next-era-of-national-science",
+      "publishedAt": "2026-07-22T12:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "global affairs"
+      ]
+    },
+    {
+      "id": "d7b0865f074e4400",
+      "kind": "announcement",
+      "title": "Introducing OpenAI Presence",
+      "summary": "Introducing OpenAI Presence, a proven enterprise AI agent platform that helps organizations deploy trusted voice and chat agents for customer and internal workflows.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/introducing-openai-presence",
+      "publishedAt": "2026-07-22T05:30:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "product"
+      ]
+    },
+    {
+      "id": "f5c036bbbddf70c8",
+      "kind": "announcement",
+      "title": "NTT DATA Group cuts incident analysis to 30 minutes with Codex",
+      "summary": "NTT DATA Group uses ChatGPT Enterprise and Codex to help 9,000 employees automate work, cut incident analysis to 30 minutes, and scale secure AI adoption.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/ntt-data",
+      "publishedAt": "2026-07-22T00:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      }
+    },
+    {
+      "id": "3cf26f70f56ed5c2",
+      "kind": "announcement",
+      "title": "PyTorch Conference North America Schedule Is Live",
+      "summary": "PyTorch Conference North America will bring developers, researchers, and practitioners to San Jose on October 20–21 for sessions spanning training and inference, compiler innovations, responsible AI, applications, and the PyTorch...",
+      "summaryOrigin": "original",
+      "sourceName": "Blog – PyTorch",
+      "sourceKind": "officialBlog",
+      "url": "https://pytorch.org/blog/pytorch-conference-north-america-schedule-is-live/",
+      "publishedAt": "2026-07-21T23:52:08.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "announcements",
+        "blog"
+      ]
+    },
+    {
+      "id": "a2400d3a74aeb149",
+      "kind": "announcement",
+      "title": "Setting a World Record for MoE Pre-Training on NVIDIA GB300 NVL72",
+      "summary": "Frontier model pre-training has converged on mixture of experts (MoE), which is fundamentally changing what limits large-scale AI training. As compute per token...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/setting-a-world-record-for-moe-pre-training-on-nvidia-gb300-nvl72/",
+      "publishedAt": "2026-07-21T18:30:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "data center / cloud",
+        "developer tools & techniques",
+        "top stories",
+        "featured",
+        "gb300 nvl72",
+        "llm techniques",
+        "megatron",
+        "mixture of experts (moe)",
+        "training ai models"
+      ]
+    },
+    {
+      "id": "0baf1fe18d4c7f86",
+      "kind": "announcement",
+      "title": "Inside NVIDIA Rubin GPU Architecture: Powering the Era of Agentic AI",
+      "summary": "What began as discrete AI model training and human-facing chat interfaces has evolved into always-on AI factories dedicated to producing intelligence at scale....",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/inside-nvidia-rubin-gpu-architecture-powering-the-era-of-agentic-ai/",
+      "publishedAt": "2026-07-21T18:15:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "data center / cloud",
+        "developer tools & techniques",
+        "top stories",
+        "ai agent",
+        "ai factory",
+        "ai inference",
+        "dsx",
+        "featured",
+        "mixture of experts (moe)",
+        "nvfp4",
+        "rubin gpu",
+        "tensor cores",
+        "vera rubin"
+      ]
+    },
+    {
+      "id": "d3c7b90efb43635a",
+      "kind": "announcement",
+      "title": "NVIDIA Vera CPU: Olympus Cores Built for Maximum Single-Thread Performance in Agentic AI",
+      "summary": "Agentic AI shifts more of the critical execution path onto the CPU. Agents operate in sandboxes to execute code, invoke tools, retrieve context, interact with...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/inside-nvidia-vera-cpu-olympus-cores-built-for-maximum-single-threaded-performance-in-agentic-ai/",
+      "publishedAt": "2026-07-21T18:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "data center / cloud",
+        "top stories",
+        "ai factory",
+        "featured",
+        "vera cpu"
+      ]
+    },
+    {
+      "id": "986088952ffb332b",
+      "kind": "announcement",
+      "title": "Introducing the ChatGPT for small business program",
+      "summary": "OpenAI launches the ChatGPT for Small Businesses program, helping entrepreneurs build AI skills, automate work, and grow with ChatGPT Work.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/introducing-chatgpt-small-business-program",
+      "publishedAt": "2026-07-21T17:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "ai adoption"
+      ]
+    },
+    {
+      "id": "1fbfe676e1572a99",
+      "kind": "announcement",
+      "title": "OpenAI and Hugging Face partner to address security incident during model evaluation",
+      "summary": "OpenAI and Hugging Face share early findings from a security incident during AI model evaluation, highlighting advanced cyber capabilities and lessons for defenders.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/hugging-face-model-evaluation-security-incident",
+      "publishedAt": "2026-07-21T07:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "security"
+      ]
+    },
+    {
+      "id": "faf6b627a4ff8209",
+      "kind": "announcement",
+      "title": "David Vélez and Robin Vince join the boards of the OpenAI Foundation and OpenAI Group PBC",
+      "summary": "David Vélez and Robin Vince join the boards of the OpenAI Foundation and OpenAI Group PBC, bringing global leadership in finance, technology, and governance.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/david-velez-robin-vince-join-openai-boards",
+      "publishedAt": "2026-07-21T00:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "company"
+      ]
+    },
+    {
+      "id": "59dfaece88635054",
+      "kind": "announcement",
+      "title": "NVIDIA NVLink: The Scale-Up Network for AI Factories",
+      "summary": "The demand for AI continues to accelerate. Workloads are getting larger, models are becoming more complex, and there is mounting pressure to deploy AI compute...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/nvidia-nvlink-the-scale-up-network-for-ai-factories/",
+      "publishedAt": "2026-07-20T15:46:28.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "ai factory",
+        "featured",
+        "infiniband",
+        "nvlink",
+        "spectrum ethernet",
+        "spectrum-x",
+        "vera rubin"
+      ]
+    },
+    {
+      "id": "3e476a1f2e747c1e",
+      "kind": "announcement",
+      "title": "Integrate NVIDIA Omniverse RTX Sensor Simulation Into Existing Apps",
+      "summary": "Developers building 3D, design, simulation, robotics, and industrial digital twin applications need ways to bring physical AI capabilities into the tools and...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/integrate-nvidia-omniverse-rtx-sensor-simulation-into-existing-apps/",
+      "publishedAt": "2026-07-20T15:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "simulation / modeling / design",
+        "agent skill",
+        "autonomous vehicles",
+        "featured",
+        "omniverse",
+        "openusd",
+        "physical ai"
+      ]
+    },
+    {
+      "id": "4cde1fd31d6d3f43",
+      "kind": "announcement",
+      "title": "Safety and alignment in an era of long-horizon models",
+      "summary": "OpenAI shares lessons from deploying long-running AI models, highlighting new safety risks, observed failures, and improved safeguards through iterative deployment.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/safety-alignment-long-horizon-models",
+      "publishedAt": "2026-07-20T10:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "safety"
+      ]
+    },
+    {
+      "id": "4ea6d56148e8f898",
+      "kind": "announcement",
+      "title": "A scorecard for the AI age",
+      "summary": "Sarah Friar, CFO of OpenAI, introduces a practical AI scorecard to measure ROI through useful work, cost per successful task, dependability, and return on compute.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/a-scorecard-for-the-ai-age",
+      "publishedAt": "2026-07-17T10:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "company"
+      ]
+    },
+    {
+      "id": "92377b5ce9c6f8ee",
+      "kind": "announcement",
+      "title": "Q&A: How Capcom Brought Path Tracing to RE ENGINE Across PRAGMATA and Resident Evil Requiem",
+      "summary": "Capcom's RE ENGINE team set out to bring path tracing into two shipping titles at once, Resident Evil Requiem and PRAGMATA, each with a different visual...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/qa-how-capcom-brought-path-tracing-to-re-engine-across-pragmata-and-resident-evil-requiem/",
+      "publishedAt": "2026-07-16T22:59:09.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "content creation / rendering",
+        "featured",
+        "ray tracing / path tracing",
+        "unreal engine"
+      ]
+    },
+    {
+      "id": "3fe3571e6b5bddad",
+      "kind": "announcement",
+      "title": "Integrating Context-Aware Video AI Agents Into Enterprise Workflows",
+      "summary": "A video analytics AI agent that can perceive, reason, and act based on massive amounts of video footage must be integrated with existing workflows and...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/integrating-context-aware-video-ai-agents-into-enterprise-workflows/",
+      "publishedAt": "2026-07-16T16:03:35.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "computer vision / video analytics",
+        "developer tools & techniques",
+        "ai agent",
+        "featured",
+        "nemoclaw",
+        "retrieval augmented generation (rag)",
+        "video analytics"
+      ]
+    },
+    {
+      "id": "68c5982da634f9ac",
+      "kind": "announcement",
+      "title": "Why teens deserve access to safe AI",
+      "summary": "Learn how OpenAI is making ChatGPT safer for teens with age-appropriate protections, learning tools, parental controls, and expert partnerships.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/why-teens-deserve-access-safe-ai",
+      "publishedAt": "2026-07-16T16:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "safety"
+      ]
+    },
+    {
+      "id": "d0d0b9872fcf150a",
+      "kind": "announcement",
+      "title": "Connect more of your apps to Search",
+      "summary": "Connected apps rendering",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/products-and-platforms/products/search/connected-apps/",
+      "publishedAt": "2026-07-16T16:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "search",
+        "ai"
+      ]
+    },
+    {
+      "id": "dd0a0f3cbb4b7b48",
+      "kind": "announcement",
+      "title": "Create, edit and star in videos with two Google Vids updates",
+      "summary": "Text \"Gemini Omni and Personal Avatars in Google Vids\" surrounded by various images",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/products-and-platforms/products/workspace/gemini-omni-personal-avatars/",
+      "publishedAt": "2026-07-16T16:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "google workspace",
+        "google one",
+        "ai"
+      ]
+    },
+    {
+      "id": "defaccda51d0a1b2",
+      "kind": "announcement",
+      "title": "Scaling Agentic AI Factories Through Extreme Co-Design with NVIDIA BlueField",
+      "summary": "Agentic AI changes the infrastructure pattern for AI factories. One request can trigger many model calls, tool calls, memory lookups, policy checks, storage...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/scaling-agentic-ai-factories-through-extreme-co-design-with-nvidia-bluefield/",
+      "publishedAt": "2026-07-16T16:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "data center / cloud",
+        "networking / communications",
+        "ai agent",
+        "ai factory",
+        "featured",
+        "vera cpu",
+        "vera rubin",
+        "vera rubin nvl72"
+      ]
+    },
+    {
+      "id": "f13f6fb23fae876b",
+      "kind": "announcement",
+      "title": "How Codex became a collaborator for OpenAI’s creative team",
+      "summary": "How OpenAI’s creative team uses Codex to build custom creative tools, accelerate ideation, and prototype faster with context-aware AI.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/codex-collaborator-creative-team",
+      "publishedAt": "2026-07-16T07:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "openai on openai"
+      ]
+    },
+    {
+      "id": "fcfa3ef35f35addc",
+      "kind": "announcement",
+      "title": "How Cars24 scales conversations and builds faster with OpenAI",
+      "summary": "Cars24 uses OpenAI-powered voice and chat agents to handle 1M+ monthly conversation minutes, recover 12% of lost leads, and bring agentic workflows to teams across the company.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/cars24",
+      "publishedAt": "2026-07-16T00:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      }
+    },
+    {
+      "id": "2fd04fc699d79a74",
+      "kind": "announcement",
+      "title": "Build a Multi-Camera 3D Tracking Application with NVIDIA DeepStream 9.1 Skills",
+      "summary": "Developers building video analytics applications across large spaces must track the same object as it moves between camera views. Single-camera 2D tracking...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/build-a-multi-camera-3d-tracking-application-with-nvidia-deepstream-9-1-skills/",
+      "publishedAt": "2026-07-15T23:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "computer vision / video analytics",
+        "deepstream",
+        "featured",
+        "metropolis",
+        "multi-camera tracking"
+      ]
+    },
+    {
+      "id": "91c2e0e82616cea2",
+      "kind": "announcement",
+      "title": "Develop Lightweight USD Runtimes Faster with AI Agents",
+      "summary": "OpenUSD is an open, extensible framework that provides a common scene description language for physical AI. It enables teams to bring CAD data, simulation...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/develop-lightweight-usd-runtimes-faster-with-ai-agents/",
+      "publishedAt": "2026-07-15T21:57:23.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "developer tools & techniques",
+        "robotics",
+        "simulation / modeling / design",
+        "featured",
+        "openusd"
+      ]
+    },
+    {
+      "id": "00f68f25191d6039",
+      "kind": "announcement",
+      "title": "Building Faster Cryptography with Carryless Multiplication in NVIDIA CUDA 13.3",
+      "summary": "For over fifteen years, x86 CPUs have shipped with a dedicated hardware instruction for carryless multiplication. It’s a small but stubborn primitive that...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/building-faster-cryptography-with-carryless-multiplication-in-nvidia-cuda-13-3/",
+      "publishedAt": "2026-07-15T17:37:12.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "developer tools & techniques",
+        "trustworthy ai / cybersecurity",
+        "featured"
+      ]
+    },
+    {
+      "id": "510abbb74e4560ed",
+      "kind": "announcement",
+      "title": "Triton Plugin Extensions: Enabling TLX and Custom Compiler Passes Out of the Box",
+      "summary": "TLDR The PyTorch-Triton 3.7 release introduces the Triton Plugin Extensions system, a framework for dynamically loading custom compiler passes, dialects (including their ops), and DSL extensions into upstream Triton at...",
+      "summaryOrigin": "original",
+      "sourceName": "Blog – PyTorch",
+      "sourceKind": "officialBlog",
+      "url": "https://pytorch.org/blog/triton-plugin-extensions-enabling-tlx-and-custom-compiler-passes-out-of-the-box/",
+      "publishedAt": "2026-07-15T15:09:15.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "blog"
+      ]
+    },
+    {
+      "id": "ed858b1965951bc5",
+      "kind": "announcement",
+      "title": "The US is advancing AI safety through state and federal action",
+      "summary": "OpenAI outlines a “reverse federalism” approach to AI governance, where state laws help build a national framework for safe, democratic AI.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/advancing-ai-safety-through-state-and-federal-action",
+      "publishedAt": "2026-07-15T12:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "global affairs"
+      ]
+    },
+    {
+      "id": "3bc02ae993c6271b",
+      "kind": "announcement",
+      "title": "GPT-Red: Unlocking Self-Improvement for Robustness",
+      "summary": "Explore GPT-Red, OpenAI’s automated red teaming system that uses self-play to improve AI safety, alignment, and prompt injection robustness.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/unlocking-self-improvement-gpt-red",
+      "publishedAt": "2026-07-15T10:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "safety"
+      ]
+    },
+    {
+      "id": "c4e62cfd05acba3d",
+      "kind": "announcement",
+      "title": "Lessons From the Leaderboard: What 5,000+ Kagglers Taught Us About Improving AI Reasoning",
+      "summary": "The NVIDIA Nemotron Model Reasoning Challenge invited the Kaggle community to explore a focused question: What techniques can improve reasoning accuracy when...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/lessons-from-the-leaderboard-what-5000-kagglers-taught-us-about-improving-ai-reasoning/",
+      "publishedAt": "2026-07-14T18:20:32.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "ai agent",
+        "ai inference",
+        "blackwell",
+        "deep learning",
+        "featured",
+        "kaggle",
+        "nemotron",
+        "pre-trained / foundation models"
+      ]
+    },
+    {
+      "id": "018359cbb292bf1e",
+      "kind": "announcement",
+      "title": "Post-Train NVIDIA Cosmos 3 in One Day Using Agent Skills",
+      "summary": "What if autonomous coding AI agents could push your vision reasoning models above 90% accuracy with almost no manual effort? When adapting vision reasoning...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/post-train-nvidia-cosmos-3-in-one-day-using-agent-skills/",
+      "publishedAt": "2026-07-14T16:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "computer vision / video analytics",
+        "simulation / modeling / design",
+        "ai agent",
+        "featured",
+        "fine-tuning",
+        "physical ai",
+        "training ai models"
+      ]
+    },
+    {
+      "id": "ded37a318b833661",
+      "kind": "announcement",
+      "title": "Celebrating 25 years of visual search innovation",
+      "summary": "Google Images logo surrounded by illustrations of people searching for different images",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/products-and-platforms/products/search/google-images-25th-anniversary/",
+      "publishedAt": "2026-07-14T16:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "search",
+        "ai"
+      ]
+    },
+    {
+      "id": "ef373e934a6ea1fc",
+      "kind": "announcement",
+      "title": "How to Run an Autoresearch Workflow with RL Agent Skills and NVIDIA NeMo",
+      "summary": "Coding AI agents are becoming practical operators for long-running machine learning (ML) workflows. They can inspect repositories, set up runtimes, resolve...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/how-to-run-an-autoresearch-workflow-with-rl-agent-skills-and-nvidia-nemo/",
+      "publishedAt": "2026-07-14T16:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "developer tools & techniques",
+        "agent skill",
+        "ai agent",
+        "featured",
+        "reinforcement learning",
+        "research",
+        "synthetic data generation",
+        "vlms"
+      ]
+    },
+    {
+      "id": "fe9039969d68af9c",
+      "kind": "announcement",
+      "title": "How to manage AI investments in the agentic era",
+      "summary": "Learn how enterprises can manage AI investments in the agentic era by measuring useful work per dollar, improving efficiency, and scaling high-value workflows.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/managing-ai-investments-in-agentic-era",
+      "publishedAt": "2026-07-14T10:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "ai adoption"
+      ]
+    },
+    {
+      "id": "59466ef07755327f",
+      "kind": "mcp",
+      "title": "vshulcz/deja-vu",
+      "summary": "Your agents already solved this. deja finds it — memory operations for seventeen coding agents: retroactive search and MCP recall (84.9% hit@1 on LongMemEval-S, no LLM), search by when it happened, a local memory viewer, trust scopes, curated notes with tags. One zero-dep binary, fully local.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/vshulcz/deja-vu",
+      "publishedAt": "2026-07-14T07:45:44.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 487
+      },
+      "topics": [
+        "agent-memory",
+        "ai-memory",
+        "claude",
+        "claude-code",
+        "cli",
+        "codex",
+        "coding-agents",
+        "developer-tools",
+        "golang",
+        "mcp",
+        "mcp-server",
+        "opencode",
+        "session-search"
+      ]
+    },
+    {
+      "id": "5e6405d51e1d8f89",
+      "kind": "announcement",
+      "title": "How sales teams use ChatGPT Work",
+      "summary": "See how sales teams can use ChatGPT Work to create pipeline briefs, meeting prep packets, forecast reviews, account plans, and stalled-deal diagnoses from real work inputs.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/academy/codex-for-work/how-sales-teams-use-codex",
+      "publishedAt": "2026-07-14T00:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "openai academy"
+      ]
+    },
+    {
+      "id": "d6435e13e0516d2a",
+      "kind": "announcement",
+      "title": "How data science teams use ChatGPT Work",
+      "summary": "See how data science teams can use ChatGPT Work to build root-cause briefs, impact readouts, KPI memos, scoped analyses, and dashboard specs from real work inputs.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/academy/codex-for-work/how-data-science-teams-use-codex",
+      "publishedAt": "2026-07-14T00:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "openai academy"
+      ]
+    },
+    {
+      "id": "56c5249e6930bd06",
+      "kind": "announcement",
+      "title": "NVIDIA Ising Decoding Cuts Color Code Logical Error Rates by Over 300x",
+      "summary": "Useful quantum computers will require fault tolerant logical operations. Researchers are actively exploring many different quantum error correction (QEC) codes...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/nvidia-ising-decoding-cuts-color-code-logical-error-rates-by-over-300x/",
+      "publishedAt": "2026-07-13T19:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "data center / cloud",
+        "developer tools & techniques",
+        "ai foundation models",
+        "featured",
+        "hpc / scientific computing",
+        "quantum computing"
+      ]
+    },
+    {
+      "id": "5233371e53d29d4b",
+      "kind": "announcement",
+      "title": "Extreme Event Likelihoods with Guided Generative Models",
+      "summary": "Across science, engineering, and finance, many of the most important risks come from low-likelihood, high-impact events. Estimating the probability of these...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/extreme-event-likelihoods-with-guided-generative-models/",
+      "publishedAt": "2026-07-13T15:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "simulation / modeling / design",
+        "climate / weather / ocean modeling",
+        "featured",
+        "ngc"
+      ]
+    },
+    {
+      "id": "077edf233cc7ec0c",
+      "kind": "announcement",
+      "title": "How to Evaluate General-Purpose Robot Policies for Real-World Deployment",
+      "summary": "Robotics foundation models have made remarkable progress. Today's best systems can follow natural language instructions to pick, place, sort, and manipulate a...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/how-to-evaluate-general-purpose-robot-policies-for-real-world-deployment/",
+      "publishedAt": "2026-07-12T01:08:17.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "robotics",
+        "simulation / modeling / design",
+        "featured",
+        "nvidia research"
+      ]
+    },
+    {
+      "id": "6ddbc91d98baec32",
+      "kind": "announcement",
+      "title": "Reducing High-Bandwidth Memory Bottlenecks in JAX-Based LLM Training with Host Offloading",
+      "summary": "Large language model (LLM) training workloads increasingly run into GPU memory limits before compute is fully used. Model weights, gradients, optimizer states,...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/reducing-high-bandwidth-memory-bottlenecks-in-jax-based-llm-training-with-host-offloading/",
+      "publishedAt": "2026-07-10T18:17:40.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "developer tools & techniques",
+        "simulation / modeling / design",
+        "featured",
+        "llm techniques",
+        "mixture of experts (moe)",
+        "training ai models",
+        "vera rubin"
+      ]
+    },
+    {
+      "id": "5dbb97b18d6f0a4e",
+      "kind": "announcement",
+      "title": "Kernel Fusion in NVIDIA CUDA: Optimizing Memory Traffic and Launch Overhead",
+      "summary": "There are many ways to optimize code for GPUs. In this post, you’ll learn how kernel fusion can improve memory bandwidth and reduce kernel launch overhead,...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/kernel-fusion-in-nvidia-cuda-optimizing-memory-traffic-and-launch-overhead/",
+      "publishedAt": "2026-07-10T16:41:03.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "developer tools & techniques",
+        "cuda graphs",
+        "featured"
+      ]
+    },
+    {
+      "id": "f5ee2456a07e1830",
+      "kind": "announcement",
+      "title": "AI Model Co-Design: Hardware-Friendly LLM Design",
+      "summary": "AI performance comes down to three dimensions: Accuracy: How well the model reasons and produces outputs Throughput: How many tokens per second a...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/ai-model-co-design-hardware-friendly-llm-design/",
+      "publishedAt": "2026-07-10T16:36:02.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "data center / cloud",
+        "developer tools & techniques",
+        "ai inference",
+        "featured",
+        "inference performance",
+        "llms",
+        "training",
+        "training ai models",
+        "vlms"
+      ]
+    },
+    {
+      "id": "9eef58f47bbe121d",
+      "kind": "announcement",
+      "title": "Towards Free Normalization: Fusing Normalization into GEMM and Attention Kernels",
+      "summary": "TL;DR In this blog post, we present various novel kernel fusion techniques for common normalization ops like LayerNorm and RMSNorm, which provide significant speedup by reducing the memory-IO overhead of...",
+      "summaryOrigin": "original",
+      "sourceName": "Blog – PyTorch",
+      "sourceKind": "officialBlog",
+      "url": "https://pytorch.org/blog/towards-free-normalization-fusing-normalization-into-gemm-and-attention-kernels/",
+      "publishedAt": "2026-07-10T14:35:48.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "blog"
+      ]
+    },
+    {
+      "id": "9e3a1640e9e0e09a",
+      "kind": "announcement",
+      "title": "Accelerating End-to-End Co-Folding Performance with NVIDIA BioNeMo Agent Toolkit",
+      "summary": "Biomolecular structure prediction and co-folding with models like OpenFold3 are now mainstream, large-scale workloads powering drug discovery and protein...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/accelerating-end-to-end-co-folding-performance-with-nvidia-bionemo-agent-toolkit/",
+      "publishedAt": "2026-07-10T13:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "developer tools & techniques",
+        "simulation / modeling / design",
+        "bionemo",
+        "cuda",
+        "drug discovery",
+        "featured",
+        "healthcare & life sciences",
+        "hpc / scientific computing"
+      ]
+    },
+    {
+      "id": "f7367d335761dd62",
+      "kind": "announcement",
+      "title": "How Deutsche Telekom is rewiring telecommunications with AI",
+      "summary": "How Deutsche Telekom is becoming an AI-native telco with OpenAI-transforming customer service, employee workflows, network operations, and the future of voice.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/deutsche-telekom",
+      "publishedAt": "2026-07-10T07:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      }
+    },
+    {
+      "id": "505ad5a32df1e39f",
+      "kind": "announcement",
+      "title": "modelcontextprotocol/servers 2026.7.10",
+      "summary": "Release: v2026.7.10 Updated packages - @modelcontextprotocol/server-filesystem@2026.7.10 - mcp-server-time@2026.7.10 - mcp-server-fetch@2026.7.10 - mcp-server-git@2026.7.10",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/modelcontextprotocol/servers/releases/tag/2026.7.10",
+      "publishedAt": "2026-07-10T03:39:07.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      }
+    },
+    {
+      "id": "735c8ea632599451",
+      "kind": "announcement",
+      "title": "Getting started with ChatGPT",
+      "summary": "Learn how to use ChatGPT, start your first conversation, and discover simple ways to write, brainstorm, and solve problems with AI.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/academy/getting-started",
+      "publishedAt": "2026-07-10T00:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "openai academy"
+      ]
+    },
+    {
+      "id": "dd479634a97c12e3",
+      "kind": "announcement",
+      "title": "Synthetic Data Generation for Financial AI Research with NVIDIA NeMo",
+      "summary": "Fine-tuning LLMs for financial natural language processing (NLP) is constrained by limited, imbalanced data. Real-world financial news overrepresents earnings...",
+      "summaryOrigin": "original",
+      "sourceName": "NVIDIA Technical Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://developer.nvidia.com/blog/synthetic-data-generation-for-financial-ai-research-with-nvidia-nemo/",
+      "publishedAt": "2026-07-09T19:40:37.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "agentic ai / generative ai",
+        "data science",
+        "ai agent",
+        "ai-ready data",
+        "cloud services",
+        "featured",
+        "financial services"
+      ]
+    },
+    {
+      "id": "a538afdfb09667b2",
+      "kind": "announcement",
+      "title": "GPT-5.6 is now the preferred model in Microsoft 365 Copilot",
+      "summary": "Learn how GPT-5.6 powers Microsoft 365 Copilot with stronger AI capabilities across Word, Excel, PowerPoint, Chat, and Cowork for faster, higher-quality work.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/gpt-5-6-preferred-model-microsoft-365-copilot",
+      "publishedAt": "2026-07-09T13:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "product"
+      ]
+    },
+    {
+      "id": "1cbe5e05d76f322c",
+      "kind": "announcement",
+      "title": "Your Prompts and Skills need a system of record.",
+      "summary": "Studio provides a system of record for AI prompts and skills—versioned, owned, and traceable. Iterate fast, ship with control, and ensure consistent AI behavior.",
+      "summaryOrigin": "original",
+      "sourceName": "Mistral AI Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://mistral.ai/news/manage-prompts-and-skills-in-studio/",
+      "publishedAt": "2026-07-09T12:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      }
+    },
+    {
+      "id": "54a61c51f114fb98",
+      "kind": "announcement",
+      "title": "ChatGPT is now a partner for your most ambitious work",
+      "summary": "ChatGPT Work is an agent that can take action across your apps and files, stay with a project for hours if needed, and turn a goal into finished work.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/chatgpt-for-your-most-ambitious-work",
+      "publishedAt": "2026-07-09T10:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "product"
+      ]
+    },
+    {
+      "id": "963ac7c5f14aa86f",
+      "kind": "announcement",
+      "title": "GPT-5.6: Frontier intelligence that scales with your ambition",
+      "summary": "More intelligence from every token, stronger performance per dollar, and more capability on demand for your hardest work.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/gpt-5-6",
+      "publishedAt": "2026-07-09T10:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "product"
+      ]
+    },
+    {
+      "id": "cc5ee65e5e7362c6",
+      "kind": "announcement",
+      "title": "GPT-5.5 Bio Bug Bounty",
+      "summary": "Details about the OpenAI Bio Bounty program",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/bio-bug-bounty",
+      "publishedAt": "2026-07-09T10:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "safety"
+      ]
+    },
+    {
+      "id": "8475789e6e32a583",
+      "kind": "announcement",
+      "title": "PyTorch 2.13 Release Blog",
+      "summary": "We are excited to announce the release of PyTorch® 2.13 (release notes)! The PyTorch 2.13 release features the following changes: FlexAttention lands on Apple Silicon (MPS), with up to...",
+      "summaryOrigin": "original",
+      "sourceName": "Blog – PyTorch",
+      "sourceKind": "officialBlog",
+      "url": "https://pytorch.org/blog/pytorch-2-13-release-blog/",
+      "publishedAt": "2026-07-08T17:42:23.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "blog"
+      ]
+    },
+    {
+      "id": "9b0b37ad78dd0c04",
+      "kind": "mcp",
+      "title": "scottmartinanderson/clearfront",
+      "summary": "Clearfront OSINT: free, open-source AI OSINT agent that maps your digital footprint across 3,400+ public data sources. REPL, CLI, web console, MCP server.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/scottmartinanderson/clearfront",
+      "publishedAt": "2026-07-08T17:16:27.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 15
+      },
+      "topics": [
+        "agent-skills",
+        "ai-agent",
+        "claude-skill",
+        "claude-skills",
+        "cybersecurity",
+        "digital-footprint",
+        "mcp",
+        "mcp-server",
+        "open-source-intelligence",
+        "osint",
+        "osint-python",
+        "osint-tool",
+        "privacy",
+        "python",
+        "reconnaissance",
+        "security-tools"
+      ]
+    },
+    {
+      "id": "b037fcf522f392b6",
+      "kind": "announcement",
+      "title": "Our approach to government and national security partnerships",
+      "summary": "Learn how OpenAI approaches government and national security partnerships, with principles for responsible AI use, democratic accountability, and public safety.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/government-national-security-partnerships",
+      "publishedAt": "2026-07-08T13:30:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "global affairs"
+      ]
+    },
+    {
+      "id": "1d897da433ec8b81",
+      "kind": "announcement",
+      "title": "Separating signal from noise in coding evaluations",
+      "summary": "A new analysis from OpenAI reveals issues in SWE-Bench Pro, a popular coding benchmark, raising concerns about reliability and accuracy in evaluating AI models.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/separating-signal-from-noise-coding-evaluations",
+      "publishedAt": "2026-07-08T13:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "research"
+      ]
+    },
+    {
+      "id": "1752bfa38c9778e3",
+      "kind": "announcement",
+      "title": "Introducing Robostral Navigate",
+      "summary": "Introducing Robostral Navigate: 8B model achieving 76.6% on R2R-CE with just a single RGB camera. No depth sensors, LiDAR, or multiple cameras needed.",
+      "summaryOrigin": "original",
+      "sourceName": "Mistral AI Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://mistral.ai/news/robostral-navigate/",
+      "publishedAt": "2026-07-08T12:00:59.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      }
+    },
+    {
+      "id": "b49ddd5b55eff90c",
+      "kind": "announcement",
+      "title": "Helping K–12 educators build practical AI skills",
+      "summary": "OpenAI Academy and the Walton Family Foundation are bringing hands-on AI Skills Jams to help K–12 educators build practical AI skills for the classroom.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/k-12-educators-practical-skills",
+      "publishedAt": "2026-07-08T10:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "global affairs"
+      ]
+    },
+    {
+      "id": "41c85a234645bd6e",
+      "kind": "announcement",
+      "title": "Introducing GPT-Live",
+      "summary": "A new generation of voice models for natural human-AI interaction, now powering ChatGPT Voice.",
+      "summaryOrigin": "original",
+      "sourceName": "OpenAI News",
+      "sourceKind": "officialBlog",
+      "url": "https://openai.com/index/introducing-gpt-live",
+      "publishedAt": "2026-07-08T00:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "product"
+      ]
+    },
+    {
+      "id": "aeed38d9ad04b244",
+      "kind": "announcement",
+      "title": "Expanding Managed Agents in Gemini API: background tasks, remote MCP and more",
+      "summary": "Managed agents feature bundle launch",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/innovation-and-ai/technology/developers-tools/expanding-managed-agents-gemini-api/",
+      "publishedAt": "2026-07-07T08:54:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "developer tools",
+        "ai"
+      ]
+    },
+    {
+      "id": "4830ff0ed77102cc",
+      "kind": "skill",
+      "title": "metallurgical/ogre-runner",
+      "summary": "A Claude Code plugin that turns issues, problem statements, and feature requests → reviewed plans → focused tasks → and produces high-quality code changes.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/metallurgical/ogre-runner",
+      "publishedAt": "2026-07-07T04:05:38.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 1
+      },
+      "topics": [
+        "ai-tools",
+        "bash-script",
+        "claude",
+        "claude-code",
+        "claude-plugin",
+        "claude-skills",
+        "codex",
+        "workflow"
+      ]
+    },
+    {
+      "id": "a69aaae59c0d49b2",
+      "kind": "announcement",
+      "title": "Bringing PyTorch Monarch to AMD GPUs: Single-Controller Distributed Training on ROCm",
+      "summary": "Training state-of-the-art large language models (LLMs) with billions of parameters requires distributed training across hundreds or thousands of GPUs. At this scale, hardware failures are not exceptional events—they are expected....",
+      "summaryOrigin": "original",
+      "sourceName": "Blog – PyTorch",
+      "sourceKind": "officialBlog",
+      "url": "https://pytorch.org/blog/bringing-pytorch-monarch-to-amd-gpus-single-controller-distributed-training-on-rocm/",
+      "publishedAt": "2026-07-06T23:31:47.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "blog"
+      ]
+    },
+    {
+      "id": "d6b32638487ddfd6",
+      "kind": "announcement",
+      "title": "modelcontextprotocol/servers 2026.7.4",
+      "summary": "Release: v2026.7.4 Updated packages - @modelcontextprotocol/server-everything@2026.7.4 - @modelcontextprotocol/server-filesystem@2026.7.4 - @modelcontextprotocol/server-sequential-thinking@2026.7.4 - @modelcontextprotocol/server-memory@2026.7.4",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/modelcontextprotocol/servers/releases/tag/2026.7.4",
+      "publishedAt": "2026-07-04T23:05:56.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      }
+    },
+    {
+      "id": "7dedc93cd27a064f",
+      "kind": "announcement",
+      "title": "Understanding PyTorch’s Test Infrastructure",
+      "summary": "TL;DR PyTorch tests are often generated at import time, so CI failures may show device/dtype-specific names that differ from the source template. For local debugging, pytest -k and test/run_test.py are...",
+      "summaryOrigin": "original",
+      "sourceName": "Blog – PyTorch",
+      "sourceKind": "officialBlog",
+      "url": "https://pytorch.org/blog/understanding-pytorchs-test-infrastructure/",
+      "publishedAt": "2026-07-03T15:00:07.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "blog"
+      ]
+    },
+    {
+      "id": "361c06356cf7ae2c",
+      "kind": "announcement",
+      "title": "Building the Future of On-Device AI at the ExecuTorch Hackathon",
+      "summary": "This past weekend in San Francisco, builders, researchers, mobile developers, and AI practitioners came together for the ExecuTorch Hackathon, a two-day, on-site event focused on a practical and increasingly important...",
+      "summaryOrigin": "original",
+      "sourceName": "Blog – PyTorch",
+      "sourceKind": "officialBlog",
+      "url": "https://pytorch.org/blog/building-the-future-of-on-device-ai-at-the-executorch-hackathon/",
+      "publishedAt": "2026-07-02T20:47:16.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "blog"
+      ]
+    },
+    {
+      "id": "bb4a4bbee5a4f87a",
+      "kind": "announcement",
+      "title": "The latest AI news we announced in June 2026",
+      "summary": "June Pixel Drop hero",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-june-2026/",
+      "publishedAt": "2026-07-01T18:15:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "search",
+        "notebooklm",
+        "android",
+        "arts & culture",
+        "google deepmind",
+        "developer tools",
+        "learning & education",
+        "uk",
+        "ai",
+        "pixel",
+        "gemini app",
+        "gemini models",
+        "google research",
+        "safety & security",
+        "google nest"
+      ]
+    },
+    {
+      "id": "3e436c0b78ea4885",
+      "kind": "announcement",
+      "title": "New York City educators and industry leaders gathered at Google’s offices to shape the future of AI in classrooms.",
+      "summary": "Google, the New York Jobs CEO Council and Urban Assembly hosted an AI summit for 150 education and industry leaders.",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/products-and-platforms/products/education/nyc-ai-summit/",
+      "publishedAt": "2026-07-01T16:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "learning & education",
+        "ai"
+      ]
+    },
+    {
+      "id": "99ce68e2aff4d9e0",
+      "kind": "announcement",
+      "title": "Shopify Joins the PyTorch Foundation as a Platinum Member",
+      "summary": "The PyTorch Foundation, a community-driven hub for open source AI under the Linux Foundation, is announcing today that Shopify has joined as a Platinum member. Shopify provides essential internet infrastructure...",
+      "summaryOrigin": "original",
+      "sourceName": "Blog – PyTorch",
+      "sourceKind": "officialBlog",
+      "url": "https://pytorch.org/blog/shopify-joins-the-pytorch-foundation-as-a-platinum-member/",
+      "publishedAt": "2026-07-01T15:55:59.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "announcements",
+        "blog"
+      ]
+    },
+    {
+      "id": "463f1ef627f0f757",
+      "kind": "announcement",
+      "title": "Unlocking Britain’s next era of productivity: Building a nation of AI trailblazers",
+      "summary": "Four illustrated characters representing different professional roles, including a scientist, technician, explorer, and observer.",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/company-news/inside-google/around-the-globe/google-europe/united-kingdom/unlocking-britains-next-era-of-productivity-building-a-nation-of-ai-trailblazers/",
+      "publishedAt": "2026-06-30T06:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "uk",
+        "ai"
+      ]
+    },
+    {
+      "id": "6e9762eb3c611b2d",
+      "kind": "announcement",
+      "title": "Ask an AI expert: What exactly is the full stack?",
+      "summary": "An illustration depicting a full-stack AI infrastructure against a dark background",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/full-stack-ai-explainer/",
+      "publishedAt": "2026-06-29T16:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "developer tools",
+        "ai"
+      ]
+    },
+    {
+      "id": "886f27ceb2e7b8a8",
+      "kind": "mcp",
+      "title": "amikai/openings-mcp",
+      "summary": "💼 One MCP server to search job boards and company career sites",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/amikai/openings-mcp",
+      "publishedAt": "2026-06-27T08:52:52.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 72
+      },
+      "topics": [
+        "ats",
+        "career",
+        "claude-code",
+        "golang",
+        "job-board",
+        "job-hunting",
+        "job-scraper",
+        "job-search",
+        "jobs-scraper",
+        "llm-tools",
+        "mcp",
+        "mcp-server",
+        "model-context-protocol"
+      ]
+    },
+    {
+      "id": "4bff05ee04476887",
+      "kind": "announcement",
+      "title": "Our latest Google Finance upgrades, including a new app",
+      "summary": "The Google Finance logo, surrounded by elements of the user interface",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/products-and-platforms/products/search/google-finance-updates-june-2026/",
+      "publishedAt": "2026-06-25T16:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "search",
+        "ai"
+      ]
+    },
+    {
+      "id": "0659a0a7deb84a3a",
+      "kind": "announcement",
+      "title": "Introducing Mistral OCR 4",
+      "summary": "Mistral OCR 4 delivers enterprise document AI with 170-language support, bounding boxes, and self-hosted deployment.",
+      "summaryOrigin": "original",
+      "sourceName": "Mistral AI Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://mistral.ai/news/ocr-4/",
+      "publishedAt": "2026-06-23T12:00:48.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      }
+    },
+    {
+      "id": "05b4b5b6b6943f7f",
+      "kind": "announcement",
+      "title": "New research shows how AMIE, our medical AI, could help manage health conditions.",
+      "summary": "Research in “Nature” shows our conversational AI system matches primary care physicians in complex disease management.",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/google-research/amie-for-disease-management-in-nature/",
+      "publishedAt": "2026-06-17T15:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "google research",
+        "google deepmind",
+        "health",
+        "ai"
+      ]
+    },
+    {
+      "id": "ceed26bfb15f6eb9",
+      "kind": "skill",
+      "title": "BryceEWatson/claude-global-skills",
+      "summary": "A curated collection of Claude Code skills — code-review loop, local chat-history search, session end/resume, Gemini image generation, transcript retrospectives — that run machine-wide with just python and node.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/BryceEWatson/claude-global-skills",
+      "publishedAt": "2026-06-16T06:05:29.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 0
+      },
+      "topics": [
+        "ai-agents",
+        "anthropic",
+        "claude-code",
+        "claude-skills",
+        "developer-tools",
+        "llm-tooling"
+      ]
+    },
+    {
+      "id": "c90aa5c28160d34f",
+      "kind": "announcement",
+      "title": "We’re strengthening our presence in Alabama through new investments and community support.",
+      "summary": "Google has announced a $1.5 billion investment for 2026 and 2027 to expand its data center campus in Jackson County, Alabama. Operating since 2019 on a repurposed former…",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/alabama-investment-june-2026/",
+      "publishedAt": "2026-06-15T15:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "global network",
+        "creating opportunity",
+        "ai"
+      ]
+    },
+    {
+      "id": "4e33a43f28ca6b0c",
+      "kind": "skill",
+      "title": "ALKwbfkAgbfcAGIB/claude-cli-mcp-bridge",
+      "summary": "Claude Code CLI 2026 Pro Edition – Next-Gen AI Development Workflow Tool",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/ALKwbfkAgbfcAGIB/claude-cli-mcp-bridge",
+      "publishedAt": "2026-06-15T07:38:33.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 53
+      },
+      "topics": [
+        "claude-chat",
+        "claude-cli-install",
+        "claude-code",
+        "claude-code-",
+        "claude-code-action",
+        "claude-code-cli",
+        "claude-code-cli-github",
+        "claude-code-prompts",
+        "claude-code-source-code",
+        "claude-code-workflow",
+        "claude-design-download",
+        "claude-design-free",
+        "claude-desktop-app",
+        "claude-free",
+        "claude-install",
+        "claude-mythos",
+        "claude-pro",
+        "claude-skills",
+        "cli-claude-code",
+        "codex-cli"
+      ]
+    },
+    {
+      "id": "3a0dbdcaf0d68fa8",
+      "kind": "announcement",
+      "title": "Our new community investments in Virginia support local jobs and expand energy affordability.",
+      "summary": "We’re helping build the state’s next-generation workforce and investing in energy programs.",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/virginia-community-investments/",
+      "publishedAt": "2026-06-11T20:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "google.org",
+        "global network",
+        "creating opportunity",
+        "ai"
+      ]
+    },
+    {
+      "id": "51808dc6fda245f7",
+      "kind": "announcement",
+      "title": "The latest AI news we announced in May 2026",
+      "summary": "May AI recap",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-may-2026/",
+      "publishedAt": "2026-06-05T14:45:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "search",
+        "android",
+        "google deepmind",
+        "google labs",
+        "quantum computing",
+        "google health",
+        "shopping",
+        "google cloud",
+        "ai",
+        "gemini app",
+        "gemini models",
+        "fitbit",
+        "google research"
+      ]
+    },
+    {
+      "id": "16cc42e8bee290d2",
+      "kind": "announcement",
+      "title": "5 ways Google Search can level up your thrift and vintage shopping",
+      "summary": "A colorful, grain-textured collage of various items scattered across a light blue background. The items include a green bucket hat, a wooden clothes hanger, a blue-and-red striped collar, blue sunglasses, denim shorts, a yellow price tag, a red high-heele",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/products-and-platforms/products/search/thrifting-tips/",
+      "publishedAt": "2026-06-03T13:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "search",
+        "shopping",
+        "ai"
+      ]
+    },
+    {
+      "id": "4c78e922e54161d5",
+      "kind": "announcement",
+      "title": "How we used Gemini to build Google I/O 2026",
+      "summary": "A collage of I/O-related images, including the Antigravity Coffee Co. pop-up, a colorful jellyfish and a still from the Timmy TPU video. The word AI repeats three times on the left of the image, and there are colorful icons, including a sparkle, as well.",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/io-2026-google-ai/",
+      "publishedAt": "2026-06-01T16:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "gemini models",
+        "google labs",
+        "developer tools",
+        "ai"
+      ]
+    },
+    {
+      "id": "39f3b839ec6c8951",
+      "kind": "announcement",
+      "title": "Take our I/O 2026 quiz, vibe coded in Google AI Studio.",
+      "summary": "We used Google AI Studio to vibe code a quiz about our top I/O 2026 announcements.",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/io-2026-vibe-coded-quiz/",
+      "publishedAt": "2026-05-29T19:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "developer tools",
+        "ai"
+      ]
+    },
+    {
+      "id": "3f8580f4dfffb209",
+      "kind": "announcement",
+      "title": "9 demos of Gemini Omni and Gemini 3.5 in action",
+      "summary": "Gemini Omni & Gemini 3.5 hero",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-omni-3-5-videos/",
+      "publishedAt": "2026-05-29T17:30:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "gemini models",
+        "google deepmind",
+        "ai"
+      ]
+    },
+    {
+      "id": "28c9cc1fc3649c78",
+      "kind": "announcement",
+      "title": "Check out real-life AI prototypes from the Futures Lab.",
+      "summary": "University of Waterloo students develop AI prototypes like sign language tutors to reshape the future of education and work.",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/university-waterloo-labs/",
+      "publishedAt": "2026-05-29T12:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "learning & education",
+        "ai"
+      ]
+    },
+    {
+      "id": "522a270f61d79fac",
+      "kind": "announcement",
+      "title": "Catch up on 12 major I/O 2026 moments",
+      "summary": "The colorful I/O logo against a black background, surrounded by stills from the I/O keynote",
+      "summaryOrigin": "original",
+      "sourceName": "AI",
+      "sourceKind": "officialBlog",
+      "url": "https://blog.google/innovation-and-ai/technology/ai/io-2026-keynote-moment-videos/",
+      "publishedAt": "2026-05-28T15:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      },
+      "topics": [
+        "search",
+        "android",
+        "google labs",
+        "shopping",
+        "ai",
+        "gemini app",
+        "gemini models"
+      ]
+    },
+    {
+      "id": "2c9ab35e4f9812ab",
+      "kind": "announcement",
+      "title": "AI Now Summit 2026",
+      "summary": "Innovations for global enterprises solving the world’s hardest problems.",
+      "summaryOrigin": "original",
+      "sourceName": "Mistral AI Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://mistral.ai/news/ai-now-summit-2026/",
+      "publishedAt": "2026-05-28T12:00:20.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      }
+    },
+    {
+      "id": "d10d6ac7aa106c11",
+      "kind": "announcement",
+      "title": "Vibe gets to work.",
+      "summary": "The unified agent for long-horizon productivity and coding, launching with Work and Code modes. Plus, a new Vibe VS Code extension.",
+      "summaryOrigin": "original",
+      "sourceName": "Mistral AI Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://mistral.ai/news/vibe-agent/",
+      "publishedAt": "2026-05-28T12:00:09.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      }
+    },
+    {
+      "id": "112afc165011bf66",
+      "kind": "announcement",
+      "title": "Introducing Search Toolkit",
+      "summary": "Search Toolkit is a composable framework for building production search pipelines for AI applications.",
+      "summaryOrigin": "original",
+      "sourceName": "Mistral AI Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://mistral.ai/news/search-toolkit/",
+      "publishedAt": "2026-05-28T11:42:21.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      }
+    },
+    {
+      "id": "c8a00580ea33a4ac",
+      "kind": "skill",
+      "title": "gyf9712/stat-theory-skills",
+      "summary": "A 4-skill pipeline for Claude Code: verify mathematical proofs → repair with literature support → sharpen the theory → write corrected proofs. Integrates Codex MCP for adversarial cross-review. Venue-audited reference library across statistics/econometrics/ML theory.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/gyf9712/stat-theory-skills",
+      "publishedAt": "2026-05-27T18:23:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 7
+      },
+      "topics": [
+        "claude-code",
+        "claude-skills",
+        "econometrics",
+        "latex",
+        "machine-learning-theory",
+        "mathematical-proof",
+        "proof-verification",
+        "research-tools",
+        "statistics",
+        "theoretical-statistics"
+      ]
+    },
+    {
+      "id": "15d80d28a6c56945",
+      "kind": "announcement",
+      "title": "Introducing physics AI at Mistral: the foundation for engineering acceleration.",
+      "summary": "A new class of AI models that predict the behavior of physical systems, powering the engineers and hardware products of tomorrow.",
+      "summaryOrigin": "original",
+      "sourceName": "Mistral AI Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://mistral.ai/news/introducing-physics-ai-at-mistral/",
+      "publishedAt": "2026-05-27T12:00:55.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      }
+    },
+    {
+      "id": "2472e5fec13e9f47",
+      "kind": "announcement",
+      "title": "Physics AI research that’s shaping the industry.",
+      "summary": "Published breakthroughs pushing the state of the art.",
+      "summaryOrigin": "original",
+      "sourceName": "Mistral AI Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://mistral.ai/news/physics-ai-research/",
+      "publishedAt": "2026-05-27T12:00:05.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      }
+    },
+    {
+      "id": "e49ea0ed10d4ff39",
+      "kind": "skill",
+      "title": "gilvangonzalez/technical-founding-gtm-toolkit",
+      "summary": "The Complete AI & Technical Founder GTM Toolkit 2026 – Pricing, PLG & Enterprise Sales",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/gilvangonzalez/technical-founding-gtm-toolkit",
+      "publishedAt": "2026-05-24T21:17:53.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 2
+      },
+      "topics": [
+        "agent-skills",
+        "ai-founders",
+        "ai-gtm",
+        "claude-code",
+        "claude-plugin",
+        "claude-skills",
+        "developer-relations",
+        "devrel",
+        "ecosystems",
+        "enterprise-ai",
+        "enterprise-sales",
+        "founder-tools",
+        "go-to-market",
+        "gtm",
+        "gtmai-developers",
+        "operators",
+        "partnerships",
+        "pricing-strategy",
+        "product-led-growth",
+        "startups"
+      ]
+    },
+    {
+      "id": "5397e021655e211f",
+      "kind": "skill",
+      "title": "ENTEROPNON/salesforce-accelerator-patterns",
+      "summary": "Salesforce ISV & Partner Skills Catalog 2026 – Reusable Deployment Kit",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/ENTEROPNON/salesforce-accelerator-patterns",
+      "publishedAt": "2026-05-24T21:08:06.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 2
+      },
+      "topics": [
+        "agent-skills",
+        "appexchange",
+        "claude-plugin",
+        "claude-skills",
+        "kugamon",
+        "managed-package",
+        "salesforce",
+        "salesforce-isv-partner"
+      ]
+    },
+    {
+      "id": "9cfd7054240ecb66",
+      "kind": "skill",
+      "title": "Rick-254/moodle-quizsmith",
+      "summary": "Claude Quiz Engine 2026 - Moodle MCQ Generator for GIFT XML Aiken",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/Rick-254/moodle-quizsmith",
+      "publishedAt": "2026-05-23T17:00:15.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 1
+      },
+      "topics": [
+        "agent-skills",
+        "ai-coding-agent",
+        "assessment",
+        "claude",
+        "claude-code",
+        "claude-code-skill",
+        "claude-desktop",
+        "claude-skill",
+        "claude-skills",
+        "education",
+        "higher-education",
+        "lecturer-tools",
+        "lms",
+        "mcq",
+        "moodle",
+        "moodle-gift",
+        "moodle-quiz",
+        "moodle-xml",
+        "quiz-bank"
+      ]
+    },
+    {
+      "id": "ec1d206b1ce33d36",
+      "kind": "skill",
+      "title": "abbyuraffi-netizen/maxvision-claude-forge",
+      "summary": "n8n Claude Code Marketplace 2026 ⚡ Production-Grade Skills for GTM & Workflow Automation",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/abbyuraffi-netizen/maxvision-claude-forge",
+      "publishedAt": "2026-05-23T14:25:32.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 1
+      },
+      "topics": [
+        "ai-workflows",
+        "anthropic",
+        "automation",
+        "claude-code",
+        "claude-marketplace",
+        "claude-plugin",
+        "claude-skills",
+        "google-tag-manager",
+        "n8n",
+        "skills"
+      ]
+    },
+    {
+      "id": "79454923c509cd62",
+      "kind": "skill",
+      "title": "camilemuz/local-doc-rag-skill",
+      "summary": "Index Any Local Documentation as AI Skill – Claude Code Knowledge 2026",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/camilemuz/local-doc-rag-skill",
+      "publishedAt": "2026-05-23T11:52:25.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 1
+      },
+      "topics": [
+        "ai-tools",
+        "claude-code",
+        "claude-plugin",
+        "claude-skills",
+        "documentation",
+        "playwright"
+      ]
+    },
+    {
+      "id": "d9eff0fcc474f4b7",
+      "kind": "mcp",
+      "title": "linny006/trending-claude-skills",
+      "summary": "Auto-updated leaderboard of trending claude-skills and AI agent repos, refreshed every 15 minutes",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/linny006/trending-claude-skills",
+      "publishedAt": "2026-05-23T10:00:25.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 18
+      },
+      "topics": [
+        "ai-agents",
+        "ai-coding",
+        "ai-development",
+        "ai-tools",
+        "ai-workflow",
+        "anthropic",
+        "auto-updated",
+        "awesome",
+        "awesome-list",
+        "claude-code",
+        "claude-skills",
+        "codex",
+        "coding-agent",
+        "developer-tools",
+        "generative-ai",
+        "live-data",
+        "llm-ecosystem",
+        "llm-tools",
+        "machine-learning",
+        "mcp-server"
+      ]
+    },
+    {
+      "id": "bd8eee557558bbc5",
+      "kind": "skill",
+      "title": "viibhutisharma30/jetpack-compose-remediation-kit",
+      "summary": "Modern Jetpack Compose Fixer 2026 – Debug Errors & Boost Android UI Performance",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/viibhutisharma30/jetpack-compose-remediation-kit",
+      "publishedAt": "2026-05-22T22:56:27.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 1
+      },
+      "topics": [
+        "agent-skills",
+        "ai-coding",
+        "android",
+        "claude-skills",
+        "codex",
+        "compose-multiplatform",
+        "copilot",
+        "gemini-cli",
+        "hilt",
+        "java",
+        "jetpack-android",
+        "jetpack-compose",
+        "kmp",
+        "kotlin",
+        "kotlin-multiplatform",
+        "ktor",
+        "material-design",
+        "room",
+        "xml"
+      ]
+    },
+    {
+      "id": "74a1f384782799f8",
+      "kind": "announcement",
+      "title": "Remote agents in Vibe. Powered by Mistral Medium 3.5.",
+      "summary": "Introducing Mistral Medium 3.5, remote coding agents in Vibe, plus new Work mode in Le Chat for complex tasks.",
+      "summaryOrigin": "original",
+      "sourceName": "Mistral AI Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://mistral.ai/news/vibe-remote-agents-mistral-medium-3-5/",
+      "publishedAt": "2026-05-22T15:01:55.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      }
+    },
+    {
+      "id": "ba27eee477801eed",
+      "kind": "announcement",
+      "title": "Connect the dots: Build with built-in and custom MCPs in Studio",
+      "summary": "Connect enterprise data to your AI applications with reusable connectors, direct tool calling, and human-in-the-loop approval controls.",
+      "summaryOrigin": "original",
+      "sourceName": "Mistral AI Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://mistral.ai/news/connectors/",
+      "publishedAt": "2026-05-22T14:48:28.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": true,
+        "maintained": true
+      }
+    },
+    {
+      "id": "f4ae8c5d87863b65",
+      "kind": "mcp",
+      "title": "ericluo04/claude-academic-workflow",
+      "summary": "Academic research workflow for Claude Code: 14 skills (paper reading, lit review, bib auditing, preregistration, replication packages, LaTeX, TikZ) plus a Quarto reveal.js slide system with render-time quality gates.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/ericluo04/claude-academic-workflow",
+      "publishedAt": "2026-05-15T14:31:59.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 5
+      },
+      "topics": [
+        "academic-research",
+        "agentic-workflows",
+        "anthropic",
+        "claude-code",
+        "claude-skills",
+        "econometrics",
+        "latex",
+        "mcp",
+        "quantitative-marketing",
+        "quarto",
+        "reproducible-research",
+        "research-workflow",
+        "revealjs",
+        "workflow-automation",
+        "zotero"
+      ]
+    },
+    {
+      "id": "82ba9607a3d6ceb0",
+      "kind": "mcp",
+      "title": "microsoft/flint-chart",
+      "summary": "🪄 Flint is a visualization language that lets AI agents reliably create expressive, good-looking charts from simple, human-editable chart specs.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/microsoft/flint-chart",
+      "publishedAt": "2026-05-13T00:00:28.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 2293
+      },
+      "topics": [
+        "ai-agents",
+        "charting-library",
+        "data-visualization",
+        "mcp-server"
+      ]
+    },
+    {
+      "id": "472e0913e646cf1e",
+      "kind": "mcp",
+      "title": "Chili-Piper/mcp-assets",
+      "summary": "Official Chili Piper Skills and ChatGPT GPTs for the Chili Piper MCP — meeting diagnostics, routing audits, no-show analysis, availability checks, and user onboarding/offboarding.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/Chili-Piper/mcp-assets",
+      "publishedAt": "2026-05-08T18:38:25.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 7
+      },
+      "topics": [
+        "chatgpt",
+        "chili-piper",
+        "claude-code",
+        "claude-skills",
+        "gpt-actions",
+        "mcp",
+        "revops",
+        "scheduling"
+      ]
+    },
+    {
+      "id": "3dadd5a60a0671bd",
+      "kind": "announcement",
+      "title": "Workflows for work that runs the business",
+      "summary": "Workflows is now in public preview.",
+      "summaryOrigin": "original",
+      "sourceName": "Mistral AI Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://mistral.ai/news/workflows/",
+      "publishedAt": "2026-04-27T12:00:23.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": true
+      }
+    },
+    {
+      "id": "52bca9659e2d24bc",
+      "kind": "skill",
+      "title": "yschimke/compose-ai-tools",
+      "summary": "Helping the Agents Compose the Things",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/yschimke/compose-ai-tools",
+      "publishedAt": "2026-04-12T08:49:11.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 101
+      },
+      "topics": [
+        "agent-skills",
+        "android",
+        "claude-code",
+        "claude-skills",
+        "compose-multiplatform",
+        "compose-preview",
+        "gradle-plugin",
+        "jetpack-compose",
+        "kotlin",
+        "skill-md",
+        "vscode-extension",
+        "wear-os"
+      ]
+    },
+    {
+      "id": "55aa9b83b161af65",
+      "kind": "mcp",
+      "title": "syncable-dev/memtrace-public",
+      "summary": "Structural memory for AI coding agents. Bi-temporal graph, MCP-native, zero LLM calls. Cursor · Claude Code · Codex · Hermes · VS Code · Windsurf.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/syncable-dev/memtrace-public",
+      "publishedAt": "2026-04-11T11:49:55.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 439
+      },
+      "topics": [
+        "agent-memory",
+        "ai-agents",
+        "bi-temporal-graph",
+        "claude-code",
+        "code-intelligence",
+        "code-search",
+        "coding-agents",
+        "cursor",
+        "developer-tools",
+        "knowledge-graph",
+        "llm",
+        "local-first",
+        "mcp",
+        "mcp-server",
+        "rag",
+        "rust",
+        "semantic-search",
+        "structural-memory",
+        "temporal-analysis",
+        "tree-sitter"
+      ]
+    },
+    {
+      "id": "f3fc62dc171e6839",
+      "kind": "mcp",
+      "title": "heymrun/heym",
+      "summary": "Build AI workflows by prompt or visual canvas. Heym is source-available and self-hosted, with agents, RAG, MCP, HITL, observability, evals, token cost tracking and more.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/heymrun/heym",
+      "publishedAt": "2026-03-28T08:08:49.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 812
+      },
+      "topics": [
+        "ai-agents",
+        "ai-agents-framework",
+        "ai-assistant",
+        "automation",
+        "automation-tool",
+        "autonomous-agents",
+        "coding-agent",
+        "evals",
+        "human-in-the-loop",
+        "mcp",
+        "mcp-server",
+        "mcp-servers",
+        "mcp-tool",
+        "n8n-alternative",
+        "no-code",
+        "no-code-automation",
+        "rag",
+        "self-hosted",
+        "workflow-automation",
+        "workflows"
+      ]
+    },
+    {
+      "id": "e3b65a8e8627c206",
+      "kind": "mcp",
+      "title": "daniel3303/Equibles",
+      "summary": "An open-source, self-hosted mini Bloomberg Terminal for AI agents, exposed as an MCP server — SEC filings, institutional holdings, insider trading, congressional trades, and short data from a single self-hosted stack.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/daniel3303/Equibles",
+      "publishedAt": "2026-03-24T23:46:49.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 185
+      },
+      "topics": [
+        "ai-agents",
+        "claude",
+        "congressional-trading",
+        "dotnet",
+        "earnings-calls",
+        "finance",
+        "financial-data",
+        "finra",
+        "fred",
+        "insider-trading",
+        "institutional-holdings",
+        "mcp",
+        "mcp-server",
+        "model-context-protocol",
+        "postgresql",
+        "sec",
+        "sec-filings",
+        "self-hosted",
+        "short-data",
+        "stock-market"
+      ]
+    },
+    {
+      "id": "f58ef5f1092ae939",
+      "kind": "announcement",
+      "title": "Speaking of Voxtral",
+      "summary": "Voxtral TTS: A frontier, open-weights text-to-speech model that’s fast, instantly adaptable, and produces lifelike speech for voice agents.",
+      "summaryOrigin": "original",
+      "sourceName": "Mistral AI Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://mistral.ai/news/voxtral-tts/",
+      "publishedAt": "2026-03-23T16:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": true
+      }
+    },
+    {
+      "id": "da68bb6581f666c7",
+      "kind": "mcp",
+      "title": "cdeust/Cortex",
+      "summary": "Persistent memory for Claude Code — 36 cited neuroscience mechanisms, automatic capture/recall hooks, decay-based consolidation, compaction survival, reproducible benchmarks (LongMemEval R@10 98.2%). Zero-config SQLite install, PostgreSQL optional. Local-first · MCP · MIT.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/cdeust/Cortex",
+      "publishedAt": "2026-03-18T11:24:37.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 68
+      },
+      "topics": [
+        "agent-memory-system",
+        "anthropic",
+        "causal-inference",
+        "claude",
+        "claude-code",
+        "claude-code-plugin",
+        "cognitive-architecture",
+        "cognitive-science",
+        "episodic-memory",
+        "hopfield-network",
+        "llm-memory",
+        "long-term-memory",
+        "mcp-server",
+        "memory",
+        "model-context-protocol",
+        "neuroscience",
+        "persistent-memory",
+        "predictive-coding",
+        "retrieval-augmented-generation",
+        "vector-search"
+      ]
+    },
+    {
+      "id": "4beaeffea0ddcf5c",
+      "kind": "announcement",
+      "title": "Introducing Forge",
+      "summary": "Today, we’re introducing Forge, a system for enterprises to build frontier-grade AI models grounded in their proprietary knowledge.",
+      "summaryOrigin": "original",
+      "sourceName": "Mistral AI Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://mistral.ai/news/forge/",
+      "publishedAt": "2026-03-17T16:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": true
+      }
+    },
+    {
+      "id": "32c40a7c890bf97b",
+      "kind": "mcp",
+      "title": "benseverndev-oss/goldenmatch",
+      "summary": "Zero-config entity resolution & record linkage. The zero-tuning Fellegi-Sunter path beats hand-tuned Splink head-to-head and scales from a CSV to a verified 100M-row dedupe in 9.2 min. Fuzzy/exact/probabilistic + PPRL + LLM + identity graph. Python + edge-safe TypeScript (WASM), SQL-native in Postgres & DuckDB,…",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/benseverndev-oss/goldenmatch",
+      "publishedAt": "2026-03-16T20:13:08.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 125
+      },
+      "topics": [
+        "data-cleaning",
+        "data-engineering",
+        "data-matching",
+        "data-quality",
+        "deduplication",
+        "entity-resolution",
+        "fellegi-sunter",
+        "fuzzy-matching",
+        "knowledge-graph",
+        "llm",
+        "master-data-management",
+        "mcp-server",
+        "polars",
+        "pprl",
+        "python",
+        "record-linkage",
+        "rust",
+        "splink",
+        "typescript",
+        "zero-config"
+      ]
+    },
+    {
+      "id": "918062df7d18b1f0",
+      "kind": "aiModel",
+      "title": "google/gemma-4-26B-A4B-it",
+      "summary": "Hugging Face üzerinde google tarafından yayımlanan model. Görev: image-text-to-text. Lisans: apache-2.0.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/google/gemma-4-26B-A4B-it",
+      "publishedAt": "2026-03-11T21:25:57.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 13092825
+      },
+      "topics": [
+        "image-text-to-text",
+        "transformers",
+        "safetensors",
+        "gemma4",
+        "conversational",
+        "eval-results",
+        "endpoints_compatible",
+        "deploy:azure"
+      ]
+    },
+    {
+      "id": "5ff12c199389f9bc",
+      "kind": "aiModel",
+      "title": "google/gemma-4-31B-it",
+      "summary": "Hugging Face üzerinde google tarafından yayımlanan model. Görev: image-text-to-text. Lisans: apache-2.0.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/google/gemma-4-31B-it",
+      "publishedAt": "2026-03-11T18:22:36.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 12401314
+      },
+      "topics": [
+        "image-text-to-text",
+        "transformers",
+        "safetensors",
+        "gemma4",
+        "conversational",
+        "eval-results",
+        "endpoints_compatible",
+        "deploy:azure"
+      ]
+    },
+    {
+      "id": "6b9c9939b330d66a",
+      "kind": "mcp",
+      "title": "dunetrace/dunetrace",
+      "summary": "The runtime reliability layer for AI agents.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/dunetrace/dunetrace",
+      "publishedAt": "2026-03-06T20:37:57.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 59
+      },
+      "topics": [
+        "agent-monitoring",
+        "agent-observability",
+        "agent-reliability",
+        "agent-tools",
+        "ai-agents",
+        "ai-tools",
+        "analytics",
+        "crewai",
+        "good-first-issue",
+        "langchain",
+        "langdock",
+        "langfuse",
+        "llm-observability",
+        "mcp-server",
+        "monitoring",
+        "observability",
+        "otel",
+        "real-time-monitoring",
+        "semantic-evaluation",
+        "voice-agents"
+      ]
+    },
+    {
+      "id": "c3dd9e4028001a6e",
+      "kind": "mcp",
+      "title": "opentabs-dev/opentabs",
+      "summary": "Browser automation clicks buttons. OpenTabs calls APIs.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/opentabs-dev/opentabs",
+      "publishedAt": "2026-02-09T06:17:27.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 874
+      },
+      "topics": [
+        "ai-agents",
+        "browser-automation",
+        "chrome",
+        "chrome-extension",
+        "claude-code",
+        "mcp",
+        "mcp-server",
+        "open-source",
+        "opencode",
+        "plugins",
+        "typescript"
+      ]
+    },
+    {
+      "id": "f7602563c7827226",
+      "kind": "skill",
+      "title": "nevenincs/vaultspec-core",
+      "summary": "A spec-driven harness for coding agents (and, humans)",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/nevenincs/vaultspec-core",
+      "publishedAt": "2026-02-08T09:21:56.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 1
+      },
+      "topics": [
+        "adr",
+        "agent",
+        "agent-harness",
+        "agentic-coding",
+        "agents",
+        "agentskills",
+        "architecture-decision-record",
+        "architecture-decision-records",
+        "claude",
+        "claude-code",
+        "claude-skills",
+        "codex",
+        "framework",
+        "obsidian",
+        "skills",
+        "spec-driven-development",
+        "superpowers",
+        "vault",
+        "vibecoding"
+      ]
+    },
+    {
+      "id": "a24c6193f60c0c58",
+      "kind": "announcement",
+      "title": "modelcontextprotocol/servers 2026.1.26",
+      "summary": "Release: v2026.1.26 Updated packages - @modelcontextprotocol/server-everything@2026.1.26 - @modelcontextprotocol/server-memory@2026.1.26 - mcp-server-time@2026.1.26",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/modelcontextprotocol/servers/releases/tag/2026.1.26",
+      "publishedAt": "2026-01-27T12:11:26.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": true
+      }
+    },
+    {
+      "id": "a2496593f609dd4d",
+      "kind": "announcement",
+      "title": "modelcontextprotocol/servers 2026.1.14",
+      "summary": "Release: v2026.1.14 Updated packages - @modelcontextprotocol/server-everything@2026.1.14 - @modelcontextprotocol/server-filesystem@2026.1.14 - mcp-server-git@2026.1.14",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/modelcontextprotocol/servers/releases/tag/2026.1.14",
+      "publishedAt": "2026-01-14T16:35:35.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": true
+      }
+    },
+    {
+      "id": "b264377493f0a740",
+      "kind": "mcp",
+      "title": "koala73/worldmonitor",
+      "summary": "Real-time global intelligence dashboard. AI-powered news aggregation, geopolitical monitoring, and infrastructure tracking in a unified situational awareness interface",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/koala73/worldmonitor",
+      "publishedAt": "2026-01-08T17:26:06.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 75272
+      },
+      "topics": [
+        "agent",
+        "ai",
+        "dashboard",
+        "geopolitics",
+        "mcp",
+        "mcp-server",
+        "monitoring",
+        "news",
+        "opensource",
+        "osint",
+        "palantir",
+        "situation"
+      ]
+    },
+    {
+      "id": "ff2a9e969b6f916f",
+      "kind": "skill",
+      "title": "prakhar1114/ai_mime",
+      "summary": "Automation harness that compiles a screen recording into a rerunnable script, with LLMs, only at decision points and self-healing reruns.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/prakhar1114/ai_mime",
+      "publishedAt": "2026-01-06T03:40:23.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 52
+      },
+      "topics": [
+        "ai-agents",
+        "automation",
+        "claude-skills",
+        "computer-use",
+        "macos",
+        "rpa",
+        "screen-recording",
+        "self-healing",
+        "workflow-automation"
+      ]
+    },
+    {
+      "id": "022b58c4b5ac2782",
+      "kind": "announcement",
+      "title": "modelcontextprotocol/servers 2025.12.18",
+      "summary": "Release: v2025.12.18 Updated packages - @modelcontextprotocol/server-sequential-thinking@2025.12.18 - @modelcontextprotocol/server-everything@2025.12.18 - @modelcontextprotocol/server-filesystem@2025.12.18 - mcp-server-git@2025.12.18",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/modelcontextprotocol/servers/releases/tag/2025.12.18",
+      "publishedAt": "2025-12-18T16:33:28.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": true
+      }
+    },
+    {
+      "id": "0942772137817f86",
+      "kind": "mcp",
+      "title": "orneryd/NornicDB",
+      "summary": "Nornicdb is a distributed low-latency, Graph+Vector, Temporal MVCC with all sub-ms HNSW search, graph traversal, and writes. Using Neo4j Bolt/Cypher and qdrant's gRPC means you can switch with no changes while adding intelligent features like schemas, managed embeddings, reranking+llm, GPU accel, Auto-TLP,…",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/orneryd/NornicDB",
+      "publishedAt": "2025-12-06T15:46:33.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 833
+      },
+      "topics": [
+        "bolt",
+        "cypher",
+        "database",
+        "enterprise-solutions",
+        "golang",
+        "graph-rag",
+        "graphql",
+        "hnsw",
+        "local-llm",
+        "mcp-server",
+        "memoryos",
+        "mvcc",
+        "neo4j",
+        "openai-api",
+        "qdrant-vector-database",
+        "snapshot-isolation",
+        "tlp",
+        "vector-database",
+        "vector-search"
+      ]
+    },
+    {
+      "id": "86d62bce1e4d872d",
+      "kind": "announcement",
+      "title": "modelcontextprotocol/servers 2025.11.25",
+      "summary": "Release: v2025.11.25 Updated packages - @modelcontextprotocol/server-sequential-thinking@2025.11.25 - @modelcontextprotocol/server-everything@2025.11.25 - @modelcontextprotocol/server-filesystem@2025.11.25 - @modelcontextprotocol/server-memory@2025.11.25 - mcp-server-git@2025.11.25",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/modelcontextprotocol/servers/releases/tag/2025.11.25",
+      "publishedAt": "2025-11-25T19:03:57.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": true
+      }
+    },
+    {
+      "id": "59795262372502ec",
+      "kind": "mcp",
+      "title": "cesarliws/dext",
+      "summary": "Dext - Modern Full Stack Framework for Delphi",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/cesarliws/dext",
+      "publishedAt": "2025-11-19T02:14:38.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 303
+      },
+      "topics": [
+        "async-tasks",
+        "channels",
+        "data-api",
+        "delphi",
+        "dependency-injection",
+        "entity-framework",
+        "full-stack",
+        "htmx",
+        "lock-free",
+        "mcp-server",
+        "minimal-api",
+        "model-context-protocol",
+        "object-pascal",
+        "orm",
+        "pascal",
+        "rest-api",
+        "scaffolding",
+        "simd",
+        "ssr",
+        "zero-allocation"
+      ]
+    },
+    {
+      "id": "a21a435a02209340",
+      "kind": "mcp",
+      "title": "portofcontext/pctx",
+      "summary": "pctx is the execution layer for agentic tool calls. It auto-converts agent tools and MCP servers into code that runs in secure sandboxes for token-efficient workflows.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/portofcontext/pctx",
+      "publishedAt": "2025-11-04T16:54:23.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 269
+      },
+      "topics": [
+        "ai-agents",
+        "api",
+        "infrastructure",
+        "local-development",
+        "mcp",
+        "mcp-server",
+        "open-source"
+      ]
+    },
+    {
+      "id": "d6e08a7f721aba4d",
+      "kind": "aiModel",
+      "title": "amazon/chronos-2",
+      "summary": "Hugging Face üzerinde amazon tarafından yayımlanan model. Görev: time-series-forecasting. Lisans: apache-2.0.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/amazon/chronos-2",
+      "publishedAt": "2025-10-30T14:54:39.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 19980123
+      },
+      "topics": [
+        "time-series-forecasting",
+        "chronos-forecasting",
+        "safetensors",
+        "t5",
+        "time series",
+        "forecasting",
+        "foundation models",
+        "pretrained models"
+      ]
+    },
+    {
+      "id": "9cc35a4342d36349",
+      "kind": "aiModel",
+      "title": "autogluon/chronos-2",
+      "summary": "Hugging Face üzerinde autogluon tarafından yayımlanan model. Görev: time-series-forecasting. Lisans: apache-2.0.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/autogluon/chronos-2",
+      "publishedAt": "2025-10-06T18:52:51.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 12202331
+      },
+      "topics": [
+        "time-series-forecasting",
+        "chronos-forecasting",
+        "safetensors",
+        "t5",
+        "time series",
+        "forecasting",
+        "foundation models",
+        "pretrained models"
+      ]
+    },
+    {
+      "id": "c5427c1f8f4b2faa",
+      "kind": "announcement",
+      "title": "modelcontextprotocol/servers 2025.9.25",
+      "summary": "Release: v2025.9.25 Updated packages - @modelcontextprotocol/server-everything@2025.9.25 - @modelcontextprotocol/server-memory@2025.9.25 - mcp-server-git@2025.9.25 - mcp-server-time@2025.9.25",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/modelcontextprotocol/servers/releases/tag/2025.9.25",
+      "publishedAt": "2025-09-25T21:26:20.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": true
+      }
+    },
+    {
+      "id": "29804286e9ddfa2a",
+      "kind": "mcp",
+      "title": "JSONbored/awesome-claude",
+      "summary": "HeyClaude is a curated registry and distribution surface for Claude and AI-workflow assets: agents, MCP servers, skills, commands, hooks, rules, guides, tools, jobs, Raycast feeds, static data exports, and an npm MCP package.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/JSONbored/awesome-claude",
+      "publishedAt": "2025-09-15T04:40:32.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 285
+      },
+      "topics": [
+        "agent-skills",
+        "ai-agents",
+        "ai-directory",
+        "ai-tools",
+        "anthropic",
+        "artificial-intelligence",
+        "awesome-list",
+        "claude",
+        "claude-ai",
+        "claude-api",
+        "claude-code",
+        "claude-desktop",
+        "claude-skills",
+        "claudecode",
+        "developer-tools",
+        "gittensor",
+        "llm",
+        "mcp-servers",
+        "open-source",
+        "openclaw-skills"
+      ]
+    },
+    {
+      "id": "dd948f3a54ad20e8",
+      "kind": "mcp",
+      "title": "inkeep/agents",
+      "summary": "Create AI Agents in a No-Code Visual Builder or TypeScript SDK with full 2-way sync. For shipping AI assistants and multi-agent AI workflows.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/inkeep/agents",
+      "publishedAt": "2025-09-05T12:23:24.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 1329
+      },
+      "topics": [
+        "agent",
+        "agent-builder",
+        "agent-framework",
+        "agents-sdk",
+        "ai",
+        "ai-agent",
+        "ai-agents",
+        "aiagentframework",
+        "developer-sdk",
+        "inkeep",
+        "llms",
+        "low-code",
+        "mcp",
+        "mcp-server",
+        "mulit-agent",
+        "no-code",
+        "self-hosted",
+        "typescript",
+        "workflow",
+        "workflows"
+      ]
+    },
+    {
+      "id": "59d979c65f3237bc",
+      "kind": "mcp",
+      "title": "Epistates/turbomcp",
+      "summary": "A full featured, enterprise grade rust MCP SDK",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/Epistates/turbomcp",
+      "publishedAt": "2025-08-26T16:29:41.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 92
+      },
+      "topics": [
+        "mcp",
+        "mcp-client",
+        "mcp-sdk",
+        "mcp-server",
+        "mcp-servers",
+        "rust"
+      ]
+    },
+    {
+      "id": "9f80b85d3d870493",
+      "kind": "skill",
+      "title": "Stewie-pixel/claude-with-leetcode",
+      "summary": "Daily Leetcode masterclass with Claude code DSA mentor",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/Stewie-pixel/claude-with-leetcode",
+      "publishedAt": "2025-08-25T09:29:16.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 77
+      },
+      "topics": [
+        "ai-agents",
+        "algorithms",
+        "claude-code",
+        "claude-skill",
+        "claude-skills",
+        "coding-interviews",
+        "collaborate",
+        "data-structures",
+        "dsa",
+        "github-copilot",
+        "leetcode"
+      ]
+    },
+    {
+      "id": "0082757b49875bca",
+      "kind": "mcp",
+      "title": "speakeasy-api/gram",
+      "summary": "Securely scale AI usage across your organization. A single stack to Connect, Secure, Observe and Distribute agents, MCPs, and Skills within your company.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/speakeasy-api/gram",
+      "publishedAt": "2025-08-06T19:24:20.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 257
+      },
+      "topics": [
+        "agents",
+        "aisdk",
+        "clis",
+        "golang",
+        "mcp",
+        "mcp-gateway",
+        "mcp-server",
+        "mcp-servers",
+        "mcp-tools",
+        "openapi",
+        "openrouter",
+        "serverless",
+        "skills",
+        "typescript"
+      ]
+    },
+    {
+      "id": "34ea472b9a5cf66e",
+      "kind": "announcement",
+      "title": "modelcontextprotocol/servers 2025.8.4",
+      "summary": "Release: v2025.8.4 Updated packages - @modelcontextprotocol/server-everything@2025.8.4 - @modelcontextprotocol/server-memory@2025.8.4 - mcp-server-time@2025.8.4",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/modelcontextprotocol/servers/releases/tag/2025.8.4",
+      "publishedAt": "2025-08-05T09:16:01.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": true
+      }
+    },
+    {
+      "id": "47ecda7b0d2512c5",
+      "kind": "skill",
+      "title": "askimo-ai/askimo",
+      "summary": "AI Client for chat, RAG, plans, MCP tools, and agents with multi-provider model support.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/askimo-ai/askimo",
+      "publishedAt": "2025-08-05T06:25:32.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 264
+      },
+      "topics": [
+        "agentic-workflow",
+        "ai",
+        "ai-assistant",
+        "artificial-intelligence",
+        "chat-client",
+        "chatgpt",
+        "claude",
+        "claude-skills",
+        "codex-cli",
+        "gemini",
+        "gemini-client",
+        "grok",
+        "langchain4j",
+        "llm",
+        "local-llm",
+        "modelcontextprotocol",
+        "ollama-gui",
+        "openai-gui",
+        "rag",
+        "retrieval-augmented-generation"
+      ]
+    },
+    {
+      "id": "c0ea1069eb15b97f",
+      "kind": "mcp",
+      "title": "archestra-ai/archestra",
+      "summary": "Enterprise AI Platform with guardrails, MCP registry, gateway & orchestrator",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/archestra-ai/archestra",
+      "publishedAt": "2025-07-15T12:07:55.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 4038
+      },
+      "topics": [
+        "a2a",
+        "a2a-mcp",
+        "acp",
+        "agent",
+        "ai",
+        "chatgpt",
+        "chatgpt-api",
+        "claude",
+        "deepseek",
+        "gemini",
+        "k8s",
+        "mcp",
+        "mcp-client",
+        "mcp-gateway",
+        "mcp-host",
+        "mcp-server",
+        "mcp-servers",
+        "mcp-tools",
+        "openai",
+        "runtime"
+      ]
+    },
+    {
+      "id": "e6d9c72b6e1dee3c",
+      "kind": "announcement",
+      "title": "modelcontextprotocol/servers 2025.7.1",
+      "summary": "Release: v2025.7.1 Updated packages - @modelcontextprotocol/server-everything@2025.7.1 - @modelcontextprotocol/server-filesystem@2025.7.1 - @modelcontextprotocol/server-sequential-thinking@2025.7.1 - mcp-server-time@2025.7.1 - mcp-server-git@2025.7.1",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/modelcontextprotocol/servers/releases/tag/2025.7.1",
+      "publishedAt": "2025-07-01T18:32:42.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": false
+      }
+    },
+    {
+      "id": "6076ad4c47bd8245",
+      "kind": "mcp",
+      "title": "lemonade-sdk/lemonade",
+      "summary": "Lemonade helps users discover and run local AI apps by serving optimized LLMs right from their own GPUs and NPUs. Join our discord: https://discord.gg/5xXzkMu8Zk",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/lemonade-sdk/lemonade",
+      "publishedAt": "2025-05-15T19:17:39.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 5134
+      },
+      "topics": [
+        "ai",
+        "amd",
+        "genai",
+        "gpu",
+        "llama",
+        "llm",
+        "llm-inference",
+        "local-server",
+        "mcp",
+        "mcp-server",
+        "mistral",
+        "npu",
+        "onnxruntime",
+        "openai-api",
+        "qwen",
+        "radeon",
+        "rocm",
+        "ryzen",
+        "vulkan"
+      ]
+    },
+    {
+      "id": "db6ed76a4ef14546",
+      "kind": "aiModel",
+      "title": "Qwen/Qwen3-8B",
+      "summary": "Hugging Face üzerinde Qwen tarafından yayımlanan model. Görev: text-generation. Lisans: apache-2.0.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/Qwen/Qwen3-8B",
+      "publishedAt": "2025-04-27T03:42:21.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": false,
+        "maintained": false,
+        "popularity": 16684369
+      },
+      "topics": [
+        "text-generation",
+        "transformers",
+        "safetensors",
+        "qwen3",
+        "conversational",
+        "eval-results",
+        "text-generation-inference",
+        "endpoints_compatible"
+      ]
+    },
+    {
+      "id": "0033482c5a8213da",
+      "kind": "aiModel",
+      "title": "Qwen/Qwen3-0.6B",
+      "summary": "Hugging Face üzerinde Qwen tarafından yayımlanan model. Görev: text-generation. Lisans: apache-2.0.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/Qwen/Qwen3-0.6B",
+      "publishedAt": "2025-04-27T03:40:08.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": false,
+        "maintained": false,
+        "popularity": 28062952
+      },
+      "topics": [
+        "text-generation",
+        "transformers",
+        "safetensors",
+        "qwen3",
+        "conversational",
+        "text-generation-inference",
+        "endpoints_compatible",
+        "deploy:azure"
+      ]
+    },
+    {
+      "id": "376b44b4a31366e4",
+      "kind": "announcement",
+      "title": "modelcontextprotocol/servers 2025.4.24",
+      "summary": "Release: v2025.4.24 Updated packages - @modelcontextprotocol/server-slack@2025.4.24 - @modelcontextprotocol/server-everything@2025.4.24 - @modelcontextprotocol/server-memory@2025.4.24 - @modelcontextprotocol/server-gitlab@2025.4.24 - @modelcontextprotocol/server-redis@2025.4.24 - mcp-server-sqlite@2025.4.24",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/modelcontextprotocol/servers/releases/tag/2025.4.24",
+      "publishedAt": "2025-04-25T08:32:12.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": false
+      }
+    },
+    {
+      "id": "b1e6300b9272f310",
+      "kind": "mcp",
+      "title": "maximhq/bifrost",
+      "summary": "Fastest enterprise AI gateway (50x faster than LiteLLM) with adaptive load balancer, cluster mode, guardrails, 1000+ models support & <100 µs overhead at 5k RPS.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/maximhq/bifrost",
+      "publishedAt": "2025-03-19T07:21:26.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 6822
+      },
+      "topics": [
+        "ai-gateway",
+        "gateway",
+        "gateway-services",
+        "generative-ai",
+        "guardrails",
+        "llm",
+        "llm-cost",
+        "llm-gateway",
+        "llm-observability",
+        "llmops",
+        "load-balancing",
+        "mcp-client",
+        "mcp-gateway",
+        "mcp-server",
+        "model-router",
+        "token-management"
+      ]
+    },
+    {
+      "id": "f56dabfdcd10d3c6",
+      "kind": "mcp",
+      "title": "decocms/studio",
+      "summary": "Open-source control plane for your AI agents. Connect tools, hire agents, track every token and dollar",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/decocms/studio",
+      "publishedAt": "2025-03-14T12:37:02.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 393
+      },
+      "topics": [
+        "agents",
+        "ai",
+        "bun",
+        "deco",
+        "llm",
+        "mcp",
+        "mcp-client",
+        "mcp-server",
+        "n8n",
+        "n8n-workflow",
+        "nodejs",
+        "typescript",
+        "workflows"
+      ]
+    },
+    {
+      "id": "a366849db80b0b4e",
+      "kind": "mcp",
+      "title": "modelcontextprotocol/csharp-sdk",
+      "summary": "The official C# SDK for Model Context Protocol servers and clients. Maintained in collaboration with Microsoft.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/modelcontextprotocol/csharp-sdk",
+      "publishedAt": "2025-03-10T18:17:41.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 4418
+      },
+      "topics": [
+        "csharp",
+        "dotnet",
+        "mcp",
+        "mcp-client",
+        "mcp-server",
+        "modelcontextprotocol"
+      ]
+    },
+    {
+      "id": "8f6534845d413f54",
+      "kind": "mcp",
+      "title": "drhelius/Gearlynx",
+      "summary": "Atari Lynx emulator, debugger, and embedded MCP server for macOS, Windows, Linux, BSD and RetroArch.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/drhelius/Gearlynx",
+      "publishedAt": "2025-01-24T09:23:13.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 72
+      },
+      "topics": [
+        "atari",
+        "bsd",
+        "emulator",
+        "libretro",
+        "linux",
+        "lynx",
+        "macos",
+        "mcp",
+        "mcp-server",
+        "raspberry-pi",
+        "raspberrypi",
+        "retroarch",
+        "vgm"
+      ]
+    },
+    {
+      "id": "f3ba98030203d2bd",
+      "kind": "mcp",
+      "title": "firecrawl/firecrawl-mcp-server",
+      "summary": "🔥 Official Firecrawl MCP Server - Adds powerful web scraping and search to Cursor, Claude and any other LLM clients.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/firecrawl/firecrawl-mcp-server",
+      "publishedAt": "2024-12-06T07:50:27.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 7057
+      },
+      "topics": [
+        "batch-processing",
+        "claude",
+        "content-extraction",
+        "data-collection",
+        "firecrawl",
+        "firecrawl-ai",
+        "javascript-rendering",
+        "llm-tools",
+        "mcp",
+        "mcp-server",
+        "model-context-protocol",
+        "search-api",
+        "web-crawler",
+        "web-scraping"
+      ]
+    },
+    {
+      "id": "3ab58d07217f0a3c",
+      "kind": "aiModel",
+      "title": "trl-internal-testing/tiny-Qwen2ForCausalLM-2.5",
+      "summary": "Hugging Face üzerinde trl-internal-testing tarafından yayımlanan model. Görev: text-generation.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/trl-internal-testing/tiny-Qwen2ForCausalLM-2.5",
+      "publishedAt": "2024-11-25T15:06:15.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": true,
+        "popularity": 15856064
+      },
+      "topics": [
+        "text-generation",
+        "transformers",
+        "safetensors",
+        "qwen2",
+        "trl",
+        "conversational",
+        "text-generation-inference",
+        "endpoints_compatible"
+      ]
+    },
+    {
+      "id": "af145a81393faa77",
+      "kind": "announcement",
+      "title": "Pixtral Large",
+      "summary": "Pixtral Large is deprecated. Discover Mistral AI’s latest vision models and capabilities in our updated documentation.",
+      "summaryOrigin": "original",
+      "sourceName": "Mistral AI Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://mistral.ai/news/pixtral-large/",
+      "publishedAt": "2024-11-18T08:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": false
+      }
+    },
+    {
+      "id": "5c4b1e69a27c553c",
+      "kind": "aiModel",
+      "title": "autogluon/chronos-bolt-small",
+      "summary": "Hugging Face üzerinde autogluon tarafından yayımlanan model. Görev: time-series-forecasting. Lisans: apache-2.0.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/autogluon/chronos-bolt-small",
+      "publishedAt": "2024-11-13T13:28:57.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": false,
+        "maintained": true,
+        "popularity": 13517802
+      },
+      "topics": [
+        "time-series-forecasting",
+        "safetensors",
+        "t5",
+        "time series",
+        "forecasting",
+        "pretrained models",
+        "foundation models",
+        "time series foundation models"
+      ]
+    },
+    {
+      "id": "c6c4efaf6ce76df2",
+      "kind": "announcement",
+      "title": "Mistral Batch API",
+      "summary": "Lower cost API for AI builders.",
+      "summaryOrigin": "original",
+      "sourceName": "Mistral AI Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://mistral.ai/news/batch-api/",
+      "publishedAt": "2024-11-07T11:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": false
+      }
+    },
+    {
+      "id": "193c110810b1a46f",
+      "kind": "aiModel",
+      "title": "Qwen/Qwen2.5-1.5B-Instruct",
+      "summary": "Hugging Face üzerinde Qwen tarafından yayımlanan model. Görev: text-generation. Lisans: apache-2.0.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct",
+      "publishedAt": "2024-09-17T14:10:29.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": false,
+        "maintained": false,
+        "popularity": 13344230
+      },
+      "topics": [
+        "text-generation",
+        "transformers",
+        "safetensors",
+        "qwen2",
+        "chat",
+        "conversational",
+        "en",
+        "text-generation-inference"
+      ]
+    },
+    {
+      "id": "f4b80125dae973ab",
+      "kind": "announcement",
+      "title": "Announcing Pixtral 12B",
+      "summary": "Pixtral 12B is deprecated. Discover Mistral AI’s latest vision models and capabilities in our updated documentation.",
+      "summaryOrigin": "original",
+      "sourceName": "Mistral AI Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://mistral.ai/news/pixtral-12b/",
+      "publishedAt": "2024-09-17T02:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": false
+      }
+    },
+    {
+      "id": "93bc537f85f15ccc",
+      "kind": "aiModel",
+      "title": "Qwen/Qwen2.5-7B-Instruct",
+      "summary": "Hugging Face üzerinde Qwen tarafından yayımlanan model. Görev: text-generation. Lisans: apache-2.0.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/Qwen/Qwen2.5-7B-Instruct",
+      "publishedAt": "2024-09-16T11:55:40.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": false,
+        "maintained": false,
+        "popularity": 11997940
+      },
+      "topics": [
+        "text-generation",
+        "transformers",
+        "safetensors",
+        "qwen2",
+        "chat",
+        "conversational",
+        "en",
+        "eval-results"
+      ]
+    },
+    {
+      "id": "1e7a0a4e26816041",
+      "kind": "aiModel",
+      "title": "lpiccinelli/unidepth-v2-vitl14",
+      "summary": "Hugging Face üzerinde lpiccinelli tarafından yayımlanan model.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/lpiccinelli/unidepth-v2-vitl14",
+      "publishedAt": "2024-06-12T12:39:28.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": false,
+        "popularity": 22931733
+      },
+      "topics": [
+        "unidepth",
+        "pytorch",
+        "safetensors",
+        "model_hub_mixin",
+        "monocular-metric-depth-estimation",
+        "pytorch_model_hub_mixin"
+      ]
+    },
+    {
+      "id": "9bcd4d3dfbbd5a0a",
+      "kind": "announcement",
+      "title": "Mistral AI Fine-tuning Hackathon",
+      "summary": "We are thrilled to announce the Mistral AI fine-tuning hackathon, a virtual experience taking place from June 5 - 30, 2024.",
+      "summaryOrigin": "original",
+      "sourceName": "Mistral AI Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://mistral.ai/news/2024-ft-hackathon/",
+      "publishedAt": "2024-06-05T08:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": false
+      }
+    },
+    {
+      "id": "62a18da53422cc80",
+      "kind": "mcp",
+      "title": "crbnos/carbon",
+      "summary": "Carbon is an open source ERP, MES and QMS for manufacturing. Perfect for complex assembly, contract manufacturing, and configure to order manufacturing.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/crbnos/carbon",
+      "publishedAt": "2024-06-03T10:43:24.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 2281
+      },
+      "topics": [
+        "agentic-platform",
+        "assemblyline",
+        "business",
+        "erp",
+        "lean",
+        "management",
+        "manufacturing",
+        "mcp-server",
+        "mes",
+        "postgresql",
+        "qms",
+        "react-router",
+        "supabase",
+        "typescript"
+      ]
+    },
+    {
+      "id": "3df409d0543075b0",
+      "kind": "aiModel",
+      "title": "BAAI/bge-reranker-v2-m3",
+      "summary": "Hugging Face üzerinde BAAI tarafından yayımlanan model. Görev: text-classification. Lisans: apache-2.0.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/BAAI/bge-reranker-v2-m3",
+      "publishedAt": "2024-03-15T13:32:18.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": false,
+        "maintained": false,
+        "popularity": 18666947
+      },
+      "topics": [
+        "text-classification",
+        "sentence-transformers",
+        "safetensors",
+        "xlm-roberta",
+        "transformers",
+        "text-embeddings-inference",
+        "multilingual",
+        "endpoints_compatible"
+      ]
+    },
+    {
+      "id": "21ee7a071d23da50",
+      "kind": "aiModel",
+      "title": "nomic-ai/nomic-embed-text-v1.5",
+      "summary": "Hugging Face üzerinde nomic-ai tarafından yayımlanan model. Görev: sentence-similarity. Lisans: apache-2.0.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/nomic-ai/nomic-embed-text-v1.5",
+      "publishedAt": "2024-02-10T06:32:35.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": false,
+        "maintained": true,
+        "popularity": 14693384
+      },
+      "topics": [
+        "sentence-similarity",
+        "sentence-transformers",
+        "onnx",
+        "safetensors",
+        "nomic_bert",
+        "feature-extraction",
+        "mteb",
+        "transformers"
+      ]
+    },
+    {
+      "id": "a0b7309e2ccb82de",
+      "kind": "aiModel",
+      "title": "BAAI/bge-m3",
+      "summary": "Hugging Face üzerinde BAAI tarafından yayımlanan model. Görev: sentence-similarity. Lisans: mit.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/BAAI/bge-m3",
+      "publishedAt": "2024-01-27T17:07:29.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": false,
+        "maintained": false,
+        "popularity": 35453220
+      },
+      "topics": [
+        "sentence-similarity",
+        "sentence-transformers",
+        "pytorch",
+        "onnx",
+        "xlm-roberta",
+        "feature-extraction",
+        "eval-results",
+        "text-embeddings-inference"
+      ]
+    },
+    {
+      "id": "92e0abc3de31ab16",
+      "kind": "mcp",
+      "title": "devantler-tech/ksail",
+      "summary": "All-in-one Kubernetes SDK: create, manage, and operate clusters across distributions (Kind, K3d, Talos, VCluster) with built-in GitOps, secrets, AI assistant, and MCP server. Only requires Docker or a Cloud Provider.",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/devantler-tech/ksail",
+      "publishedAt": "2023-12-31T16:17:15.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 156
+      },
+      "topics": [
+        "argocd",
+        "chat",
+        "cli",
+        "cloud-native",
+        "developer-tool",
+        "devops",
+        "docker",
+        "flux",
+        "github-copilot",
+        "gitops",
+        "helm",
+        "k3s",
+        "kind",
+        "kubernetes",
+        "local-development",
+        "mcp-server",
+        "provisioner",
+        "talos",
+        "tui",
+        "vcluster"
+      ]
+    },
+    {
+      "id": "3a0311fe1ff05ad2",
+      "kind": "announcement",
+      "title": "Mistral 7B",
+      "summary": "The best 7B model to date, Apache 2.0",
+      "summaryOrigin": "original",
+      "sourceName": "Mistral AI Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://mistral.ai/news/announcing-mistral-7b/",
+      "publishedAt": "2023-09-27T08:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": false
+      }
+    },
+    {
+      "id": "c39e55e089d41874",
+      "kind": "announcement",
+      "title": "Bringing open AI models to the frontier",
+      "summary": "Why we're building Mistral AI.",
+      "summaryOrigin": "original",
+      "sourceName": "Mistral AI Blog",
+      "sourceKind": "officialBlog",
+      "url": "https://mistral.ai/news/about-mistral-ai/",
+      "publishedAt": "2023-09-27T08:00:00.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": false
+      }
+    },
+    {
+      "id": "6754ffe913994462",
+      "kind": "aiModel",
+      "title": "BAAI/bge-small-en-v1.5",
+      "summary": "Hugging Face üzerinde BAAI tarafından yayımlanan model. Görev: feature-extraction. Lisans: mit.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/BAAI/bge-small-en-v1.5",
+      "publishedAt": "2023-09-12T05:20:55.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": false,
+        "maintained": false,
+        "popularity": 68390818
+      },
+      "topics": [
+        "feature-extraction",
+        "sentence-transformers",
+        "pytorch",
+        "onnx",
+        "safetensors",
+        "bert",
+        "sentence-similarity",
+        "transformers"
+      ]
+    },
+    {
+      "id": "2d771126774af6e6",
+      "kind": "aiModel",
+      "title": "BAAI/bge-large-en-v1.5",
+      "summary": "Hugging Face üzerinde BAAI tarafından yayımlanan model. Görev: feature-extraction. Lisans: mit.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/BAAI/bge-large-en-v1.5",
+      "publishedAt": "2023-09-12T05:20:08.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": false,
+        "maintained": false,
+        "popularity": 13375164
+      },
+      "topics": [
+        "feature-extraction",
+        "sentence-transformers",
+        "pytorch",
+        "onnx",
+        "safetensors",
+        "bert",
+        "sentence-similarity",
+        "transformers"
+      ]
+    },
+    {
+      "id": "02798fec64f2531b",
+      "kind": "aiModel",
+      "title": "intfloat/multilingual-e5-small",
+      "summary": "Hugging Face üzerinde intfloat tarafından yayımlanan model. Görev: sentence-similarity. Lisans: mit.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/intfloat/multilingual-e5-small",
+      "publishedAt": "2023-06-30T07:31:03.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": false,
+        "maintained": true,
+        "popularity": 15704868
+      },
+      "topics": [
+        "sentence-similarity",
+        "sentence-transformers",
+        "pytorch",
+        "onnx",
+        "safetensors",
+        "openvino",
+        "bert",
+        "mteb"
+      ]
+    },
+    {
+      "id": "76021b9afe8431ed",
+      "kind": "mcp",
+      "title": "openstatusHQ/openstatus",
+      "summary": "🫖 Status page with uptime monitoring & API monitoring as code 🫖",
+      "summaryOrigin": "original",
+      "sourceName": "GitHub",
+      "sourceKind": "github",
+      "url": "https://github.com/openstatusHQ/openstatus",
+      "publishedAt": "2023-06-19T15:32:41.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "en",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 8900
+      },
+      "topics": [
+        "alerting",
+        "incident-management",
+        "mcp",
+        "mcp-server",
+        "monitoring",
+        "monitoring-as-code",
+        "observability",
+        "on-call",
+        "open-source",
+        "sre",
+        "status-page",
+        "statuspage",
+        "synthetic-monitoring",
+        "terraform",
+        "tinybird",
+        "turso",
+        "uptime",
+        "uptime-checker",
+        "uptime-monitor"
+      ]
+    },
+    {
+      "id": "71aca30226e6f1b5",
+      "kind": "aiModel",
+      "title": "timm/mobilenetv3_small_100.lamb_in1k",
+      "summary": "Hugging Face üzerinde timm tarafından yayımlanan model. Görev: image-classification. Lisans: apache-2.0.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/timm/mobilenetv3_small_100.lamb_in1k",
+      "publishedAt": "2022-12-16T05:38:36.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": false,
+        "maintained": true,
+        "popularity": 19341229
+      },
+      "topics": [
+        "image-classification",
+        "timm",
+        "pytorch",
+        "safetensors",
+        "transformers"
+      ]
+    },
+    {
+      "id": "0fa159ff0c8ea22b",
+      "kind": "aiModel",
+      "title": "facebook/opt-125m",
+      "summary": "Hugging Face üzerinde facebook tarafından yayımlanan model. Görev: text-generation.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/facebook/opt-125m",
+      "publishedAt": "2022-05-11T08:25:17.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": false,
+        "popularity": 16619070
+      },
+      "topics": [
+        "text-generation",
+        "transformers",
+        "pytorch",
+        "tf",
+        "jax",
+        "opt",
+        "en",
+        "text-generation-inference"
+      ]
+    },
+    {
+      "id": "13d5017d685af9f3",
+      "kind": "aiModel",
+      "title": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "summary": "Hugging Face üzerinde sentence-transformers tarafından yayımlanan model. Görev: sentence-similarity. Lisans: apache-2.0.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "publishedAt": "2022-03-02T23:29:05.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": false,
+        "maintained": true,
+        "popularity": 51811524
+      },
+      "topics": [
+        "sentence-similarity",
+        "sentence-transformers",
+        "pytorch",
+        "tf",
+        "onnx",
+        "safetensors",
+        "openvino",
+        "bert"
+      ]
+    },
+    {
+      "id": "3fafc81026a45edd",
+      "kind": "aiModel",
+      "title": "cross-encoder/ms-marco-MiniLM-L4-v2",
+      "summary": "Hugging Face üzerinde cross-encoder tarafından yayımlanan model. Görev: text-ranking. Lisans: apache-2.0.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/cross-encoder/ms-marco-MiniLM-L4-v2",
+      "publishedAt": "2022-03-02T23:29:05.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": false,
+        "maintained": true,
+        "popularity": 11733724
+      },
+      "topics": [
+        "text-ranking",
+        "sentence-transformers",
+        "pytorch",
+        "jax",
+        "onnx",
+        "safetensors",
+        "openvino",
+        "bert"
+      ]
+    },
+    {
+      "id": "6a79217ac65adab8",
+      "kind": "aiModel",
+      "title": "openai/clip-vit-base-patch32",
+      "summary": "Hugging Face üzerinde openai tarafından yayımlanan model. Görev: zero-shot-image-classification.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/openai/clip-vit-base-patch32",
+      "publishedAt": "2022-03-02T23:29:05.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": false,
+        "recentlyUpdated": false,
+        "maintained": false,
+        "popularity": 23735677
+      },
+      "topics": [
+        "zero-shot-image-classification",
+        "transformers",
+        "pytorch",
+        "tf",
+        "jax",
+        "clip",
+        "vision",
+        "endpoints_compatible"
+      ]
+    },
+    {
+      "id": "6f3c1c00db55a2bb",
+      "kind": "aiModel",
+      "title": "cross-encoder/ms-marco-MiniLM-L6-v2",
+      "summary": "Hugging Face üzerinde cross-encoder tarafından yayımlanan model. Görev: text-ranking. Lisans: apache-2.0.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2",
+      "publishedAt": "2022-03-02T23:29:05.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": false,
+        "maintained": true,
+        "popularity": 87587244
+      },
+      "topics": [
+        "text-ranking",
+        "sentence-transformers",
+        "pytorch",
+        "jax",
+        "onnx",
+        "safetensors",
+        "openvino",
+        "bert"
+      ]
+    },
+    {
+      "id": "78589ec0629cb236",
+      "kind": "aiModel",
+      "title": "sentence-transformers/all-MiniLM-L6-v2",
+      "summary": "Hugging Face üzerinde sentence-transformers tarafından yayımlanan model. Görev: sentence-similarity. Lisans: apache-2.0.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2",
+      "publishedAt": "2022-03-02T23:29:05.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": true,
+        "maintained": true,
+        "popularity": 253094980
+      },
+      "topics": [
+        "sentence-similarity",
+        "sentence-transformers",
+        "pytorch",
+        "tf",
+        "rust",
+        "onnx",
+        "safetensors",
+        "openvino"
+      ]
+    },
+    {
+      "id": "94e55f1942fdccb3",
+      "kind": "aiModel",
+      "title": "sentence-transformers/all-mpnet-base-v2",
+      "summary": "Hugging Face üzerinde sentence-transformers tarafından yayımlanan model. Görev: sentence-similarity. Lisans: apache-2.0.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/sentence-transformers/all-mpnet-base-v2",
+      "publishedAt": "2022-03-02T23:29:05.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": false,
+        "maintained": true,
+        "popularity": 28313150
+      },
+      "topics": [
+        "sentence-similarity",
+        "sentence-transformers",
+        "pytorch",
+        "onnx",
+        "safetensors",
+        "openvino",
+        "mpnet",
+        "fill-mask"
+      ]
+    },
+    {
+      "id": "d8cf536d76b246fe",
+      "kind": "aiModel",
+      "title": "google/electra-base-discriminator",
+      "summary": "Hugging Face üzerinde google tarafından yayımlanan model. Lisans: apache-2.0.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/google/electra-base-discriminator",
+      "publishedAt": "2022-03-02T23:29:05.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": true,
+        "hasLicense": true,
+        "recentlyUpdated": false,
+        "maintained": false,
+        "popularity": 55098141
+      },
+      "topics": [
+        "transformers",
+        "pytorch",
+        "tf",
+        "jax",
+        "rust",
+        "electra",
+        "pretraining",
+        "en"
+      ]
+    },
+    {
+      "id": "1f28fae2b2955f01",
+      "kind": "aiModel",
+      "title": "openai-community/gpt2",
+      "summary": "Hugging Face üzerinde openai-community tarafından yayımlanan model. Görev: text-generation. Lisans: mit.",
+      "summaryOrigin": "teknoakis",
+      "sourceName": "Hugging Face",
+      "sourceKind": "huggingFace",
+      "url": "https://huggingface.co/openai-community/gpt2",
+      "publishedAt": "2022-03-02T23:29:04.000Z",
+      "checkedAt": "2026-07-27T19:32:38.594045Z",
+      "language": "tr",
+      "trust": {
+        "officialSource": false,
+        "hasLicense": true,
+        "recentlyUpdated": false,
+        "maintained": false,
+        "popularity": 13838843
+      },
+      "topics": [
+        "text-generation",
+        "transformers",
+        "pytorch",
+        "tf",
+        "jax",
+        "tflite",
+        "rust",
+        "onnx"
+      ]
+    }
+  ]
+}

@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'app_preferences.dart';
+import 'feed/feed_repository.dart';
+import 'feed/feed_schema.dart';
 import 'interests_migration.dart';
 import 'local/app_database.dart';
 import 'repositories/interests_repository.dart';
@@ -12,6 +14,43 @@ import 'repositories/saved_items_repository.dart';
 import 'saved_items_seeder.dart';
 
 final databaseProvider = FutureProvider<Database>((ref) => AppDatabase.open());
+
+final feedRepositoryProvider = Provider<FeedRepository>(
+  (ref) => BundledFeedRepository(),
+);
+
+/// Paketlenmiş feed. Geri çekilmiş kayıtlar **gösterilmez** ama dosyadan
+/// silinmez: politika düzeltmeyi kayıtla yönetmeyi şart koşuyor.
+final feedProvider = AsyncNotifierProvider<FeedNotifier, List<FeedItem>>(
+  FeedNotifier.new,
+);
+
+final class FeedNotifier extends AsyncNotifier<List<FeedItem>> {
+  @override
+  Future<List<FeedItem>> build() async {
+    final feed = await ref.watch(feedRepositoryProvider).load();
+    return feed.visibleItems;
+  }
+
+  /// Ağ tazelemesi geldiğinde (TASK-0016) buradan tetiklenecek.
+  Future<void> reload() async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(build);
+  }
+}
+
+/// Tek bir kayıt. Detay ekranları kimlikle çağırır; bulunamazsa `null`.
+///
+/// Kimlik kanonik adresten türetildiği için kalıcıdır: kaydedilen bir içerik,
+/// feed yeniden üretildiğinde de aynı kimlikle bulunur.
+final feedItemProvider = Provider.family<FeedItem?, String>((ref, id) {
+  final items = ref.watch(feedProvider).value;
+  if (items == null) return null;
+  for (final item in items) {
+    if (item.id == id) return item;
+  }
+  return null;
+});
 
 final sharedPreferencesProvider = FutureProvider<SharedPreferences>(
   (ref) => SharedPreferences.getInstance(),

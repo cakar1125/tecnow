@@ -97,6 +97,30 @@ final class InterestsNotifier extends AsyncNotifier<Set<String>> {
     final repository = await ref.read(interestsRepositoryProvider.future);
     await repository.replaceAll(current.toList(growable: false));
   }
+
+  /// Bkz. [SavedItemsNotifier.reflectExternalClear].
+  void reflectExternalClear() => state = const AsyncData(<String>{});
+}
+
+/// Ayarlar'daki yerel kayıt adetleri.
+///
+/// Salt okuma; [LocalDataCountsNotifier.reload] silme sonrası açıkça çağrılır.
+final localDataCountsProvider =
+    AsyncNotifierProvider<LocalDataCountsNotifier, LocalDataCounts>(
+      LocalDataCountsNotifier.new,
+    );
+
+final class LocalDataCountsNotifier extends AsyncNotifier<LocalDataCounts> {
+  @override
+  Future<LocalDataCounts> build() async {
+    final repository = await ref.watch(localDataRepositoryProvider.future);
+    return repository.readCounts();
+  }
+
+  Future<void> reload() async {
+    final repository = await ref.read(localDataRepositoryProvider.future);
+    state = AsyncData(await repository.readCounts());
+  }
 }
 
 /// Kaydedilenler listesi.
@@ -117,6 +141,10 @@ final class SavedItemsNotifier extends AsyncNotifier<List<SavedItem>> {
     final repository = await ref.watch(savedItemsRepositoryProvider.future);
     return repository.readAll();
   }
+
+  /// Veritabanı başka bir yerden boşaltıldığında ekran durumunu hizalar
+  /// (Ayarlar → `Verileri Sil`). Kendisi **yazmaz**.
+  void reflectExternalClear() => state = const AsyncData([]);
 
   Future<void> remove(String id) async {
     // Riverpod 3'te `AsyncValue.value` zaten nullable; `valueOrNull` yok.

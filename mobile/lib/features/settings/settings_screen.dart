@@ -1,21 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../data/providers.dart';
+import '../../data/repositories/local_data_repository.dart';
 import '../../design_system/components/app_components.dart';
 import '../../design_system/tokens/app_tokens.dart';
+import 'local_data_eraser.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   static const _comingSoonMessage = 'Bu ekran sonraki fazda uygulanacak.';
 
-  void _showComingSoon(BuildContext context) {
+  /// Geçmiş listesi onaylı ekran haritasında yok; sayı gösteriliyor ama
+  /// liste ekranı bir tasarım kararı bekliyor.
+  static const _historyViewMessage =
+      'Okuma geçmişi kaydediliyor. Liste ekranı onaylı tasarımda henüz yok.';
+
+  void _showMessage(BuildContext context, String message) {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text(_comingSoonMessage)));
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
-  Future<void> _confirmLocalDataDeletion(BuildContext context) async {
+  Future<void> _confirmLocalDataDeletion(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    // Messenger dialog'dan önce alınır: `await` sonrasında `context` artık
+    // güvenle kullanılamaz.
+    final messenger = ScaffoldMessenger.of(context);
+
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AppConfirmationDialog(
@@ -25,20 +41,46 @@ class SettingsScreen extends StatelessWidget {
         onConfirm: () => Navigator.of(dialogContext).pop(true),
       ),
     );
+    if (confirmed != true) return;
 
-    if (confirmed == true && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+    try {
+      await eraseAllLocalData(ref);
+      messenger.showSnackBar(
         const SnackBar(
           content: Text(
-            'Silinecek yerel veri henüz yok. Yerel veri katmanı Faz 2B.',
+            'Yerel veriler silindi. Uygulama yeniden açıldığında kurulum '
+            'baştan sorulacak.',
           ),
         ),
+      );
+    } catch (error) {
+      messenger.showSnackBar(
+        SnackBar(content: Text('Yerel veriler silinemedi: $error')),
       );
     }
   }
 
+  /// Adet okunamıyorsa satır sayısız gösterilir — yanlış bir `0` yazmaktansa
+  /// hiçbir şey yazmamak dürüsttür.
+  String? _countLabel(
+    AsyncValue<LocalDataCounts> counts,
+    int Function(LocalDataCounts) select,
+  ) => switch (counts) {
+    AsyncData(:final value) => '${select(value)} kayıt',
+    _ => null,
+  };
+
   @override
-  Widget build(BuildContext context) => Material(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final counts = ref.watch(localDataCountsProvider);
+    return _build(context, ref, counts);
+  }
+
+  Widget _build(
+    BuildContext context,
+    WidgetRef ref,
+    AsyncValue<LocalDataCounts> counts,
+  ) => Material(
     color: AppColors.background,
     child: Column(
       children: [
@@ -68,18 +110,18 @@ class SettingsScreen extends StatelessWidget {
                       icon: Icons.language_rounded,
                       title: 'Dil',
                       value: 'Türkçe',
-                      onTap: () => _showComingSoon(context),
+                      onTap: () => _showMessage(context, _comingSoonMessage),
                     ),
                     _SettingsRow(
                       icon: Icons.palette_outlined,
                       title: 'Tema',
                       value: 'Koyu',
-                      onTap: () => _showComingSoon(context),
+                      onTap: () => _showMessage(context, _comingSoonMessage),
                     ),
                     _SettingsRow(
                       icon: Icons.tune_rounded,
                       title: 'İçerik Tercihleri',
-                      onTap: () => _showComingSoon(context),
+                      onTap: () => _showMessage(context, _comingSoonMessage),
                     ),
                   ],
                 ),
@@ -90,28 +132,34 @@ class SettingsScreen extends StatelessWidget {
                     _SettingsRow(
                       icon: Icons.bookmark_outline,
                       title: 'Kaydedilen İçerikler',
+                      value: _countLabel(counts, (c) => c.savedItems),
                       onTap: () => context.go('/saved'),
                     ),
                     _SettingsRow(
                       icon: Icons.forum_outlined,
                       title: 'Asistan Konuşmaları',
-                      onTap: () => _showComingSoon(context),
+                      value: _countLabel(
+                        counts,
+                        (c) => c.assistantConversations,
+                      ),
+                      onTap: () => _showMessage(context, _comingSoonMessage),
                     ),
                     _SettingsRow(
                       icon: Icons.history_rounded,
                       title: 'Okuma Geçmişi',
-                      onTap: () => _showComingSoon(context),
+                      value: _countLabel(counts, (c) => c.readHistory),
+                      onTap: () => _showMessage(context, _historyViewMessage),
                     ),
                     _SettingsRow(
                       icon: Icons.download_outlined,
                       title: 'Verileri Dışa Aktar',
-                      onTap: () => _showComingSoon(context),
+                      onTap: () => _showMessage(context, _comingSoonMessage),
                     ),
                     _SettingsRow(
                       icon: Icons.delete_outline,
                       title: 'Verileri Sil',
                       color: AppColors.critical,
-                      onTap: () => _confirmLocalDataDeletion(context),
+                      onTap: () => _confirmLocalDataDeletion(context, ref),
                     ),
                   ],
                 ),
@@ -143,17 +191,17 @@ class SettingsScreen extends StatelessWidget {
                     _SettingsRow(
                       icon: Icons.info_outline_rounded,
                       title: 'TeknoAkış Hakkında',
-                      onTap: () => _showComingSoon(context),
+                      onTap: () => _showMessage(context, _comingSoonMessage),
                     ),
                     _SettingsRow(
                       icon: Icons.policy_outlined,
                       title: 'Kaynak Politikası',
-                      onTap: () => _showComingSoon(context),
+                      onTap: () => _showMessage(context, _comingSoonMessage),
                     ),
                     _SettingsRow(
                       icon: Icons.description_outlined,
                       title: 'Lisanslar',
-                      onTap: () => _showComingSoon(context),
+                      onTap: () => _showMessage(context, _comingSoonMessage),
                     ),
                   ],
                 ),

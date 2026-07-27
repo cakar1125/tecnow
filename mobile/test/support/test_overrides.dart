@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:teknoakis/data/providers.dart';
 import 'package:teknoakis/data/repositories/interests_repository.dart';
+import 'package:teknoakis/data/repositories/local_data_repository.dart';
 import 'package:teknoakis/data/repositories/read_history_repository.dart';
 import 'package:teknoakis/data/repositories/saved_items_repository.dart';
 import 'package:teknoakis/fixtures/fixtures.dart';
@@ -79,6 +80,31 @@ final class InMemoryReadHistoryRepository implements ReadHistoryRepository {
   Future<void> clear() async => records.clear();
 }
 
+/// Diğer bellek içi depoların üstüne oturur: `Verileri Sil` gerçekten
+/// hepsini boşaltmalı ve adetler bunu yansıtmalıdır.
+final class InMemoryLocalDataRepository implements LocalDataRepository {
+  InMemoryLocalDataRepository(this._saved, this._interests, this._history);
+
+  final SavedItemsRepository _saved;
+  final InterestsRepository _interests;
+  final ReadHistoryRepository _history;
+
+  @override
+  Future<void> deleteEverything() async {
+    await _saved.clear();
+    await _interests.clear();
+    await _history.clear();
+  }
+
+  @override
+  Future<LocalDataCounts> readCounts() async => LocalDataCounts(
+    savedItems: (await _saved.readAll()).length,
+    readHistory: (await _history.readRecent(limit: 1000)).length,
+    // Asistan konuşmaları henüz hiçbir yerde yazılmıyor; üretimde de tablo boş.
+    assistantConversations: 0,
+  );
+}
+
 /// `SavedItemsSeeder`'ın üreteceği listenin aynısı.
 ///
 /// Testler üretimdeki tohum sırasını (`savedAt DESC`) taklit etmelidir; aksi
@@ -123,18 +149,28 @@ Widget memoryDataScope(
   List<SavedItem>? savedItems,
   List<String>? interests,
   ReadHistoryRepository? readHistory,
-}) => ProviderScope(
-  overrides: [
-    savedItemsRepositoryProvider.overrideWith(
-      (ref) async =>
-          InMemorySavedItemsRepository(savedItems ?? seededSavedItems()),
-    ),
-    interestsRepositoryProvider.overrideWith(
-      (ref) async => InMemoryInterestsRepository(interests ?? const []),
-    ),
-    readHistoryRepositoryProvider.overrideWith(
-      (ref) async => readHistory ?? InMemoryReadHistoryRepository(),
-    ),
-  ],
-  child: child,
-);
+}) {
+  // Örnekler önceden kurulur: `localDataRepositoryProvider` diğer üçüyle
+  // **aynı** nesneleri görmeli, yoksa "Verileri Sil" testte hiçbir şeyi
+  // boşaltmamış gibi görünür.
+  final saved = InMemorySavedItemsRepository(savedItems ?? seededSavedItems());
+  final interestsRepository = InMemoryInterestsRepository(
+    interests ?? const [],
+  );
+  final history = readHistory ?? InMemoryReadHistoryRepository();
+
+  return ProviderScope(
+    overrides: [
+      savedItemsRepositoryProvider.overrideWith((ref) async => saved),
+      interestsRepositoryProvider.overrideWith(
+        (ref) async => interestsRepository,
+      ),
+      readHistoryRepositoryProvider.overrideWith((ref) async => history),
+      localDataRepositoryProvider.overrideWith(
+        (ref) async =>
+            InMemoryLocalDataRepository(saved, interestsRepository, history),
+      ),
+    ],
+    child: child,
+  );
+}

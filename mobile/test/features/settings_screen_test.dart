@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:teknoakis/app/router.dart';
+import 'package:teknoakis/data/app_preferences.dart';
 import 'package:teknoakis/design_system/theme/app_theme.dart';
 import 'package:teknoakis/design_system/tokens/app_tokens.dart';
 
@@ -49,7 +50,29 @@ void main() {
     expect(deleteIcon.color, AppColors.critical);
   });
 
-  testWidgets('delete-data confirmation keeps data and explains phase 2B', (
+  testWidgets('local data rows report real record counts', (tester) async {
+    await pumpSettingsScreen(tester);
+
+    // Tohumlanmış beş kayıt, henüz okunmuş içerik yok.
+    expect(find.text('5 kayıt'), findsOneWidget);
+    expect(find.text('0 kayıt'), findsNWidgets(2));
+  });
+
+  testWidgets('cancelling the delete dialog keeps the data', (tester) async {
+    await pumpSettingsScreen(tester);
+
+    await tester.ensureVisible(find.text('Verileri Sil'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Verileri Sil'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Vazgeç'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('5 kayıt'), findsOneWidget);
+  });
+
+  testWidgets('confirming the delete dialog really empties local data', (
     tester,
   ) async {
     await pumpSettingsScreen(tester);
@@ -69,9 +92,46 @@ void main() {
     await tester.tap(find.text('Onayla'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Verileri Sil'), findsOneWidget);
+    expect(find.text('5 kayıt'), findsNothing);
+    expect(find.text('0 kayıt'), findsNWidgets(3));
+    expect(find.textContaining('Yerel veriler silindi'), findsOneWidget);
+  });
+
+  /// Silme, onboarding bayrağını da sıfırlamalı: ilgi alanları gittiği için
+  /// uygulama boş ama "kurulmuş" bir durumda kalmamalı.
+  testWidgets('deleting local data resets the onboarding flag', (tester) async {
+    SharedPreferences.setMockInitialValues({
+      AppPreferences.onboardingCompletedKey: true,
+    });
+    await pumpSettingsScreen(tester);
+
+    await tester.ensureVisible(find.text('Verileri Sil'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Verileri Sil'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Onayla'));
+    await tester.pumpAndSettle();
+
+    final preferences = await SharedPreferences.getInstance();
+    expect(preferences.getBool(AppPreferences.onboardingCompletedKey), isNull);
+  });
+
+  /// Okuma geçmişi yazılıyor ama liste ekranı onaylı tasarımda yok; mesaj bu
+  /// gerçeği söylemeli, "sonraki fazda" diye geçiştirmemeli.
+  testWidgets('the reading-history row states what actually exists', (
+    tester,
+  ) async {
+    await pumpSettingsScreen(tester);
+
+    await tester.ensureVisible(find.text('Okuma Geçmişi'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Okuma Geçmişi'));
+    await tester.pumpAndSettle();
+
     expect(
-      find.text('Silinecek yerel veri henüz yok. Yerel veri katmanı Faz 2B.'),
+      find.text(
+        'Okuma geçmişi kaydediliyor. Liste ekranı onaylı tasarımda henüz yok.',
+      ),
       findsOneWidget,
     );
   });

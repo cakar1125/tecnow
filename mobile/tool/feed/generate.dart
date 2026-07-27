@@ -20,6 +20,7 @@ import 'connectors/connector_support.dart';
 import 'fetch.dart';
 import 'merge.dart';
 import 'sources.dart';
+import 'summarize.dart';
 
 /// Bir kaynağın o koşudaki sonucu.
 final class SourceOutcome {
@@ -91,10 +92,17 @@ List<FeedItem> _newest(List<FeedItem> items, int count) {
 }
 
 final class GenerationReport {
-  const GenerationReport({required this.feed, required this.outcomes});
+  const GenerationReport({
+    required this.feed,
+    required this.outcomes,
+    this.summaries,
+  });
 
   final Feed feed;
   final List<SourceOutcome> outcomes;
+
+  /// Özet katmanının o koşudaki sonucu. Anahtar yoksa hepsi sıfırdır.
+  final SummaryPass? summaries;
 
   Iterable<SourceOutcome> get failures => outcomes.where((o) => o.failed);
   Iterable<SkippedRecord> get skipped =>
@@ -117,6 +125,7 @@ Future<GenerationReport> generateFeed({
   required List<FeedSource> sources,
   required DateTime now,
   int limit = 200,
+  Summarizer summarizer = const DisabledSummarizer(),
 }) async {
   final outcomes = <SourceOutcome>[];
   final collected = <FeedItem>[];
@@ -172,15 +181,23 @@ Future<GenerationReport> generateFeed({
   }
 
   final merged = mergeDuplicates(collected);
+  final trimmed = merged.length <= limit
+      ? merged
+      : merged.sublist(0, limit).toList(growable: false);
+
+  // Özetleme **en sona** bırakılır: birleştirme ve limit sonrasında kalan
+  // kayıtlar özetlenir. Önce özetlemek, birleştirmede kaybedilecek kopyalar
+  // için de model çağrısı yapmak olurdu.
+  final summaries = await applySummaries(trimmed, summarizer: summarizer);
+
   return GenerationReport(
     feed: Feed(
       schemaVersion: feedSchemaVersion,
       generatedAt: now,
-      items: merged.length <= limit
-          ? merged
-          : merged.sublist(0, limit).toList(growable: false),
+      items: summaries.items,
     ),
     outcomes: outcomes,
+    summaries: summaries,
   );
 }
 
@@ -216,6 +233,14 @@ Future<int> run(List<String> args, {FeedFetcher? fetcher}) async {
     }
   }
 
+  // Anahtar yoksa katman tamamen kapalıdır ve feed yine eksiksiz üretilir.
+  final apiKey = Platform.environment['ANTHROPIC_API_KEY'];
+  if (apiKey == null || apiKey.isEmpty) {
+    stdout.writeln(
+      '  ANTHROPIC_API_KEY yok — özetler kaynağın kendi metniyle kalıyor.',
+    );
+  }
+
   final report = await generateFeed(
     fetcher:
         fetcher ??
@@ -223,6 +248,9 @@ Future<int> run(List<String> args, {FeedFetcher? fetcher}) async {
     sources: defaultSources(),
     now: DateTime.now().toUtc(),
     limit: limit,
+    summarizer: apiKey == null || apiKey.isEmpty
+        ? const DisabledSummarizer()
+        : AnthropicSummarizer(apiKey: apiKey),
   );
 
   for (final outcome in report.outcomes) {
@@ -242,6 +270,21 @@ Future<int> run(List<String> args, {FeedFetcher? fetcher}) async {
       '  elenen · ${entry.key.name}: ${entry.value.length}'
       ' — $examples${rest > 0 ? ' … (+$rest)' : ''}',
     );
+  }
+
+  final summaries = report.summaries;
+  if (summaries != null &&
+      (summaries.summarized > 0 ||
+          summaries.rejected.isNotEmpty ||
+          summaries.failed > 0)) {
+    stdout.writeln(
+      '  özet · ${summaries.summarized} Türkçeleştirildi'
+      '${summaries.failed > 0 ? ', ${summaries.failed} çağrı hatası' : ''}'
+      '${summaries.budgetExhausted ? ', bütçe doldu' : ''}',
+    );
+    for (final entry in summaries.rejected.entries) {
+      stdout.writeln('  özet · reddedildi (${entry.key.name}): ${entry.value}');
+    }
   }
 
   stdout.writeln('Toplam: ${report.feed.items.length} kayıt.');

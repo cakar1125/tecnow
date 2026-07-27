@@ -138,6 +138,34 @@ final class FeedItem {
 
   bool get isRetracted => retractedAt != null;
 
+  /// Özet katmanı için: yalnız özetle ilgili üç alan değişir.
+  ///
+  /// Kasıtlı olarak dar: kaynak, adres, tarih ve güven sinyalleri üretim
+  /// hattının hiçbir adımında **değiştirilemez**. Özet yeniden yazılabilir,
+  /// gerçekler yazılamaz.
+  FeedItem withSummary({
+    required String summary,
+    required SummaryOrigin summaryOrigin,
+    required String language,
+  }) => FeedItem(
+    id: id,
+    kind: kind,
+    title: title,
+    summary: summary,
+    summaryOrigin: summaryOrigin,
+    sourceName: sourceName,
+    sourceKind: sourceKind,
+    url: url,
+    publishedAt: publishedAt,
+    checkedAt: checkedAt,
+    language: language,
+    trust: trust,
+    topics: topics,
+    mergedUrls: mergedUrls,
+    retractedAt: retractedAt,
+    correctionNote: correctionNote,
+  );
+
   Map<String, Object?> toJson() => {
     'id': id,
     'kind': kind.name,

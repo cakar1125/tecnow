@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../fixtures/fixtures.dart';
@@ -604,12 +606,24 @@ class LoadingSkeleton extends StatefulWidget {
 
 class _LoadingSkeletonState extends State<LoadingSkeleton> {
   bool bright = false;
+
+  /// `Future.delayed` iptal edilemez: widget zamanlayıcı ateşlenmeden dispose
+  /// edilirse timer askıda kalır ve widget testleri "Pending timers" ile
+  /// başarısız olur. İptal edilebilir bir Timer tutuyoruz.
+  Timer? _timer;
+
   @override
   void initState() {
     super.initState();
-    Future<void>.delayed(AppDurations.slow, () {
+    _timer = Timer(AppDurations.slow, () {
       if (mounted) setState(() => bright = true);
     });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   @override

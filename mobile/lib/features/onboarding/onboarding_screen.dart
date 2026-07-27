@@ -22,7 +22,7 @@ class OnboardingScreen extends StatelessWidget {
     (
       Icons.bolt_rounded,
       'Başlat',
-      'Repository, yapay zekâ modeli ve sosyal kartları birlikte incele.',
+      'Repository, yapay zekâ modeli ve geliştirici araçlarını birlikte incele.',
     ),
   ];
 

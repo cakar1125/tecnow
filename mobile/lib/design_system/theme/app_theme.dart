@@ -45,7 +45,15 @@ abstract final class AppTheme {
       navigationBarTheme: const NavigationBarThemeData(
         backgroundColor: AppColors.surface,
         indicatorColor: Color(0x2600F0FF),
-        labelTextStyle: WidgetStatePropertyAll(AppTypography.label),
+        labelTextStyle: WidgetStatePropertyAll(AppTypography.navLabel),
+      ),
+      // Material'in varsayılan SnackBar'ı açık zeminlidir ve koyu temanın
+      // üstünde beyaz bir bant olarak çıkar. Uygulama genelinde tek bildirim
+      // biçimi olduğu için token'lara bağlıyoruz.
+      snackBarTheme: const SnackBarThemeData(
+        backgroundColor: AppColors.surfaceHigh,
+        contentTextStyle: AppTypography.body,
+        actionTextColor: AppColors.primary,
       ),
     );
   }

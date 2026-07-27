@@ -91,6 +91,25 @@ abstract final class AppTypography {
     height: 1.33,
     fontWeight: FontWeight.w600,
   );
+
+  /// Alt navigasyon etiketi.
+  ///
+  /// `label` (12sp) ile ölçülen "Kaydedilenler" 79.8 dp yer kaplar; 360 dp
+  /// ekranda beş bölmeli navigasyonda bir bölme 72 dp'dir ve etiket kelimenin
+  /// ortasından ikinci satıra taşar. Sıkıştırılmış bu varyant 69.2 dp'ye
+  /// iner ve 360/390/430 dp'de tek satırda kalır.
+  /// Ölçüm ve regresyon kilidi: `test/design_system/bottom_navigation_test.dart`.
+  static const navLabel = TextStyle(
+    inherit: false,
+    color: AppColors.textSecondary,
+    fontFamily: 'Inter',
+    fontFamilyFallback: ['Roboto'],
+    fontSize: 11,
+    letterSpacing: -0.3,
+    textBaseline: TextBaseline.alphabetic,
+    height: 1.33,
+    fontWeight: FontWeight.w600,
+  );
   static const technical = TextStyle(
     inherit: false,
     color: AppColors.textSecondary,

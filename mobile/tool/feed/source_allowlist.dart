@@ -36,6 +36,14 @@ const _officialHosts = <String>{
 /// [_officialGitHubOwners] içindeyse resmi kabul edilir.
 const _platformHosts = <String>{'github.com', 'huggingface.co'};
 
+/// Üreticinin **istek atabileceği**, ama feed'de **görünemeyecek** hostlar.
+///
+/// `api.github.com` bir içerik adresi değildir: kullanıcıya gösterilecek şey
+/// `github.com/sahip/depo`dur. Veri buradan çekilir, ama bu host içerik
+/// allowlist'ine konsaydı bir API yanıtı yayımlanabilir bir kaynak hâline
+/// gelirdi. İki soru ayrı: *nereden çekiyoruz* ve *neyi gösteriyoruz*.
+const _apiHosts = <String>{'api.github.com'};
+
 /// Resmi dokümantasyon hostları. Blogdan ayrılırlar: dokümantasyon bir
 /// duyuru değil, sürekli güncellenen başvuru metnidir.
 const _documentationHosts = <String>{'docs.flutter.dev', 'dart.dev'};
@@ -63,12 +71,22 @@ const _officialGitHubOwners = <String>{
 ///
 /// Her biri [_officialHosts] içindeki bir hosta ait olmalıdır; test bunu
 /// doğrular, böylece allowlist'e girmeyen bir blog feed listesine sızamaz.
+///
+/// **Test üyeliği doğrular, varlığı değil.** Ağsız bir süit bir adresin
+/// gerçekten yanıt verdiğini ölçemez; ilk listede üç adres 404 dönüyordu.
+/// Aşağıdakiler 2026-07-27'de tek tek denendi ve 200 döndürdü. Yeni bir
+/// besleme eklenirken aynısı yapılmalı — bilgiden yazılan bir feed adresi,
+/// süit yeşilken sessizce ölü kalır.
+///
+/// Anthropic bilinçli olarak **yok**: dokuz aday adres denendi
+/// (`/news/rss.xml`, `/rss.xml`, `/index.xml`, `/atom.xml`, …), dokuzu da 404.
+/// Keşfedilebilir bir beslemesi olmadığı için liste, olmayan bir kaynakla
+/// doldurulmadı.
 const officialFeeds = <String>[
   'https://openai.com/blog/rss.xml',
-  'https://www.anthropic.com/news/rss.xml',
   'https://blog.google/technology/ai/rss/',
-  'https://mistral.ai/feed.xml',
-  'https://pytorch.org/feed.xml',
+  'https://mistral.ai/rss.xml',
+  'https://pytorch.org/blog/feed.xml',
   'https://developer.nvidia.com/blog/feed/',
 ];
 
@@ -98,6 +116,14 @@ abstract final class SourceAllowlist {
     return _officialHosts.contains(host) ||
         _officialHosts.any((allowed) => host.endsWith('.$allowed'));
   }
+
+  /// Üretici bu adrese istek atabilir mi?
+  ///
+  /// İçerik allowlist'i **artı** API uçları. [isAllowed] ile karıştırılmamalı:
+  /// istek atılabilen her adres, gösterilebilir değildir.
+  static bool isFetchable(Uri url) =>
+      isAllowed(url) ||
+      (url.scheme == 'https' && _apiHosts.contains(_normalizeHost(url.host)));
 
   /// Adresin hangi kaynak türüne ait olduğunu söyler.
   ///

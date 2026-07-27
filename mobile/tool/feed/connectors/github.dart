@@ -116,6 +116,11 @@ ConnectorResult parseGitHubRepositories(
 }
 
 /// Sürüm listesini ayrıştırır. Her sürüm bir duyurudur.
+///
+/// **`prerelease` bayrağına güvenilmez.** Gerçek yanıtta ölçüldü
+/// (2026-07-27): `flutter/flutter` beta sürümleri — `3.19.0-0.1.pre` — bu
+/// alanı `false` olarak işaretliyor. Beta ayıklaması bu bayrakla yapılamaz;
+/// yapılırsa çalıştığı sanılır ve çalışmaz. Yalnız `draft` güvenilirdir.
 ConnectorResult parseGitHubReleases(
   String body, {
   required DateTime checkedAt,
@@ -177,7 +182,7 @@ ConnectorResult parseGitHubReleases(
         id: feedItemId(url),
         kind: FeedItemKind.announcement,
         title: '$repository $version',
-        summary: truncateSummary(stripHtml(notes)),
+        summary: truncateSummary(flattenReleaseNotes(notes)),
         summaryOrigin: SummaryOrigin.original,
         sourceName: 'GitHub',
         sourceKind: FeedSourceKind.github,

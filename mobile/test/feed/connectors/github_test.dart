@@ -179,9 +179,11 @@ void main() {
       expect(item.publishedAt, DateTime.utc(2026, 7, 15, 14));
       expect(
         item.summary,
-        'This hotfix release addresses a rendering regression on Android 13. '
-        'See the release notes for details.',
-        reason: 'sürüm notlarındaki HTML düzleştirilir',
+        'The release of the Flutter 3.44 hotfix contains the changes noted '
+        'below. To try it out run:',
+        reason:
+            'değişiklik günlüğünün ilk 320 karakteri özet değildir; yalnız '
+            'kaynağın kendi giriş paragrafı alınır',
       );
       expect(
         item.trust.hasLicense,

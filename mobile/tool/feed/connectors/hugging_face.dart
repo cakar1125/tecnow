@@ -3,7 +3,9 @@
 /// Ağ yok; `/api/models` yanıt gövdesini `FeedItem`'a çevirir.
 ///
 /// **Özet sorunu.** Model listesi uç noktası açıklama alanı döndürmez —
-/// modelin açıklaması yok değildir, listeleme yanıtı taşımaz. Bu yüzden
+/// modelin açıklaması yok değildir, listeleme yanıtı taşımaz. Gerçek yanıtta
+/// doğrulandı (2026-07-27): `full=true` bile `description` ya da `cardData`
+/// vermiyor; açıklama ancak model kartı ayrıca çekilirse gelir. Bu yüzden
 /// açıklama geldiğinde ([SummaryOrigin.original]) olduğu gibi kullanılır;
 /// gelmediğinde yanıttaki **yapısal veriden** Türkçe bir satır kurulur ve
 /// [SummaryOrigin.teknoakis] ile işaretlenir; arayüz bunu kaynağın kendi
@@ -18,6 +20,24 @@ import 'package:teknoakis/data/feed/feed_schema.dart';
 
 import '../source_allowlist.dart';
 import 'connector_support.dart';
+
+/// Üreticinin **kullanmak zorunda olduğu** sorgu parametreleri.
+///
+/// Varsayılan `/api/models` yanıtı `lastModified` **döndürmez** — gerçek
+/// yanıtta ölçüldü (2026-07-27): dönen alanlar `_id, id, likes, private,
+/// downloads, tags, pipeline_tag, library_name, createdAt, modelId`.
+///
+/// Bu alan olmadan bakım durumu **oluşturulma tarihinden** hesaplanır ve her
+/// eski model bakımsız görünür: `sentence-transformers/all-MiniLM-L6-v2`
+/// (253 milyon indirme) 2022'de oluşturulduğu için 25 puan alıyordu; oysa
+/// gerçekten 2026-06-01'de güncellenmiş ve 70 puan alması gerekiyor.
+///
+/// `expand[]=lastModified` **yanlış çözümdür**: bu parametre dışlayıcıdır,
+/// yalnız sayılan alanları döndürür ve `createdAt`'i düşürür — denendi,
+/// bütün kayıtlar `missingDate` ile elendi. `full=true` ikisini de verir.
+///
+/// Sessiz bir bozulma olduğu için sorgu burada, bağlayıcının yanında durur.
+const huggingFaceModelsQuery = <String, String>{'full': 'true'};
 
 /// Kullanıcıya etiket olarak gösterilmeyecek, iç kullanım için ad alanı
 /// taşıyan Hugging Face etiketleri (`license:mit`, `arxiv:2401.1` gibi).
@@ -68,6 +88,9 @@ ConnectorResult parseHuggingFaceModels(
       skipped.add(SkippedRecord(modelId, SkipReason.missingDate));
       continue;
     }
+    // `lastModified` yoksa elde yalnız oluşturulma tarihi vardır. Bu, eski
+    // ama bakımlı modelleri bakımsız gösterir; [huggingFaceModelsQuery]
+    // kullanılmadığında olan budur.
     final lastModified =
         parseFeedDate(jsonString(entry, 'lastModified')) ?? createdAt;
 

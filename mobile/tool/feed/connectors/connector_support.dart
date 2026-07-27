@@ -138,6 +138,50 @@ String stripHtml(String value) => normalizeSpaces(
   decodeEntities(value).replaceAll(_tagPattern, ' '),
 ).replaceAllMapped(_spaceBeforePunctuation, (match) => match[1]!);
 
+final _fencedCode = RegExp(r'```[\s\S]*?```');
+final _listMarker = RegExp(r'^([*\-+]|\d+\.)\s');
+final _markdownLink = RegExp(r'!?\[([^\]]*)\]\([^)]*\)');
+final _emphasis = RegExp(r'(\*\*|__|`)');
+final _headingMarker = RegExp(r'^#{1,6}\s*', multiLine: true);
+
+/// Sürüm notlarının **giriş paragrafını** düz metne çevirir.
+///
+/// Bir değişiklik günlüğünün ilk 320 karakteri özet değildir: kod bloğu,
+/// başlık ve madde listesiyle dolu bir metin karta konduğunda okunmaz.
+/// Gerçek `flutter/flutter` yanıtında ölçüldü — ham gövde şöyle başlıyordu:
+/// "... ``` flutter channel beta flutter upgrade ``` # Flutter 3.19 beta ...".
+///
+/// Bu yüzden yalnız ilk paragraf alınır: başlık, madde listesi ya da boş satır
+/// görüldüğünde durulur. Kaynağın kendi giriş cümlesidir — kısaltılır ama
+/// yeniden yazılmaz.
+String flattenReleaseNotes(String body) {
+  final lines = body.replaceAll(_fencedCode, '\n\n').split(RegExp(r'\r?\n'));
+  final lead = <String>[];
+
+  for (final line in lines) {
+    final text = line.trim();
+    if (text.startsWith('#')) break;
+    if (_listMarker.hasMatch(text)) break;
+    if (text.isEmpty) {
+      if (lead.isNotEmpty) break;
+      continue;
+    }
+    lead.add(text);
+  }
+
+  // Gövde doğrudan başlıkla başlıyorsa giriş paragrafı yoktur; bu durumda
+  // metnin tamamı düzleştirilir (hiç özet olmamasından iyidir).
+  final source = lead.isEmpty
+      ? body.replaceAll(_fencedCode, ' ')
+      : lead.join(' ');
+  return stripHtml(
+    source
+        .replaceAll(_headingMarker, '')
+        .replaceAllMapped(_markdownLink, (match) => match[1] ?? '')
+        .replaceAll(_emphasis, ''),
+  );
+}
+
 /// Özeti kart boyutuna indirir; kelime ortasından kesmez.
 String truncateSummary(String value, {int limit = 320}) {
   if (value.length <= limit) return value;

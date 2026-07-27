@@ -77,6 +77,40 @@ void main() {
     });
   });
 
+  group('sürüm notları', () {
+    /// Gerçek `flutter/flutter` yanıtından ölçüldü: ham gövdenin ilk 320
+    /// karakteri kod bloğu, başlık ve madde listesiyle doluydu.
+    test('yalnız giriş paragrafı alınır', () {
+      const body =
+          'The release contains the changes noted below. To try it out run:\n'
+          '\n```\nflutter upgrade\n```\n\n'
+          '# Flutter 3.44.8\n\n## Framework\n\n'
+          '* Retry on transient failure by @birisi\n';
+      expect(
+        flattenReleaseNotes(body),
+        'The release contains the changes noted below. To try it out run:',
+      );
+    });
+
+    test('bağlantı ve vurgu işaretleri metinden çıkar', () {
+      expect(
+        flattenReleaseNotes(
+          'Fixes **rendering**, see [the issue](https://x.test/1).',
+        ),
+        'Fixes rendering, see the issue.',
+      );
+    });
+
+    /// Gövde doğrudan başlıkla başlıyorsa giriş paragrafı yoktur; hiç özet
+    /// olmamasındansa metnin tamamı düzleştirilir.
+    test('giriş paragrafı yoksa gövde düzleştirilir', () {
+      expect(
+        flattenReleaseNotes('# Başlık\n\nBir satır.'),
+        'Başlık Bir satır.',
+      );
+    });
+  });
+
   group('özet kısaltma', () {
     test('sınırın altındaki metne dokunulmaz', () {
       expect(truncateSummary('kısa metin'), 'kısa metin');

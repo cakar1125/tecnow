@@ -23,6 +23,7 @@ void main() {
         'birisi/nexus-7b',
         'birisi/aciklamali-model',
         'birisi/eski-model',
+        'birisi/expand-parametresiz',
       ]);
     });
 
@@ -99,6 +100,25 @@ void main() {
       final item = _byTitle('birisi/nexus-7b');
       expect(item.trust.officialSource, isFalse);
       expect(item.trust.hasLicense, isTrue);
+    });
+
+    /// Gerçek yanıtta yakalandı: varsayılan `/api/models` `lastModified`
+    /// döndürmüyor. Bu alan olmadan bakım durumu oluşturulma tarihinden
+    /// hesaplanır ve 253 milyon indirmeli, güncel bir model bakımsız görünür.
+    /// Üretici [huggingFaceModelsQuery] kullanmak zorunda; bu test, alan
+    /// gelmediğinde ne olduğunu belgeler.
+    test('lastModified gelmezse oluşturulma tarihine düşülür', () {
+      final item = _byTitle('birisi/expand-parametresiz');
+      expect(item.trust.maintained, isFalse);
+      expect(item.trust.popularity, 253094980);
+      expect(
+        item.trust.score,
+        25,
+        reason: 'eksik sorgunun bedeli: 70 yerine 25 puan',
+      );
+      // `expand[]=lastModified` denendi ve `createdAt`'i düşürdü: dışlayıcı
+      // bir parametre. `full=true` iki tarihi birden verir.
+      expect(huggingFaceModelsQuery, {'full': 'true'});
     });
 
     test('bir yıldır dokunulmamış model bakımsızdır', () {

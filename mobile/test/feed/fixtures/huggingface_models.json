@@ -53,6 +53,18 @@
     "tags": ["license:other"]
   },
   {
+    "_id": "621ffdc136468d709f180294",
+    "id": "birisi/expand-parametresiz",
+    "modelId": "birisi/expand-parametresiz",
+    "private": false,
+    "createdAt": "2022-03-02T23:29:05.000Z",
+    "downloads": 253094980,
+    "likes": 5128,
+    "library_name": "sentence-transformers",
+    "pipeline_tag": "sentence-similarity",
+    "tags": ["sentence-transformers", "sentence-similarity", "license:apache-2.0"]
+  },
+  {
     "id": "birisi/gizli-model",
     "private": true,
     "createdAt": "2026-07-20T10:00:00.000Z",

@@ -8,7 +8,7 @@
     "html_url": "https://github.com/flutter/flutter/releases/tag/3.44.8",
     "published_at": "2026-07-15T14:00:00Z",
     "created_at": "2026-07-15T13:40:00Z",
-    "body": "<p>This hotfix release addresses a <b>rendering</b> regression on Android 13.</p>\n\nSee the release notes for details."
+    "body": "The release of the Flutter 3.44 hotfix contains the changes noted below. To try it out run:\n\n```\nflutter channel stable\nflutter upgrade\n```\n\n# Flutter 3.44.8 (July 15, 2026)\n\n## Framework\n\n* Retry on transient Skia failure by @birisi in https://github.com/flutter/flutter/pull/139182\n* Fix **rendering** regression, see [the issue](https://github.com/flutter/flutter/issues/1)"
   },
   {
     "id": 102,

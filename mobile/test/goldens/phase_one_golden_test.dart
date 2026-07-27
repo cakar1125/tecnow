@@ -7,17 +7,23 @@ import 'package:teknoakis/features/ai_model_detail/ai_model_detail_screen.dart';
 import 'package:teknoakis/features/feed/feed_screen.dart';
 import 'package:teknoakis/features/repository_detail/repository_detail_screen.dart';
 
+import '../support/test_overrides.dart';
+
 void main() {
   setUpAll(() async {
     await loadAppFonts();
   });
 
+  /// Ana Sayfa artık paketlenmiş feed'i okuyor. Golden **sabit** veriyle
+  /// çekilir: gerçek `assets/feed/feed.json` her üretici koşusunda değişir ve
+  /// golden her koşuda kırılırdı — o da onu bir kilit olmaktan çıkarırdı.
   testGoldens('GOLDEN Ana Sayfa 390x844', (tester) async {
     await tester.pumpWidgetBuilder(
-      const FeedScreen(),
+      memoryDataScope(const FeedScreen()),
       wrapper: materialAppWrapper(theme: AppTheme.dark),
       surfaceSize: const Size(390, 844),
     );
+    await tester.pumpAndSettle();
     await screenMatchesGolden(tester, 'home_390x844');
   });
 

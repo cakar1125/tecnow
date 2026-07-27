@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../data/feed/feed_schema.dart' show FeedItemKind;
 import '../../fixtures/fixtures.dart';
+import '../../ui/content_card_model.dart';
 import '../tokens/app_tokens.dart';
 
 class AppScaffold extends StatelessWidget {
@@ -703,29 +705,11 @@ class SavedItemCard extends StatelessWidget {
     super.key,
   });
 
-  final SavedItemFixture item;
+  final ContentCardModel item;
   final VoidCallback onRemove;
   final VoidCallback onOpenDetails;
 
-  (String, Color, IconData) get _category => switch (item.kind) {
-    SavedItemKind.repository => (
-      'REPOSITORY',
-      AppColors.primary,
-      Icons.code_rounded,
-    ),
-    SavedItemKind.aiModel => (
-      'AI',
-      AppColors.aiAccent,
-      Icons.psychology_outlined,
-    ),
-    SavedItemKind.tool => ('ARAÇLAR', AppColors.warning, Icons.build_outlined),
-    SavedItemKind.skill => ('SKILLS', AppColors.success, Icons.school_outlined),
-    SavedItemKind.assistantProject => (
-      'ASİSTAN PROJESİ',
-      AppColors.aiAccent,
-      Icons.auto_awesome_outlined,
-    ),
-  };
+  (String, Color, IconData) get _category => categoryOf(item.kind);
 
   @override
   Widget build(BuildContext context) {
@@ -746,7 +730,9 @@ class SavedItemCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: AppSpacing.sm),
-              Text('Örnek kayıt', style: AppTypography.technical),
+              // Yalnız fixture kaydında. Gerçek içerikte bu etiket yalan olur.
+              if (item.isSample)
+                Text('Örnek kayıt', style: AppTypography.technical),
             ],
           ),
           const SizedBox(height: AppSpacing.md),
@@ -781,10 +767,39 @@ class SavedItemCard extends StatelessWidget {
   }
 }
 
+/// İçerik türünün rozet etiketi, rengi ve simgesi.
+///
+/// Mor **yalnız AI/Asistan bağlamında** kullanılır (`CLAUDE.md` değişmez
+/// kuralı); model kartı dışında hiçbir tür bu rengi almaz.
+(String, Color, IconData) categoryOf(FeedItemKind kind) => switch (kind) {
+  FeedItemKind.repository => ('DEPO', AppColors.primary, Icons.code_rounded),
+  FeedItemKind.aiModel => (
+    'AI MODEL',
+    AppColors.aiAccent,
+    Icons.psychology_outlined,
+  ),
+  FeedItemKind.tool => ('ARAÇ', AppColors.warning, Icons.build_outlined),
+  FeedItemKind.skill => ('SKILL', AppColors.success, Icons.school_outlined),
+  FeedItemKind.mcp => ('MCP', AppColors.primary, Icons.hub_outlined),
+  FeedItemKind.announcement => (
+    'DUYURU',
+    AppColors.success,
+    Icons.campaign_outlined,
+  ),
+};
+
+/// Özetin dilini gösteren etiket. Anahtarsız üretilen feed'de özetler
+/// kaynağın kendi dilindedir; kullanıcı bunu **kartın üzerinde** görmeli,
+/// tıkladıktan sonra değil.
+String? languageBadge(ContentCardModel item) =>
+    item.language.toLowerCase().startsWith('tr')
+    ? null
+    : item.language.toUpperCase();
+
 class FeedItemCard extends StatefulWidget {
   const FeedItemCard({required this.item, this.onTap, super.key});
 
-  final FeedItemFixture item;
+  final ContentCardModel item;
   final VoidCallback? onTap;
 
   @override
@@ -794,20 +809,7 @@ class FeedItemCard extends StatefulWidget {
 class _FeedItemCardState extends State<FeedItemCard> {
   bool _isSaved = false;
 
-  (String, Color, IconData) get _category => switch (widget.item.kind) {
-    FeedSourceKind.github => ('GİTHUB', AppColors.primary, Icons.code_rounded),
-    FeedSourceKind.aiModel => (
-      'AI MODEL',
-      AppColors.aiAccent,
-      Icons.psychology_outlined,
-    ),
-    FeedSourceKind.tool => ('ARAÇ', AppColors.warning, Icons.build_outlined),
-    FeedSourceKind.announcement => (
-      'DUYURU',
-      AppColors.success,
-      Icons.campaign_outlined,
-    ),
-  };
+  (String, Color, IconData) get _category => categoryOf(widget.item.kind);
 
   void _toggleSaved() {
     setState(() => _isSaved = !_isSaved);
@@ -845,10 +847,22 @@ class _FeedItemCardState extends State<FeedItemCard> {
                         widget.item.sourceLabel,
                         style: AppTypography.technical,
                       ),
-                      const _Badge(
-                        label: 'ÖRNEK',
-                        color: AppColors.textSecondary,
-                      ),
+                      // Örnek işareti yalnız fixture kartlarında. Gerçek
+                      // içerikte "ÖRNEK" yazmak yalan olurdu.
+                      if (widget.item.isSample)
+                        const _Badge(
+                          label: 'ÖRNEK',
+                          color: AppColors.textSecondary,
+                        ),
+                      // Politika: TeknoAkış özeti kaynağın kendi metninden
+                      // görsel olarak ayrılır.
+                      if (widget.item.summaryAuthor == SummaryAuthor.teknoakis)
+                        const _Badge(
+                          label: 'TEKNOAKIŞ ÖZETİ',
+                          color: AppColors.aiAccent,
+                        ),
+                      if (languageBadge(widget.item) case final code?)
+                        _Badge(label: code, color: AppColors.textSecondary),
                     ],
                   ),
                 ),
@@ -880,28 +894,32 @@ class _FeedItemCardState extends State<FeedItemCard> {
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: AppSpacing.md),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(AppSpacing.md),
-              decoration: const BoxDecoration(
-                color: AppColors.surfaceHigh,
-                borderRadius: AppRadius.smallBorder,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'NE İŞE YARAR?',
-                    style: AppTypography.label.copyWith(
-                      color: AppColors.primary,
+            // Kaynaklar "ne işe yarar" diye bir alan vermiyor ve onu biz
+            // uydurmayız: alan yoksa bölüm hiç çizilmez.
+            if (widget.item.whatItDoes case final explanation?) ...[
+              const SizedBox(height: AppSpacing.md),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(AppSpacing.md),
+                decoration: const BoxDecoration(
+                  color: AppColors.surfaceHigh,
+                  borderRadius: AppRadius.smallBorder,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'NE İŞE YARAR?',
+                      style: AppTypography.label.copyWith(
+                        color: AppColors.primary,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(widget.item.whatItDoes, style: AppTypography.bodyMuted),
-                ],
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(explanation, style: AppTypography.bodyMuted),
+                  ],
+                ),
               ),
-            ),
+            ],
             const SizedBox(height: AppSpacing.md),
             Wrap(
               spacing: AppSpacing.sm,

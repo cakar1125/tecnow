@@ -1,52 +1,100 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:teknoakis/data/feed/feed_schema.dart';
 import 'package:teknoakis/design_system/components/app_components.dart';
 import 'package:teknoakis/design_system/tokens/app_tokens.dart';
-import 'package:teknoakis/fixtures/fixtures.dart';
+import 'package:teknoakis/ui/content_card_model.dart';
 
 import '../test_harness.dart';
 
+ContentCardModel _card({
+  FeedItemKind kind = FeedItemKind.repository,
+  bool isSample = true,
+}) => isSample
+    ? ContentCardModel.sample(
+        id: 'a',
+        kind: kind,
+        title: 'Bir kayıt',
+        sourceLabel: 'GitHub',
+        summary: 'Bir açıklama.',
+      )
+    : ContentCardModel(
+        id: 'a',
+        kind: kind,
+        title: 'Bir kayıt',
+        sourceLabel: 'GitHub',
+        summary: 'Bir açıklama.',
+      );
+
 void main() {
-  testWidgets('renders the correct label and color for every saved item kind', (
+  testWidgets('renders the correct label and color for every content kind', (
     tester,
   ) async {
     const expectations = {
-      SavedItemKind.repository: (
-        'REPOSITORY',
-        AppColors.primary,
-        Icons.code_rounded,
-      ),
-      SavedItemKind.aiModel: (
-        'AI',
+      FeedItemKind.repository: ('DEPO', AppColors.primary, Icons.code_rounded),
+      FeedItemKind.aiModel: (
+        'AI MODEL',
         AppColors.aiAccent,
         Icons.psychology_outlined,
       ),
-      SavedItemKind.tool: ('ARAÇLAR', AppColors.warning, Icons.build_outlined),
-      SavedItemKind.skill: ('SKILLS', AppColors.success, Icons.school_outlined),
-      SavedItemKind.assistantProject: (
-        'ASİSTAN PROJESİ',
-        AppColors.aiAccent,
-        Icons.auto_awesome_outlined,
+      FeedItemKind.tool: ('ARAÇ', AppColors.warning, Icons.build_outlined),
+      FeedItemKind.skill: ('SKILL', AppColors.success, Icons.school_outlined),
+      FeedItemKind.mcp: ('MCP', AppColors.primary, Icons.hub_outlined),
+      FeedItemKind.announcement: (
+        'DUYURU',
+        AppColors.success,
+        Icons.campaign_outlined,
       ),
     };
 
+    // Her tür kapsanmalı: yeni bir tür eklenip rozeti unutulursa burada
+    // görünsün.
+    expect(expectations.keys.toSet(), FeedItemKind.values.toSet());
+
     for (final entry in expectations.entries) {
-      final item = savedItemFixtures.singleWhere(
-        (fixture) => fixture.kind == entry.key,
-      );
       final (label, color, icon) = entry.value;
 
       await tester.pumpWidget(
         testHarness(
-          SavedItemCard(item: item, onRemove: () {}, onOpenDetails: () {}),
+          SavedItemCard(
+            item: _card(kind: entry.key),
+            onRemove: () {},
+            onOpenDetails: () {},
+          ),
         ),
       );
 
       expect(find.text(label), findsOneWidget);
       final categoryIcon = tester.widget<Icon>(find.byIcon(icon));
       expect(categoryIcon.color, color);
-      expect(find.text('Örnek kayıt'), findsOneWidget);
     }
+  });
+
+  group('örnek işareti', () {
+    /// `CLAUDE.md`: kurgusal veri gerçek gibi sunulmaz.
+    testWidgets('fixture kaydı görünür biçimde işaretlenir', (tester) async {
+      await tester.pumpWidget(
+        testHarness(
+          SavedItemCard(item: _card(), onRemove: () {}, onOpenDetails: () {}),
+        ),
+      );
+      expect(find.text('Örnek kayıt'), findsOneWidget);
+    });
+
+    /// Ters yön de yanlış: kullanıcının gerçekten kaydettiği bir içeriğe
+    /// "örnek" demek onu değersizleştirir ve yanlış bilgi verir.
+    testWidgets('gerçek kayıt örnek diye işaretlenmez', (tester) async {
+      await tester.pumpWidget(
+        testHarness(
+          SavedItemCard(
+            item: _card(isSample: false),
+            onRemove: () {},
+            onOpenDetails: () {},
+          ),
+        ),
+      );
+      expect(find.text('Örnek kayıt'), findsNothing);
+    });
   });
 
   testWidgets('renders both actions and invokes their callbacks', (
@@ -58,7 +106,7 @@ void main() {
     await tester.pumpWidget(
       testHarness(
         SavedItemCard(
-          item: savedItemFixtures.first,
+          item: _card(),
           onRemove: () => removeCalls++,
           onOpenDetails: () => detailCalls++,
         ),
@@ -70,6 +118,7 @@ void main() {
 
     await tester.tap(find.text('Kaydı Kaldır'));
     await tester.tap(find.text('Detaya Git'));
+    await tester.pump();
 
     expect(removeCalls, 1);
     expect(detailCalls, 1);

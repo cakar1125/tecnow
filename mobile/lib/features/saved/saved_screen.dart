@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../data/feed/feed_schema.dart' show FeedItemKind;
 import '../../data/providers.dart';
 import '../../data/repositories/saved_items_repository.dart';
 import '../../design_system/components/app_components.dart';
 import '../../design_system/tokens/app_tokens.dart';
 import '../../fixtures/fixtures.dart';
+import '../../ui/content_card_model.dart';
 
 class SavedScreen extends ConsumerStatefulWidget {
   const SavedScreen({super.key});
@@ -140,13 +142,28 @@ SavedItemKind? _kindOf(SavedItem item) {
   return null;
 }
 
-/// `SavedItemCard` fixture şeklini bekliyor. Kayıtların tamamı şu an fixture
-/// tohumundan geldiği için dönüşüm bilgi kaybetmez; Faz 3'te gerçek içerik
-/// gelince kart kendi modeline geçmelidir.
-SavedItemFixture _toCardModel(SavedItem item) => SavedItemFixture(
-  kind: _kindOf(item) ?? SavedItemKind.tool,
+/// Tohumlanan örnek kayıtların kimlikleri.
+///
+/// "Örnek kayıt" işaretinin **doğru** olması buna bağlı: kullanıcının gerçek
+/// feed'den kaydettiği bir içeriğe örnek demek, kurgusal veriyi gerçek gibi
+/// sunmanın ters yönde ama aynı ölçüde yanlış hâlidir.
+final _sampleIds = {for (final fixture in savedItemFixtures) fixture.id};
+
+FeedItemKind _cardKind(SavedItemKind? kind) => switch (kind) {
+  SavedItemKind.repository => FeedItemKind.repository,
+  SavedItemKind.aiModel => FeedItemKind.aiModel,
+  SavedItemKind.skill => FeedItemKind.skill,
+  // Asistan projesi feed türü değildir; kartta araç gibi gösterilir.
+  SavedItemKind.assistantProject ||
+  SavedItemKind.tool ||
+  null => FeedItemKind.tool,
+};
+
+ContentCardModel _toCardModel(SavedItem item) => ContentCardModel(
+  kind: _cardKind(_kindOf(item)),
   id: item.id,
   title: item.title,
   sourceLabel: item.sourceLabel ?? 'Bilinmeyen kaynak',
   summary: item.summary ?? '',
+  isSample: _sampleIds.contains(item.id),
 );

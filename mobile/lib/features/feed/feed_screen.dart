@@ -1,41 +1,77 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../data/feed/feed_schema.dart';
+import '../../data/providers.dart';
 import '../../design_system/components/app_components.dart';
 import '../../design_system/tokens/app_tokens.dart';
-import '../../fixtures/fixtures.dart';
+import '../../ui/content_card_model.dart';
 
-class FeedScreen extends StatefulWidget {
+/// Akış sekmeleri.
+///
+/// `lib/fixtures`'taki `FeedTab` yerine burada duruyor: sekmeler artık
+/// fixture alanından değil, **kaydın kendi verisinden** türetiliyor.
+enum HomeTab { sanaOzel, gundem, github, aiModelleri }
+
+class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
 
   @override
-  State<FeedScreen> createState() => _FeedScreenState();
+  ConsumerState<FeedScreen> createState() => _FeedScreenState();
 }
 
-class _FeedScreenState extends State<FeedScreen> {
-  FeedTab _selectedTab = FeedTab.sanaOzel;
+class _FeedScreenState extends ConsumerState<FeedScreen> {
+  HomeTab _selectedTab = HomeTab.sanaOzel;
 
   static const _tabLabels = {
-    FeedTab.sanaOzel: 'SANA ÖZEL',
-    FeedTab.gundem: 'GÜNDEM',
-    FeedTab.github: 'GİTHUB',
-    FeedTab.aiModelleri: 'AI MODELLERİ',
+    HomeTab.sanaOzel: 'SANA ÖZEL',
+    HomeTab.gundem: 'GÜNDEM',
+    HomeTab.github: 'GİTHUB',
+    HomeTab.aiModelleri: 'AI MODELLERİ',
   };
 
-  List<FeedItemFixture> get _visibleItems => feedItemFixtures
-      .where((item) => item.tabs.contains(_selectedTab))
-      .toList(growable: false);
+  /// Sekme filtresi.
+  ///
+  /// **Sana Özel**, ilgi alanları seçilmişse konu kesişimine bakar; hiç ilgi
+  /// alanı yoksa akışın tamamını gösterir. Boş bir "sana özel" sekmesi,
+  /// kullanıcıya bir şey seçmediğini anlatmaz — sadece bozuk görünür.
+  List<FeedItem> _filter(List<FeedItem> items, Set<String> interests) =>
+      switch (_selectedTab) {
+        HomeTab.sanaOzel =>
+          interests.isEmpty
+              ? items
+              : items
+                    .where(
+                      (item) => item.topics.any(
+                        (topic) => interests.contains(topic.toLowerCase()),
+                      ),
+                    )
+                    .toList(growable: false),
+        HomeTab.gundem =>
+          items
+              .where((item) => item.kind == FeedItemKind.announcement)
+              .toList(growable: false),
+        HomeTab.github =>
+          items
+              .where((item) => item.sourceKind == FeedSourceKind.github)
+              .toList(growable: false),
+        HomeTab.aiModelleri =>
+          items
+              .where((item) => item.kind == FeedItemKind.aiModel)
+              .toList(growable: false),
+      };
 
-  void _openItem(BuildContext context, FeedItemFixture item) {
+  void _openItem(BuildContext context, FeedItem item) {
     switch (item.kind) {
-      case FeedSourceKind.github:
+      case FeedItemKind.repository:
+      case FeedItemKind.mcp:
+      case FeedItemKind.skill:
         context.push('/repository/${item.id}');
-        return;
-      case FeedSourceKind.aiModel:
+      case FeedItemKind.aiModel:
         context.push('/ai-model/${item.id}');
-        return;
-      case FeedSourceKind.tool:
-      case FeedSourceKind.announcement:
+      case FeedItemKind.tool:
+      case FeedItemKind.announcement:
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
@@ -43,102 +79,138 @@ class _FeedScreenState extends State<FeedScreen> {
             ),
           ),
         );
-        return;
     }
   }
 
   @override
-  Widget build(BuildContext context) => CustomScrollView(
-    key: const Key('feed-scroll'),
-    slivers: [
-      SliverToBoxAdapter(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.lg,
-            AppSpacing.xl,
-            AppSpacing.sm,
-            AppSpacing.lg,
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'TEKNOAKIŞ',
-                      style: AppTypography.display.copyWith(
-                        color: AppColors.primary,
+  Widget build(BuildContext context) {
+    final feed = ref.watch(feedProvider);
+    final interests = ref.watch(interestsProvider).value ?? const <String>{};
+
+    return CustomScrollView(
+      key: const Key('feed-scroll'),
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.xl,
+              AppSpacing.sm,
+              AppSpacing.lg,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'TEKNOAKIŞ',
+                        style: AppTypography.display.copyWith(
+                          color: AppColors.primary,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      'Teknoloji dünyasında önemli olanları keşfet.',
-                      style: AppTypography.bodyMuted,
-                    ),
-                  ],
-                ),
-              ),
-              IconButton(
-                key: const Key('feed-search'),
-                tooltip: 'Keşfet',
-                onPressed: () => context.go('/explore'),
-                icon: const Icon(
-                  Icons.search_rounded,
-                  color: AppColors.primary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      SliverToBoxAdapter(
-        child: SingleChildScrollView(
-          key: const Key('feed-tab-scroll'),
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-          child: Row(
-            children: [
-              for (final tab in FeedTab.values)
-                _FeedTabButton(
-                  key: Key(
-                    'feed-tab-${tab.name}-'
-                    '${_selectedTab == tab ? 'selected' : 'idle'}',
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        'Teknoloji dünyasında önemli olanları keşfet.',
+                        style: AppTypography.bodyMuted,
+                      ),
+                    ],
                   ),
-                  label: _tabLabels[tab]!,
-                  selected: _selectedTab == tab,
-                  onTap: () => setState(() => _selectedTab = tab),
                 ),
-            ],
+                IconButton(
+                  key: const Key('feed-search'),
+                  tooltip: 'Keşfet',
+                  onPressed: () => context.go('/explore'),
+                  icon: const Icon(
+                    Icons.search_rounded,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-      SliverPadding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        sliver: _visibleItems.isEmpty
-            ? const SliverFillRemaining(
-                hasScrollBody: false,
-                child: EmptyStateView(
-                  title: 'İçerik bulunamadı',
-                  message: 'Bu sekme için henüz örnek içerik yok.',
-                ),
-              )
-            : SliverList.separated(
-                itemCount: _visibleItems.length,
-                itemBuilder: (context, index) {
-                  final item = _visibleItems[index];
-                  return FeedItemCard(
-                    key: ValueKey(item.id),
-                    item: item,
-                    onTap: () => _openItem(context, item),
-                  );
-                },
-                separatorBuilder: (_, _) =>
-                    const SizedBox(height: AppSpacing.lg),
-              ),
-      ),
-    ],
+        SliverToBoxAdapter(
+          child: SingleChildScrollView(
+            key: const Key('feed-tab-scroll'),
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            child: Row(
+              children: [
+                for (final tab in HomeTab.values)
+                  _FeedTabButton(
+                    key: Key(
+                      'feed-tab-${tab.name}-'
+                      '${_selectedTab == tab ? 'selected' : 'idle'}',
+                    ),
+                    label: _tabLabels[tab]!,
+                    selected: _selectedTab == tab,
+                    onTap: () => setState(() => _selectedTab = tab),
+                  ),
+              ],
+            ),
+          ),
+        ),
+        switch (feed) {
+          // `LoadingSkeleton`, iptal edilebilir bir Timer kullanır;
+          // `CircularProgressIndicator` sonsuz animasyonuyla her ekranın
+          // `pumpAndSettle`'ını zaman aşımına uğratıyordu.
+          AsyncLoading() => const SliverFillRemaining(
+            hasScrollBody: false,
+            child: Padding(
+              key: Key('feed-loading'),
+              padding: EdgeInsets.all(AppSpacing.lg),
+              child: LoadingSkeleton(),
+            ),
+          ),
+          // Bozuk bir feed sessizce boş liste gibi görünmez: hata olduğu
+          // söylenir, çünkü "içerik yok" ile "içerik okunamadı" farklı şeyler.
+          AsyncError() => const SliverFillRemaining(
+            hasScrollBody: false,
+            child: EmptyStateView(
+              key: Key('feed-error'),
+              title: 'İçerik okunamadı',
+              message:
+                  'Paketlenmiş içerik dosyası açılamadı. Uygulamayı '
+                  'güncellemek sorunu çözebilir.',
+            ),
+          ),
+          AsyncValue(:final value?) => _list(
+            _filter(value, interests),
+            context,
+          ),
+        },
+      ],
+    );
+  }
+
+  Widget _list(List<FeedItem> items, BuildContext context) => SliverPadding(
+    padding: const EdgeInsets.all(AppSpacing.lg),
+    sliver: items.isEmpty
+        ? SliverFillRemaining(
+            hasScrollBody: false,
+            child: EmptyStateView(
+              title: 'İçerik bulunamadı',
+              message: _selectedTab == HomeTab.sanaOzel
+                  ? 'Seçtiğin ilgi alanlarına uyan içerik yok. '
+                        'Ayarlardan ilgi alanlarını genişletebilirsin.'
+                  : 'Bu sekme için henüz içerik yok.',
+            ),
+          )
+        : SliverList.separated(
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              return FeedItemCard(
+                key: ValueKey(item.id),
+                item: ContentCardModel.fromFeedItem(item),
+                onTap: () => _openItem(context, item),
+              );
+            },
+            separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.lg),
+          ),
   );
 }
 

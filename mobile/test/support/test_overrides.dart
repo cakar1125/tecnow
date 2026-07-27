@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:teknoakis/data/feed/feed_repository.dart';
+import 'package:teknoakis/data/feed/feed_schema.dart';
 import 'package:teknoakis/data/providers.dart';
 import 'package:teknoakis/data/repositories/interests_repository.dart';
 import 'package:teknoakis/data/repositories/local_data_repository.dart';
@@ -134,12 +136,14 @@ Widget memoryDataHarness(
   List<SavedItem>? savedItems,
   List<String>? interests,
   ReadHistoryRepository? readHistory,
+  List<FeedItem>? feed,
   double textScale = 1,
 }) => memoryDataScope(
   testApp(child, textScale: textScale),
   savedItems: savedItems,
   interests: interests,
   readHistory: readHistory,
+  feed: feed,
 );
 
 /// Router'ı kendisi kuran testler için: yalnız scope, kendi `MaterialApp`'ini
@@ -149,6 +153,7 @@ Widget memoryDataScope(
   List<SavedItem>? savedItems,
   List<String>? interests,
   ReadHistoryRepository? readHistory,
+  List<FeedItem>? feed,
 }) {
   // Örnekler önceden kurulur: `localDataRepositoryProvider` diğer üçüyle
   // **aynı** nesneleri görmeli, yoksa "Verileri Sil" testte hiçbir şeyi
@@ -170,7 +175,99 @@ Widget memoryDataScope(
         (ref) async =>
             InMemoryLocalDataRepository(saved, interestsRepository, history),
       ),
+      feedRepositoryProvider.overrideWithValue(
+        FakeFeedRepository(feed ?? testFeedItems()),
+      ),
     ],
     child: child,
   );
 }
+
+/// Paketlenmiş dosyaya dokunmayan feed deposu.
+///
+/// Ekran testleri **gerçek** `assets/feed/feed.json`'ı okumamalı: o dosya her
+/// üretici koşusunda değişir ve testler o günkü içeriğe bağlı olurdu. Gerçek
+/// varlığın ayrıştırılabildiği ayrıca `test/data/feed_repository_test.dart`
+/// içinde ölçülüyor.
+final class FakeFeedRepository implements FeedRepository {
+  FakeFeedRepository(this.items, {this.error});
+
+  final List<FeedItem> items;
+
+  /// Verilirse [load] bunu fırlatır — hata durumu ekranları için.
+  final Object? error;
+
+  @override
+  Future<Feed> load() async {
+    if (error case final failure?) throw failure;
+    return Feed(
+      schemaVersion: feedSchemaVersion,
+      generatedAt: DateTime.utc(2026, 7, 27),
+      items: items,
+    );
+  }
+}
+
+/// Ekran testlerinin belirlenimci feed'i.
+///
+/// Her sekmenin dolu olması için türler bilinçli olarak dağıtıldı: depo,
+/// AI modeli ve duyuru.
+List<FeedItem> testFeedItems() => [
+  testFeedItem(
+    id: '0000000000000001',
+    kind: FeedItemKind.repository,
+    title: 'ornek/depo',
+    topics: const ['dart'],
+  ),
+  testFeedItem(
+    id: '0000000000000002',
+    kind: FeedItemKind.aiModel,
+    title: 'ornek/model',
+    sourceKind: FeedSourceKind.huggingFace,
+    sourceName: 'Hugging Face',
+    summaryOrigin: SummaryOrigin.teknoakis,
+    language: 'tr',
+    topics: const ['llm'],
+  ),
+  testFeedItem(
+    id: '0000000000000003',
+    kind: FeedItemKind.announcement,
+    title: 'Bir duyuru',
+    sourceKind: FeedSourceKind.officialBlog,
+    sourceName: 'OpenAI Blog',
+    publishedAt: DateTime.utc(2026, 7, 26),
+  ),
+];
+
+FeedItem testFeedItem({
+  required String id,
+  required FeedItemKind kind,
+  required String title,
+  String summary = 'Bir açıklama.',
+  SummaryOrigin summaryOrigin = SummaryOrigin.original,
+  String sourceName = 'GitHub',
+  FeedSourceKind sourceKind = FeedSourceKind.github,
+  String language = 'en',
+  List<String> topics = const [],
+  DateTime? publishedAt,
+}) => FeedItem(
+  id: id,
+  kind: kind,
+  title: title,
+  summary: summary,
+  summaryOrigin: summaryOrigin,
+  sourceName: sourceName,
+  sourceKind: sourceKind,
+  url: Uri.parse('https://github.com/ornek/$id'),
+  publishedAt: publishedAt ?? DateTime.utc(2026, 7, 20),
+  checkedAt: DateTime.utc(2026, 7, 27),
+  language: language,
+  trust: const TrustSignals(
+    officialSource: true,
+    hasLicense: true,
+    recentlyUpdated: true,
+    maintained: true,
+    popularity: 10,
+  ),
+  topics: topics,
+);

@@ -61,4 +61,56 @@ void main() {
       expect(parseFeedEndpoint(feedUrlFromEnvironment), isNull);
     });
   });
+
+  group('parseFeedEndpoints', () {
+    const primary = 'https://feed.ornek.test/feed.json';
+    const mirror = 'https://ayna.github.io/depo/feed.json';
+
+    test('sıra korunur: önce birincil, sonra yedek', () {
+      expect(parseFeedEndpoints(primary, mirror), [
+        Uri.parse(primary),
+        Uri.parse(mirror),
+      ]);
+    });
+
+    /// Yedek verilmediğinde davranış, yedek kavramı hiç yokken olduğu gibi
+    /// kalmalı: tek adres, tek deneme.
+    test('yedek verilmediğinde tek adres kalır', () {
+      expect(parseFeedEndpoints(primary, ''), [Uri.parse(primary)]);
+    });
+
+    test('ikisi de yoksa liste boştur — ağ tazelemesi kapalıdır', () {
+      expect(parseFeedEndpoints('', ''), isEmpty);
+    });
+
+    /// Yanlış yazılmış bir birincil, çalışabilecek bir yedeği de kapatmamalı.
+    test('geçersiz birincil atlanır, yedek tek başına kullanılır', () {
+      expect(parseFeedEndpoints('http://ornek.test/feed.json', mirror), [
+        Uri.parse(mirror),
+      ]);
+    });
+
+    test('geçersiz yedek sessizce atlanır', () {
+      expect(parseFeedEndpoints(primary, 'javascript:alert(1)'), [
+        Uri.parse(primary),
+      ]);
+    });
+
+    /// Aynı adres iki kez verilirse çöken bir sunucuya arka arkaya iki istek
+    /// atılırdı.
+    test('aynı adres iki kez denenmez', () {
+      expect(parseFeedEndpoints(primary, ' $primary '), [Uri.parse(primary)]);
+    });
+
+    test('derleme bayrakları verilmediğinde liste boştur', () {
+      expect(feedFallbackUrlFromEnvironment, isEmpty);
+      expect(
+        parseFeedEndpoints(
+          feedUrlFromEnvironment,
+          feedFallbackUrlFromEnvironment,
+        ),
+        isEmpty,
+      );
+    });
+  });
 }

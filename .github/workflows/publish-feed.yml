@@ -107,7 +107,23 @@ jobs:
 
       - name: Yayımlanacak dizini hazırla
         if: steps.guard.outputs.publish == 'true'
-        run: cp ../docs/feed_site_index.html build/publish/index.html
+        env:
+          # Alan adı depo değişkeninden okunur, dosyaya gömülmez: alan adı
+          # değişirse iş akışına dokunmak gerekmesin.
+          FEED_DOMAIN: ${{ vars.FEED_DOMAIN }}
+        run: |
+          cp ../docs/feed_site_index.html build/publish/index.html
+          # Özel alan adı Pages ayarında tutulur; artefakttaki CNAME ikinci
+          # kilittir, ayarın yeniden dağıtımlarda kaybolmasına karşı.
+          #
+          # Değişken tanımsızken CNAME **yazılmaz**: ilk koşu github.io
+          # üzerinde yapılıyor ve boş bir CNAME dosyası dağıtımı bozardı.
+          if [ -n "$FEED_DOMAIN" ]; then
+            printf '%s\n' "$FEED_DOMAIN" > build/publish/CNAME
+            echo "::notice::CNAME yazıldı: $FEED_DOMAIN"
+          else
+            echo "::notice::FEED_DOMAIN tanımsız; github.io adresi kullanılıyor."
+          fi
 
       - uses: actions/upload-pages-artifact@v3
         if: steps.guard.outputs.publish == 'true'

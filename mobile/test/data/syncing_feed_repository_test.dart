@@ -11,6 +11,11 @@ import '../support/test_overrides.dart';
 
 final _endpoint = Uri.https('ornek.test', '/feed.json');
 
+/// Yedek yayın. Bilinçli olarak **farklı bir host**: yedeğin varlık sebebi
+/// birincil alan adının tamamen kaybolması, aynı alan adının altındaki başka
+/// bir yol değil.
+final _mirror = Uri.https('ayna.github.io', '/depo/feed.json');
+
 /// Testlerin zamanı sabitlediği an. Ağ katmanının davranışı gerçek saat
 /// beklenerek ölçülemez.
 final _now = DateTime.utc(2026, 7, 27, 12);
@@ -68,6 +73,48 @@ final class _FakeHttpClient implements FeedHttpClient {
   }
 }
 
+/// Adres başına farklı davranan istemci. Failover'ı ölçmek için gerekli:
+/// tek yanıt döndüren [_FakeHttpClient] ile "birincil çöktü, ayna cevap
+/// verdi" durumu kurulamaz.
+final class _Route {
+  const _Route._({this.body, this.statusCode, this.error});
+
+  factory _Route.ok(String body) => _Route._(body: body, statusCode: 200);
+  factory _Route.status(int code) => _Route._(body: '', statusCode: code);
+  factory _Route.failure(Object error) => _Route._(error: error);
+
+  final String? body;
+  final int? statusCode;
+  final Object? error;
+}
+
+final class _RoutingHttpClient implements FeedHttpClient {
+  _RoutingHttpClient(this._routes);
+
+  final Map<Uri, _Route> _routes;
+
+  /// Sırasıyla istenen adresler. Sıra da ölçülüyor: yedeğin **birincilden
+  /// sonra** denendiği, tersi değil.
+  final urls = <Uri>[];
+
+  final _validators = <Uri, FeedValidators?>{};
+
+  FeedValidators? validatorsFor(Uri url) => _validators[url];
+
+  @override
+  Future<FeedHttpResponse> get(Uri url, {FeedValidators? validators}) async {
+    urls.add(url);
+    _validators[url] = validators;
+
+    final route = _routes[url];
+    if (route == null) {
+      throw const FeedTransportException('yapılandırılmamış adres');
+    }
+    if (route.error case final failure?) throw failure;
+    return FeedHttpResponse(statusCode: route.statusCode!, body: route.body!);
+  }
+}
+
 /// Paketlenmiş dosyayı taklit eden depo.
 final class _BundleStub implements FeedRepository {
   _BundleStub({required this.generatedAt, this.error});
@@ -103,7 +150,7 @@ final class _BundleStub implements FeedRepository {
 SyncingFeedRepository _repository({
   required FeedCache cache,
   FeedHttpClient? client,
-  Uri? endpoint,
+  List<Uri>? endpoints,
   DateTime? bundleGeneratedAt,
   Object? bundleError,
 }) => SyncingFeedRepository(
@@ -113,7 +160,7 @@ SyncingFeedRepository _repository({
   ),
   cache: cache,
   client: client ?? _FakeHttpClient(),
-  endpoint: endpoint ?? _endpoint,
+  endpoints: endpoints ?? [_endpoint],
   clock: () => _now,
 );
 
@@ -201,7 +248,7 @@ void main() {
         bundled: _BundleStub(generatedAt: DateTime.utc(2026, 7, 20)),
         cache: cache,
         client: _FakeHttpClient(),
-        endpoint: null,
+        endpoints: const [],
       );
 
       expect((await repository.load()).items.single.title, 'Paketlenmiş kayıt');
@@ -259,7 +306,7 @@ void main() {
         bundled: _BundleStub(generatedAt: DateTime.utc(2026, 7, 20)),
         cache: _MemoryCache(),
         client: client,
-        endpoint: null,
+        endpoints: const [],
       );
 
       final outcome = await repository.refresh();
@@ -465,7 +512,7 @@ void main() {
         bundled: _BundleStub(generatedAt: DateTime.utc(2026, 7, 20)),
         cache: _MemoryCache(),
         client: _FakeHttpClient(),
-        endpoint: null,
+        endpoints: const [],
         clock: () => _now,
       );
 
@@ -659,6 +706,160 @@ void main() {
       ).refresh();
 
       expect(outcome.status, FeedSyncStatus.failed);
+    });
+  });
+
+  /// Yedek adres.
+  ///
+  /// Kendi alan adımız barındırıcı değişimini çözüyor ama **alan adının
+  /// kendisinin kaybını** çözmüyor: süresi dolarsa yayın yapılacak bir yer
+  /// kalmadığı için yeni adres duyurulamaz. Derleme zamanında gömülü bir
+  /// yedek, bu deliği kapatan tek şey.
+  group('yedek adres', () {
+    test('birincil çökünce yedekten okunur', () async {
+      final client = _RoutingHttpClient({
+        _endpoint: _Route.failure(
+          const FeedTransportException('ad çözümlenemedi'),
+        ),
+        _mirror: _Route.ok(_payload(generatedAt: DateTime.utc(2026, 7, 26))),
+      });
+      final cache = _MemoryCache();
+
+      final outcome = await _repository(
+        cache: cache,
+        client: client,
+        endpoints: [_endpoint, _mirror],
+      ).refresh();
+
+      expect(outcome.status, FeedSyncStatus.refreshed);
+      expect(client.urls, [_endpoint, _mirror]);
+      // Yazılan kopya **gerçekten indirildiği** adresi taşımalı, yoksa bir
+      // sonraki koşullu istek yanlış origin'e gider.
+      expect(cache.entry!.sourceUrl, _mirror.toString());
+    });
+
+    /// Doğrulayıcılar origin'e özeldir. Birincilden alınan bir `ETag` aynaya
+    /// gönderilirse ayna gövdesiz bir `304` dönebilir ve elde kopya varmış
+    /// gibi davranılırdı — oysa o kopya **başka bir yayının**.
+    test('birincilin doğrulayıcısı yedeğe gönderilmez', () async {
+      final client = _RoutingHttpClient({
+        _endpoint: _Route.failure(
+          const FeedTransportException('bağlanılamadı'),
+        ),
+        _mirror: _Route.ok(_payload(generatedAt: DateTime.utc(2026, 7, 26))),
+      });
+      final cache = _MemoryCache()
+        ..entry = _cached(
+          generatedAt: DateTime.utc(2026, 7, 25),
+          sourceUrl: _endpoint.toString(),
+          etag: 'W/"birincil"',
+        );
+
+      await _repository(
+        cache: cache,
+        client: client,
+        endpoints: [_endpoint, _mirror],
+      ).refresh();
+
+      expect(client.validatorsFor(_endpoint)?.etag, 'W/"birincil"');
+      expect(client.validatorsFor(_mirror), isNull);
+    });
+
+    /// Ayna **aynı** feed'i yayımlıyor. Failover sırasında önbelleği "başka
+    /// bir yayının içeriği" sayıp atmak, elde sağlam kopya varken paketlenmiş
+    /// eski dosyaya düşmek olurdu.
+    test('failover önbellekteki kopyayı atmaz', () async {
+      final cache = _MemoryCache()
+        ..entry = _cached(
+          generatedAt: DateTime.utc(2026, 7, 26),
+          sourceUrl: _mirror.toString(),
+        );
+
+      final repository = _repository(
+        cache: cache,
+        client: _RoutingHttpClient(const {}),
+        endpoints: [_endpoint, _mirror],
+        bundleGeneratedAt: DateTime.utc(2026, 7, 20),
+      );
+
+      // Kopya aynadan geldi, şu an birincil yapılandırılmış durumda — yine de
+      // gösterilmeli ve senkron zamanı bilinmeli.
+      expect((await repository.load()).items.single.title, 'Uzak kayıt');
+      expect(await repository.lastSyncAt(), isNotNull);
+    });
+
+    test('hepsi çökerse paketlenmiş içerik kalır ve hata bildirilir', () async {
+      final client = _RoutingHttpClient({
+        _endpoint: _Route.failure(const FeedTransportException('birincil ölü')),
+        _mirror: _Route.failure(const FeedTransportException('ayna ölü')),
+      });
+      final repository = _repository(
+        cache: _MemoryCache(),
+        client: client,
+        endpoints: [_endpoint, _mirror],
+      );
+
+      final outcome = await repository.refresh();
+
+      expect(outcome.status, FeedSyncStatus.failed);
+      // Bildirilen hata **birincilin**: kullanıcıya gösterilen tek satırda
+      // kanonik adresin durumu daha anlamlı.
+      expect(outcome.failure, contains('birincil ölü'));
+      expect(client.urls, [_endpoint, _mirror]);
+      expect((await repository.load()).items.single.title, 'Paketlenmiş kayıt');
+    });
+
+    /// Yedek yalnız birincil **başarısızken** denenir; başarılı bir koşuda
+    /// ikinci istek atmak boşuna veri harcamak olurdu.
+    test('birincil çalışıyorsa yedeğe hiç gidilmez', () async {
+      final client = _RoutingHttpClient({
+        _endpoint: _Route.ok(_payload(generatedAt: DateTime.utc(2026, 7, 26))),
+        _mirror: _Route.ok(_payload(generatedAt: DateTime.utc(2026, 7, 26))),
+      });
+
+      await _repository(
+        cache: _MemoryCache(),
+        client: client,
+        endpoints: [_endpoint, _mirror],
+      ).refresh();
+
+      expect(client.urls, [_endpoint]);
+    });
+
+    /// `2xx` dışı yanıt da failover sebebidir: ölçüt "bağlantı kuruldu mu"
+    /// değil, "içerik alındı mı".
+    test('birincilin 500 yanıtı yedeğe geçirir', () async {
+      final client = _RoutingHttpClient({
+        _endpoint: _Route.status(500),
+        _mirror: _Route.ok(_payload(generatedAt: DateTime.utc(2026, 7, 26))),
+      });
+
+      final outcome = await _repository(
+        cache: _MemoryCache(),
+        client: client,
+        endpoints: [_endpoint, _mirror],
+      ).refresh();
+
+      expect(outcome.status, FeedSyncStatus.refreshed);
+      expect(client.urls, [_endpoint, _mirror]);
+    });
+
+    /// Bozuk gövde de failover sebebidir: birincil ayakta ama çöp yayımlıyorsa
+    /// aynadaki sağlam dosya kullanılabilir.
+    test('birincilin bozuk gövdesi yedeğe geçirir', () async {
+      final client = _RoutingHttpClient({
+        _endpoint: _Route.ok('{bozuk'),
+        _mirror: _Route.ok(_payload(generatedAt: DateTime.utc(2026, 7, 26))),
+      });
+
+      final outcome = await _repository(
+        cache: _MemoryCache(),
+        client: client,
+        endpoints: [_endpoint, _mirror],
+      ).refresh();
+
+      expect(outcome.status, FeedSyncStatus.refreshed);
+      expect(client.urls, [_endpoint, _mirror]);
     });
   });
 }

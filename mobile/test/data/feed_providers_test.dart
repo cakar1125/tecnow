@@ -128,11 +128,12 @@ void main() {
     });
 
     /// `--dart-define=FEED_URL` verilmediği için varsayılan derlemede ağ
-    /// tazelemesi **kapalı** olmalı.
+    /// tazelemesi **kapalı** olmalı. Yedek adres (`FEED_URL_FALLBACK`) de
+    /// verilmediği için liste tamamen boş kalır.
     test('adres verilmediğinde tazeleme kapalıdır', () {
       final scope = container();
 
-      expect(scope.read(feedEndpointProvider), isNull);
+      expect(scope.read(feedEndpointsProvider), isEmpty);
       expect(scope.read(feedRepositoryProvider).remoteEnabled, isFalse);
     });
   });

@@ -22,10 +22,15 @@ import 'saved_items_sample_cleanup.dart';
 
 final databaseProvider = FutureProvider<Database>((ref) => AppDatabase.open());
 
-/// Uzak feed adresi. `--dart-define=FEED_URL=...` verilmediyse `null` —
-/// o durumda uygulama yalnız paketlenmiş içerikle çalışır.
-final feedEndpointProvider = Provider<Uri?>(
-  (ref) => parseFeedEndpoint(feedUrlFromEnvironment),
+/// Uzak feed adresleri, sırayla: birincil ve (varsa) yedek.
+///
+/// `--dart-define=FEED_URL=...` verilmediyse liste **boştur** ve uygulama
+/// yalnız paketlenmiş içerikle çalışır.
+final feedEndpointsProvider = Provider<List<Uri>>(
+  (ref) => parseFeedEndpoints(
+    feedUrlFromEnvironment,
+    feedFallbackUrlFromEnvironment,
+  ),
 );
 
 final feedHttpClientProvider = Provider<FeedHttpClient>(
@@ -43,7 +48,7 @@ final feedRepositoryProvider = Provider<FeedRepository>(
     bundled: BundledFeedRepository(),
     cache: ref.watch(feedCacheProvider),
     client: ref.watch(feedHttpClientProvider),
-    endpoint: ref.watch(feedEndpointProvider),
+    endpoints: ref.watch(feedEndpointsProvider),
   ),
 );
 

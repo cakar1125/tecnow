@@ -23,7 +23,7 @@ final class SyncingFeedRepository implements FeedRepository {
     required this.bundled,
     required this.cache,
     required this.client,
-    required this.endpoint,
+    required this.endpoints,
     DateTime Function()? clock,
   }) : _clock = clock ?? DateTime.now;
 
@@ -31,15 +31,21 @@ final class SyncingFeedRepository implements FeedRepository {
   final FeedCache cache;
   final FeedHttpClient client;
 
-  /// `null` ise ağ tazelemesi kapalıdır (bkz. `feed_endpoint.dart`).
-  final Uri? endpoint;
+  /// Denenecek adresler, sırayla. Boşsa ağ tazelemesi kapalıdır
+  /// (bkz. `feed_endpoint.dart`).
+  ///
+  /// Birden fazlaysa ilki birincil, kalanı yedektir: birincil çöktüğünde
+  /// sıradaki denenir. Yedeğin varlık sebebi barındırıcı arızası değil,
+  /// **alan adının kaybı** — o durumda DNS çevrilemez ve yeni adres
+  /// duyurulamaz, çünkü duyurunun yapılacağı adres de ölmüştür.
+  final List<Uri> endpoints;
 
   /// Testlerin zamanı sabitleyebilmesi için. "12 saat önce senkronize edildi"
   /// davranışı gerçek saat beklenerek ölçülemez.
   final DateTime Function() _clock;
 
   @override
-  bool get remoteEnabled => endpoint != null;
+  bool get remoteEnabled => endpoints.isNotEmpty;
 
   /// Gösterilecek içerik. Ağa **çıkmaz**.
   ///
@@ -61,7 +67,7 @@ final class SyncingFeedRepository implements FeedRepository {
   @override
   Future<DateTime?> lastSyncAt() async {
     final entry = await cache.read();
-    if (entry == null || !_belongsToEndpoint(entry)) return null;
+    if (entry == null || !_isKnownOrigin(entry)) return null;
     return entry.fetchedAt;
   }
 
@@ -71,22 +77,46 @@ final class SyncingFeedRepository implements FeedRepository {
   /// yoksa arayüz kullanıcıya çözemeyeceği bir sorun bildirirdi.
   @override
   Future<bool> isStale({Duration after = feedStaleAfter}) async {
-    if (endpoint == null) return false;
+    if (endpoints.isEmpty) return false;
     final last = await lastSyncAt();
     if (last == null) return true;
     return _clock().difference(last) >= after;
   }
 
+  /// Adresleri **sırayla** dener; ilk başarılı olan kazanır.
+  ///
+  /// Başarısızlık sayılan ve sıradakine geçilen durumlar: ağ/TLS/DNS hatası,
+  /// `2xx` dışı yanıt, bozuk gövde ve elde kopya yokken gelen `304`. Bunların
+  /// hepsinde "bu adresten içerik alınamadı" doğrudur ve yedeğin denenmesi
+  /// gerekir.
+  ///
+  /// Hepsi başarısızsa **birincilin** hatası bildirilir: kullanıcıya
+  /// gösterilen tek satırda kanonik adresin durumu, yedeğinkinden daha
+  /// anlamlıdır.
   @override
   Future<FeedSyncOutcome> refresh() async {
-    final url = endpoint;
-    if (url == null) return FeedSyncOutcome.disabled;
+    if (endpoints.isEmpty) return FeedSyncOutcome.disabled;
 
-    // Elde bu adrese ait bir kopya varsa istek **koşullu** gider.
-    // Farklı bir adrese ait kopyanın doğrulayıcısını göndermek, başka bir
-    // dosyanın kimliğiyle soru sormak olurdu.
     final cached = await cache.read();
-    final usable = cached != null && _belongsToEndpoint(cached) ? cached : null;
+    FeedSyncOutcome? firstFailure;
+
+    for (final url in endpoints) {
+      final outcome = await _refreshFrom(url, cached);
+      if (outcome.status != FeedSyncStatus.failed) return outcome;
+      firstFailure ??= outcome;
+    }
+
+    return firstFailure!;
+  }
+
+  Future<FeedSyncOutcome> _refreshFrom(Uri url, CachedFeed? cached) async {
+    // Elde **tam olarak bu adrese** ait bir kopya varsa istek koşullu gider.
+    // Başka bir adrese ait kopyanın doğrulayıcısını göndermek, başka bir
+    // dosyanın kimliğiyle soru sormak olurdu: ayna aynı içeriği yayımlıyorsa
+    // yanlış bir `304` alınabilir ve gövdesiz bir yanıt kopya sanılırdı.
+    final usable = cached != null && cached.sourceUrl == url.toString()
+        ? cached
+        : null;
 
     final FeedHttpResponse response;
     try {
@@ -190,14 +220,21 @@ final class SyncingFeedRepository implements FeedRepository {
     }
   }
 
-  /// Yalnız **şu anki adrese ait** ve ayrıştırılabilen bir önbellek kullanılır.
+  /// Yalnız **yapılandırılmış adreslerden birine ait** ve ayrıştırılabilen bir
+  /// önbellek kullanılır.
   Future<Feed?> _readUsableCache() async {
     final entry = await cache.read();
     if (entry == null) return null;
 
-    // Adres değiştiyse (ya da bu sürümde hiç yoksa) eski kopya artık başka bir
-    // yayının içeriğidir; sessizce göstermek yanlış kaynağı göstermektir.
-    if (!_belongsToEndpoint(entry)) return null;
+    // Adres yapılandırmadan çıktıysa (ya da bu sürümde hiç yoksa) eski kopya
+    // artık başka bir yayının içeriğidir; sessizce göstermek yanlış kaynağı
+    // göstermektir.
+    //
+    // Ölçüt "şu an denenen adres" **değil**, "tanınan adreslerden biri":
+    // birincil çöküp yedeğe düşüldüğünde ikisi de aynı feed'i yayımlıyor ve
+    // elde sağlam bir kopya varken paketlenmiş eski dosyaya düşmek içeriği
+    // geriye almak olurdu.
+    if (!_isKnownOrigin(entry)) return null;
 
     try {
       return _parse(entry.payload);
@@ -212,8 +249,8 @@ final class SyncingFeedRepository implements FeedRepository {
     }
   }
 
-  bool _belongsToEndpoint(CachedFeed entry) =>
-      endpoint != null && entry.sourceUrl == endpoint.toString();
+  bool _isKnownOrigin(CachedFeed entry) =>
+      endpoints.any((url) => url.toString() == entry.sourceUrl);
 
   static Feed _parse(String raw) {
     final decoded = jsonDecode(raw);

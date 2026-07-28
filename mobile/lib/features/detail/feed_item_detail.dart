@@ -1,7 +1,7 @@
 /// Bir feed kaydının detay gövdesi.
 ///
-/// İki ekran de (`/repository/:id`, `/ai-model/:id`) bunu kullanır; aralarındaki
-/// fark yalnız başlık ve vurgu rengidir.
+/// Tek detay rotası (`/icerik/:id`) bunu kullanır; başlık ve vurgu rengi
+/// kaydın türünden gelir.
 ///
 /// **Burada yalnız kayıtta gerçekten bulunan bilgi gösterilir.** Önceki hâli
 /// `widget.id`'yi hiç okumuyordu: gerçek bir karta dokunan kullanıcı sabit bir
@@ -229,12 +229,29 @@ class _Fact extends StatelessWidget {
   final String label;
   final String value;
 
+  /// İki metin de esner.
+  ///
+  /// Önceden `spaceBetween` ile iki sınırsız `Text` vardı. Ölçüldü
+  /// (2026-07-28, **gerçek yazı tipiyle**): 360 dp genişlikte ve 1.6 yazı
+  /// ölçeğinde tarih satırı 8,5–11 piksel taşıyordu. 1.0 ve 1.3 ölçeklerinde
+  /// taşma yok — yani hata yalnız erişilebilirlik için yazıyı büyütmüş
+  /// kullanıcıda, dar telefonda görünüyordu.
+  ///
+  /// Görünmemesinin sebebi: detay ekranı testleri varsayılan 800 piksellik
+  /// yüzeyde pump ediliyordu ve golden yalnız 1.0 ölçeğinde çekiliyordu.
+  /// Hiçbir ölçüm dar ekran ile büyük yazıyı **birlikte** denemiyordu.
+  /// `spaceBetween` korunuyor: değer sağ kenarda durmalı (onaylı tasarım).
+  /// Değişen tek şey, iki metnin artık **esneyebilmesi**.
   @override
   Widget build(BuildContext context) => Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      Text(label, style: AppTypography.bodyMuted),
-      Text(value, style: AppTypography.body),
+      Flexible(child: Text(label, style: AppTypography.bodyMuted)),
+      const SizedBox(width: AppSpacing.md),
+      Flexible(
+        child: Text(value, style: AppTypography.body, textAlign: TextAlign.end),
+      ),
     ],
   );
 }

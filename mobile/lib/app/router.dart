@@ -67,17 +67,12 @@ GoRouter createRouter({String initialLocation = '/splash'}) => GoRouter(
         ),
       ],
     ),
-    // `id` ekrana geçirilir: içerik hâlâ fixture, ama okuma geçmişi hangi
-    // kaydın açıldığını bilmelidir.
+    // Tek detay rotası: başlık, vurgu ve okuma geçmişi türü rotadan değil,
+    // çözülen kaydın kendisinden gelir (bkz. `feed_detail_screen.dart`).
     GoRoute(
-      path: '/repository/:id',
+      path: '/icerik/:id',
       builder: (_, state) =>
-          RepositoryDetailScreen(id: state.pathParameters['id'] ?? ''),
-    ),
-    GoRoute(
-      path: '/ai-model/:id',
-      builder: (_, state) =>
-          AiModelDetailScreen(id: state.pathParameters['id'] ?? ''),
+          FeedDetailScreen(id: state.pathParameters['id'] ?? ''),
     ),
   ],
   errorBuilder: (_, state) => Scaffold(

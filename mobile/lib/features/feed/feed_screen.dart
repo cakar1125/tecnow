@@ -8,6 +8,7 @@ import '../../data/providers.dart';
 import '../../design_system/components/app_components.dart';
 import '../../design_system/tokens/app_tokens.dart';
 import '../../ui/content_card_model.dart';
+import '../../ui/detail_route.dart';
 import '../../ui/feed_sync_label.dart';
 
 /// Akış sekmeleri.
@@ -75,25 +76,14 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
               .toList(growable: false),
       };
 
-  void _openItem(BuildContext context, FeedItem item) {
-    switch (item.kind) {
-      case FeedItemKind.repository:
-      case FeedItemKind.mcp:
-      case FeedItemKind.skill:
-        context.push('/repository/${item.id}');
-      case FeedItemKind.aiModel:
-        context.push('/ai-model/${item.id}');
-      case FeedItemKind.tool:
-      case FeedItemKind.announcement:
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Bu içerik türü için detay ekranı henüz uygulanmadı.',
-            ),
-          ),
-        );
-    }
-  }
+  /// Her tür aynı detay ekranına gider.
+  ///
+  /// Burada bir tür `switch`'i vardı ve `tool` ile `announcement` dalları
+  /// yalnız "detay ekranı henüz uygulanmadı" diyordu. Ölçüldü (2026-07-28):
+  /// üretilen 200 kaydın 146'sı duyuru — akışın dörtte üçü kapalı kapıydı.
+  /// Ekran zaten tür bağımsız çalışıyordu.
+  void _openItem(BuildContext context, FeedItem item) =>
+      context.push(detailRoute(item.id));
 
   @override
   Widget build(BuildContext context) {
@@ -259,10 +249,17 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
+              // Yer imi durumu kayıt listesinden okunur; kartın kendi
+              // `bool`'undan değil. Aynı kayıt Keşfet'te de görünüyor ve
+              // ikisi aynı şeyi göstermeli.
+              final saved = ref.watch(savedItemIdsProvider);
               return FeedItemCard(
                 key: ValueKey(item.id),
                 item: ContentCardModel.fromFeedItem(item),
                 onTap: () => _openItem(context, item),
+                isSaved: saved.contains(item.id),
+                onToggleSave: () =>
+                    ref.read(savedItemsProvider.notifier).toggleFeedItem(item),
               );
             },
             separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.lg),

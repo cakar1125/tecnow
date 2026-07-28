@@ -9,6 +9,7 @@ import '../../design_system/components/app_components.dart';
 import '../../design_system/tokens/app_tokens.dart';
 import '../../fixtures/fixtures.dart';
 import '../../ui/content_card_model.dart';
+import '../../ui/detail_route.dart';
 
 class SavedScreen extends ConsumerStatefulWidget {
   const SavedScreen({super.key});
@@ -29,27 +30,9 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
     );
   }
 
-  void _openDetails(SavedItem item) {
-    switch (_kindOf(item)) {
-      case SavedItemKind.repository:
-        context.push('/repository/${item.id}');
-        return;
-      case SavedItemKind.aiModel:
-        context.push('/ai-model/${item.id}');
-        return;
-      case SavedItemKind.tool:
-      case SavedItemKind.skill:
-      case SavedItemKind.assistantProject:
-      case null:
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Bu içerik türü için detay ekranı henüz uygulanmadı.',
-            ),
-          ),
-        );
-    }
-  }
+  /// Tür ne olursa olsun aynı detay ekranı. Burada da bir tür `switch`'i
+  /// vardı ve kaydedilen içeriğin bir kısmı açılamıyordu.
+  void _openDetails(SavedItem item) => context.push(detailRoute(item.id));
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +67,10 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
         ),
         Expanded(
           child: switch (saved) {
-            AsyncData(:final value) => _list(_filter(value)),
+            AsyncData(:final value) => _list(
+              _filter(value),
+              anySaved: value.isNotEmpty,
+            ),
             AsyncError(:final error) => ErrorStateView(
               title: 'Kayıtlar okunamadı',
               message: '$error',
@@ -96,16 +82,34 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
     );
   }
 
-  List<SavedItem> _filter(List<SavedItem> items) => _selectedKind == null
-      ? items
-      : items.where((item) => _kindOf(item) == _selectedKind).toList();
+  List<SavedItem> _filter(List<SavedItem> items) {
+    final selected = _selectedKind;
+    if (selected == null) return items;
+    final kinds = _kindsOf(selected);
+    return items
+        .where((item) => kinds.contains(_feedKindOf(item)))
+        .toList(growable: false);
+  }
 
-  Widget _list(List<SavedItem> items) => items.isEmpty
+  /// Boş liste iki farklı şey olabilir ve ikisi aynı cümleyle anlatılamaz:
+  /// hiç kaydın olmaması (ilk açılış) ile seçili süzgecin boş olması.
+  Widget _empty(bool anySaved) => anySaved
       ? const EmptyStateView(
+          key: Key('saved-filter-empty'),
           title: 'Bu filtrede kayıt kalmadı.',
           message:
               'Başka bir kategori seçerek bu cihazdaki kayıtları görebilirsin.',
         )
+      : const EmptyStateView(
+          key: Key('saved-none'),
+          title: 'Henüz kayıt yok',
+          message:
+              'Akışta veya Keşfet\'te bir içeriğin yer imi simgesine dokunarak '
+              'bu cihaza kaydedebilirsin.',
+        );
+
+  Widget _list(List<SavedItem> items, {required bool anySaved}) => items.isEmpty
+      ? _empty(anySaved)
       : ListView.separated(
           padding: const EdgeInsets.fromLTRB(
             AppSpacing.lg,
@@ -133,37 +137,37 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
   );
 }
 
-/// Depo `kind` alanını serbest metin olarak saklar; bilinmeyen bir tür
-/// çökmeye değil, tür rozeti olmayan bir karta dönüşür.
-SavedItemKind? _kindOf(SavedItem item) {
-  for (final kind in SavedItemKind.values) {
+/// Satırdaki `kind` serbest metindir; feed türüne çözülür.
+///
+/// Kaydetme artık `FeedItemKind.name` yazıyor, yani çözülememesi yalnız
+/// 2026-07-28 öncesi yazılmış satırlarda mümkün — onları da açılıştaki
+/// örnek temizliği siliyor (`saved_items_sample_cleanup.dart`).
+FeedItemKind? _feedKindOf(SavedItem item) {
+  for (final kind in FeedItemKind.values) {
     if (kind.name == item.kind) return kind;
   }
   return null;
 }
 
-/// Tohumlanan örnek kayıtların kimlikleri.
+/// Süzgeç çipi → eşleşen feed türleri.
 ///
-/// "Örnek kayıt" işaretinin **doğru** olması buna bağlı: kullanıcının gerçek
-/// feed'den kaydettiği bir içeriğe örnek demek, kurgusal veriyi gerçek gibi
-/// sunmanın ters yönde ama aynı ölçüde yanlış hâlidir.
-final _sampleIds = {for (final fixture in savedItemFixtures) fixture.id};
-
-FeedItemKind _cardKind(SavedItemKind? kind) => switch (kind) {
-  SavedItemKind.repository => FeedItemKind.repository,
-  SavedItemKind.aiModel => FeedItemKind.aiModel,
-  SavedItemKind.skill => FeedItemKind.skill,
-  // Asistan projesi feed türü değildir; kartta araç gibi gösterilir.
-  SavedItemKind.assistantProject ||
-  SavedItemKind.tool ||
-  null => FeedItemKind.tool,
+/// `Araçlar` hem `tool` hem `mcp` alır: MCP sunucusu bir araçtır ve onaylı
+/// tasarımda ayrı bir çipi yok. `Asistan Projeleri` bugün hiçbir şeyle
+/// eşleşmez, çünkü asistan henüz hiçbir şey yazmıyor. **Duyurular** da
+/// hiçbir çiple eşleşmiyor; yalnız `Tümü` altında görünürler — açık tasarım
+/// kararı olarak `docs/NEXT_ACTION.md`'de kayıtlı.
+Set<FeedItemKind> _kindsOf(SavedItemKind chip) => switch (chip) {
+  SavedItemKind.repository => const {FeedItemKind.repository},
+  SavedItemKind.aiModel => const {FeedItemKind.aiModel},
+  SavedItemKind.tool => const {FeedItemKind.tool, FeedItemKind.mcp},
+  SavedItemKind.skill => const {FeedItemKind.skill},
+  SavedItemKind.assistantProject => const {},
 };
 
 ContentCardModel _toCardModel(SavedItem item) => ContentCardModel(
-  kind: _cardKind(_kindOf(item)),
+  kind: _feedKindOf(item) ?? FeedItemKind.tool,
   id: item.id,
   title: item.title,
   sourceLabel: item.sourceLabel ?? 'Bilinmeyen kaynak',
   summary: item.summary ?? '',
-  isSample: _sampleIds.contains(item.id),
 );

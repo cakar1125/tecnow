@@ -17,7 +17,7 @@ import 'repositories/interests_repository.dart';
 import 'repositories/local_data_repository.dart';
 import 'repositories/read_history_repository.dart';
 import 'repositories/saved_items_repository.dart';
-import 'saved_items_seeder.dart';
+import 'saved_items_sample_cleanup.dart';
 
 final databaseProvider = FutureProvider<Database>((ref) => AppDatabase.open());
 
@@ -200,11 +200,13 @@ final appPreferencesProvider = FutureProvider<AppPreferences>((ref) async {
   return AppPreferences(preferences);
 });
 
-final savedItemsSeederProvider = FutureProvider<SavedItemsSeeder>((ref) async {
-  final repository = await ref.watch(savedItemsRepositoryProvider.future);
-  final preferences = await ref.watch(sharedPreferencesProvider.future);
-  return SavedItemsSeeder(repository, preferences);
-});
+final savedItemsSampleCleanupProvider = FutureProvider<SavedItemsSampleCleanup>(
+  (ref) async {
+    final repository = await ref.watch(savedItemsRepositoryProvider.future);
+    final preferences = await ref.watch(sharedPreferencesProvider.future);
+    return SavedItemsSampleCleanup(repository, preferences);
+  },
+);
 
 final interestsMigrationProvider = FutureProvider<InterestsMigration>((
   ref,
@@ -275,15 +277,25 @@ final class LocalDataCountsNotifier extends AsyncNotifier<LocalDataCounts> {
 
 /// Kaydedilenler listesi.
 ///
-/// `build` **yalnız okur**. Tohumlama açılışta ayrıca çalışır
-/// ([SavedItemsSeeder]); mutasyonlar `invalidate` yerine durumu doğrudan
-/// günceller. İkisi de bilinçli: TASK-0009'da okuma provider'ı aynı zamanda
-/// tohumluyor ve ekran silme sonrası `invalidate` çağırıyordu, bu da
-/// yerleşmeyen bir okuma/yazma döngüsü üretiyordu.
+/// `build` **yalnız okur**; mutasyonlar `invalidate` yerine durumu doğrudan
+/// günceller. Bilinçli: TASK-0009'da okuma provider'ı aynı zamanda yazıyor
+/// ve ekran silme sonrası `invalidate` çağırıyordu, bu da yerleşmeyen bir
+/// okuma/yazma döngüsü üretiyordu. Açılıştaki tek yazma, eski örnek
+/// kayıtları silen [SavedItemsSampleCleanup].
 final savedItemsProvider =
     AsyncNotifierProvider<SavedItemsNotifier, List<SavedItem>>(
       SavedItemsNotifier.new,
     );
+
+/// Kayıtlı kimlikler — kartların yer imi durumu için.
+///
+/// Kart kendi `bool`'unu tutmaz: liste tek doğruluk kaynağıdır, yoksa aynı
+/// kaydın akıştaki ve Keşfet'teki kartı farklı görünebilir.
+final savedItemIdsProvider = Provider<Set<String>>((ref) {
+  final items = ref.watch(savedItemsProvider).value;
+  if (items == null) return const {};
+  return {for (final item in items) item.id};
+});
 
 final class SavedItemsNotifier extends AsyncNotifier<List<SavedItem>> {
   @override
@@ -295,6 +307,51 @@ final class SavedItemsNotifier extends AsyncNotifier<List<SavedItem>> {
   /// Veritabanı başka bir yerden boşaltıldığında ekran durumunu hizalar
   /// (Ayarlar → `Verileri Sil`). Kendisi **yazmaz**.
   void reflectExternalClear() => state = const AsyncData([]);
+
+  /// Feed kaydını kaydeder ya da kaydı kaldırır; sonuç **son** durumdur
+  /// (`true` = artık kayıtlı).
+  ///
+  /// Bu metot 2026-07-28'e kadar **yoktu**: kartlardaki yer imi düğmesi
+  /// yalnız kendi `setState`'ini çeviriyor ve "kaydetme yalnız yerel fixture
+  /// etkileşimidir" diyen bir snackbar gösteriyordu. Yani kullanıcı hiçbir
+  /// şeyi gerçekten kaydedemiyordu ve Kaydedilenler sekmesi yalnız
+  /// tohumlanmış örnekleri barındırıyordu.
+  Future<bool> toggleFeedItem(FeedItem item) async {
+    final previous = state.value;
+    if (previous == null) return false;
+
+    final wasSaved = previous.any((saved) => saved.id == item.id);
+    final next = wasSaved
+        ? previous.where((saved) => saved.id != item.id).toList(growable: false)
+        : [
+            SavedItem(
+              id: item.id,
+              // Feed türü olduğu gibi saklanır; kartın rozeti buradan okunur.
+              kind: item.kind.name,
+              title: item.title,
+              sourceLabel: item.sourceName,
+              summary: item.summary,
+              savedAt: DateTime.now(),
+            ),
+            ...previous,
+          ];
+
+    // İyimser güncelleme: düğme beklemeden döner, yazma başarısız olursa
+    // eski liste geri konur ([remove] ile aynı desen).
+    state = AsyncData(next);
+    try {
+      final repository = await ref.read(savedItemsRepositoryProvider.future);
+      if (wasSaved) {
+        await repository.removeById(item.id);
+      } else {
+        await repository.add(next.first);
+      }
+    } catch (error, stackTrace) {
+      state = AsyncData(previous);
+      Error.throwWithStackTrace(error, stackTrace);
+    }
+    return !wasSaved;
+  }
 
   Future<void> remove(String id) async {
     // Riverpod 3'te `AsyncValue.value` zaten nullable; `valueOrNull` yok.

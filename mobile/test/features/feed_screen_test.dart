@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:teknoakis/app/router.dart';
 import 'package:teknoakis/data/feed/feed_repository.dart';
 import 'package:teknoakis/data/feed/feed_schema.dart';
 import 'package:teknoakis/design_system/components/app_components.dart';
+import 'package:teknoakis/design_system/theme/app_theme.dart';
 import 'package:teknoakis/features/feed/feed_screen.dart';
 
 import '../support/test_overrides.dart';
@@ -167,13 +169,82 @@ void main() {
     expect(find.byKey(const Key('feed-loading')), findsNothing);
   });
 
-  testWidgets('kaydetme düğmesi yerel geri bildirim verir', (tester) async {
-    await _pumpFeed(tester);
+  /// Regresyon kilidi.
+  ///
+  /// Bu test eskiden yalnız bir SnackBar arıyordu ve düğme gerçekten de
+  /// yalnız SnackBar gösteriyordu: "Kaydetme yalnız yerel fixture
+  /// etkileşimidir." Yani kullanıcı hiçbir şeyi kaydedemiyordu ve test bunu
+  /// **doğruluyordu**. Artık depoya bakılıyor.
+  testWidgets('kaydetme düğmesi kaydı gerçekten yazar', (tester) async {
+    final saved = InMemorySavedItemsRepository(const []);
+    await tester.pumpWidget(
+      memoryDataHarness(
+        const Scaffold(body: FeedScreen()),
+        savedRepository: saved,
+      ),
+    );
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('feed-bookmark-0000000000000001')));
     await tester.pumpAndSettle();
 
-    expect(find.byType(SnackBar), findsOneWidget);
+    final stored = await saved.readAll();
+    expect(stored.map((item) => item.id), ['0000000000000001']);
+    expect(stored.single.kind, 'repository');
+    expect(stored.single.sourceLabel, 'GitHub');
+  });
+
+  /// Regresyon kilidi: akıştaki **her** karta dokunulabilmeli.
+  ///
+  /// `_openItem` bir tür `switch`'iydi; `announcement` ve `tool` dallarında
+  /// yalnız "detay ekranı henüz uygulanmadı" yazıyordu. Ölçüldü
+  /// (2026-07-28): üretilen 200 kaydın **146'sı** duyuru, yani akışın dörtte
+  /// üçü kapalı kapıydı — üstelik detay ekranı tür bağımsız çalışıyordu.
+  testWidgets('duyuru kartına dokunmak detay ekranını açar', (tester) async {
+    final router = createRouter(initialLocation: '/home');
+    addTearDown(router.dispose);
+    // Duyuru üçüncü kart; varsayılan test yüzeyinde katlamanın altında kalıyor.
+    await tester.binding.setSurfaceSize(const Size(390, 1600));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      memoryDataScope(
+        MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Bir duyuru'));
+    await tester.pumpAndSettle();
+
+    // Yol değil, **ekran** ölçülüyor. `StatefulShellRoute` içinden yapılan
+    // imperatif `push` sonrası GoRouter hem `routeInformationProvider`'ı hem
+    // `currentConfiguration`'ı dalın konumunda (`/home`) bırakıyor; yola
+    // bakan bir beklenti burada ürünü değil GoRouter'ı ölçerdi.
+    expect(find.text('Duyuru Detayı'), findsOneWidget);
+    expect(find.text('Bir duyuru'), findsWidgets);
+    expect(
+      find.text('Bu içerik türü için detay ekranı henüz uygulanmadı.'),
+      findsNothing,
+    );
+  });
+
+  testWidgets('ikinci dokunuş kaydı geri alır', (tester) async {
+    final saved = InMemorySavedItemsRepository(const []);
+    await tester.pumpWidget(
+      memoryDataHarness(
+        const Scaffold(body: FeedScreen()),
+        savedRepository: saved,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final bookmark = find.byKey(const Key('feed-bookmark-0000000000000001'));
+    await tester.tap(bookmark);
+    await tester.pumpAndSettle();
+    await tester.tap(bookmark);
+    await tester.pumpAndSettle();
+
+    expect(await saved.readAll(), isEmpty);
   });
 
   group('içerik güncelliği', () {

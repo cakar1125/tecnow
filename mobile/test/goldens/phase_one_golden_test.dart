@@ -30,7 +30,7 @@ void main() {
   /// çiziyordu, bu yüzden hangi kimlikle pump edildikleri önemsizdi.
   testGoldens('GOLDEN Repository Detayı 390x844', (tester) async {
     await tester.pumpWidgetBuilder(
-      memoryDataScope(const RepositoryDetailScreen(id: '0000000000000001')),
+      memoryDataScope(const FeedDetailScreen(id: '0000000000000001')),
       wrapper: materialAppWrapper(theme: AppTheme.dark),
       surfaceSize: const Size(390, 844),
     );
@@ -40,11 +40,34 @@ void main() {
 
   testGoldens('GOLDEN AI Model Detayı 390x844', (tester) async {
     await tester.pumpWidgetBuilder(
-      memoryDataScope(const AiModelDetailScreen(id: '0000000000000002')),
+      memoryDataScope(const FeedDetailScreen(id: '0000000000000002')),
       wrapper: materialAppWrapper(theme: AppTheme.dark),
       surfaceSize: const Size(390, 844),
     );
     await tester.pumpAndSettle();
     await screenMatchesGolden(tester, 'ai_model_detail_390x844');
   });
+
+  /// Dar ekran **ve** büyük yazı, birlikte.
+  ///
+  /// Bu dosya gerçek yazı tipini yüklüyor; suitin geri kalanındaki taşma
+  /// testleri varsayılan test yazı tipiyle ölçüyor ve o tipin glif
+  /// genişlikleri cihazdakine benzemiyor. Ölçüldü (2026-07-28): detay
+  /// ekranının tarih satırı 360 dp + 1.6 ölçekte gerçek yazı tipiyle
+  /// taşıyordu; 1.0 ve 1.3'te taşmıyordu. Yani ne golden (yalnız 1.0) ne de
+  /// widget testleri (yalnız 800 piksel) bu birleşimi deniyordu.
+  for (final scale in [1.0, 1.3, 1.6]) {
+    testWidgets('detay 360 dp / $scale ölçekte taşmaz', (tester) async {
+      await tester.pumpWidgetBuilder(
+        memoryDataScope(const FeedDetailScreen(id: '0000000000000001')),
+        wrapper: materialAppWrapper(theme: AppTheme.dark),
+        surfaceSize: const Size(360, 1600),
+      );
+      tester.platformDispatcher.textScaleFactorTestValue = scale;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull, reason: '360 dp @ $scale');
+    });
+  }
 }

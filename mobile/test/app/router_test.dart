@@ -42,8 +42,15 @@ void main() {
     await tester.pumpAndSettle();
     expect(router.routeInformationProvider.value.uri.path, '/settings');
 
-    router.push('/repository/example');
+    // Tek detay rotası: başlık kaydın türünden gelir, rotadan değil.
+    router.push('/icerik/0000000000000001');
     await tester.pumpAndSettle();
     expect(find.text('Repository Detayı'), findsOneWidget);
+
+    router.pop();
+    await tester.pumpAndSettle();
+    router.push('/icerik/0000000000000003');
+    await tester.pumpAndSettle();
+    expect(find.text('Duyuru Detayı'), findsOneWidget);
   });
 }

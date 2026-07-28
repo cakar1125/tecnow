@@ -802,39 +802,37 @@ String? languageBadge(ContentCardModel item) =>
     ? null
     : item.language.toUpperCase();
 
-class FeedItemCard extends StatefulWidget {
-  const FeedItemCard({required this.item, this.onTap, super.key});
+/// Akış kartı.
+///
+/// Yer imi durumunu **kendi içinde tutmaz**. Tuttuğu sürece düğme yalnız
+/// kendi rengini çeviriyordu: hiçbir şey kaydedilmiyor, kart yeniden
+/// çizildiğinde durum sıfırlanıyordu. Durum artık kayıt listesinden gelir.
+///
+/// [onToggleSave] verilmezse düğme **hiç çizilmez**. İşlevsiz bir kontrol,
+/// sahte bir işlev vaadidir (`CLAUDE.md` değişmez kuralı).
+class FeedItemCard extends StatelessWidget {
+  const FeedItemCard({
+    required this.item,
+    this.onTap,
+    this.isSaved = false,
+    this.onToggleSave,
+    super.key,
+  });
 
   final ContentCardModel item;
   final VoidCallback? onTap;
-
-  @override
-  State<FeedItemCard> createState() => _FeedItemCardState();
-}
-
-class _FeedItemCardState extends State<FeedItemCard> {
-  bool _isSaved = false;
-
-  (String, Color, IconData) get _category => categoryOf(widget.item.kind);
-
-  void _toggleSaved() {
-    setState(() => _isSaved = !_isSaved);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Kaydetme yalnız yerel fixture etkileşimidir.'),
-      ),
-    );
-  }
+  final bool isSaved;
+  final VoidCallback? onToggleSave;
 
   @override
   Widget build(BuildContext context) {
-    final (label, color, icon) = _category;
+    final (label, color, icon) = categoryOf(item.kind);
 
     return Semantics(
-      button: widget.onTap != null,
-      label: '${widget.item.title} akış kartı',
+      button: onTap != null,
+      label: '${item.title} akış kartı',
       child: _AppCard(
-        onTap: widget.onTap,
+        onTap: onTap,
         accent: color,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -849,60 +847,59 @@ class _FeedItemCardState extends State<FeedItemCard> {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       AppBadge(label: label, color: color, icon: icon),
-                      Text(
-                        widget.item.sourceLabel,
-                        style: AppTypography.technical,
-                      ),
+                      Text(item.sourceLabel, style: AppTypography.technical),
                       // Örnek işareti yalnız fixture kartlarında. Gerçek
                       // içerikte "ÖRNEK" yazmak yalan olurdu.
-                      if (widget.item.isSample)
+                      if (item.isSample)
                         const AppBadge(
                           label: 'ÖRNEK',
                           color: AppColors.textSecondary,
                         ),
                       // Politika: TeknoAkış özeti kaynağın kendi metninden
                       // görsel olarak ayrılır.
-                      if (widget.item.summaryAuthor == SummaryAuthor.teknoakis)
+                      if (item.summaryAuthor == SummaryAuthor.teknoakis)
                         const AppBadge(
                           label: 'TEKNOAKIŞ ÖZETİ',
                           color: AppColors.aiAccent,
                         ),
-                      if (languageBadge(widget.item) case final code?)
+                      if (languageBadge(item) case final code?)
                         AppBadge(label: code, color: AppColors.textSecondary),
                     ],
                   ),
                 ),
-                const SizedBox(width: AppSpacing.sm),
-                Semantics(
-                  button: true,
-                  selected: _isSaved,
-                  label: _isSaved ? 'Kaydı kaldır' : 'Kaydet',
-                  child: IconButton(
-                    key: Key('feed-bookmark-${widget.item.id}'),
-                    tooltip: _isSaved ? 'Kaydı kaldır' : 'Kaydet',
-                    onPressed: _toggleSaved,
-                    icon: Icon(
-                      _isSaved ? Icons.bookmark : Icons.bookmark_outline,
-                      color: _isSaved
-                          ? AppColors.primary
-                          : AppColors.textSecondary,
+                if (onToggleSave case final toggle?) ...[
+                  const SizedBox(width: AppSpacing.sm),
+                  Semantics(
+                    button: true,
+                    selected: isSaved,
+                    label: isSaved ? 'Kaydı kaldır' : 'Kaydet',
+                    child: IconButton(
+                      key: Key('feed-bookmark-${item.id}'),
+                      tooltip: isSaved ? 'Kaydı kaldır' : 'Kaydet',
+                      onPressed: toggle,
+                      icon: Icon(
+                        isSaved ? Icons.bookmark : Icons.bookmark_outline,
+                        color: isSaved
+                            ? AppColors.primary
+                            : AppColors.textSecondary,
+                      ),
                     ),
                   ),
-                ),
+                ],
               ],
             ),
             const SizedBox(height: AppSpacing.md),
-            Text(widget.item.title, style: AppTypography.headline),
+            Text(item.title, style: AppTypography.headline),
             const SizedBox(height: AppSpacing.sm),
             Text(
-              widget.item.summary,
+              item.summary,
               style: AppTypography.bodyMuted,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
             ),
             // Kaynaklar "ne işe yarar" diye bir alan vermiyor ve onu biz
             // uydurmayız: alan yoksa bölüm hiç çizilmez.
-            if (widget.item.whatItDoes case final explanation?) ...[
+            if (item.whatItDoes case final explanation?) ...[
               const SizedBox(height: AppSpacing.md),
               Container(
                 width: double.infinity,
@@ -931,7 +928,7 @@ class _FeedItemCardState extends State<FeedItemCard> {
               spacing: AppSpacing.sm,
               runSpacing: AppSpacing.sm,
               children: [
-                for (final tag in widget.item.tags)
+                for (final tag in item.tags)
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppSpacing.sm,
@@ -952,32 +949,34 @@ class _FeedItemCardState extends State<FeedItemCard> {
   }
 }
 
-class ExploreResultCard extends StatefulWidget {
-  const ExploreResultCard({required this.item, super.key});
+/// Keşfet sonuç kartı.
+///
+/// Artık fixture değil, gerçek feed kaydı gösterir. "NEDEN EŞLEŞTİ?" kutusu
+/// da uydurulmaz: aramanın kaydın **neresinde** eşleştiğinden türetilir
+/// (`lib/ui/explore_search.dart`).
+class ExploreResultCard extends StatelessWidget {
+  const ExploreResultCard({
+    required this.item,
+    required this.matchReason,
+    this.onTap,
+    this.isSaved = false,
+    this.onToggleSave,
+    super.key,
+  });
 
-  final ExploreResultFixture item;
+  final ContentCardModel item;
 
-  @override
-  State<ExploreResultCard> createState() => _ExploreResultCardState();
-}
+  /// Kaydın bu aramaya neden geldiği. Kullanıcıya gösterilen gerekçe.
+  final String matchReason;
 
-class _ExploreResultCardState extends State<ExploreResultCard> {
-  bool _isSaved = false;
-
-  void _toggleSaved() {
-    setState(() => _isSaved = !_isSaved);
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        const SnackBar(
-          content: Text('Kaydetme yalnız yerel fixture etkileşimidir.'),
-        ),
-      );
-  }
+  final VoidCallback? onTap;
+  final bool isSaved;
+  final VoidCallback? onToggleSave;
 
   @override
   Widget build(BuildContext context) => _AppCard(
-    accent: AppColors.primary,
+    onTap: onTap,
+    accent: categoryOf(item.kind).$2,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -986,28 +985,32 @@ class _ExploreResultCardState extends State<ExploreResultCard> {
           children: [
             Expanded(
               child: Text(
-                widget.item.categoryLine,
+                categoryOf(item.kind).$1,
                 style: AppTypography.technical.copyWith(
-                  color: AppColors.primary,
+                  color: categoryOf(item.kind).$2,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
-            const SizedBox(width: AppSpacing.sm),
-            Semantics(
-              button: true,
-              selected: _isSaved,
-              label: _isSaved ? 'Kaydı kaldır' : 'Kaydet',
-              child: IconButton(
-                key: Key('explore-bookmark-${widget.item.id}'),
-                tooltip: _isSaved ? 'Kaydı kaldır' : 'Kaydet',
-                onPressed: _toggleSaved,
-                icon: Icon(
-                  _isSaved ? Icons.bookmark : Icons.bookmark_outline,
-                  color: _isSaved ? AppColors.primary : AppColors.textSecondary,
+            if (onToggleSave case final toggle?) ...[
+              const SizedBox(width: AppSpacing.sm),
+              Semantics(
+                button: true,
+                selected: isSaved,
+                label: isSaved ? 'Kaydı kaldır' : 'Kaydet',
+                child: IconButton(
+                  key: Key('explore-bookmark-${item.id}'),
+                  tooltip: isSaved ? 'Kaydı kaldır' : 'Kaydet',
+                  onPressed: toggle,
+                  icon: Icon(
+                    isSaved ? Icons.bookmark : Icons.bookmark_outline,
+                    color: isSaved
+                        ? AppColors.primary
+                        : AppColors.textSecondary,
+                  ),
                 ),
               ),
-            ),
+            ],
           ],
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -1016,13 +1019,23 @@ class _ExploreResultCardState extends State<ExploreResultCard> {
           runSpacing: AppSpacing.sm,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            Text(widget.item.title, style: AppTypography.title),
-            const AppBadge(label: 'ÖRNEK', color: AppColors.textSecondary),
+            Text(item.title, style: AppTypography.title),
+            // Örnek işareti yalnız fixture kartlarında. Gerçek içerikte
+            // "ÖRNEK" yazmak yalan olurdu.
+            if (item.isSample)
+              const AppBadge(label: 'ÖRNEK', color: AppColors.textSecondary),
+            if (item.summaryAuthor == SummaryAuthor.teknoakis)
+              const AppBadge(
+                label: 'TEKNOAKIŞ ÖZETİ',
+                color: AppColors.aiAccent,
+              ),
+            if (languageBadge(item) case final code?)
+              AppBadge(label: code, color: AppColors.textSecondary),
           ],
         ),
         const SizedBox(height: AppSpacing.sm),
         Text(
-          widget.item.summary,
+          item.summary,
           style: AppTypography.bodyMuted,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
@@ -1055,10 +1068,7 @@ class _ExploreResultCardState extends State<ExploreResultCard> {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
-                    Text(
-                      widget.item.matchReason,
-                      style: AppTypography.bodyMuted,
-                    ),
+                    Text(matchReason, style: AppTypography.bodyMuted),
                   ],
                 ),
               ),
@@ -1074,7 +1084,7 @@ class _ExploreResultCardState extends State<ExploreResultCard> {
             const SizedBox(width: AppSpacing.sm),
             Expanded(
               child: Text(
-                widget.item.sourceLabel,
+                item.sourceLabel,
                 style: AppTypography.technical,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -1087,140 +1097,79 @@ class _ExploreResultCardState extends State<ExploreResultCard> {
   );
 }
 
-class ExploreStarterCard extends StatelessWidget {
-  const ExploreStarterCard({
-    required this.item,
-    required this.onTap,
-    super.key,
-  });
-
-  final ExploreStarterFixture item;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) => SizedBox(
-    width: 260,
-    child: Semantics(
-      button: true,
-      label: item.title,
-      child: _AppCard(
-        onTap: onTap,
-        accent: AppColors.warning,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              item.categoryLine,
-              style: AppTypography.technical.copyWith(
-                color: AppColors.warning,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              item.title,
-              style: AppTypography.title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              item.summary,
-              style: AppTypography.bodyMuted,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const Spacer(),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(item.readingTime, style: AppTypography.technical),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                const Icon(
-                  Icons.arrow_forward_rounded,
-                  size: 20,
-                  color: AppColors.warning,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-}
+// `ExploreStarterCard` buradan kaldırıldı (2026-07-28).
+//
+// "Başlangıç İçin" bölümü rehber içeriği gösteriyordu; feed'de rehber diye
+// bir kayıt türü yok ve okuma süresi gibi alanları uydurmak gerekiyordu.
+// Bölüm artık neden boş olduğunu söyleyen bir not gösteriyor. Kart, gerçek
+// rehberler yazıldığında geri gelir; o güne kadar testi olmayan ölü koddur.
 
 class ExplorePopularRow extends StatelessWidget {
   const ExplorePopularRow({required this.item, required this.onTap, super.key});
 
-  final ExplorePopularFixture item;
+  /// Gerçek feed kaydı. Vurgu ve ikon kaydın **türünden** türetiliyor;
+  /// fixture'daki serbest `accentKind` alanı aynı türü iki ekranda iki farklı
+  /// renkte gösterebiliyordu ve moru AI dışına taşıma riski taşıyordu.
+  final ContentCardModel item;
   final VoidCallback onTap;
 
-  Color get _accent => switch (item.accentKind) {
-    ExploreAccentKind.primary => AppColors.primary,
-    ExploreAccentKind.ai => AppColors.aiAccent,
-    ExploreAccentKind.warning => AppColors.warning,
-  };
-
-  IconData get _icon => switch (item.accentKind) {
-    ExploreAccentKind.primary => Icons.phone_android_rounded,
-    ExploreAccentKind.ai => Icons.psychology_outlined,
-    ExploreAccentKind.warning => Icons.build_outlined,
-  };
-
   @override
-  Widget build(BuildContext context) => Semantics(
-    button: true,
-    label: item.title,
-    child: _AppCard(
-      onTap: onTap,
-      accent: _accent,
-      child: Row(
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: _accent.withValues(alpha: 0.14),
-              borderRadius: AppRadius.smallBorder,
+  Widget build(BuildContext context) {
+    final (_, accent, icon) = categoryOf(item.kind);
+
+    return Semantics(
+      button: true,
+      label: item.title,
+      child: _AppCard(
+        onTap: onTap,
+        accent: accent,
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: accent.withValues(alpha: 0.14),
+                borderRadius: AppRadius.smallBorder,
+              ),
+              child: Icon(icon, color: accent),
             ),
-            child: Icon(_icon, color: _accent),
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Wrap(
-                  spacing: AppSpacing.sm,
-                  runSpacing: AppSpacing.xs,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    Text(item.title, style: AppTypography.title),
-                    const AppBadge(
-                      label: 'ÖRNEK',
-                      color: AppColors.textSecondary,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  item.summary,
-                  style: AppTypography.bodyMuted,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.xs,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text(item.title, style: AppTypography.title),
+                      if (item.isSample)
+                        const AppBadge(
+                          label: 'ÖRNEK',
+                          color: AppColors.textSecondary,
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    item.summary,
+                    style: AppTypography.bodyMuted,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(width: AppSpacing.sm),
-          const Icon(
-            Icons.chevron_right_rounded,
-            color: AppColors.textSecondary,
-          ),
-        ],
+            const SizedBox(width: AppSpacing.sm),
+            const Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.textSecondary,
+            ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }

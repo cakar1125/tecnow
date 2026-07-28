@@ -1,9 +1,18 @@
-/// İki detay rotasının ortak ekranı.
+/// Tek detay ekranı.
 ///
-/// `/repository/:id` ve `/ai-model/:id` aynı veriyi gösterir; aralarındaki
-/// fark başlık ve vurgu rengidir. Ayrı iki ekran olarak yazılsaydı yükleme,
-/// hata ve "bulunamadı" davranışları iki yerde ayrı ayrı yaşar ve biri
-/// düzeltilip diğeri unutulurdu.
+/// Önceden iki rota vardı (`/repository/:id`, `/ai-model/:id`) ve tür → rota
+/// eşlemesi **çağıran ekranın** içinde yaşıyordu. İki sonucu oldu:
+///
+/// 1. Eşlemede yeri olmayan türler hiçbir yere gitmiyordu. Ölçüldü
+///    (2026-07-28): üretilen 200 kaydın **146'sı** duyuru ve duyuruya
+///    dokunmak yalnız "detay ekranı henüz uygulanmadı" diyordu. Akışın
+///    dörtte üçü kapalı bir kapıydı — oysa ekran tür bağımsız çalışıyor.
+/// 2. Vurgu rengi ve okuma geçmişi türü **rotadan** okunuyordu, kayıttan
+///    değil. `/ai-model/<bir-depo-kimliği>` mor bir depo çiziyor ve geçmişe
+///    yanlış tür yazıyordu.
+///
+/// Artık tek rota (`/icerik/:id`) var ve başlık, vurgu ve geçmiş türü
+/// kaydın kendisinden türüyor.
 library;
 
 import 'dart:async';
@@ -18,31 +27,50 @@ import '../../design_system/tokens/app_tokens.dart';
 import '../read_history/read_history_recorder.dart';
 import 'feed_item_detail.dart';
 
+/// Başlık çubuğu etiketi. Onaylı tasarımdaki iki başlık ("Repository Detayı",
+/// "AI Model Detayı") birebir korunur; kalan türler aynı kalıbı sürdürür.
+String detailTitle(FeedItemKind? kind) => switch (kind) {
+  FeedItemKind.repository => 'Repository Detayı',
+  FeedItemKind.aiModel => 'AI Model Detayı',
+  FeedItemKind.tool => 'Araç Detayı',
+  FeedItemKind.skill => 'Skill Detayı',
+  FeedItemKind.mcp => 'MCP Detayı',
+  FeedItemKind.announcement => 'Duyuru Detayı',
+  // Kayıt henüz çözülmedi ya da bulunamadı: tür iddia edilmez.
+  null => 'İçerik',
+};
+
+/// Vurgu rengi. Mor **yalnız** AI bağlamında (`CLAUDE.md` değişmez kuralı);
+/// tür bilinmiyorken de mor kullanılmaz, çünkü o bir iddiadır.
+Color detailAccent(FeedItemKind? kind) =>
+    kind == FeedItemKind.aiModel ? AppColors.aiAccent : AppColors.primary;
+
 class FeedDetailScreen extends ConsumerStatefulWidget {
-  const FeedDetailScreen({
-    required this.id,
-    required this.title,
-    required this.accent,
-    required this.historyKind,
-    super.key,
-  });
+  const FeedDetailScreen({required this.id, super.key});
 
   final String id;
-  final String title;
-  final Color accent;
-
-  /// Okuma geçmişine yazılan tür etiketi.
-  final String historyKind;
 
   @override
   ConsumerState<FeedDetailScreen> createState() => _FeedDetailScreenState();
 }
 
 class _FeedDetailScreenState extends ConsumerState<FeedDetailScreen> {
-  @override
-  void initState() {
-    super.initState();
-    unawaited(recordRead(ref, itemId: widget.id, kind: widget.historyKind));
+  /// Geçmiş satırı kayıt başına **bir kez** yazılır. Ekran feed tazelenirken
+  /// yeniden çizilir; her çizimde bir satır yazmak geçmişi şişirirdi.
+  bool _recorded = false;
+
+  /// Kayıt çözüldüğünde geçmişe yazar.
+  ///
+  /// `initState` yerine burada: tür kaydın kendisinden okunuyor ve kayıt
+  /// açılış anında henüz yüklenmemiş olabiliyor. Bulunamayan bir kimlik için
+  /// hiç yazılmaz — geçmişte var olmayan bir içeriğin satırı işe yaramaz.
+  void _recordOnce(FeedItem item) {
+    if (_recorded) return;
+    _recorded = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      unawaited(recordRead(ref, itemId: item.id, kind: item.kind.name));
+    });
   }
 
   Future<void> _openSource(Uri url) async {
@@ -57,9 +85,10 @@ class _FeedDetailScreenState extends ConsumerState<FeedDetailScreen> {
   Widget build(BuildContext context) {
     final feed = ref.watch(feedProvider);
     final item = ref.watch(feedItemProvider(widget.id));
+    if (item != null) _recordOnce(item);
 
     return Scaffold(
-      appBar: AppBackTopBar(title: widget.title),
+      appBar: AppBackTopBar(title: detailTitle(item?.kind)),
       body: SafeArea(child: _body(feed, item)),
     );
   }
@@ -87,7 +116,7 @@ class _FeedDetailScreenState extends ConsumerState<FeedDetailScreen> {
       }
       return FeedItemDetail(
         item: item,
-        accent: widget.accent,
+        accent: detailAccent(item.kind),
         onOpenSource: _openSource,
       );
     }
@@ -108,34 +137,4 @@ class _FeedDetailScreenState extends ConsumerState<FeedDetailScreen> {
       child: LoadingSkeleton(),
     );
   }
-}
-
-/// Depo, MCP ve skill kayıtları — ana vurgu cyan.
-class RepositoryDetailScreen extends StatelessWidget {
-  const RepositoryDetailScreen({required this.id, super.key});
-
-  final String id;
-
-  @override
-  Widget build(BuildContext context) => FeedDetailScreen(
-    id: id,
-    title: 'Repository Detayı',
-    accent: AppColors.primary,
-    historyKind: FeedItemKind.repository.name,
-  );
-}
-
-/// AI modelleri — mor **yalnız** bu bağlamda (`CLAUDE.md` değişmez kuralı).
-class AiModelDetailScreen extends StatelessWidget {
-  const AiModelDetailScreen({required this.id, super.key});
-
-  final String id;
-
-  @override
-  Widget build(BuildContext context) => FeedDetailScreen(
-    id: id,
-    title: 'AI Model Detayı',
-    accent: AppColors.aiAccent,
-    historyKind: FeedItemKind.aiModel.name,
-  );
 }

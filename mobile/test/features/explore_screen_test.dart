@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:teknoakis/data/feed/feed_schema.dart';
 import 'package:teknoakis/design_system/components/app_components.dart';
 import 'package:teknoakis/features/explore/explore_screen.dart';
-import 'package:teknoakis/fixtures/fixtures.dart';
+import 'package:teknoakis/ui/explore_search.dart';
 
-import '../test_harness.dart';
+import '../support/test_overrides.dart';
 
-Widget _explore({double textScale = 1}) =>
-    testHarness(const Scaffold(body: ExploreScreen()), textScale: textScale);
+Widget _explore({
+  double textScale = 1,
+  InMemorySavedItemsRepository? savedRepository,
+}) => memoryDataHarness(
+  const Scaffold(body: ExploreScreen()),
+  savedItems: const [],
+  savedRepository: savedRepository,
+  textScale: textScale,
+);
 
 Finder _filter(String label) => find.descendant(
   of: find.byKey(const Key('explore-filter-scroll')),
@@ -18,150 +26,196 @@ Future<void> _tapFilter(WidgetTester tester, String label) async {
   final chipLabel = _filter(label);
   await tester.ensureVisible(chipLabel);
   await tester.tap(chipLabel);
-  await tester.pump();
+  await tester.pumpAndSettle();
 }
 
+Future<void> _search(WidgetTester tester, String query) async {
+  await tester.enterText(find.byType(TextField), query);
+  await tester.pumpAndSettle();
+}
+
+/// Sonuç listesine kapsanmış metin araması.
+///
+/// Kapsamsız `find.text` yanıltıcı: aynı kayıt hem "En Uygun Sonuçlar"da hem
+/// "Popüler"de görünebilir ve iki kez bulunur. Bu doğru davranış, testin
+/// yanlış sorusuydu.
+Finder _inResults(String text) => find.descendant(
+  of: find.byType(ExploreResultCard),
+  matching: find.text(text),
+);
+
 void main() {
-  testWidgets('renders search, five filters, and all section headings', (
-    tester,
-  ) async {
+  /// Bu ekran 2026-07-28'e kadar tamamen `lib/fixtures/` okuyordu: arama
+  /// hayalî kayıtlar arasında geziniyordu, "NEDEN EŞLEŞTİ?" kutusu fixture'a
+  /// yazılmış sabit bir cümleydi ve hiçbir kart hiçbir yere gitmiyordu.
+  testWidgets('arama, beş süzgeç ve bölüm başlıkları çizilir', (tester) async {
     await tester.pumpWidget(_explore());
+    await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('explore-search')), findsOneWidget);
-    for (final label in [
-      'GitHub',
-      'AI Modelleri',
-      'AI Araçları',
-      'Skills',
-      'MCP',
-    ]) {
-      expect(_filter(label), findsOneWidget);
+    for (final filter in ExploreFilter.values) {
+      expect(_filter(exploreFilterLabels[filter]!), findsOneWidget);
     }
     expect(find.text('En Uygun Sonuçlar'), findsOneWidget);
     expect(find.text('Başlangıç İçin'), findsOneWidget);
     expect(find.text('Popüler'), findsOneWidget);
   });
 
-  testWidgets('search filters result titles and summaries', (tester) async {
-    await tester.pumpWidget(_explore());
+  group('gerçek feed', () {
+    testWidgets('fixture içeriği hiç sızmaz', (tester) async {
+      await tester.pumpWidget(_explore());
+      await tester.pumpAndSettle();
+      await _tapFilter(tester, 'GitHub');
 
-    await tester.enterText(find.byType(TextField), 'erişilebilir');
-    await tester.pump();
+      expect(find.textContaining('hayalî'), findsNothing);
+      expect(find.textContaining('Hayalî'), findsNothing);
+      expect(find.textContaining('örnek-lab'), findsNothing);
+      expect(find.text('ÖRNEK'), findsNothing);
+    });
 
-    expect(find.text('Örnek Arayüz Pusulası Becerisi'), findsOneWidget);
-    expect(find.text('örnek-lab/hayali-akis-kiti'), findsNothing);
+    testWidgets('varsayılan GitHub süzgeci kaynağa göre süzer', (tester) async {
+      await tester.pumpWidget(_explore());
+      await tester.pumpAndSettle();
+
+      expect(_inResults('ornek/depo'), findsOneWidget);
+      expect(_inResults('ornek/model'), findsNothing);
+    });
+
+    testWidgets('süzgeç kaldırılınca akışın tamamı gelir', (tester) async {
+      await tester.pumpWidget(_explore());
+      await tester.pumpAndSettle();
+      await _tapFilter(tester, 'GitHub');
+
+      expect(find.byType(ExploreResultCard), findsNWidgets(3));
+    });
+
+    testWidgets('arama başlıkta eşleşir ve gerekçesini söyler', (tester) async {
+      await tester.pumpWidget(_explore());
+      await tester.pumpAndSettle();
+      await _tapFilter(tester, 'GitHub');
+      await _search(tester, 'duyuru');
+
+      expect(find.byType(ExploreResultCard), findsOneWidget);
+      expect(_inResults('Bir duyuru'), findsOneWidget);
+      expect(find.text('NEDEN EŞLEŞTİ?'), findsOneWidget);
+      expect(find.text('Başlıkta "duyuru" geçiyor.'), findsOneWidget);
+    });
+
+    testWidgets('eşleşme yoksa boş durum gösterilir', (tester) async {
+      await tester.pumpWidget(_explore());
+      await tester.pumpAndSettle();
+      await _search(tester, 'eşleşmeyen sorgu');
+
+      expect(find.byKey(const Key('explore-empty-state')), findsOneWidget);
+      expect(find.text('Sonuç bulunamadı'), findsOneWidget);
+    });
+
+    testWidgets('Tümünü Gör hem aramayı hem süzgeci temizler', (tester) async {
+      await tester.pumpWidget(_explore());
+      await tester.pumpAndSettle();
+      await _search(tester, 'depo');
+
+      await tester.ensureVisible(find.text('Tümünü Gör'));
+      await tester.tap(find.text('Tümünü Gör'));
+      await tester.pumpAndSettle();
+
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).controller?.text,
+        isEmpty,
+      );
+      expect(find.byType(ExploreResultCard), findsNWidgets(3));
+      for (final filter in ExploreFilter.values) {
+        expect(
+          find.byKey(Key('explore-filter-${filter.name}-idle')),
+          findsOneWidget,
+        );
+      }
+    });
   });
 
-  testWidgets('filter chip filters and a second tap clears selection', (
-    tester,
-  ) async {
+  /// "Başlangıç İçin" bölümü rehber içeriği gösteriyordu ve feed'de rehber
+  /// diye bir kayıt türü yok. Bölüm kaldırılmadı; boşluğun **sebebi**
+  /// söyleniyor, çünkü uydurma rehber göstermek de boşluğu gizlemek de yanlış.
+  testWidgets('rehber bölümü neden boş olduğunu söyler', (tester) async {
     await tester.pumpWidget(_explore());
+    await tester.pumpAndSettle();
 
-    await _tapFilter(tester, 'AI Modelleri');
-
-    expect(find.text('Hayalî Kıvılcım Model Kartı'), findsOneWidget);
-    expect(find.text('örnek-lab/hayali-akis-kiti'), findsNothing);
-
-    await _tapFilter(tester, 'AI Modelleri');
-
-    expect(find.byType(ExploreResultCard), findsNWidgets(5));
     expect(
-      find.byKey(const Key('explore-filter-aiModelleri-idle')),
+      find.byKey(const Key('explore-starter-placeholder')),
       findsOneWidget,
     );
+    expect(find.text('Rehberler henüz hazır değil'), findsOneWidget);
   });
 
-  testWidgets('search and filter are applied together', (tester) async {
+  testWidgets('popüler bölümü gerçek kayıtları listeler', (tester) async {
     await tester.pumpWidget(_explore());
+    await tester.pumpAndSettle();
 
-    await _tapFilter(tester, 'Skills');
-    await tester.enterText(find.byType(TextField), 'erişilebilir');
-    await tester.pump();
-
-    expect(find.byType(ExploreResultCard), findsOneWidget);
-    expect(find.text('Örnek Arayüz Pusulası Becerisi'), findsOneWidget);
-    expect(find.text('Hayalî Kıvılcım Model Kartı'), findsNothing);
+    expect(find.byType(ExplorePopularRow), findsNWidgets(3));
+    expect(find.byKey(const Key('explore-popular-empty')), findsNothing);
   });
 
-  testWidgets('shows empty state when search has no match', (tester) async {
-    await tester.pumpWidget(_explore());
-
-    await tester.enterText(find.byType(TextField), 'eşleşmeyen sorgu');
-    await tester.pump();
-
-    expect(find.byKey(const Key('explore-empty-state')), findsOneWidget);
-    expect(find.text('Sonuç bulunamadı'), findsOneWidget);
-  });
-
-  testWidgets('every result card shows fixture and match explanation markers', (
-    tester,
-  ) async {
-    await tester.pumpWidget(_explore());
-    // Kaydırma görünümünde kırpılmış olabilir; çip dokunuşlarıyla aynı desen.
-    await tester.ensureVisible(find.text('Tümünü Gör'));
-    await tester.pump();
-    await tester.tap(find.text('Tümünü Gör'));
-    await tester.pump();
-
-    for (final item in exploreResultFixtures) {
-      final card = find.byKey(ValueKey(item.id));
-      expect(card, findsOneWidget);
-      expect(
-        find.descendant(of: card, matching: find.text('ÖRNEK')),
-        findsOneWidget,
-      );
-      expect(
-        find.descendant(of: card, matching: find.text('NEDEN EŞLEŞTİ?')),
-        findsOneWidget,
-      );
-    }
-  });
-
-  testWidgets('bookmark toggles and shows local fixture feedback', (
-    tester,
-  ) async {
-    await tester.pumpWidget(_explore());
-
-    await tester.tap(
-      find.byKey(const Key('explore-bookmark-hayali-akis-kiti')),
+  testWidgets('popülerlik sinyali yoksa bölüm bunu söyler', (tester) async {
+    await tester.pumpWidget(
+      memoryDataHarness(
+        const Scaffold(body: ExploreScreen()),
+        savedItems: const [],
+        feed: [
+          testFeedItem(
+            id: '0000000000000009',
+            kind: FeedItemKind.announcement,
+            title: 'Ölçülmemiş duyuru',
+            popularity: null,
+          ),
+        ],
+      ),
     );
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    expect(
-      find.text('Kaydetme yalnız yerel fixture etkileşimidir.'),
-      findsOneWidget,
-    );
-    expect(find.byIcon(Icons.bookmark), findsOneWidget);
+    expect(find.byKey(const Key('explore-popular-empty')), findsOneWidget);
   });
 
-  testWidgets('show all clears both the search text and selected filter', (
-    tester,
-  ) async {
-    await tester.pumpWidget(_explore());
-    await _tapFilter(tester, 'AI Modelleri');
-    await tester.enterText(find.byType(TextField), 'Kıvılcım');
-    await tester.pump();
+  /// Regresyon kilidi: yer imi düğmesi **gerçekten yazmalı**.
+  ///
+  /// Eski düğme yalnız kendi `setState`'ini çeviriyordu — yani simgenin
+  /// dolduğunu ölçmek yetmez, depoya bakmak gerekir.
+  group('kaydetme', () {
+    testWidgets('yer imi kaydı depoya yazar', (tester) async {
+      final probe = InMemorySavedItemsRepository(const []);
+      await tester.pumpWidget(_explore(savedRepository: probe));
+      await tester.pumpAndSettle();
 
-    // Kaydırma görünümünde kırpılmış olabilir; çip dokunuşlarıyla aynı desen.
-    await tester.ensureVisible(find.text('Tümünü Gör'));
-    await tester.pump();
-    await tester.tap(find.text('Tümünü Gör'));
-    await tester.pump();
-
-    expect(
-      tester.widget<TextField>(find.byType(TextField)).controller?.text,
-      isEmpty,
-    );
-    expect(find.byType(ExploreResultCard), findsNWidgets(5));
-    for (final filter in ExploreFilter.values) {
-      expect(
-        find.byKey(Key('explore-filter-${filter.name}-idle')),
-        findsOneWidget,
+      await tester.tap(
+        find.byKey(const Key('explore-bookmark-0000000000000001')),
       );
-    }
+      await tester.pumpAndSettle();
+
+      final stored = await probe.readAll();
+      expect(stored.map((item) => item.id), ['0000000000000001']);
+      expect(stored.single.title, 'ornek/depo');
+      expect(stored.single.kind, 'repository');
+      expect(find.byIcon(Icons.bookmark), findsOneWidget);
+    });
+
+    testWidgets('ikinci dokunuş kaydı geri alır', (tester) async {
+      final probe = InMemorySavedItemsRepository(const []);
+      await tester.pumpWidget(_explore(savedRepository: probe));
+      await tester.pumpAndSettle();
+
+      final bookmark = find.byKey(
+        const Key('explore-bookmark-0000000000000001'),
+      );
+      await tester.tap(bookmark);
+      await tester.pumpAndSettle();
+      await tester.tap(bookmark);
+      await tester.pumpAndSettle();
+
+      expect(await probe.readAll(), isEmpty);
+      expect(find.byIcon(Icons.bookmark_outline), findsWidgets);
+    });
   });
 
-  testWidgets('has no overflow at supported widths and large text', (
+  testWidgets('desteklenen genişliklerde ve büyük yazıda taşma yok', (
     tester,
   ) async {
     for (final size in [
@@ -171,8 +225,8 @@ void main() {
     ]) {
       await tester.binding.setSurfaceSize(size);
       await tester.pumpWidget(_explore(textScale: 1.3));
-      await tester.pump();
-      expect(tester.takeException(), isNull, reason: 'overflow at $size');
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull, reason: '$size taşması');
     }
     await tester.binding.setSurfaceSize(null);
   });

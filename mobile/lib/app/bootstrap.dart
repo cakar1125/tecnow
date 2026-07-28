@@ -37,9 +37,11 @@ Future<void> seedLocalData(ProviderContainer container) async {
     final migration = await container.read(interestsMigrationProvider.future);
     await migration.migrateIfNeeded();
   });
-  await _step('kaydedilenler tohumlaması', () async {
-    final seeder = await container.read(savedItemsSeederProvider.future);
-    await seeder.seedIfNeeded();
+  await _step('örnek kayıt temizliği', () async {
+    final cleanup = await container.read(
+      savedItemsSampleCleanupProvider.future,
+    );
+    await cleanup.removeIfNeeded();
   });
 }
 

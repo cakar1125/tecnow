@@ -3,48 +3,86 @@ import 'package:teknoakis/features/detail/feed_detail_screen.dart';
 
 import '../support/test_overrides.dart';
 
+/// Okuma geçmişi.
+///
+/// Tür artık **rotadan** değil kaydın kendisinden okunuyor. Önceden
+/// `/repository/:id` ile açılan her şey geçmişe `repository` yazıyordu; bir
+/// skill ya da MCP kaydı açıldığında geçmişte yanlış tür duruyordu.
 void main() {
-  testWidgets('opening a repository detail records a read', (tester) async {
+  testWidgets('açılan kaydın türü geçmişe kaydın kendisinden yazılır', (
+    tester,
+  ) async {
     final history = InMemoryReadHistoryRepository();
 
     await tester.pumpWidget(
       memoryDataHarness(
-        const RepositoryDetailScreen(id: 'akis-motoru'),
+        const FeedDetailScreen(id: '0000000000000001'),
         readHistory: history,
       ),
     );
     await tester.pumpAndSettle();
 
-    expect(history.records, [(itemId: 'akis-motoru', kind: 'repository')]);
+    expect(history.records, [(itemId: '0000000000000001', kind: 'repository')]);
   });
 
-  testWidgets('opening an AI model detail records a read', (tester) async {
+  testWidgets('AI modeli aiModel olarak kaydedilir', (tester) async {
     final history = InMemoryReadHistoryRepository();
 
     await tester.pumpWidget(
       memoryDataHarness(
-        const AiModelDetailScreen(id: 'sentez-mini'),
+        const FeedDetailScreen(id: '0000000000000002'),
         readHistory: history,
       ),
     );
     await tester.pumpAndSettle();
 
-    expect(history.records, [(itemId: 'sentez-mini', kind: 'aiModel')]);
+    expect(history.records, [(itemId: '0000000000000002', kind: 'aiModel')]);
   });
 
   /// Router `:id` boş gelirse (bozuk derin bağlantı) geçmişe çöp satır
   /// yazılmamalı.
-  testWidgets('an empty id records nothing', (tester) async {
+  testWidgets('boş kimlik hiçbir şey kaydetmez', (tester) async {
+    final history = InMemoryReadHistoryRepository();
+
+    await tester.pumpWidget(
+      memoryDataHarness(const FeedDetailScreen(id: ''), readHistory: history),
+    );
+    await tester.pumpAndSettle();
+
+    expect(history.records, isEmpty);
+  });
+
+  /// Akışta olmayan bir kimlik de yazılmaz: geçmişte var olmayan bir
+  /// içeriğin satırı hiçbir işe yaramaz ve listeyi kirletir.
+  testWidgets('bulunamayan kayıt geçmişe yazılmaz', (tester) async {
     final history = InMemoryReadHistoryRepository();
 
     await tester.pumpWidget(
       memoryDataHarness(
-        const RepositoryDetailScreen(id: ''),
+        const FeedDetailScreen(id: 'yok-boyle-kayit'),
         readHistory: history,
       ),
     );
     await tester.pumpAndSettle();
 
     expect(history.records, isEmpty);
+  });
+
+  /// Ekran feed tazelenirken yeniden çizilir; her çizimde bir satır yazmak
+  /// geçmişi şişirirdi.
+  testWidgets('yeniden çizim ikinci satır yazmaz', (tester) async {
+    final history = InMemoryReadHistoryRepository();
+
+    await tester.pumpWidget(
+      memoryDataHarness(
+        const FeedDetailScreen(id: '0000000000000001'),
+        readHistory: history,
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pumpAndSettle();
+
+    expect(history.records, hasLength(1));
   });
 }

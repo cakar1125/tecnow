@@ -3,13 +3,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:teknoakis/data/local/app_database.dart';
 import 'package:teknoakis/data/repositories/saved_items_repository.dart';
-import 'package:teknoakis/data/saved_items_seeder.dart';
+import 'package:teknoakis/data/saved_items_sample_cleanup.dart';
 import 'package:teknoakis/fixtures/fixtures.dart';
 
 /// Kalıcılığın **gerçek** kanıtı: bellek içi sahte depo değil, sqflite.
 ///
 /// Bu dosya "uygulamayı yeniden başlatma"yı, aynı veritabanı dosyasını
 /// kapatıp yeniden açarak taklit eder.
+///
+/// Önceki hâli açılış **tohumlamasını** ölçüyordu. Tohumlama 2026-07-28'de
+/// kaldırıldı (uygulama artık kullanıcının hiç kaydetmediği üç kaydı hazır
+/// bulundurmuyor), yerine iki şey geldi ve ikisi de burada ölçülüyor:
+/// gerçek kaydetmenin kalıcılığı ve eski cihazlardaki örnek satırların bir
+/// kereye mahsus temizliği.
 void main() {
   setUpAll(sqfliteFfiInit);
 
@@ -30,82 +36,138 @@ void main() {
   Future<Database> openDatabase() =>
       AppDatabase.open(path: databasePath, factory: databaseFactoryFfi);
 
-  test('tohumlama ilk açılışta fixture kayıtlarını yazar', () async {
-    final database = await openDatabase();
-    final repository = SqfliteSavedItemsRepository(database);
-    final preferences = await SharedPreferences.getInstance();
+  SavedItem realItem(String id) => SavedItem(
+    id: id,
+    kind: 'announcement',
+    title: 'Gerçek bir duyuru',
+    sourceLabel: 'OpenAI Blog',
+    summary: 'Kullanıcının kendi kaydettiği içerik.',
+    savedAt: DateTime(2026, 7, 28, 9),
+  );
 
-    await SavedItemsSeeder(repository, preferences).seedIfNeeded();
-    final items = await repository.readAll();
-    await database.close();
+  group('kaydetmenin kalıcılığı', () {
+    test('kaydedilen içerik uygulama yeniden açılınca durur', () async {
+      final first = await openDatabase();
+      await SqfliteSavedItemsRepository(
+        first,
+      ).add(realItem('a1b2c3d4e5f60718'));
+      await first.close();
 
-    expect(items, hasLength(savedItemFixtures.length));
-    expect(
-      items.map((item) => item.title),
-      savedItemFixtures.map((fixture) => fixture.title),
-      reason: 'savedAt DESC sıralaması fixture sırasını korumalı',
-    );
+      final second = await openDatabase();
+      final items = await SqfliteSavedItemsRepository(second).readAll();
+      await second.close();
+
+      expect(items.map((item) => item.id), ['a1b2c3d4e5f60718']);
+      expect(items.single.title, 'Gerçek bir duyuru');
+      // Tür serbest metin olarak saklanır; kartın rozeti buradan okunuyor.
+      expect(items.single.kind, 'announcement');
+    });
+
+    test('kaldırılan kayıt yeniden açılışta geri gelmez', () async {
+      final first = await openDatabase();
+      final repository = SqfliteSavedItemsRepository(first);
+      await repository.add(realItem('a1b2c3d4e5f60718'));
+      await repository.removeById('a1b2c3d4e5f60718');
+      await first.close();
+
+      final second = await openDatabase();
+      final items = await SqfliteSavedItemsRepository(second).readAll();
+      await second.close();
+
+      expect(items, isEmpty);
+    });
   });
 
-  test('tohumlama ikinci açılışta tekrar çalışmaz', () async {
-    final preferences = await SharedPreferences.getInstance();
+  group('örnek kayıt temizliği', () {
+    /// Tohumlanmış bir cihazı taklit eder: eski sürüm fixture satırlarını
+    /// yazmış ve bayrağını bırakmıştır.
+    Future<void> seedLikeOldVersion(SavedItemsRepository repository) async {
+      for (var index = 0; index < savedItemFixtures.length; index++) {
+        final fixture = savedItemFixtures[index];
+        await repository.add(
+          SavedItem(
+            id: fixture.id,
+            kind: fixture.kind.name,
+            title: fixture.title,
+            sourceLabel: fixture.sourceLabel,
+            summary: fixture.summary,
+            savedAt: DateTime(2026, 7, 27).subtract(Duration(seconds: index)),
+          ),
+        );
+      }
+      SharedPreferences.setMockInitialValues({
+        SavedItemsSampleCleanup.legacySeedFlagKey: true,
+      });
+    }
 
-    final first = await openDatabase();
-    await SavedItemsSeeder(
-      SqfliteSavedItemsRepository(first),
-      preferences,
-    ).seedIfNeeded();
-    await first.close();
+    test('tohumlanmış örnek satırları siler', () async {
+      final database = await openDatabase();
+      final repository = SqfliteSavedItemsRepository(database);
+      await seedLikeOldVersion(repository);
 
-    final second = await openDatabase();
-    final repository = SqfliteSavedItemsRepository(second);
-    await SavedItemsSeeder(repository, preferences).seedIfNeeded();
-    final items = await repository.readAll();
-    await second.close();
+      await SavedItemsSampleCleanup(
+        repository,
+        await SharedPreferences.getInstance(),
+      ).removeIfNeeded();
+      final items = await repository.readAll();
+      await database.close();
 
-    expect(items, hasLength(savedItemFixtures.length));
-  });
+      expect(items, isEmpty);
+    });
 
-  test('kaldırılan kayıt yeniden açılışta geri gelmez', () async {
-    final preferences = await SharedPreferences.getInstance();
-    final removedId = savedItemFixtures.first.id;
+    /// Asıl risk bu: temizlik kullanıcının **kendi** kaydettiğine dokunamaz.
+    test('kullanıcının kendi kayıtlarına dokunmaz', () async {
+      final database = await openDatabase();
+      final repository = SqfliteSavedItemsRepository(database);
+      await seedLikeOldVersion(repository);
+      await repository.add(realItem('a1b2c3d4e5f60718'));
 
-    final first = await openDatabase();
-    final firstRepository = SqfliteSavedItemsRepository(first);
-    await SavedItemsSeeder(firstRepository, preferences).seedIfNeeded();
-    await firstRepository.removeById(removedId);
-    await first.close();
+      await SavedItemsSampleCleanup(
+        repository,
+        await SharedPreferences.getInstance(),
+      ).removeIfNeeded();
+      final items = await repository.readAll();
+      await database.close();
 
-    final second = await openDatabase();
-    final secondRepository = SqfliteSavedItemsRepository(second);
-    // Açılış tohumlaması yeniden çalışır; silinen kaydı geri getirmemeli.
-    await SavedItemsSeeder(secondRepository, preferences).seedIfNeeded();
-    final items = await secondRepository.readAll();
-    await second.close();
+      expect(items.map((item) => item.id), ['a1b2c3d4e5f60718']);
+    });
 
-    expect(items, hasLength(savedItemFixtures.length - 1));
-    expect(items.map((item) => item.id), isNot(contains(removedId)));
-  });
+    /// Temizlik tek seferliktir. Aksi hâlde, kullanıcı ileride aynı kimlikle
+    /// bir şey kaydederse her açılışta sessizce silinirdi.
+    test('bir kez çalıştıktan sonra tekrar silmez', () async {
+      final database = await openDatabase();
+      final repository = SqfliteSavedItemsRepository(database);
+      await seedLikeOldVersion(repository);
+      final preferences = await SharedPreferences.getInstance();
 
-  test('kullanıcı hepsini silince fixture kayıtları geri getirilmez', () async {
-    final preferences = await SharedPreferences.getInstance();
+      await SavedItemsSampleCleanup(repository, preferences).removeIfNeeded();
+      // Temizlikten sonra aynı kimlik yeniden yazılırsa korunmalı.
+      final resurrected = savedItemFixtures.first.id;
+      await repository.add(realItem(resurrected));
+      await SavedItemsSampleCleanup(repository, preferences).removeIfNeeded();
+      final items = await repository.readAll();
+      await database.close();
 
-    final first = await openDatabase();
-    final firstRepository = SqfliteSavedItemsRepository(first);
-    await SavedItemsSeeder(firstRepository, preferences).seedIfNeeded();
-    await firstRepository.clear();
-    await first.close();
+      expect(items.map((item) => item.id), [resurrected]);
+    });
 
-    final second = await openDatabase();
-    final secondRepository = SqfliteSavedItemsRepository(second);
-    await SavedItemsSeeder(secondRepository, preferences).seedIfNeeded();
-    final items = await secondRepository.readAll();
-    await second.close();
+    test('temizlenmiş cihazda eski tohumlama bayrağı kalmaz', () async {
+      final database = await openDatabase();
+      final repository = SqfliteSavedItemsRepository(database);
+      await seedLikeOldVersion(repository);
+      final preferences = await SharedPreferences.getInstance();
 
-    expect(
-      items,
-      isEmpty,
-      reason: 'boş liste kullanıcı kararıdır, tohumlama bayrağı bunu korumalı',
-    );
+      await SavedItemsSampleCleanup(repository, preferences).removeIfNeeded();
+      await database.close();
+
+      expect(
+        preferences.getBool(SavedItemsSampleCleanup.legacySeedFlagKey),
+        isNull,
+      );
+      expect(
+        preferences.getBool(SavedItemsSampleCleanup.cleanupFlagKey),
+        isTrue,
+      );
+    });
   });
 }

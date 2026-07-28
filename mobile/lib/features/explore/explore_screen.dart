@@ -1,43 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../data/feed/feed_schema.dart';
+import '../../data/providers.dart';
 import '../../design_system/components/app_components.dart';
 import '../../design_system/tokens/app_tokens.dart';
-import '../../fixtures/fixtures.dart';
+import '../../ui/content_card_model.dart';
+import '../../ui/detail_route.dart';
+import '../../ui/explore_search.dart';
 
-class ExploreScreen extends StatefulWidget {
+/// Keşfet.
+///
+/// 2026-07-28'e kadar bu ekran tamamen `lib/fixtures/` okuyordu: arama
+/// hayalî kayıtlar arasında geziniyor, "NEDEN EŞLEŞTİ?" kutusu fixture'a
+/// yazılmış sabit bir cümle gösteriyor ve hiçbir kart hiçbir yere
+/// gitmiyordu. Artık üçü de gerçek: kayıtlar paketlenmiş/indirilmiş
+/// feed'den, gerekçe eşleşmenin **yerinden**, dokunuş detay ekranına.
+class ExploreScreen extends ConsumerStatefulWidget {
   const ExploreScreen({super.key});
 
   @override
-  State<ExploreScreen> createState() => _ExploreScreenState();
+  ConsumerState<ExploreScreen> createState() => _ExploreScreenState();
 }
 
-class _ExploreScreenState extends State<ExploreScreen> {
+class _ExploreScreenState extends ConsumerState<ExploreScreen> {
   final _searchController = TextEditingController();
   ExploreFilter? _selectedFilter = ExploreFilter.github;
   String _query = '';
-
-  static const _filterLabels = {
-    ExploreFilter.github: 'GitHub',
-    ExploreFilter.aiModelleri: 'AI Modelleri',
-    ExploreFilter.aiAraclari: 'AI Araçları',
-    ExploreFilter.skills: 'Skills',
-    ExploreFilter.mcp: 'MCP',
-  };
-
-  List<ExploreResultFixture> get _visibleResults {
-    final normalizedQuery = _query.trim().toLowerCase();
-    return exploreResultFixtures
-        .where((item) {
-          final matchesFilter =
-              _selectedFilter == null || item.filters.contains(_selectedFilter);
-          final matchesQuery =
-              normalizedQuery.isEmpty ||
-              item.title.toLowerCase().contains(normalizedQuery) ||
-              item.summary.toLowerCase().contains(normalizedQuery);
-          return matchesFilter && matchesQuery;
-        })
-        .toList(growable: false);
-  }
 
   @override
   void dispose() {
@@ -60,17 +50,12 @@ class _ExploreScreenState extends State<ExploreScreen> {
     });
   }
 
-  void _showUpcomingNotice() {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        const SnackBar(content: Text('Bu rehber sonraki fazda uygulanacak.')),
-      );
-  }
+  Future<void> _toggleSaved(FeedItem item) =>
+      ref.read(savedItemsProvider.notifier).toggleFeedItem(item);
 
   @override
   Widget build(BuildContext context) {
-    final visibleResults = _visibleResults;
+    final feed = ref.watch(feedProvider);
 
     return CustomScrollView(
       key: const Key('explore-scroll'),
@@ -112,7 +97,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                 'explore-filter-${filter.name}-'
                                 '${_selectedFilter == filter ? 'selected' : 'idle'}',
                               ),
-                              label: _filterLabels[filter]!,
+                              label: exploreFilterLabels[filter]!,
                               selected: _selectedFilter == filter,
                               onSelected: (_) => _toggleFilter(filter),
                             ),
@@ -122,69 +107,110 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xl),
-                _SectionHeader(
-                  title: 'En Uygun Sonuçlar',
-                  actionLabel: 'Tümünü Gör',
-                  onAction: _clearSearchAndFilter,
-                ),
-                const SizedBox(height: AppSpacing.md),
-                if (visibleResults.isEmpty)
-                  const EmptyStateView(
-                    key: Key('explore-empty-state'),
-                    title: 'Sonuç bulunamadı',
-                    message: 'Farklı bir arama veya filtre deneyin.',
-                  )
-                else
-                  for (
-                    var index = 0;
-                    index < visibleResults.length;
-                    index++
-                  ) ...[
-                    ExploreResultCard(
-                      key: ValueKey(visibleResults[index].id),
-                      item: visibleResults[index],
-                    ),
-                    if (index != visibleResults.length - 1)
-                      const SizedBox(height: AppSpacing.lg),
-                  ],
-                const SizedBox(height: AppSpacing.xxl),
-                const _SectionHeader(title: 'Başlangıç İçin'),
-                const SizedBox(height: AppSpacing.md),
-                SizedBox(
-                  height: 260,
-                  child: ListView.separated(
-                    key: const Key('explore-starter-scroll'),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: exploreStarterFixtures.length,
-                    itemBuilder: (context, index) => ExploreStarterCard(
-                      item: exploreStarterFixtures[index],
-                      onTap: _showUpcomingNotice,
-                    ),
-                    separatorBuilder: (_, _) =>
-                        const SizedBox(width: AppSpacing.md),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.xxl),
-                const _SectionHeader(title: 'Popüler'),
-                const SizedBox(height: AppSpacing.md),
-                for (
-                  var index = 0;
-                  index < explorePopularFixtures.length;
-                  index++
-                ) ...[
-                  ExplorePopularRow(
-                    item: explorePopularFixtures[index],
-                    onTap: _showUpcomingNotice,
-                  ),
-                  if (index != explorePopularFixtures.length - 1)
-                    const SizedBox(height: AppSpacing.md),
-                ],
+                ..._sections(feed),
               ],
             ),
           ),
         ),
       ],
     );
+  }
+
+  /// Durum sırası **içeriğe göre**: elde veri varsa göster, yoksa hata varsa
+  /// söyle, o da yoksa yükleniyor. `AsyncLoading()` ile başlayan bir `switch`
+  /// Riverpod 3'te hata durumunu ölü koda çeviriyor (TASK-0019 dersi).
+  List<Widget> _sections(AsyncValue<List<FeedItem>> feed) {
+    if (feed.value case final items?) return _loaded(items);
+
+    if (feed.hasError) {
+      return const [
+        EmptyStateView(
+          key: Key('explore-error'),
+          title: 'İçerik okunamadı',
+          message:
+              'İçerik dosyası açılamadı. Uygulamayı güncellemek sorunu '
+              'çözebilir.',
+        ),
+      ];
+    }
+
+    return const [
+      Padding(
+        key: Key('explore-loading'),
+        padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
+        child: LoadingSkeleton(),
+      ),
+    ];
+  }
+
+  List<Widget> _loaded(List<FeedItem> items) {
+    final matches = searchFeed(items, query: _query, filter: _selectedFilter);
+    final popular = popularItems(items);
+    final savedIds = ref.watch(savedItemIdsProvider);
+
+    return [
+      _SectionHeader(
+        title: 'En Uygun Sonuçlar',
+        actionLabel: 'Tümünü Gör',
+        onAction: _clearSearchAndFilter,
+      ),
+      const SizedBox(height: AppSpacing.md),
+      if (matches.isEmpty)
+        const EmptyStateView(
+          key: Key('explore-empty-state'),
+          title: 'Sonuç bulunamadı',
+          message: 'Farklı bir arama veya filtre deneyin.',
+        )
+      else
+        for (var index = 0; index < matches.length; index++) ...[
+          ExploreResultCard(
+            key: ValueKey(matches[index].item.id),
+            item: ContentCardModel.fromFeedItem(matches[index].item),
+            matchReason: matches[index].reason,
+            isSaved: savedIds.contains(matches[index].item.id),
+            onToggleSave: () => _toggleSaved(matches[index].item),
+            onTap: () => context.push(detailRoute(matches[index].item.id)),
+          ),
+          if (index != matches.length - 1)
+            const SizedBox(height: AppSpacing.lg),
+        ],
+      const SizedBox(height: AppSpacing.xxl),
+      const _SectionHeader(title: 'Başlangıç İçin'),
+      const SizedBox(height: AppSpacing.md),
+      // Bu bölüm TeknoAkış'ın kendi yazacağı başlangıç rehberleri için
+      // ayrıldı. Feed'de rehber diye bir kayıt türü yok; buraya kayıt
+      // koymak, okuma süresi dahil her alanını uydurmak olurdu. Bölüm
+      // kaldırılmadı çünkü boşluğun **sebebini** söylemek, boşluğu
+      // gizlemekten dürüst.
+      const EmptyStateView(
+        key: Key('explore-starter-placeholder'),
+        title: 'Rehberler henüz hazır değil',
+        message:
+            'Başlangıç rehberleri TeknoAkış tarafından yazılacak. Hazır '
+            'olmadan örnek metin gösterilmiyor.',
+      ),
+      const SizedBox(height: AppSpacing.xxl),
+      const _SectionHeader(title: 'Popüler'),
+      const SizedBox(height: AppSpacing.md),
+      if (popular.isEmpty)
+        const EmptyStateView(
+          key: Key('explore-popular-empty'),
+          title: 'Popülerlik ölçülemedi',
+          message:
+              'Bu akıştaki kayıtların hiçbirinde yıldız veya indirme sinyali '
+              'yok.',
+        )
+      else
+        for (var index = 0; index < popular.length; index++) ...[
+          ExplorePopularRow(
+            key: ValueKey('popular-${popular[index].id}'),
+            item: ContentCardModel.fromFeedItem(popular[index]),
+            onTap: () => context.push(detailRoute(popular[index].id)),
+          ),
+          if (index != popular.length - 1)
+            const SizedBox(height: AppSpacing.md),
+        ],
+    ];
   }
 }
 

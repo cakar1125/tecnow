@@ -62,26 +62,23 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    expect(find.text('Bu filtrede kayıt kalmadı.'), findsOneWidget);
+    expect(find.byKey(const Key('saved-none')), findsOneWidget);
   });
 
-  testWidgets('every card visibly marks fixture transparency', (tester) async {
+  /// Uygulama artık kullanıcının kaydetmediği hiçbir şeyi listeye koymuyor:
+  /// tohumlama 2026-07-28'de kaldırıldı. Dolayısıyla "Örnek kayıt" rozeti de
+  /// yok — gerçek kayda örnek demek, kurgusal veriyi gerçek gibi sunmanın
+  /// ters yönde ama aynı ölçüde yanlış hâliydi.
+  testWidgets('hiçbir kartta örnek rozeti kalmaz', (tester) async {
     await tester.pumpWidget(savedScreenHarness());
     await tester.pumpAndSettle();
 
-    for (final item in savedItemFixtures) {
-      await tester.scrollUntilVisible(
-        find.text(item.title),
-        250,
-        scrollable: find.byType(Scrollable).last,
-      );
-      expect(find.text('Örnek kayıt'), findsWidgets);
-    }
+    expect(find.text('Örnek kayıt'), findsNothing);
+    expect(find.text('ÖRNEK'), findsNothing);
   });
 
-  testWidgets('an empty repository renders the empty state, not an error', (
-    tester,
-  ) async {
+  /// İlk açılış ile "süzgeç boş" farklı şeyler ve aynı cümleyle anlatılamaz.
+  testWidgets('hiç kayıt yokken ilk açılış metni gösterilir', (tester) async {
     await tester.pumpWidget(
       memoryDataHarness(
         const Scaffold(body: SafeArea(child: SavedScreen())),
@@ -90,7 +87,21 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Bu filtrede kayıt kalmadı.'), findsOneWidget);
+    expect(find.byKey(const Key('saved-none')), findsOneWidget);
+    expect(find.text('Henüz kayıt yok'), findsOneWidget);
+    expect(find.byKey(const Key('saved-filter-empty')), findsNothing);
     expect(find.text('Kayıtlar okunamadı'), findsNothing);
+  });
+
+  testWidgets('kayıt varken boş süzgeç farklı metin gösterir', (tester) async {
+    await tester.pumpWidget(savedScreenHarness());
+    await tester.pumpAndSettle();
+
+    // Tohum listesinde asistan projesi kaydı yok; bu çip boş kalır.
+    await tester.tap(find.widgetWithText(FilterChip, 'Asistan Projeleri'));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('saved-filter-empty')), findsOneWidget);
+    expect(find.byKey(const Key('saved-none')), findsNothing);
   });
 }

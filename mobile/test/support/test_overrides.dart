@@ -107,10 +107,14 @@ final class InMemoryLocalDataRepository implements LocalDataRepository {
   );
 }
 
-/// `SavedItemsSeeder`'ın üreteceği listenin aynısı.
+/// Kaydedilenler ekranının varsayılan test verisi.
 ///
-/// Testler üretimdeki tohum sırasını (`savedAt DESC`) taklit etmelidir; aksi
-/// halde beklenen kart sırası testte tesadüfen tutar.
+/// Üretimde artık **tohumlama yok**: uygulama kullanıcının kaydetmediği
+/// hiçbir şeyi listeye koymaz (bkz. `SavedItemsSampleCleanup`). Bu liste
+/// yalnız "dolu liste" hâlini ölçen testler için var; boş hâli ölçen testler
+/// `savedItems: const []` geçer.
+///
+/// Sıra `savedAt DESC`: beklenen kart sırası tesadüfen tutmasın.
 List<SavedItem> seededSavedItems() {
   final seededAt = DateTime(2026, 7, 27, 12);
   return [
@@ -134,6 +138,7 @@ List<SavedItem> seededSavedItems() {
 Widget memoryDataHarness(
   Widget child, {
   List<SavedItem>? savedItems,
+  SavedItemsRepository? savedRepository,
   List<String>? interests,
   ReadHistoryRepository? readHistory,
   List<FeedItem>? feed,
@@ -143,6 +148,7 @@ Widget memoryDataHarness(
 }) => memoryDataScope(
   testApp(child, textScale: textScale),
   savedItems: savedItems,
+  savedRepository: savedRepository,
   interests: interests,
   readHistory: readHistory,
   feed: feed,
@@ -155,6 +161,7 @@ Widget memoryDataHarness(
 Widget memoryDataScope(
   Widget child, {
   List<SavedItem>? savedItems,
+  SavedItemsRepository? savedRepository,
   List<String>? interests,
   ReadHistoryRepository? readHistory,
   List<FeedItem>? feed,
@@ -164,7 +171,13 @@ Widget memoryDataScope(
   // Örnekler önceden kurulur: `localDataRepositoryProvider` diğer üçüyle
   // **aynı** nesneleri görmeli, yoksa "Verileri Sil" testte hiçbir şeyi
   // boşaltmamış gibi görünür.
-  final saved = InMemorySavedItemsRepository(savedItems ?? seededSavedItems());
+  //
+  // [savedRepository] verilirse çağıran onu elinde tutar: kaydetmenin
+  // gerçekten **yazdığını** ölçmek için depoya bakmak gerekiyor, ekrandaki
+  // simgenin dolması yetmez (eski sahte düğme de simgeyi dolduruyordu).
+  final saved =
+      savedRepository ??
+      InMemorySavedItemsRepository(savedItems ?? seededSavedItems());
   final interestsRepository = InMemoryInterestsRepository(
     interests ?? const [],
   );
@@ -313,6 +326,7 @@ FeedItem testFeedItem({
   List<String> topics = const [],
   DateTime? publishedAt,
   DateTime? retractedAt,
+  int? popularity = 10,
 }) => FeedItem(
   retractedAt: retractedAt,
   id: id,
@@ -326,12 +340,12 @@ FeedItem testFeedItem({
   publishedAt: publishedAt ?? DateTime.utc(2026, 7, 20),
   checkedAt: DateTime.utc(2026, 7, 27),
   language: language,
-  trust: const TrustSignals(
+  trust: TrustSignals(
     officialSource: true,
     hasLicense: true,
     recentlyUpdated: true,
     maintained: true,
-    popularity: 10,
+    popularity: popularity,
   ),
   topics: topics,
 );

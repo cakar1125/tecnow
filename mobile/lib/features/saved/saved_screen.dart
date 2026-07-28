@@ -7,9 +7,9 @@ import '../../data/providers.dart';
 import '../../data/repositories/saved_items_repository.dart';
 import '../../design_system/components/app_components.dart';
 import '../../design_system/tokens/app_tokens.dart';
-import '../../fixtures/fixtures.dart';
 import '../../ui/content_card_model.dart';
 import '../../ui/detail_route.dart';
+import '../../ui/saved_filter.dart';
 
 class SavedScreen extends ConsumerStatefulWidget {
   const SavedScreen({super.key});
@@ -19,7 +19,7 @@ class SavedScreen extends ConsumerStatefulWidget {
 }
 
 class _SavedScreenState extends ConsumerState<SavedScreen> {
-  SavedItemKind? _selectedKind;
+  SavedFilter? _selectedKind;
 
   Future<void> _remove(SavedItem item) async {
     final messenger = ScaffoldMessenger.of(context);
@@ -49,19 +49,16 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
             AppSpacing.lg,
             AppSpacing.md,
           ),
+          // Çipler listeden **türetiliyor**: eşleşebileceği bir tür olmayan
+          // çip hiç çizilmiyor (bkz. `visibleSavedFilters`). Elle yazılan bir
+          // sıra, süzgeç eşlemesi değiştiğinde sessizce sapardı.
           child: Row(
             children: [
               _filterChip('Tümü', null),
-              const SizedBox(width: AppSpacing.sm),
-              _filterChip('Repository', SavedItemKind.repository),
-              const SizedBox(width: AppSpacing.sm),
-              _filterChip('AI', SavedItemKind.aiModel),
-              const SizedBox(width: AppSpacing.sm),
-              _filterChip('Araçlar', SavedItemKind.tool),
-              const SizedBox(width: AppSpacing.sm),
-              _filterChip('Skills', SavedItemKind.skill),
-              const SizedBox(width: AppSpacing.sm),
-              _filterChip('Asistan Projeleri', SavedItemKind.assistantProject),
+              for (final filter in visibleSavedFilters) ...[
+                const SizedBox(width: AppSpacing.sm),
+                _filterChip(savedFilterLabels[filter]!, filter),
+              ],
             ],
           ),
         ),
@@ -85,9 +82,8 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
   List<SavedItem> _filter(List<SavedItem> items) {
     final selected = _selectedKind;
     if (selected == null) return items;
-    final kinds = _kindsOf(selected);
     return items
-        .where((item) => kinds.contains(_feedKindOf(item)))
+        .where((item) => savedItemMatchesFilter(_feedKindOf(item), selected))
         .toList(growable: false);
   }
 
@@ -130,7 +126,7 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
           },
         );
 
-  Widget _filterChip(String label, SavedItemKind? kind) => AppFilterChip(
+  Widget _filterChip(String label, SavedFilter? kind) => AppFilterChip(
     label: label,
     selected: _selectedKind == kind,
     onSelected: (_) => setState(() => _selectedKind = kind),
@@ -148,21 +144,6 @@ FeedItemKind? _feedKindOf(SavedItem item) {
   }
   return null;
 }
-
-/// Süzgeç çipi → eşleşen feed türleri.
-///
-/// `Araçlar` hem `tool` hem `mcp` alır: MCP sunucusu bir araçtır ve onaylı
-/// tasarımda ayrı bir çipi yok. `Asistan Projeleri` bugün hiçbir şeyle
-/// eşleşmez, çünkü asistan henüz hiçbir şey yazmıyor. **Duyurular** da
-/// hiçbir çiple eşleşmiyor; yalnız `Tümü` altında görünürler — açık tasarım
-/// kararı olarak `docs/NEXT_ACTION.md`'de kayıtlı.
-Set<FeedItemKind> _kindsOf(SavedItemKind chip) => switch (chip) {
-  SavedItemKind.repository => const {FeedItemKind.repository},
-  SavedItemKind.aiModel => const {FeedItemKind.aiModel},
-  SavedItemKind.tool => const {FeedItemKind.tool, FeedItemKind.mcp},
-  SavedItemKind.skill => const {FeedItemKind.skill},
-  SavedItemKind.assistantProject => const {},
-};
 
 ContentCardModel _toCardModel(SavedItem item) => ContentCardModel(
   kind: _feedKindOf(item) ?? FeedItemKind.tool,

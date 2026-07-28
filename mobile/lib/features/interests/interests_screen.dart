@@ -7,6 +7,21 @@ import '../../data/providers.dart';
 import '../../design_system/components/app_components.dart';
 import '../../design_system/tokens/app_tokens.dart';
 
+/// İlgi alanı seçimi. İki bağlamda açılıyor ve **ikisinde farklı davranıyor**.
+///
+/// Onboarding'de bu ekran akışın son adımı: geri dönülecek bir yer yok,
+/// düğme "Akışa geç" diyor ve kurulumu tamamlıyor.
+///
+/// Ayarlar'dan ise bir **düzenleme**: kullanıcı ayarlarına dönmek istiyor.
+/// Öncesinde ekran ikisini ayırmıyordu ve sonucu şuydu — Ayarlar → İlgi
+/// Alanları'na girildiğinde başlık çubuğunda geri düğmesi yoktu
+/// (`AppTopBar` `automaticallyImplyLeading: false` kullanıyor) ve tek çıkış
+/// olan düğme `go('/home')` yapıyordu. Yani ayarlarını değiştiren kullanıcı
+/// **Ana Sayfa'ya atılıyordu** ve geldiği yere dönemiyordu.
+///
+/// Ayrım `Navigator.canPop` ile yapılıyor: onboarding buraya `go` ile gelir
+/// (yığın temizlenir), Ayarlar `push` ile. Kural kendi kendini koruyor —
+/// "geri dönülecek bir yer varsa oraya dön" her iki bağlamda da doğru.
 class InterestsScreen extends ConsumerWidget {
   const InterestsScreen({super.key});
 
@@ -15,14 +30,20 @@ class InterestsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selected = ref.watch(interestsProvider);
+    final editing = Navigator.canPop(context);
 
     return Scaffold(
-      appBar: const AppTopBar(title: 'İlgi Alanları'),
+      appBar: editing
+          ? const AppBackTopBar(title: 'İlgi Alanları')
+          : const AppTopBar(title: 'İlgi Alanları'),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.xl),
           child: switch (selected) {
-            AsyncData(:final value) => _Content(selected: value),
+            AsyncData(:final value) => _Content(
+              selected: value,
+              editing: editing,
+            ),
             AsyncError(:final error) => ErrorStateView(
               title: 'İlgi alanları okunamadı',
               message: '$error',
@@ -36,23 +57,37 @@ class InterestsScreen extends ConsumerWidget {
 }
 
 class _Content extends ConsumerWidget {
-  const _Content({required this.selected});
+  const _Content({required this.selected, required this.editing});
 
   final Set<String> selected;
+
+  /// Ayarlar'dan mı açıldı (düzenleme) yoksa onboarding'in son adımı mı?
+  final bool editing;
 
   Future<void> _continue(BuildContext context, WidgetRef ref) async {
     await ref.read(interestsProvider.notifier).persist();
 
     // Onboarding, ilgi alanı seçimiyle biter: bayrak burada yazılır, böylece
-    // sonraki açılışlarda splash doğrudan akışa gider.
-    try {
-      final preferences = await ref.read(appPreferencesProvider.future);
-      await preferences.markOnboardingCompleted();
-    } catch (_) {
-      // Bayrak yazılamazsa onboarding tekrar gösterilir; seçimler yine kalıcı.
+    // sonraki açılışlarda splash doğrudan akışa gider. Düzenleme sırasında
+    // yazılmaz — kurulum zaten çoktan tamamlanmış, tekrar işaretlemek anlamsız
+    // bir yazma olurdu.
+    if (!editing) {
+      try {
+        final preferences = await ref.read(appPreferencesProvider.future);
+        await preferences.markOnboardingCompleted();
+      } catch (_) {
+        // Bayrak yazılamazsa onboarding tekrar gösterilir; seçimler kalıcı.
+      }
     }
 
-    if (context.mounted) context.go('/home');
+    if (!context.mounted) return;
+    // Geldiği yere döner. Düzenleyen kullanıcı Ayarlar'a, kurulumu bitiren
+    // kullanıcı akışa gider.
+    if (editing) {
+      Navigator.of(context).maybePop();
+    } else {
+      context.go('/home');
+    }
   }
 
   @override
@@ -112,7 +147,9 @@ class _Content extends ConsumerWidget {
         ),
         const SizedBox(height: AppSpacing.md),
         PrimaryButton(
-          label: 'Akışa geç',
+          // Etiket ne yaptığını söylemeli: düzenleyen kullanıcı akışa
+          // geçmiyor, seçimini kaydedip geldiği yere dönüyor.
+          label: editing ? 'Kaydet' : 'Akışa geç',
           onPressed: enough ? () => _continue(context, ref) : null,
         ),
       ],

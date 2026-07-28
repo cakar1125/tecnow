@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:teknoakis/app/router.dart';
 import 'package:teknoakis/data/app_preferences.dart';
@@ -77,6 +78,97 @@ void main() {
     final after = await SharedPreferences.getInstance();
     expect(after.getBool(AppPreferences.onboardingCompletedKey), isTrue);
     expect(router.routeInformationProvider.value.uri.path, '/home');
+  });
+
+  /// Ayarlar'dan açıldığında ekran bir **düzenleme**, akışın son adımı değil.
+  ///
+  /// Öncesinde ikisi ayrılmıyordu: başlık çubuğunda geri düğmesi yoktu
+  /// (`AppTopBar` `automaticallyImplyLeading: false`) ve tek çıkış olan düğme
+  /// `go('/home')` yapıyordu. Ayarlarını değiştiren kullanıcı Ana Sayfa'ya
+  /// atılıyor ve geldiği yere dönemiyordu.
+  group('Ayarlar\'dan düzenleme', () {
+    Future<GoRouter> pumpFromSettings(WidgetTester tester) async {
+      final router = createRouter(initialLocation: '/settings');
+      addTearDown(router.dispose);
+
+      await tester.pumpWidget(
+        memoryDataScope(
+          MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
+          interests: const ['yapay-zeka', 'mobil', 'acik-kaynak'],
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('İlgi Alanları'));
+      await tester.pumpAndSettle();
+      return router;
+    }
+
+    testWidgets('geri düğmesi ve "Kaydet" etiketi gelir', (tester) async {
+      await pumpFromSettings(tester);
+
+      expect(find.byTooltip('Geri'), findsOneWidget);
+      expect(find.text('Kaydet'), findsOneWidget);
+      expect(find.text('Akışa geç'), findsNothing);
+    });
+
+    testWidgets('kaydetmek Ayarlar\'a döner, akışa atmaz', (tester) async {
+      await pumpFromSettings(tester);
+
+      await tester.tap(find.text('Kaydet'));
+      await tester.pumpAndSettle();
+
+      // Ekran ölçülüyor, rota yolu değil: bir kabuk dalından yapılan `push`
+      // sonrasında GoRouter'ın bildirdiği yol dalın konumunda kalıyor.
+      expect(find.text('KİŞİSELLEŞTİRME'), findsOneWidget);
+      expect(find.text('Akışını şekillendir'), findsNothing);
+    });
+
+    testWidgets('geri düğmesi de Ayarlar\'a döner', (tester) async {
+      await pumpFromSettings(tester);
+
+      await tester.tap(find.byTooltip('Geri'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('KİŞİSELLEŞTİRME'), findsOneWidget);
+    });
+
+    /// Kurulum zaten tamamlanmış; tekrar işaretlemek anlamsız bir yazma.
+    testWidgets('düzenleme onboarding bayrağını yeniden yazmaz', (
+      tester,
+    ) async {
+      SharedPreferences.setMockInitialValues({});
+      await pumpFromSettings(tester);
+
+      await tester.tap(find.text('Kaydet'));
+      await tester.pumpAndSettle();
+
+      final preferences = await SharedPreferences.getInstance();
+      expect(
+        preferences.getBool(AppPreferences.onboardingCompletedKey),
+        isNull,
+      );
+    });
+  });
+
+  /// Onboarding'de geri dönülecek bir yer yok: `go` yığını temizliyor.
+  testWidgets('onboarding son adımında geri düğmesi yok', (tester) async {
+    final router = createRouter(initialLocation: '/onboarding/2');
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(
+      memoryDataScope(
+        MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('İlgi alanlarını seç'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Akışa geç'), findsOneWidget);
+    expect(find.text('Kaydet'), findsNothing);
+    expect(find.byTooltip('Geri'), findsNothing);
   });
 
   /// Bir çipi seçmek diğerlerini yerinden oynatmamalı.

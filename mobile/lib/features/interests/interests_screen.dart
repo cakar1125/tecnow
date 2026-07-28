@@ -88,6 +88,11 @@ class _Content extends ConsumerWidget {
                       key: Key('interest-${interest.id}'),
                       label: interest.label,
                       selected: selected.contains(interest.id),
+                      // Burada zorunlu: kullanıcı arka arkaya en az üç çipe
+                      // dokunuyor ve çipin seçilince genişlemesi `Wrap`
+                      // düzenini yeniden akıtıp komşuları parmağın altından
+                      // kaydırıyordu (cihazda görüldü, 2026-07-28).
+                      stableWidth: true,
                       onSelected: (_) => ref
                           .read(interestsProvider.notifier)
                           .toggle(interest.id),

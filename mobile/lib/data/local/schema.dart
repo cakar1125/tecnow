@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 
 abstract final class LocalSchema {
-  static const version = 3;
+  static const version = 4;
   static const databaseName = 'teknoakis.db';
 
   /// Okuma geçmişinde tutulacak en fazla kayıt.
@@ -34,7 +34,33 @@ abstract final class LocalSchema {
       case 3:
         await _compressFeedCacheV3(db);
         await _dedupeReadHistoryV3(db);
+      case 4:
+        await _cacheValidatorsV4(db);
     }
+  }
+
+  /// v4: önbellek, sunucunun verdiği **doğrulayıcıları** da saklar.
+  ///
+  /// Bunlar bir sonraki istekte `If-None-Match` / `If-Modified-Since` olarak
+  /// geri gönderiliyor; içerik değişmemişse sunucu gövdesiz `304` dönüyor.
+  /// Ölçüldü (2026-07-28): feed gzip'li 33 KB ve üretici günde 4 kez
+  /// çalışıyor, yani içerik değişmemiş olsa da her tazeleme bu kadar
+  /// indiriyordu.
+  ///
+  /// `ALTER TABLE ... ADD COLUMN` kullanılıyor, v3'teki gibi tablo düşürülmüyor:
+  /// v3'te gövde biçimi değiştiği için var olan satır zaten okunamaz hâldeydi.
+  /// Burada satır geçerli — atmak, kullanıcıyı gereksiz bir indirmeye
+  /// sokmak olurdu. Yeni sütunlar `NULL`, yani ilk istek koşulsuz gider ve
+  /// doğrulayıcılar o yanıttan dolar.
+  static Future<void> _cacheValidatorsV4(Database db) async {
+    await db.execute(
+      'ALTER TABLE ${FeedCacheTable.name} '
+      'ADD COLUMN ${FeedCacheTable.etag} TEXT',
+    );
+    await db.execute(
+      'ALTER TABLE ${FeedCacheTable.name} '
+      'ADD COLUMN ${FeedCacheTable.lastModified} TEXT',
+    );
   }
 
   /// v3: önbellek gövdesi **sıkıştırılmış** saklanır.
@@ -256,6 +282,15 @@ abstract final class FeedCacheTable {
 
   /// Hangi adresten geldiği. Adres değişirse eski kopya kullanılmaz.
   static const sourceUrl = 'source_url';
+
+  /// v4: sunucunun verdiği `ETag`. Bir sonraki istekte `If-None-Match`
+  /// olarak geri gider. Sunucu vermezse `NULL`.
+  static const etag = 'etag';
+
+  /// v4: sunucunun verdiği `Last-Modified`. `If-Modified-Since` olarak geri
+  /// gider. `ETag` ile birlikte tutuluyor çünkü her sunucu ikisini de
+  /// vermiyor — ölçüldü (2026-07-28): `pytorch.github.io` hiçbirini vermedi.
+  static const lastModified = 'last_modified';
 }
 
 abstract final class LocalIndexes {

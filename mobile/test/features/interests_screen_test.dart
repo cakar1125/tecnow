@@ -78,4 +78,76 @@ void main() {
     expect(after.getBool(AppPreferences.onboardingCompletedKey), isTrue);
     expect(router.routeInformationProvider.value.uri.path, '/home');
   });
+
+  /// Bir çipi seçmek diğerlerini yerinden oynatmamalı.
+  ///
+  /// Material'in `showCheckmark` davranışında onay işareti yalnız seçiliyken
+  /// çiziliyor ve çipi genişletiyordu; `Wrap` içinde bu, satır düzeninin
+  /// yeniden akması ve **komşu çiplerin parmağın altından kayması** demekti.
+  /// Cihazda görüldü (2026-07-28): art arda üç çipe dokunulduğunda üçüncüsü,
+  /// o konumdaki çip yer değiştirdiği için boşluğa düştü.
+  ///
+  /// Test görünüşe değil **geometriye** bakıyor: seçim yalnız rengi
+  /// değiştirmeli, ölçüyü değil.
+  group('çip düzeni', () {
+    testWidgets('bir çipin genişliği seçilince değişmez', (tester) async {
+      await tester.pumpWidget(memoryDataHarness(const InterestsScreen()));
+      await tester.pumpAndSettle();
+
+      final chip = find.byKey(const Key('interest-yapay-zeka'));
+      final before = tester.getSize(chip);
+
+      await tester.tap(chip);
+      await tester.pumpAndSettle();
+
+      expect(tester.getSize(chip), before);
+    });
+
+    testWidgets('bir çip seçmek komşularını yerinden oynatmaz', (tester) async {
+      await tester.pumpWidget(memoryDataHarness(const InterestsScreen()));
+      await tester.pumpAndSettle();
+
+      final positionsBefore = {
+        for (final interest in [
+          'mobil',
+          'acik-kaynak',
+          'siber-guvenlik',
+          'oyun',
+        ])
+          interest: tester.getTopLeft(find.byKey(Key('interest-$interest'))),
+      };
+
+      await tester.tap(find.byKey(const Key('interest-yapay-zeka')));
+      await tester.pumpAndSettle();
+
+      for (final entry in positionsBefore.entries) {
+        expect(
+          tester.getTopLeft(find.byKey(Key('interest-${entry.key}'))),
+          entry.value,
+          reason: '${entry.key} çipi seçim sonrası yer değiştirdi',
+        );
+      }
+    });
+
+    /// Üç çipe art arda dokunmak gerçekten üçünü seçmeli — cihazda düşen
+    /// senaryonun ta kendisi.
+    testWidgets('art arda üç dokunuş üç seçim yapar', (tester) async {
+      await tester.pumpWidget(memoryDataHarness(const InterestsScreen()));
+      await tester.pumpAndSettle();
+
+      // Konumlar **önceden** alınıyor: gerçek bir kullanıcı da gördüğü yere
+      // dokunur, dokunacağı an yeniden hesaplamaz.
+      final targets = [
+        for (final id in ['yapay-zeka', 'mobil', 'acik-kaynak'])
+          tester.getCenter(find.byKey(Key('interest-$id'))),
+      ];
+
+      for (final target in targets) {
+        await tester.tapAt(target);
+        await tester.pumpAndSettle();
+      }
+
+      expect(find.text('3/3 seçildi'), findsOneWidget);
+    });
+  });
 }

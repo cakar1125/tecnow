@@ -12,12 +12,39 @@ import 'dart:io';
 import 'dart:typed_data';
 
 final class FeedHttpResponse {
-  const FeedHttpResponse({required this.statusCode, required this.body});
+  const FeedHttpResponse({
+    required this.statusCode,
+    required this.body,
+    this.etag,
+    this.lastModified,
+  });
 
   final int statusCode;
   final String body;
 
+  /// Sunucunun verdiği doğrulayıcılar. Bir sonraki istekte geri gönderilirler;
+  /// sunucu vermezse `null` kalırlar ve koşullu istek yapılmaz.
+  final String? etag;
+  final String? lastModified;
+
   bool get isOk => statusCode >= 200 && statusCode < 300;
+
+  /// İçerik değişmemiş: gövde yok, elimizdeki kopya hâlâ geçerli.
+  bool get isNotModified => statusCode == HttpStatus.notModified;
+}
+
+/// Bir önceki yanıttan saklanan doğrulayıcılar.
+///
+/// İkisi birden tutuluyor çünkü sunucular ikisini de her zaman vermiyor:
+/// ölçüldü (2026-07-28) `pages.github.com` ve `microsoft.github.io` ikisini de
+/// verdi, `pytorch.github.io` hiçbirini vermedi. Elde ne varsa o gönderilir.
+final class FeedValidators {
+  const FeedValidators({this.etag, this.lastModified});
+
+  final String? etag;
+  final String? lastModified;
+
+  bool get isEmpty => etag == null && lastModified == null;
 }
 
 /// Ağ katmanının başarısızlıkları. Ayrı bir tip: çağıran taraf bunu bir
@@ -33,7 +60,9 @@ final class FeedTransportException implements Exception {
 }
 
 abstract interface class FeedHttpClient {
-  Future<FeedHttpResponse> get(Uri url);
+  /// [validators] verilirse **koşullu** istek yapılır: içerik değişmemişse
+  /// sunucu gövdesiz `304` döner.
+  Future<FeedHttpResponse> get(Uri url, {FeedValidators? validators});
 }
 
 /// Yönlendirme hedefini çözer; kabul edilmiyorsa `null`.
@@ -93,7 +122,7 @@ final class IoFeedHttpClient implements FeedHttpClient {
   static const maxRedirects = 5;
 
   @override
-  Future<FeedHttpResponse> get(Uri url) async {
+  Future<FeedHttpResponse> get(Uri url, {FeedValidators? validators}) async {
     final client = HttpClient()..connectionTimeout = timeout;
     try {
       var target = url;
@@ -102,6 +131,15 @@ final class IoFeedHttpClient implements FeedHttpClient {
         request.followRedirects = false;
         request.headers.set(HttpHeaders.userAgentHeader, userAgent);
         request.headers.set(HttpHeaders.acceptHeader, 'application/json');
+
+        // Koşullu başlıklar. Elde olan gönderilir; ikisi de yoksa istek
+        // koşulsuzdur ve sunucu her zaman gövde döner.
+        if (validators?.etag case final etag?) {
+          request.headers.set(HttpHeaders.ifNoneMatchHeader, etag);
+        }
+        if (validators?.lastModified case final lastModified?) {
+          request.headers.set(HttpHeaders.ifModifiedSinceHeader, lastModified);
+        }
 
         final response = await request.close().timeout(timeout);
 
@@ -119,9 +157,28 @@ final class IoFeedHttpClient implements FeedHttpClient {
           continue;
         }
 
+        // `304` gövdesizdir; okumaya çalışmak yerine bağlantı boşaltılır.
+        // Doğrulayıcılar yine de okunur: sunucu 304 ile yeni bir `ETag`
+        // gönderebilir ve onu atmak, bir sonraki isteği koşulsuz yapardı.
+        if (response.statusCode == HttpStatus.notModified) {
+          await response.drain<void>();
+          return FeedHttpResponse(
+            statusCode: response.statusCode,
+            body: '',
+            etag:
+                response.headers.value(HttpHeaders.etagHeader) ??
+                validators?.etag,
+            lastModified:
+                response.headers.value(HttpHeaders.lastModifiedHeader) ??
+                validators?.lastModified,
+          );
+        }
+
         return FeedHttpResponse(
           statusCode: response.statusCode,
           body: await _readBody(response),
+          etag: response.headers.value(HttpHeaders.etagHeader),
+          lastModified: response.headers.value(HttpHeaders.lastModifiedHeader),
         );
       }
       throw const FeedTransportException('Çok fazla yönlendirme');

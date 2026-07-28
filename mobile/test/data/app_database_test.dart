@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
@@ -194,6 +195,105 @@ void main() {
     /// İki ayrı yol olsaydı aradaki fark ancak birinde bozuk bir sorgu
     /// olarak görünürdü.
     test('yükseltilen şema, sıfırdan kurulanla aynı', () async {
+      final upgraded = await AppDatabase.open(
+        path: databasePath,
+        factory: databaseFactoryFfi,
+      );
+      final upgradedObjects = await _schemaObjects(upgraded);
+      await upgraded.close();
+
+      final fresh = await AppDatabase.open(
+        path: inMemoryDatabasePath,
+        factory: databaseFactoryFfi,
+      );
+      final freshObjects = await _schemaObjects(fresh);
+      await fresh.close();
+
+      expect(upgradedObjects, freshObjects);
+    });
+  });
+
+  /// v3 → v4: önbellek satırı **korunmalı**.
+  ///
+  /// v3 migration'ı `feed_cache` tablosunu düşürüp yeniden kuruyordu ve bu
+  /// meşruydu: gövde biçimi değiştiği için var olan satır zaten okunamazdı.
+  /// v4'te durum farklı — satır geçerli ve gövdesi 33 KB. Aynı kısayolu
+  /// almak, güncelleme yükleyen her kullanıcıyı gereksiz bir indirmeye
+  /// sokardı. Bu yüzden `ALTER TABLE ... ADD COLUMN` kullanılıyor ve test
+  /// satırın sağ çıktığını ölçüyor.
+  group('v3 → v4 yükseltmesi', () {
+    late String databasePath;
+
+    setUp(() async {
+      await db.close();
+      databasePath = p.join(
+        Directory.systemTemp.path,
+        'teknoakis_v3_${DateTime.now().microsecondsSinceEpoch}.db',
+      );
+      final legacy = await databaseFactoryFfi.openDatabase(
+        databasePath,
+        options: OpenDatabaseOptions(
+          version: 3,
+          onCreate: (database, _) async {
+            await LocalSchema.createV1(database);
+            await LocalSchema.upgradeTo(database, 2);
+            await LocalSchema.upgradeTo(database, 3);
+          },
+        ),
+      );
+      await legacy.insert(FeedCacheTable.name, {
+        FeedCacheTable.id: 1,
+        FeedCacheTable.payload: Uint8List.fromList([1, 2, 3]),
+        FeedCacheTable.fetchedAt: 111,
+        FeedCacheTable.generatedAt: 222,
+        FeedCacheTable.sourceUrl: 'https://ornek.test/feed.json',
+      });
+      await legacy.close();
+    });
+
+    tearDown(() async {
+      if (db.isOpen) await db.close();
+      await databaseFactoryFfi.deleteDatabase(databasePath);
+      db = await AppDatabase.open(
+        path: inMemoryDatabasePath,
+        factory: databaseFactoryFfi,
+      );
+    });
+
+    test('önbellek satırı korunur ve doğrulayıcılar boş gelir', () async {
+      db = await AppDatabase.open(
+        path: databasePath,
+        factory: databaseFactoryFfi,
+      );
+
+      expect(await db.getVersion(), LocalSchema.version);
+      final rows = await db.query(FeedCacheTable.name);
+      expect(rows, hasLength(1), reason: 'önbellek satırı atılmamalı');
+      expect(
+        rows.single[FeedCacheTable.sourceUrl],
+        'https://ornek.test/feed.json',
+      );
+      // İlk istek koşulsuz gider; doğrulayıcılar o yanıttan dolar.
+      expect(rows.single[FeedCacheTable.etag], isNull);
+      expect(rows.single[FeedCacheTable.lastModified], isNull);
+    });
+
+    test('yükseltmeden sonra doğrulayıcılar yazılabilir', () async {
+      db = await AppDatabase.open(
+        path: databasePath,
+        factory: databaseFactoryFfi,
+      );
+
+      await db.update(FeedCacheTable.name, {
+        FeedCacheTable.etag: '"abc123"',
+        FeedCacheTable.lastModified: 'Mon, 27 Jul 2026 10:00:00 GMT',
+      });
+
+      final row = (await db.query(FeedCacheTable.name)).single;
+      expect(row[FeedCacheTable.etag], '"abc123"');
+    });
+
+    test('v3\'ten yükseltilen şema, sıfırdan kurulanla aynı', () async {
       final upgraded = await AppDatabase.open(
         path: databasePath,
         factory: databaseFactoryFfi,

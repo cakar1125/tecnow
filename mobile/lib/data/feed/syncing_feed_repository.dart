@@ -82,11 +82,46 @@ final class SyncingFeedRepository implements FeedRepository {
     final url = endpoint;
     if (url == null) return FeedSyncOutcome.disabled;
 
+    // Elde bu adrese ait bir kopya varsa istek **koşullu** gider.
+    // Farklı bir adrese ait kopyanın doğrulayıcısını göndermek, başka bir
+    // dosyanın kimliğiyle soru sormak olurdu.
+    final cached = await cache.read();
+    final usable = cached != null && _belongsToEndpoint(cached) ? cached : null;
+
     final FeedHttpResponse response;
     try {
-      response = await client.get(url);
+      response = await client.get(url, validators: usable?.validators);
     } on FeedTransportException catch (error) {
       return FeedSyncOutcome.failed(error.message);
+    }
+
+    // İçerik değişmemiş. Gövde yok, ayrıştıracak bir şey de yok: elimizdeki
+    // kopya geçerliliğini koruyor ve **kontrol edildiği an** güncelleniyor.
+    //
+    // Ölçüldü (2026-07-28, gerçek sunucularda): `pages.github.com` ve
+    // `microsoft.github.io` `If-None-Match` ile `304 Not Modified` döndü.
+    // Bu dal olmasaydı değişmeyen içerik için her tazelemede 33 KB inerdi.
+    if (response.isNotModified) {
+      // Elde kopya yokken 304 gelemez — ama gelirse (aracı önbellek, bozuk
+      // sunucu) gösterilecek bir şey olmadığı için hata sayılır.
+      if (usable == null) {
+        return FeedSyncOutcome.failed(
+          'Sunucu içerik göndermedi ve yerel kopya yok',
+        );
+      }
+      final now = _clock();
+      await cache.write(
+        usable.touched(
+          fetchedAt: now,
+          etag: response.etag,
+          lastModified: response.lastModified,
+        ),
+      );
+      return FeedSyncOutcome(
+        status: FeedSyncStatus.unchanged,
+        feed: await _effectiveFeedOrNull(),
+        syncedAt: now,
+      );
     }
 
     if (!response.isOk) {
@@ -106,7 +141,6 @@ final class SyncingFeedRepository implements FeedRepository {
 
     // Yazma **ayrıştırmadan sonra**: bozuk bir yanıtı önbelleğe almak,
     // çalışan bir kopyayı bozuk bir kopyayla değiştirmek olurdu.
-    final previous = await cache.read();
     final now = _clock();
     await cache.write(
       CachedFeed(
@@ -114,13 +148,13 @@ final class SyncingFeedRepository implements FeedRepository {
         fetchedAt: now,
         generatedAt: fetched.generatedAt,
         sourceUrl: url.toString(),
+        etag: response.etag,
+        lastModified: response.lastModified,
       ),
     );
 
     final isNew =
-        previous == null ||
-        !_belongsToEndpoint(previous) ||
-        fetched.generatedAt.isAfter(previous.generatedAt);
+        usable == null || fetched.generatedAt.isAfter(usable.generatedAt);
 
     return FeedSyncOutcome(
       status: isNew ? FeedSyncStatus.refreshed : FeedSyncStatus.unchanged,
@@ -142,6 +176,17 @@ final class SyncingFeedRepository implements FeedRepository {
       return await load();
     } on Object {
       return fetched;
+    }
+  }
+
+  /// `304` yolunda etkin feed. Çekilmiş yeni bir kopya olmadığı için geri
+  /// düşülecek bir şey yok: okuma başarısız olursa `null` döner ve arayüz
+  /// zaten gösterdiği içeriği göstermeye devam eder.
+  Future<Feed?> _effectiveFeedOrNull() async {
+    try {
+      return await load();
+    } on Object {
+      return null;
     }
   }
 

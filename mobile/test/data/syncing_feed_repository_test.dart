@@ -53,10 +53,16 @@ final class _FakeHttpClient implements FeedHttpClient {
   int calls = 0;
   Uri? lastUrl;
 
+  /// Son isteğe hangi doğrulayıcıların gittiği. Koşullu isteğin gerçekten
+  /// **gönderildiğini** ölçmek için: yanıtın 304 olması, isteğin koşullu
+  /// olduğunu kanıtlamaz — sahte istemci onu her hâlükârda döndürürdü.
+  FeedValidators? lastValidators;
+
   @override
-  Future<FeedHttpResponse> get(Uri url) async {
+  Future<FeedHttpResponse> get(Uri url, {FeedValidators? validators}) async {
     calls++;
     lastUrl = url;
+    lastValidators = validators;
     if (failure case final error?) throw error;
     return response!;
   }
@@ -116,11 +122,15 @@ CachedFeed _cached({
   DateTime? fetchedAt,
   String? sourceUrl,
   String? payload,
+  String? etag,
+  String? lastModified,
 }) => CachedFeed(
   payload: payload ?? _payload(generatedAt: generatedAt),
   fetchedAt: fetchedAt ?? DateTime.utc(2026, 7, 27, 11),
   generatedAt: generatedAt,
   sourceUrl: sourceUrl ?? _endpoint.toString(),
+  etag: etag,
+  lastModified: lastModified,
 );
 
 void main() {
@@ -479,5 +489,176 @@ void main() {
     expect(repository.remoteEnabled, isFalse);
     expect((await repository.refresh()).status, FeedSyncStatus.disabled);
     expect(await repository.lastSyncAt(), isNull);
+  });
+
+  /// Koşullu istek (v4).
+  ///
+  /// Ölçüldü (2026-07-28, **gerçek sunucularda**): `pages.github.com` ve
+  /// `microsoft.github.io` `If-None-Match` başlığına `304 Not Modified`
+  /// döndü. Bu davranış olmadan, içerik değişmemiş olsa bile her tazelemede
+  /// gzip'li 33 KB iniyordu.
+  group('koşullu istek', () {
+    test('önbellekteki doğrulayıcılar istekle birlikte gider', () async {
+      final cache = _MemoryCache()
+        ..entry = _cached(
+          generatedAt: DateTime.utc(2026, 7, 26),
+          etag: '"abc123"',
+          lastModified: 'Mon, 27 Jul 2026 10:00:00 GMT',
+        );
+      final client = _FakeHttpClient(
+        response: const FeedHttpResponse(statusCode: 304, body: ''),
+      );
+
+      await _repository(cache: cache, client: client).refresh();
+
+      expect(client.lastValidators?.etag, '"abc123"');
+      expect(
+        client.lastValidators?.lastModified,
+        'Mon, 27 Jul 2026 10:00:00 GMT',
+      );
+    });
+
+    test('önbellek yokken istek koşulsuz gider', () async {
+      final client = _FakeHttpClient(
+        response: FeedHttpResponse(
+          statusCode: 200,
+          body: _payload(generatedAt: DateTime.utc(2026, 7, 27)),
+        ),
+      );
+
+      await _repository(cache: _MemoryCache(), client: client).refresh();
+
+      expect(client.lastValidators, isNull);
+    });
+
+    /// Başka bir adrese ait kopyanın etiketiyle soru sormak, farklı bir
+    /// dosyanın kimliğini kullanmaktır: sunucu "değişmedi" derse elimizdeki
+    /// yanlış içeriği doğru sanardık.
+    test('başka adrese ait önbelleğin doğrulayıcısı gönderilmez', () async {
+      final cache = _MemoryCache()
+        ..entry = _cached(
+          generatedAt: DateTime.utc(2026, 7, 26),
+          sourceUrl: 'https://eski.test/feed.json',
+          etag: '"eski-etiket"',
+        );
+      final client = _FakeHttpClient(
+        response: FeedHttpResponse(
+          statusCode: 200,
+          body: _payload(generatedAt: DateTime.utc(2026, 7, 27)),
+        ),
+      );
+
+      await _repository(cache: cache, client: client).refresh();
+
+      expect(client.lastValidators, isNull);
+    });
+
+    test('304 içeriği korur ve "değişmedi" der', () async {
+      final cache = _MemoryCache()
+        ..entry = _cached(
+          generatedAt: DateTime.utc(2026, 7, 26),
+          etag: '"abc123"',
+        );
+      final original = cache.entry!.payload;
+      final client = _FakeHttpClient(
+        response: const FeedHttpResponse(statusCode: 304, body: ''),
+      );
+
+      final outcome = await _repository(cache: cache, client: client).refresh();
+
+      expect(outcome.status, FeedSyncStatus.unchanged);
+      // Gövde **ezilmedi**: 304'ün boş gövdesi önbelleğe yazılsaydı içerik
+      // kaybolur ve uygulama paketlenmiş dosyaya düşerdi.
+      expect(cache.entry!.payload, original);
+      expect(cache.entry!.generatedAt, DateTime.utc(2026, 7, 26));
+    });
+
+    test('304 son kontrol anını ilerletir', () async {
+      final cache = _MemoryCache()
+        ..entry = _cached(
+          generatedAt: DateTime.utc(2026, 7, 26),
+          fetchedAt: DateTime.utc(2026, 7, 26),
+          etag: '"abc123"',
+        );
+      final client = _FakeHttpClient(
+        response: const FeedHttpResponse(statusCode: 304, body: ''),
+      );
+
+      final outcome = await _repository(cache: cache, client: client).refresh();
+
+      // Bu ilerlemeseydi içerik kalıcı olarak "bayat" sayılır ve uygulama
+      // her açılışta yeniden ağa çıkardı — tam da önlemeye çalıştığımız şey.
+      expect(cache.entry!.fetchedAt, _now);
+      expect(outcome.syncedAt, _now);
+    });
+
+    test('304 ile gelen yeni etiket saklanır', () async {
+      final cache = _MemoryCache()
+        ..entry = _cached(
+          generatedAt: DateTime.utc(2026, 7, 26),
+          etag: '"eski"',
+        );
+      final client = _FakeHttpClient(
+        response: const FeedHttpResponse(
+          statusCode: 304,
+          body: '',
+          etag: '"yeni"',
+        ),
+      );
+
+      await _repository(cache: cache, client: client).refresh();
+
+      expect(cache.entry!.etag, '"yeni"');
+    });
+
+    test('200 yanıtının doğrulayıcıları önbelleğe yazılır', () async {
+      final cache = _MemoryCache();
+      final client = _FakeHttpClient(
+        response: FeedHttpResponse(
+          statusCode: 200,
+          body: _payload(generatedAt: DateTime.utc(2026, 7, 27)),
+          etag: '"taze"',
+          lastModified: 'Tue, 28 Jul 2026 02:17:00 GMT',
+        ),
+      );
+
+      await _repository(cache: cache, client: client).refresh();
+
+      expect(cache.entry!.etag, '"taze"');
+      expect(cache.entry!.lastModified, 'Tue, 28 Jul 2026 02:17:00 GMT');
+    });
+
+    /// Doğrulayıcı vermeyen sunucu da desteklenmeli — ölçüldü:
+    /// `pytorch.github.io` ne `ETag` ne `Last-Modified` verdi.
+    test('doğrulayıcı vermeyen sunucuda tazeleme yine çalışır', () async {
+      final cache = _MemoryCache();
+      final client = _FakeHttpClient(
+        response: FeedHttpResponse(
+          statusCode: 200,
+          body: _payload(generatedAt: DateTime.utc(2026, 7, 27)),
+        ),
+      );
+
+      final outcome = await _repository(cache: cache, client: client).refresh();
+
+      expect(outcome.status, FeedSyncStatus.refreshed);
+      expect(cache.entry!.etag, isNull);
+      expect(cache.entry!.lastModified, isNull);
+    });
+
+    /// Elde kopya yokken 304 gelmemeli. Gelirse gösterilecek bir şey yok:
+    /// sessizce "değişmedi" demek, boş bir ekranı başarı saymak olurdu.
+    test('önbelleksiz gelen 304 hata sayılır', () async {
+      final client = _FakeHttpClient(
+        response: const FeedHttpResponse(statusCode: 304, body: ''),
+      );
+
+      final outcome = await _repository(
+        cache: _MemoryCache(),
+        client: client,
+      ).refresh();
+
+      expect(outcome.status, FeedSyncStatus.failed);
+    });
   });
 }

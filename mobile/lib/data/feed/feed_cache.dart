@@ -12,6 +12,7 @@ import 'dart:typed_data';
 import 'package:sqflite/sqflite.dart';
 
 import '../local/schema.dart';
+import 'feed_http_client.dart' show FeedValidators;
 
 final class CachedFeed {
   const CachedFeed({
@@ -19,6 +20,8 @@ final class CachedFeed {
     required this.fetchedAt,
     required this.generatedAt,
     required this.sourceUrl,
+    this.etag,
+    this.lastModified,
   });
 
   /// Ham JSON metni.
@@ -33,6 +36,32 @@ final class CachedFeed {
 
   /// Hangi adresten geldiği.
   final String sourceUrl;
+
+  /// Sunucunun bu kopya için verdiği doğrulayıcılar (v4). Bir sonraki istekte
+  /// koşullu başlık olarak geri gönderilir.
+  final String? etag;
+  final String? lastModified;
+
+  FeedValidators get validators =>
+      FeedValidators(etag: etag, lastModified: lastModified);
+
+  /// Aynı gövde, güncellenen çekme anı ve doğrulayıcılar.
+  ///
+  /// `304` yanıtında kullanılıyor: içerik değişmedi ama **kontrol edildiği an**
+  /// değişti. Bu ayrım olmadan bir `304`, "hiç senkronize olmadı" gibi
+  /// görünür ve uygulama her açılışta yeniden denerdi.
+  CachedFeed touched({
+    required DateTime fetchedAt,
+    String? etag,
+    String? lastModified,
+  }) => CachedFeed(
+    payload: payload,
+    fetchedAt: fetchedAt,
+    generatedAt: generatedAt,
+    sourceUrl: sourceUrl,
+    etag: etag ?? this.etag,
+    lastModified: lastModified ?? this.lastModified,
+  );
 }
 
 abstract interface class FeedCache {
@@ -82,6 +111,8 @@ final class SqfliteFeedCache implements FeedCache {
       fetchedAt: _toDate(row[FeedCacheTable.fetchedAt]! as int),
       generatedAt: _toDate(row[FeedCacheTable.generatedAt]! as int),
       sourceUrl: row[FeedCacheTable.sourceUrl]! as String,
+      etag: row[FeedCacheTable.etag] as String?,
+      lastModified: row[FeedCacheTable.lastModified] as String?,
     );
   }
 
@@ -96,6 +127,8 @@ final class SqfliteFeedCache implements FeedCache {
           .toUtc()
           .millisecondsSinceEpoch,
       FeedCacheTable.sourceUrl: entry.sourceUrl,
+      FeedCacheTable.etag: entry.etag,
+      FeedCacheTable.lastModified: entry.lastModified,
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 

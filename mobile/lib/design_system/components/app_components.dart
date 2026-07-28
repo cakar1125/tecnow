@@ -243,18 +243,45 @@ class AppFilterChip extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.onSelected,
+    this.stableWidth = false,
     super.key,
   });
   final String label;
   final bool selected;
   final ValueChanged<bool> onSelected;
 
+  /// Çipin genişliği seçili durumdan **bağımsız** olsun mu?
+  ///
+  /// Material'in onay işareti yalnız seçiliyken çiziliyor ve çipi
+  /// genişletiyor. Tek başına zararsız; birden çok satıra sarılan bir `Wrap`
+  /// içinde ise düzenin yeniden akmasına ve **komşu çiplerin parmağın altından
+  /// kaymasına** yol açıyor. Cihazda görüldü (2026-07-28): ilgi alanları
+  /// ekranında art arda üç çipe dokunulduğunda üçüncü dokunuş, o konumdaki
+  /// çip yer değiştirdiği için boşluğa düştü.
+  ///
+  /// Açıkken onay işaretinin yeri her zaman ayrılır (seçili değilken saydam).
+  /// Bedeli ölçüldü (gerçek yazı tipiyle, 360 dp): çip başına **+20 px**,
+  /// sekiz ilgi alanı için `Wrap` 3 satırdan 4 satıra çıkıyor.
+  ///
+  /// **Varsayılan kapalı**, çünkü bedel her yerde aynı ama kazanç değil. Tek
+  /// satırlık yatay süzgeç şeritlerinde (Kaydedilenler, Keşfet) kullanıcı tek
+  /// seçim yapıp sonuca bakıyor: kayma riski düşük, yatay yer ise en kıt
+  /// kaynak. Çok satırlı seçim ekranlarında tam tersi.
+  final bool stableWidth;
+
   @override
   Widget build(BuildContext context) => FilterChip(
     label: Text(label),
     selected: selected,
     onSelected: onSelected,
-    showCheckmark: true,
+    showCheckmark: !stableWidth,
+    avatar: stableWidth
+        ? Icon(
+            Icons.check_rounded,
+            size: 18,
+            color: selected ? AppColors.textPrimary : Colors.transparent,
+          )
+        : null,
   );
 }
 

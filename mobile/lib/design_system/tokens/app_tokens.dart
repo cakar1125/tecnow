@@ -24,6 +24,20 @@ abstract final class AppSpacing {
   static const xxxl = 48.0;
 }
 
+/// Erişilebilirlik ölçüleri.
+abstract final class AppTouchTarget {
+  /// `QUALITY_GATES.md`: "Minimum 44×44 dokunma alanı".
+  ///
+  /// Kural uzun süre yazılıydı ama **hiçbir yerde ölçülmüyordu**. Ölçüldüğünde
+  /// (2026-07-28) Ana Sayfa'nın dört sekmesi 39 dp çıktı. Kapı artık
+  /// `test/app/touch_target_test.dart` içinde her rotayı geziyor.
+  ///
+  /// Material'in kendi bileşenleri (`FilterChip`, `IconButton`) görünen
+  /// alandan geniş bir dokunma alanı ekler ve kuralı kendiliğinden sağlar;
+  /// ham `InkWell` eklemez. Bu sabit ham kontroller içindir.
+  static const minimum = 44.0;
+}
+
 abstract final class AppRadius {
   static const small = Radius.circular(8);
   static const card = Radius.circular(12);

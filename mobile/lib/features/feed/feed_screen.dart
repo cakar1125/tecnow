@@ -286,31 +286,57 @@ class _FeedTabButton extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.sm,
-            AppSpacing.md,
-            AppSpacing.sm,
-            AppSpacing.sm,
-          ),
-          margin: const EdgeInsets.only(right: AppSpacing.sm),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                width: 2,
-                color: selected ? AppColors.primary : Colors.transparent,
+        // Dokunma alanı 44 dp'ye tamamlanır, **çizilen kutu değişmez.**
+        //
+        // Ölçüldü (2026-07-28, 360 dp, gerçek yazı tipi): sekme 39 dp
+        // yüksekliğindeydi ve 44x44'lük bir kutunun **dört köşesi de**
+        // ıskalıyordu — yani `QUALITY_GATES.md`'nin "minimum 44x44 dokunma
+        // alanı" kuralı uygulamanın en çok kullanılan kontrolünde geçerli
+        // değildi. Material'in çipleri görünenden geniş bir dokunma alanı
+        // ekliyor; ham `InkWell` eklemiyor.
+        //
+        // `minHeight` `Column`'a uygulanır, `Container`'a değil: `Container`
+        // gevşek kısıtla kendi doğal yüksekliğinde (39 dp) kalır ve alt
+        // çizgisi tam olduğu yerde durur. Aradaki fark saydam dokunma
+        // alanıdır. Büyük yazı ölçeğinde kutu zaten 44'ü aşar ve bu sarmalayıcı
+        // hiçbir şey eklemez.
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: AppTouchTarget.minimum),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.sm,
+                  AppSpacing.md,
+                  AppSpacing.sm,
+                  AppSpacing.sm,
+                ),
+                margin: const EdgeInsets.only(right: AppSpacing.sm),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      width: 2,
+                      color: selected ? AppColors.primary : Colors.transparent,
+                    ),
+                  ),
+                ),
+                // Sekme etiketi normal UI metnidir: monospace kullanılmaz
+                // (CLAUDE.md değişmez kural). Mono yalnız teknik metadata
+                // içindir.
+                child: Text(
+                  label,
+                  style: AppTypography.label.copyWith(
+                    fontSize: 13,
+                    color: selected
+                        ? AppColors.primary
+                        : AppColors.textSecondary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
-            ),
-          ),
-          // Sekme etiketi normal UI metnidir: monospace kullanılmaz
-          // (CLAUDE.md değişmez kural). Mono yalnız teknik metadata içindir.
-          child: Text(
-            label,
-            style: AppTypography.label.copyWith(
-              fontSize: 13,
-              color: selected ? AppColors.primary : AppColors.textSecondary,
-              fontWeight: FontWeight.w600,
-            ),
+            ],
           ),
         ),
       ),

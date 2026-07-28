@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
 import 'package:teknoakis/app/router.dart';
 import 'package:teknoakis/design_system/theme/app_theme.dart';
@@ -41,6 +42,9 @@ void main() {
   /// Uygulamanın **bütün** rotaları. Kabuk sekmeleri artık listenin yalnız
   /// bir bölümü.
   const routes = <String>[
+    // Listeye ilk koşuda **bu test tarafından** eklendi: elle yazılan matris
+    // `/splash`'i atlamıştı ve açılış ekranı hiç ölçülmüyordu.
+    '/splash',
     '/home',
     '/explore',
     '/assistant',
@@ -58,6 +62,43 @@ void main() {
     '/kaynak-politikasi',
     '/okuma-gecmisi',
   ];
+
+  /// Listenin **eksiksiz** olduğunu yönlendiricinin kendisine sordurur.
+  ///
+  /// Yukarıdaki liste elle yazılı ve elle yazılan her liste unutulur: yeni bir
+  /// rota eklenip buraya yazılmazsa ekran sessizce ölçüsüz kalırdı. Tam da bu
+  /// oturumda iki kez yaşandı — eski kapı kabuk dışındaki rotalara hiç
+  /// bakmıyordu ve 28 Temmuz'da eklenen üç ekranın hiç taşma kapısı yoktu.
+  ///
+  /// Bu test unutmayı **gürültülü** hâle getiriyor.
+  test('matris yönlendiricideki her rotayı kapsıyor', () {
+    final router = createRouter();
+    addTearDown(router.dispose);
+
+    final patterns = <String>{};
+    void collect(List<RouteBase> children) {
+      for (final route in children) {
+        if (route is GoRoute) patterns.add(route.path);
+        collect(route.routes);
+      }
+    }
+
+    collect(router.configuration.routes);
+
+    for (final pattern in patterns) {
+      // `/onboarding/:step` gibi parametreli yollar için desen eşleşmesi.
+      final regex = RegExp(
+        '^${pattern.replaceAll(RegExp(r':[^/]+'), '[^/]+')}\$',
+      );
+      expect(
+        routes.any(regex.hasMatch),
+        isTrue,
+        reason:
+            '$pattern rotası taşma matrisinde yok — ekran hiç ölçülmüyor. '
+            'Yukarıdaki `routes` listesine örnek bir yol ekleyin.',
+      );
+    }
+  });
 
   for (final width in widths) {
     for (final route in routes) {

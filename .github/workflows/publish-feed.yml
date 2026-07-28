@@ -1,0 +1,119 @@
+name: Feed yayımla
+
+# Üretici zamanlayıcıya bağlanır ve çıktısı GitHub Pages'e yayımlanır.
+# Uygulama kodu bundan habersizdir: `--dart-define=FEED_URL=...` verilmediği
+# sürece paketlenmiş içerikle eksiksiz çalışır.
+#
+# Kurulum ve kararların gerekçesi: docs/FEED_HOSTING_RUNBOOK.md
+
+on:
+  # Altı saatte bir. Uygulama içeriği 12 saatte bir bayat sayıyor
+  # (`feedStaleAfter`), yani bu tempo her kullanıcıya taze dosya bırakır.
+  #
+  # UYARI: GitHub, 60 gün hiç hareket görmeyen depolarda zamanlanmış
+  # iş akışlarını **otomatik kapatır**. Runbook'ta yazılı.
+  schedule:
+    - cron: '17 2,8,14,20 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Aynı anda iki yayım olmaz: ikisi de aynı dosyayı üretip birbirinin
+# üzerine yazardı ve hangisinin kazandığı belirsiz olurdu.
+concurrency:
+  group: feed-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          # Sabitlenmiş: üretici çıktısı belirlenimci olmalı ve SDK
+          # yükseltmesi kimsenin fark etmediği bir gün gelmemeli.
+          # Yükseltirken runbook'taki adımı izleyin.
+          flutter-version: 3.44.8
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      # Kapı, yenisini eskisiyle karşılaştırabilmek için yayımdakine ihtiyaç
+      # duyuyor. İlk koşuda yok; indirilemezse karşılaştırma yapılmaz ama
+      # yayım engellenmez.
+      - name: Yayımdaki feed'i indir
+        env:
+          FEED_URL: ${{ vars.FEED_URL }}
+        run: |
+          mkdir -p build/publish
+          if [ -z "$FEED_URL" ]; then
+            echo "FEED_URL deposu değişkeni tanımlı değil; ilk yayım varsayılıyor."
+            exit 0
+          fi
+          curl -fsSL --max-time 60 "$FEED_URL" -o build/previous.json \
+            || echo "Yayımdaki feed indirilemedi; karşılaştırma yapılmayacak."
+
+      - name: Feed üret
+        env:
+          # Actions'ın kendi token'ı GitHub API kotasını yükseltir; ek bir
+          # sır gerekmiyor.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # İsteğe bağlı. Yoksa özetler kaynağın kendi metniyle kalır ve
+          # feed yine eksiksiz üretilir.
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          set +e
+          dart run tool/feed/generate.dart --out build/publish/feed.json
+          status=$?
+          set -e
+          # 0 tam başarı · 2 kısmi (bazı kaynaklar okunamadı ama dosya
+          # yazıldı) · 1 çalışma hatası.
+          #
+          # 2'yi sessizce başarı saymak, kaynakların teker teker ölmesini
+          # görünmez kılardı; uyarı olarak yüzeye çıkarılıyor.
+          if [ "$status" -ne 0 ] && [ "$status" -ne 2 ]; then exit "$status"; fi
+          if [ "$status" -eq 2 ]; then
+            echo "::warning::Bazı kaynaklar okunamadı; ayrıntı yukarıdaki çıktıda."
+          fi
+
+      # Üretici dosya yazdı diye yayımlanmaz. Bkz. tool/feed/publish_guard.dart
+      - name: Yayım koruması
+        id: guard
+        run: |
+          set +e
+          dart run tool/feed/publish_guard.dart \
+            --next build/publish/feed.json \
+            --previous build/previous.json
+          status=$?
+          set -e
+          case "$status" in
+            0) echo "publish=true" >> "$GITHUB_OUTPUT" ;;
+            3) echo "publish=false" >> "$GITHUB_OUTPUT"
+               echo "::notice::Kayıtlar değişmemiş; yayım atlandı." ;;
+            *) exit "$status" ;;
+          esac
+
+      - name: Yayımlanacak dizini hazırla
+        if: steps.guard.outputs.publish == 'true'
+        run: cp ../docs/feed_site_index.html build/publish/index.html
+
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.guard.outputs.publish == 'true'
+        with:
+          path: mobile/build/publish
+
+      - id: deploy
+        if: steps.guard.outputs.publish == 'true'
+        uses: actions/deploy-pages@v4

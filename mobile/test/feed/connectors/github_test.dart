@@ -29,6 +29,7 @@ void main() {
         'modelcontextprotocol/servers',
         'birisi/awesome-claude-skills',
         'birisi/eski-arac',
+        'birisi/arac-kutusu',
         'birisi/sinyalsiz-depo',
       ]);
     });
@@ -38,7 +39,9 @@ void main() {
 
       expect(item.url, Uri.parse('https://github.com/anthropics/claude-code'));
       expect(item.id, feedItemId(item.url));
-      expect(item.kind, FeedItemKind.repository);
+      // `developer-tools` konusunu deponun kendisi beyan ediyor; Claude Code
+      // gerçekten bir araç. Tür tahmin değil, o beyandan geliyor.
+      expect(item.kind, FeedItemKind.tool);
       expect(item.sourceKind, FeedSourceKind.github);
       expect(item.sourceName, 'GitHub');
       expect(
@@ -110,13 +113,23 @@ void main() {
       );
     });
 
+    /// Keşfet'in "AI Araçları" çipi `tool` türüne bakıyor ve bu tür
+    /// 28 Temmuz 2026'ya kadar hiçbir bağlayıcıdan gelmiyordu: çip her
+    /// zaman boş sonuç veriyordu. Canlı koşuda ölçüldü — 19 gerçek kayıt.
+    test('konular araç diyorsa tür tool olur', () {
+      expect(
+        _byTitle(_repositories(), 'birisi/arac-kutusu').kind,
+        FeedItemKind.tool,
+      );
+    });
+
     test('eşleşme yoksa tür repository kalır', () {
       expect(
-        _byTitle(_repositories(), 'anthropics/claude-code').kind,
+        _byTitle(_repositories(), 'birisi/eski-arac').kind,
         FeedItemKind.repository,
       );
       expect(
-        _byTitle(_repositories(), 'birisi/eski-arac').kind,
+        _byTitle(_repositories(), 'birisi/sinyalsiz-depo').kind,
         FeedItemKind.repository,
       );
     });
@@ -137,7 +150,7 @@ void main() {
 
     /// Tek bozuk kayıt tüm çalışmayı düşürmemeli.
     test('bozuk kayıt diğerlerini etkilemez', () {
-      expect(_repositories().items, hasLength(5));
+      expect(_repositories().items, hasLength(6));
     });
 
     /// Yanıt gövdesine güvenilmez: adres allowlist'ten geçmeden feed'e giremez.

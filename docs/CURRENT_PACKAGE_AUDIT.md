@@ -51,8 +51,7 @@ Tüm 122 PNG dosyası görüntü decoder'ı ile açıldı; sıfır bayt veya dec
 
 Onaylı adaylarda tam dosya çifti, Türkçe/TeknoAkış uyumu ve en yeni düzeltme önceliklendirildi. Özellikle istenen Batch 02 ve Batch 04 sürümlerinin tamamı onaylandı. Boş `i_lgi_alanlar_d_zenleme_teknoak_v3_1`, eski `g_nderi_yay_nlanamad_teknoak_fix_1`, DevPulse/İngilizce varyantlar, görsel-only çıktılar ve eski alternatifler onaylanmadı.
 
-## Engeller
+## Güncel durum
 
 - Paket veya tasarım temizliği engeli yok.
-- Flutter ve Dart PATH üzerinde bulunmuyor. Flutter geliştirmesi `FLUTTER_ENVIRONMENT_BLOCKED`; talimat gereği `mobile/` oluşturulmadı.
-
+- İlk denetimde bulunmayan Flutter/Dart ortamı daha sonraki kurulum adımında hazırlandı. Faz 1 uygulaması `mobile/` altında oluşturuldu ve nihai durum `PHASE_01_READY` olarak doğrulandı.

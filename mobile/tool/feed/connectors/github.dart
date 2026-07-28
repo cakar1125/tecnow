@@ -29,6 +29,21 @@ const _mcpTopics = <String>{
 /// Claude/agent skill'i olduğunu beyan eden konular.
 const _skillTopics = <String>{'agent-skills', 'claude-skill', 'claude-skills'};
 
+/// Geliştiriciye doğrudan araç sunduğunu beyan eden konular.
+///
+/// Keşfet'in "AI Araçları" çipi `tool` türüne bakıyor ve bu tür 28 Temmuz
+/// 2026'ya kadar **hiçbir bağlayıcı tarafından üretilmiyordu**: çip her
+/// zaman boş sonuç veriyordu. Sınıflandırma, `mcp` ve `skill` ile aynı
+/// desende — deponun kendi beyan ettiği konulardan okunuyor, tahmin
+/// edilmiyor.
+const _toolTopics = <String>{
+  'ai-tools',
+  'llm-tools',
+  'developer-tools',
+  'devtools',
+  'cli-tool',
+};
+
 /// Depo listesini ayrıştırır.
 ///
 /// `search/repositories` yanıtı `{"items": [...]}` biçimindedir; düz bir depo
@@ -209,6 +224,7 @@ FeedItemKind _kindFromTopics(List<String> topics) {
   final set = topics.map((topic) => topic.toLowerCase()).toSet();
   if (set.intersection(_mcpTopics).isNotEmpty) return FeedItemKind.mcp;
   if (set.intersection(_skillTopics).isNotEmpty) return FeedItemKind.skill;
+  if (set.intersection(_toolTopics).isNotEmpty) return FeedItemKind.tool;
   return FeedItemKind.repository;
 }
 

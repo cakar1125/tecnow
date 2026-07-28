@@ -1,10 +1,22 @@
 # Bilinen Sınırlamalar
 
-- Flutter ve Dart kurulu/PATH üzerinde olmadığı için mobil uygulama üretilmedi.
-- Analyze, widget/router/golden testleri ve debug APK çalıştırılmadı.
-- Flutter ekran görüntüsü üretilemedi; `docs/flutter_visual_validation/README.md` yalnızca doğrulama protokolünü içerir.
-- PNG render boyutları tasarım viewport'larıyla aynı değildir; çoğu 706×1600 dışa aktarımdır.
-- Bazı eski Stitch HTML'leri desktop responsive sınıflar içerir. Onay, Flutter'ın 360/390/430 px testlerinden geçeceği anlamına gelmez.
-- Stitch içindeki isimler, repository/model değerleri, fiyatlar ve benchmarklar gerçek veya doğrulanmış veri değildir.
-- Font lisansları ve yerel font asset'leri Flutter uygulaması kurulurken ayrıca doğrulanmalıdır.
-
+- Uygulama yalnızca hayalî, doğrulanmamış fixture verisi kullanır; backend, canlı API, Firebase, gerçek kimlik doğrulama ve yayınlama yoktur.
+- Üretilen APK debug/test içindir; release imzası, mağaza yapılandırması, küçültme ve dağıtım optimizasyonu yapılmadı.
+- Debug APK Flutter debug runtime ve font asset'leri nedeniyle 145,08 MB'dir; release boyutunu temsil etmez.
+- Android manifestindeki `INTERNET` izni Flutter debug şablonundan gelir. Uygulama kodunda ağ istemcisi veya canlı çağrı yoktur.
+- Windows ortamında Android APK doğrulandı; iOS build/simulator çalıştırılmadı.
+- API 35 Pixel 7 emülatörüne ek olarak OnePlus IN2023 / Android 13 fiziksel cihazda Faz 1.5 kabul akışları tamamlandı; kapsamlı uçtan uca otomasyon henüz yoktur.
+- Android Studio'nun gömülü JBR'ında `lib\jvm.cfg` eksiktir. Flutter build'leri çalışan Microsoft OpenJDK 17.0.19'a yönlendirilmiştir; Android Studio'nun kendi kurulumu ayrıca onarılabilir.
+- Chrome kurulu değil; bu yalnız Flutter web geliştirmesini etkiler ve Android Faz 1'i engellemez.
+- `golden_toolkit 0.15.0`, paket çözücüsünde discontinued uyarısı veriyor. İstenen golden akışı için kullanıldı; sonraki fazda yerleşik Flutter golden yaklaşımına geçiş değerlendirilmeli.
+- Bağımlılık çözücüsü, mevcut SDK kısıtlarıyla uyumsuz daha yeni dolaylı paket sürümleri olduğunu bildiriyor; analiz/test/build kapılarını etkilemedi.
+- Golden viewport'u 390×844'tür; uzun ekranlar kaydırılabilir olduğundan görüntü yalnız ilk viewport'u gösterir.
+- Ürün portre önceliklidir. Fiziksel cihaz yatay smoke testi crash üretmedi; ayrı bir yatay yerleşim cilası yapılmadı. Faz 2A kabulünde yatay **ölçülemedi**: OnePlus IN2023, `settings put` (`WRITE_SETTINGS`) ve `wm size` (`WRITE_SECURE_SETTINGS`) komutlarını adb kabuğundan engelliyor.
+- Alt navigasyon etiketleri büyük sistem yazı tipi ölçeğinde sarmalanır. `AppTypography.navLabel` (11sp / `letterSpacing -0.3`) "Kaydedilenler"i 360–430 dp'de **varsayılan ölçekte** tek satırda tutar; Material `NavigationBar` metin ölçeğini 1.3'e kadar uyguladığı için 1.3'te etiket yeniden ikinci satıra iner. Beş bölmeli **eşit genişlikli** bir navigasyon 360 dp'de bu etiketi erişilebilir ölçeklerde barındıramaz; yapısal çözüm, onaylı tasarımdaki gibi içeriğe göre genişleyen bir alt bardır. Ölçüm ve regresyon kilidi: `mobile/test/design_system/bottom_navigation_test.dart`.
+- Okuma geçmişi ve asistan konuşmaları için **liste ekranı yok**: `ACTIVE_SCREEN_MAP.md` dokuz aktif ekran tanımlıyor ve bunlar arasında değiller, bu yüzden onaysız ekran uydurulmadı. Ayarlar gerçek kayıt adedini gösteriyor ve satıra dokunulunca durumu olduğu gibi söylüyor. Ekranlar bir tasarım kararı bekliyor.
+- `Verileri Sil` yedi tabloyu da boşaltır ve onboarding bayrağını sıfırlar, ama tohumlama bayrağını **bilinçli olarak korur**: fixture kayıtları geri gelmez, çünkü boş liste kullanıcının kararıdır. Demo kayıtlarını geri almanın tek yolu uygulamayı yeniden kurmaktır.
+- Ayarlar → `İlgi Alanları` `push` ile açılıyor ama `Akışa geç` `go('/home')` yapıyor: ayarlardan gelen kullanıcı geri dönmek yerine akışa düşüyor. Faz 1'den kalma davranış.
+- Stitch referanslarının çoğu 706×1600 export'tur; Flutter çıktılarıyla birebir çözünürlük eşleştirmesi veya pixel-perfect iddiası yoktur.
+- AI model detayındaki açık renkli eski export yerine master koyu tema kullanıldı; mor vurgu yalnız AI bağlamında korundu.
+- SDK içindeki kullanıcıya ait `cmake\3.22.1.backup` yinelenen paket uyarısı değiştirilmedi; Faz 1 NDK/CMake kullanmıyor.
+- Yeni bir terminal, kalıcı kullanıcı PATH güncellemesini devralır. Mevcut Codex oturumunda Flutter doğrudan SDK yoluyla çağrıldı.

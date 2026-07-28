@@ -1,33 +1,60 @@
 # Flutter Mimari Kararı
 
-Bu belge uygulanacak mimariyi tanımlar; ortam engeli nedeniyle henüz Flutter kaynak kodu üretilmemiştir.
+Durum: `IMPLEMENTED_LOCAL`
 
-## Hedef
+## Uygulama sınırı
 
-- Uygulama: `teknoakis`
+- Uygulama adı: `teknoakis`
 - Android/iOS kimliği: `com.teknoakis.app`
-- Feature-first yapı; yalnızca ihtiyaç olan feature'larda `data`, `domain`, `presentation` katmanları.
-- Riverpod ile durum/bağımlılık yönetimi, go_router ile route ve shell navigasyonu.
-- Canlı servis olmadan `lib/fixtures/` altındaki açıkça işaretlenmiş fixture veriler.
+- Faz 1 yalnızca yerel fixture verisiyle çalışan, backend'siz bir mobil dikey dilimdir.
+- Mimari feature-first tutuldu; bu ölçekte değer üretmeyen boş `data/domain` katmanları açılmadı.
 
-## Klasörler
+## Kaynak yapısı
 
 ```text
-lib/
-  app/                 # bootstrap, uygulama, router
-  core/                # constants, errors, network, storage, utils
-  design_system/       # tokens, theme, components, states
-  features/            # splash, onboarding, interests, feed, explore,
-                       # search, repository_detail, ai_model_detail,
-                       # create_post, notifications, profile, settings
+mobile/lib/
+  app/                 # bootstrap, MaterialApp ve go_router
+  design_system/       # token, tema ve ortak bileşenler
+  features/            # ekran bazlı özellikler
   fixtures/            # DESIGN_FIXTURE_ONLY / NOT_LIVE_DATA / NOT_VERIFIED
 ```
 
+Uygulanan feature'lar: splash, üç adımlı onboarding, ilgi alanları, ana akış, keşfet, repository detayı, AI model detayı, gönderi oluşturma, bildirimler, profil ve ayarlar.
+
 ## Navigasyon
 
-`StatefulShellRoute` benzeri bir kabukla Ana Sayfa, Keşfet, Paylaş, Bildirimler ve Profil sekmeleri durumlarını korur. Detay route'ları shell üstünde açılır; geri eylemi route stack'ine döner. Paylaş bu fazda yalnızca yerel Gönderi Oluştur ekranını açar ve yayın yapmaz.
+`go_router` içindeki `StatefulShellRoute.indexedStack`, Ana Sayfa, Keşfet, Paylaş, Bildirimler ve Profil sekmelerinin durumunu korur. Detay ekranları shell dışında açılır ve geri eylemi route stack'ini kullanır.
 
-## Bağımlılık sınırı
+| Route | Ekran |
+|---|---|
+| `/splash` | Splash |
+| `/onboarding/:step` | Onboarding 1–3 |
+| `/interests` | İlgi alanı seçimi |
+| `/home` | Ana akış |
+| `/explore` | Keşfet |
+| `/create-post` | Yerel gönderi formu |
+| `/notifications` | Bildirimler |
+| `/profile` | Profil |
+| `/repository/:id` | Repository detayı |
+| `/ai-model/:id` | AI model detayı |
+| `/settings` | Ayarlar |
 
-İstenen paketler yalnızca gerçek kullanım başladığında eklenir. Dio/network ve storage katmanları Faz 1'de canlı bağlantı kurmaz. Backend, Firebase, gerçek kimlik doğrulama veya üçüncü taraf API yoktur.
+## Durum ve veri
+
+- Riverpod, seçili ilgi alanlarının durumunu yönetir.
+- `shared_preferences`, ilgi alanlarını cihazda yerel olarak saklar.
+- Tüm ürün içeriği `lib/fixtures/fixtures.dart` içinde hayalî ve doğrulanmamış veri olarak işaretlidir.
+- Gönderi oluşturma ekranı yalnızca yerel geri bildirim verir; yayınlama yapmaz.
+
+## Tasarım sistemi
+
+Merkezi token'lar renk, boşluk, radius, tipografi, gölge, animasyon süresi ve breakpoint'leri kapsar. Ortak bileşenler arasında scaffold/top bar, alt navigasyon, butonlar, alanlar, filtre/badge'ler, içerik kartları, sosyal aksiyonlar, boş-hata-yükleniyor durumları, bottom sheet ve onay diyaloğu bulunur.
+
+Inter ve JetBrains Mono, resmî Google Fonts deposundaki OFL lisanslı dosyalarla uygulamaya gömülmüştür.
+
+## Bağımlılık kararı
+
+Kullanılan paketler: `flutter_riverpod`, `go_router`, `shared_preferences`; testte `golden_toolkit`.
+
+Faz 1'de gerçek kullanım olmadığı için `dio`, `freezed_annotation`, `json_annotation`, `flutter_secure_storage`, `cached_network_image`, `build_runner`, `freezed`, `json_serializable` ve `mocktail` eklenmedi. Böylece canlı ağ, kimlik, serileştirme ve gereksiz kod üretimi katmanları oluşmadı.
 

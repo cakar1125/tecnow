@@ -58,7 +58,7 @@ void main() {
 
       expect(report.feed.schemaVersion, feedSchemaVersion);
       expect(report.feed.generatedAt, _now);
-      expect(report.feed.items, hasLength(6), reason: '4 depo + 2 blog yazısı');
+      expect(report.feed.items, hasLength(7), reason: '5 depo + 2 blog yazısı');
       expect(report.failures, isEmpty);
     });
 
@@ -70,7 +70,7 @@ void main() {
       );
 
       final byName = {for (final o in report.outcomes) o.name: o};
-      expect(byName['depolar']!.items, 4);
+      expect(byName['depolar']!.items, 5);
       expect(
         byName['depolar']!.skipped,
         hasLength(4),
@@ -109,7 +109,7 @@ void main() {
 
       final outcome = report.outcomes.first;
       expect(outcome.items, 2);
-      expect(outcome.available, 5, reason: 'rapor kırpmayı göstermeli');
+      expect(outcome.available, 6, reason: 'rapor kırpmayı göstermeli');
 
       // Fixture'daki en yeni iki depo: 2026-07-10 ve 2026-05-30 elenmiş
       // olanlar hariç, kalan en yeniler.

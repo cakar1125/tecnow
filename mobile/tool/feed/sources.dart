@@ -53,6 +53,12 @@ const _perBlog = 12;
 List<FeedSource> defaultSources() => [
   _githubSearch('GitHub — MCP sunucuları', 'topic:mcp-server stars:>50'),
   _githubSearch('GitHub — Claude skill\'leri', 'topic:claude-skills'),
+  // Keşfet'in "AI Araçları" çipi `tool` türüne bakıyor ve bu tür hiçbir
+  // kaynaktan gelmiyordu; çip her zaman boş sonuç veriyordu.
+  // `stars:>200` bilinçli olarak yüksek: `ai-tools` etiketi çok geniş
+  // kullanılıyor ve eşiksiz sorgu, adı açıklamasının tekrarı olan boş
+  // depolarla doluyor.
+  _githubSearch('GitHub — AI araçları', 'topic:ai-tools stars:>200'),
   _githubReleases('modelcontextprotocol/servers'),
 
   FeedSource(

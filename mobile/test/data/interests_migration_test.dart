@@ -49,7 +49,7 @@ void main() {
         return repository.readAll();
       });
 
-      expect(migrated, ['Yapay Zekâ', 'Mobil', 'Açık Kaynak']);
+      expect(migrated, ['yapay-zeka', 'mobil', 'acik-kaynak']);
       expect(preferences.getStringList(InterestsMigration.legacyKey), isNull);
     },
   );
@@ -74,7 +74,7 @@ void main() {
     );
 
     final result = await withRepository((repository) => repository.readAll());
-    expect(result, ['Bulut', 'Oyun']);
+    expect(result, ['bulut', 'oyun']);
   });
 
   test('tablo doluysa eski anahtar üzerine yazmaz', () async {
@@ -105,5 +105,80 @@ void main() {
     });
 
     expect(result, isEmpty);
+  });
+
+  /// Etiket → kimlik normalleştirmesi.
+  ///
+  /// 28 Temmuz 2026'ya kadar ilgi alanı ekranı Türkçe etiketi saklıyordu ve
+  /// feed'in konuları İngilizce slug olduğu için "Sana Özel" sekmesi hiçbir
+  /// zaman eşleşme bulamıyordu. Cihazda bulundu: telefonda üç ilgi alanı
+  /// seçiliydi ve açılış sekmesi boştu.
+  group('etiket → kimlik normalleştirmesi', () {
+    test('etiket olarak saklanmış satırlar kimliğe çevrilir', () async {
+      SharedPreferences.setMockInitialValues({});
+      final preferences = await SharedPreferences.getInstance();
+
+      // Cihazda bulunan gerçek durum.
+      await withRepository(
+        (repository) =>
+            repository.replaceAll(const ['Yapay Zekâ', 'Mobil', 'Açık Kaynak']),
+      );
+      final result = await withRepository((repository) async {
+        await InterestsMigration(repository, preferences).migrateIfNeeded();
+        return repository.readAll();
+      });
+
+      expect(result, ['yapay-zeka', 'mobil', 'acik-kaynak']);
+    });
+
+    /// Bayrağı yok; idempotent olması gerekiyor.
+    test('ikinci koşuda hiçbir şey değişmez', () async {
+      SharedPreferences.setMockInitialValues({});
+      final preferences = await SharedPreferences.getInstance();
+
+      await withRepository(
+        (repository) => repository.replaceAll(const ['Yapay Zekâ']),
+      );
+      await withRepository(
+        (repository) =>
+            InterestsMigration(repository, preferences).migrateIfNeeded(),
+      );
+      final result = await withRepository((repository) async {
+        await InterestsMigration(repository, preferences).migrateIfNeeded();
+        return repository.readAll();
+      });
+
+      expect(result, ['yapay-zeka']);
+    });
+
+    test('aynı ilgi alanı hem etiket hem kimlikse tekilleşir', () async {
+      SharedPreferences.setMockInitialValues({});
+      final preferences = await SharedPreferences.getInstance();
+
+      await withRepository(
+        (repository) => repository.replaceAll(const ['Mobil', 'mobil']),
+      );
+      final result = await withRepository((repository) async {
+        await InterestsMigration(repository, preferences).migrateIfNeeded();
+        return repository.readAll();
+      });
+
+      expect(result, ['mobil']);
+    });
+
+    test('tanınmayan değere dokunulmaz', () async {
+      SharedPreferences.setMockInitialValues({});
+      final preferences = await SharedPreferences.getInstance();
+
+      await withRepository(
+        (repository) => repository.replaceAll(const ['bilinmeyen-alan']),
+      );
+      final result = await withRepository((repository) async {
+        await InterestsMigration(repository, preferences).migrateIfNeeded();
+        return repository.readAll();
+      });
+
+      expect(result, ['bilinmeyen-alan']);
+    });
   });
 }

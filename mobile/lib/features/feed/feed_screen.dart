@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/feed/feed_schema.dart';
 import '../../data/feed/feed_sync_state.dart';
+import '../../data/interests/interest_taxonomy.dart';
 import '../../data/providers.dart';
 import '../../design_system/components/app_components.dart';
 import '../../design_system/tokens/app_tokens.dart';
@@ -52,16 +53,12 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
   /// kullanıcıya bir şey seçmediğini anlatmaz — sadece bozuk görünür.
   List<FeedItem> _filter(List<FeedItem> items, Set<String> interests) =>
       switch (_selectedTab) {
-        HomeTab.sanaOzel =>
-          interests.isEmpty
-              ? items
-              : items
-                    .where(
-                      (item) => item.topics.any(
-                        (topic) => interests.contains(topic.toLowerCase()),
-                      ),
-                    )
-                    .toList(growable: false),
+        // Eşleşme `interest_taxonomy.dart`'ta: ilgi alanı kimliği, feed'in
+        // konu slug'larıyla anahtar kelime üzerinden eşleşir. Burada
+        // doğrudan karşılaştırma yapılıyordu ve iki sözcük dağarcığı hiç
+        // kesişmediği için sekme **kalıcı olarak boştu** (cihazda bulundu,
+        // 28 Temmuz 2026).
+        HomeTab.sanaOzel => filterByInterests(items, interests),
         HomeTab.gundem =>
           items
               .where((item) => item.kind == FeedItemKind.announcement)

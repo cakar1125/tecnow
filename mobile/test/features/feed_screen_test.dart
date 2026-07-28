@@ -126,20 +126,38 @@ void main() {
       expect(find.byType(FeedItemCard), findsNWidgets(3));
     });
 
-    testWidgets('ilgi alanı varsa konu kesişimine süzülür', (tester) async {
-      await _pumpFeed(tester, interests: const ['llm']);
+    /// **Kimlik** verilir, feed'in konu slug'ı değil.
+    ///
+    /// Bu testler eskiden `['llm']` gibi feed slug'ları geçiyordu — ürünün
+    /// hiçbir yerinde üretilmeyen bir değer. İlgi alanı ekranı Türkçe
+    /// etiket saklıyordu ve iki sözcük dağarcığı hiç kesişmiyordu; yani
+    /// gerçek uygulamada bu sekme **kalıcı olarak boştu** ve test bunu
+    /// göremiyordu. Cihazda bulundu (28 Temmuz 2026).
+    testWidgets('ilgi alanı varsa eşleşen kayıtlara süzülür', (tester) async {
+      // `yapay-zeka` anahtarları arasında `llm` var; test feed'inde yalnız
+      // AI modeli kaydının konusu `llm`.
+      await _pumpFeed(tester, interests: const ['yapay-zeka']);
 
       expect(find.text('ornek/model'), findsOneWidget);
       expect(find.byType(FeedItemCard), findsOneWidget);
     });
 
-    testWidgets('kesişim boşsa yönlendirici bir boş durum çıkar', (
+    testWidgets('eşleşme yoksa yönlendirici bir boş durum çıkar', (
       tester,
     ) async {
-      await _pumpFeed(tester, interests: const ['bulunmayan-konu']);
+      // Geçerli bir ilgi alanı, ama bu feed'de oyunla ilgili kayıt yok.
+      await _pumpFeed(tester, interests: const ['oyun']);
 
       expect(find.byType(FeedItemCard), findsNothing);
       expect(find.textContaining('ilgi alanlarını'), findsOneWidget);
+    });
+
+    /// Tanınmayan kimlik yüzünden ekran boşalmaz: eski bir sürümden kalmış
+    /// bir değer, kullanıcıyı boş bir açılış sekmesiyle karşılamamalı.
+    testWidgets('tanınmayan kimlik akışı boşaltmaz', (tester) async {
+      await _pumpFeed(tester, interests: const ['bilinmeyen-alan']);
+
+      expect(find.byType(FeedItemCard), findsNWidgets(3));
     });
   });
 

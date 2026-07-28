@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../data/interests/interest_taxonomy.dart';
 import '../../data/providers.dart';
 import '../../design_system/components/app_components.dart';
 import '../../design_system/tokens/app_tokens.dart';
-import '../../fixtures/fixtures.dart';
 
 class InterestsScreen extends ConsumerWidget {
   const InterestsScreen({super.key});
@@ -75,13 +75,19 @@ class _Content extends ConsumerWidget {
             child: Wrap(
               spacing: AppSpacing.sm,
               runSpacing: AppSpacing.sm,
-              children: interestFixtures
+              // Ekranda **etiket** görünür, veritabanına **kimlik** yazılır.
+              // Önceden etiketin kendisi saklanıyordu ve feed'in konuları
+              // İngilizce slug olduğu için "Sana Özel" sekmesi hiçbir zaman
+              // eşleşme bulamıyordu.
+              children: interestTaxonomy
                   .map(
-                    (item) => AppFilterChip(
-                      label: item,
-                      selected: selected.contains(item),
-                      onSelected: (_) =>
-                          ref.read(interestsProvider.notifier).toggle(item),
+                    (interest) => AppFilterChip(
+                      key: Key('interest-${interest.id}'),
+                      label: interest.label,
+                      selected: selected.contains(interest.id),
+                      onSelected: (_) => ref
+                          .read(interestsProvider.notifier)
+                          .toggle(interest.id),
                     ),
                   )
                   .toList(growable: false),

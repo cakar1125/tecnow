@@ -167,13 +167,7 @@ const savedItemFixtures = [
   ),
 ];
 
-const interestFixtures = [
-  'Yapay Zekâ',
-  'Mobil',
-  'Açık Kaynak',
-  'Siber Güvenlik',
-  'Bulut',
-  'Donanım',
-  'Oyun',
-  'Veri Bilimi',
-];
+// `interestFixtures` buradan kaldırıldı (28 Temmuz 2026): ilgi alanları
+// artık fixture değil, üretim sözlüğü — `lib/data/interests/`. Etiketler
+// aynı kaldı, ama yanlarında kalıcı kimlik ve feed konularıyla eşleşen
+// anahtar kelimeler var.

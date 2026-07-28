@@ -14,7 +14,7 @@ bırakıldı; hiçbiri tahmin değil, hepsi tek tek yapılabilir.
 | Parça | Durum |
 |---|---|
 | Üretici (`tool/feed/generate.dart`) | ✅ çalışıyor, 13 küratörlü kaynak |
-| Yayım koruması (`tool/feed/publish_guard.dart`) | ✅ 9 testle kilitli |
+| Yayım koruması (`tool/feed/publish_guard.dart`) | ✅ **15** testle kilitli |
 | Zamanlayıcı (`.github/workflows/publish-feed.yml`) | ✅ yazıldı, **hiç çalıştırılmadı** |
 | Yayım sayfası (`docs/feed_site_index.html`) | ✅ |
 | Uygulamanın ağ katmanı | ✅ (TASK-0016) |

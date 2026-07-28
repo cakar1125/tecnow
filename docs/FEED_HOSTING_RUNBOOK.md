@@ -39,6 +39,26 @@ git remote add origin https://github.com/<kullanıcı>/<depo>.git
 git push -u origin phase-02a-shell-migration
 ```
 
+#### Çalışma dalı **varsayılan dal olmalı** — yoksa zamanlayıcı hiç çalışmaz
+
+GitHub, `schedule` ile tetiklenen iş akışlarını **yalnız varsayılan dalda**
+çalıştırır. Ölçüldü (29 Temmuz): `master` dalında ne `.github/` var ne de
+`mobile/` — bugüne kadarki 39 commit'in tamamı `phase-02a-shell-migration`
+üzerinde. `master` varsayılan kalırsa cron hiçbir zaman ateşlenmez ve bu
+sessizce olur: hata yok, koşu yok.
+
+İki yoldan biri, push'tan **önce** ya da hemen sonra:
+
+```bash
+# A) dalı master'a birleştir (tercih edilen — dal adı kapsamı yansıtmıyor)
+git checkout master && git merge phase-02a-shell-migration && git push -u origin master
+
+# B) ya da GitHub'da: Settings → Branches → Default branch → phase-02a-shell-migration
+```
+
+`workflow_dispatch` (elle **Run workflow**) bu kısıttan etkilenmez; ilk koşuyu
+her hâlükârda elle tetikliyoruz. Sorun yalnız otomatik tempoda ortaya çıkar.
+
 **Depo public olmalı.** GitHub Pages, ücretsiz hesaplarda yalnız public
 depolarda çalışır.
 

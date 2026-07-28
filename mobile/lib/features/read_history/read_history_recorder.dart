@@ -10,6 +10,12 @@ import '../../data/providers.dart';
 /// (veritabanı açılamadı, disk dolu) içerik yine görünmelidir; bu yüzden
 /// hata yutulur ve ekrana yansıtılmaz.
 ///
+/// Yazma **sağlayıcı üzerinden** yapılır, doğrudan depoya değil. Depoya yazmak
+/// çalışıyordu ama kimseye haber vermiyordu: ölçüldü (2026-07-28, cihazda) iki
+/// içerik açıldıktan sonra veritabanında iki satır varken Ayarlar "0 kayıt"
+/// yazıyordu. Sağlayıcı, hem geçmiş listesini hem ondan türeyen adedi
+/// güncelliyor.
+///
 /// Döndürülen future testlerde beklenebilir; üretimde yok sayılır.
 Future<void> recordRead(
   WidgetRef ref, {
@@ -18,8 +24,7 @@ Future<void> recordRead(
 }) async {
   if (itemId.isEmpty) return;
   try {
-    final repository = await ref.read(readHistoryRepositoryProvider.future);
-    await repository.record(itemId, kind);
+    await ref.read(readHistoryProvider.notifier).record(itemId, kind);
   } catch (_) {
     // Bilinçli olarak sessiz: bkz. yukarıdaki not.
   }

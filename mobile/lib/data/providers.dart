@@ -13,6 +13,7 @@ import 'feed/feed_sync_state.dart';
 import 'feed/syncing_feed_repository.dart';
 import 'interests_migration.dart';
 import 'local/app_database.dart';
+import 'local/schema.dart';
 import 'repositories/interests_repository.dart';
 import 'repositories/local_data_repository.dart';
 import 'repositories/read_history_repository.dart';
@@ -256,7 +257,19 @@ final class InterestsNotifier extends AsyncNotifier<Set<String>> {
 
 /// Ayarlar'daki yerel kayıt adetleri.
 ///
-/// Salt okuma; [LocalDataCountsNotifier.reload] silme sonrası açıkça çağrılır.
+/// Sayılar, listeleri besleyen sağlayıcılardan **türetilir** — veritabanını
+/// ayrıca saymaz. Öncesinde ayrı sayıyordu ve sonuç şuydu: sayı bir kez
+/// kurulup bir daha güncellenmiyordu. Ölçüldü (2026-07-28, cihazda): iki
+/// içerik okunduktan sonra `read_history` iki satır tutarken Ayarlar
+/// **"0 kayıt"** gösteriyordu. Aynısı kaydetme için de geçerliydi.
+///
+/// Türetme, tutarlılığı bir alışkanlık olmaktan çıkarıp **yapısal** hâle
+/// getiriyor: Ayarlar'daki sayı ile listedeki satır sayısı artık aynı
+/// nesneden geliyor, bu yüzden ayrışamazlar.
+///
+/// Asistan adedi hâlâ depodan okunuyor: o tabloya yazan bir sağlayıcı yok
+/// (asistan uygulanmadı) ve sabit `0` yazmak, asistan geldiğinde sessizce
+/// yalana dönüşecek bir satır bırakırdı.
 final localDataCountsProvider =
     AsyncNotifierProvider<LocalDataCountsNotifier, LocalDataCounts>(
       LocalDataCountsNotifier.new,
@@ -265,14 +278,81 @@ final localDataCountsProvider =
 final class LocalDataCountsNotifier extends AsyncNotifier<LocalDataCounts> {
   @override
   Future<LocalDataCounts> build() async {
+    final saved = await ref.watch(savedItemsProvider.future);
+    final history = await ref.watch(readHistoryProvider.future);
     final repository = await ref.watch(localDataRepositoryProvider.future);
-    return repository.readCounts();
+    return LocalDataCounts(
+      savedItems: saved.length,
+      readHistory: history.length,
+      assistantConversations:
+          (await repository.readCounts()).assistantConversations,
+    );
   }
 
+  /// Veritabanı sağlayıcıların **dışında** değiştiğinde (`Verileri Sil`)
+  /// adetleri yeniden okur.
   Future<void> reload() async {
     final repository = await ref.read(localDataRepositoryProvider.future);
     state = AsyncData(await repository.readCounts());
   }
+}
+
+/// Okuma geçmişi listesi, en yeniden eskiye.
+///
+/// Ayarlar bu satırın sayısını uzun süredir gösteriyordu ama liste ekranı
+/// yoktu: satıra dokunmak "liste ekranı onaylı tasarımda henüz yok" diyen bir
+/// SnackBar açıyordu. Veri zaten yazılıyordu; eksik olan yalnız onu gösteren
+/// ekrandı.
+final readHistoryProvider =
+    AsyncNotifierProvider<ReadHistoryNotifier, List<ReadHistoryEntry>>(
+      ReadHistoryNotifier.new,
+    );
+
+final class ReadHistoryNotifier extends AsyncNotifier<List<ReadHistoryEntry>> {
+  @override
+  Future<List<ReadHistoryEntry>> build() async {
+    final repository = await ref.watch(readHistoryRepositoryProvider.future);
+    return repository.readRecent(limit: LocalSchema.readHistoryLimit);
+  }
+
+  /// Bir okumayı kaydeder ve listeyi tazeler.
+  ///
+  /// Yazma **buradan** geçiyor, doğrudan depodan değil. Öncesinde detay ekranı
+  /// deposu kendi çağırıyordu ve hiçbir sağlayıcı haberdar olmuyordu; ölçüldü
+  /// (2026-07-28, cihazda): iki içerik açıldıktan sonra veritabanında iki satır
+  /// vardı ve Ayarlar hâlâ **"0 kayıt"** yazıyordu.
+  ///
+  /// Yazmadan sonra liste yeniden okunuyor, elle eklenmiyor: depo aynı içeriği
+  /// tekilleştiriyor ve 500 satırda buduyor, yani yazmanın sonucu her zaman
+  /// "bir satır arttı" değil.
+  Future<void> record(String itemId, String? kind) async {
+    final repository = await ref.read(readHistoryRepositoryProvider.future);
+    await repository.record(itemId, kind);
+    state = AsyncData(
+      await repository.readRecent(limit: LocalSchema.readHistoryLimit),
+    );
+  }
+
+  /// Geçmişi siler ve listeyi boşaltır.
+  ///
+  /// Silme başarısız olursa önceki liste geri konur: kullanıcıya boş bir ekran
+  /// gösterip veritabanında satırları bırakmak, iki kaynağın birbirine yalan
+  /// söylemesi demekti.
+  Future<void> clear() async {
+    final previous = state.value ?? const <ReadHistoryEntry>[];
+    state = const AsyncData([]);
+    try {
+      final repository = await ref.read(readHistoryRepositoryProvider.future);
+      await repository.clear();
+    } catch (error, stackTrace) {
+      state = AsyncData(previous);
+      Error.throwWithStackTrace(error, stackTrace);
+    }
+  }
+
+  /// Veritabanı **dışarıdan** boşaltıldığında listeyi hizalar
+  /// (`Verileri Sil`). Yeniden okuma yapılmaz: silme zaten olmuş bitmiştir.
+  void reflectExternalClear() => state = const AsyncData([]);
 }
 
 /// Kaydedilenler listesi.

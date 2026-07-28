@@ -2,27 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/app_version.dart';
 import '../../data/providers.dart';
 import '../../data/repositories/local_data_repository.dart';
 import '../../design_system/components/app_components.dart';
 import '../../design_system/tokens/app_tokens.dart';
+import '../read_history/read_history_screen.dart';
+import 'about_screen.dart';
 import 'local_data_eraser.dart';
+import 'source_policy_screen.dart';
 
+/// Ayarlar.
+///
+/// Bu ekranın uzun süre en büyük kusuru şuydu: **on bir satırın dokuzu hiçbir
+/// yere gitmiyordu.** Hepsinde `>` oku vardı — yani "arkada bir ekran var"
+/// diyorlardı — ve dokunulduğunda "Bu ekran sonraki fazda uygulanacak."
+/// yazan bir SnackBar açılıyordu. Kullanıcı için bunlar bozuk düğmelerdi.
+///
+/// Ayrım artık şu: **gerçekten yapılabilecekler yapıldı**, geri kalanı da
+/// dokunulabilir görünmeyi bıraktı. Yakında gelecek bir satır listede
+/// duruyor (yol haritasını anlatıyor) ama okunu ve dokunma davranışını
+/// kaybediyor, yerine "Yakında" etiketi geliyor. Söz vermeyen bir satır,
+/// verip tutmayan bir satırdan iyidir.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
-
-  static const _comingSoonMessage = 'Bu ekran sonraki fazda uygulanacak.';
-
-  /// Geçmiş listesi onaylı ekran haritasında yok; sayı gösteriliyor ama
-  /// liste ekranı bir tasarım kararı bekliyor.
-  static const _historyViewMessage =
-      'Okuma geçmişi kaydediliyor. Liste ekranı onaylı tasarımda henüz yok.';
-
-  void _showMessage(BuildContext context, String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
-  }
 
   Future<void> _confirmLocalDataDeletion(
     BuildContext context,
@@ -106,22 +109,22 @@ class SettingsScreen extends ConsumerWidget {
                       title: 'İlgi Alanları',
                       onTap: () => context.push('/interests'),
                     ),
-                    _SettingsRow(
+                    // Tek dil ve tek tema var; seçilecek bir şey olmadığı için
+                    // bunlar bir ekran değil, birer olgu. Değer gösteriliyor,
+                    // gidilecek yer olduğu iddia edilmiyor.
+                    const _SettingsRow.upcoming(
                       icon: Icons.language_rounded,
                       title: 'Dil',
                       value: 'Türkçe',
-                      onTap: () => _showMessage(context, _comingSoonMessage),
                     ),
-                    _SettingsRow(
+                    const _SettingsRow.upcoming(
                       icon: Icons.palette_outlined,
                       title: 'Tema',
                       value: 'Koyu',
-                      onTap: () => _showMessage(context, _comingSoonMessage),
                     ),
-                    _SettingsRow(
+                    const _SettingsRow.upcoming(
                       icon: Icons.tune_rounded,
                       title: 'İçerik Tercihleri',
-                      onTap: () => _showMessage(context, _comingSoonMessage),
                     ),
                   ],
                 ),
@@ -135,25 +138,23 @@ class SettingsScreen extends ConsumerWidget {
                       value: _countLabel(counts, (c) => c.savedItems),
                       onTap: () => context.go('/saved'),
                     ),
-                    _SettingsRow(
+                    _SettingsRow.upcoming(
                       icon: Icons.forum_outlined,
                       title: 'Asistan Konuşmaları',
                       value: _countLabel(
                         counts,
                         (c) => c.assistantConversations,
                       ),
-                      onTap: () => _showMessage(context, _comingSoonMessage),
                     ),
                     _SettingsRow(
                       icon: Icons.history_rounded,
                       title: 'Okuma Geçmişi',
                       value: _countLabel(counts, (c) => c.readHistory),
-                      onTap: () => _showMessage(context, _historyViewMessage),
+                      onTap: () => context.push(readHistoryRoute),
                     ),
-                    _SettingsRow(
+                    _SettingsRow.upcoming(
                       icon: Icons.download_outlined,
                       title: 'Verileri Dışa Aktar',
-                      onTap: () => _showMessage(context, _comingSoonMessage),
                     ),
                     _SettingsRow(
                       icon: Icons.delete_outline,
@@ -191,23 +192,43 @@ class SettingsScreen extends ConsumerWidget {
                     _SettingsRow(
                       icon: Icons.info_outline_rounded,
                       title: 'TeknoAkış Hakkında',
-                      onTap: () => _showMessage(context, _comingSoonMessage),
+                      onTap: () => context.push(aboutRoute),
                     ),
                     _SettingsRow(
                       icon: Icons.policy_outlined,
                       title: 'Kaynak Politikası',
-                      onTap: () => _showMessage(context, _comingSoonMessage),
+                      onTap: () => context.push(sourcePolicyRoute),
                     ),
+                    // Flutter'ın yerleşik lisans ekranı. Kendi ekranımızı
+                    // yazmak, bağımlılıkların lisanslarını elle listelemek ve
+                    // her `pub upgrade` sonrası güncellemeyi hatırlamak
+                    // demekti; `showLicensePage` listeyi derlemeden okur.
+                    //
+                    // `useRootNavigator` şart: varsayılan hâlinde sayfa
+                    // Ayarlar sekmesinin **dal** yönlendiricisine itiliyor ve
+                    // cihazda görüldüğü gibi (2026-07-28) altta uygulama
+                    // navigasyonu duruyordu. Bu ekrandaki diğer sayfalar
+                    // (Hakkında, Kaynak Politikası, Okuma Geçmişi) kök
+                    // rotalar olduğu için tam ekran açılıyor; lisans sayfası
+                    // tek başına farklı davranıyordu.
                     _SettingsRow(
                       icon: Icons.description_outlined,
                       title: 'Lisanslar',
-                      onTap: () => _showMessage(context, _comingSoonMessage),
+                      onTap: () => showLicensePage(
+                        context: context,
+                        useRootNavigator: true,
+                        applicationName: 'TeknoAkış',
+                        applicationVersion: appVersionLabel,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.xxl),
+                // Biçim onaylı tasarımdan olduğu gibi kalıyor: sürüm numarası
+                // teknik bir tanımlayıcıdır ve `technical` token'ı tam bunun
+                // için var. Değişen tek şey içerik.
                 Text(
-                  'Uygulama Sürümü: [DESIGN_FIXTURE_ONLY]',
+                  'Uygulama Sürümü: $appVersionLabel',
                   style: AppTypography.technical,
                   textAlign: TextAlign.center,
                 ),
@@ -267,20 +288,37 @@ class _SettingsRow extends StatelessWidget {
   const _SettingsRow({
     required this.icon,
     required this.title,
-    required this.onTap,
+    required VoidCallback this.onTap,
     this.value,
     this.color = AppColors.textPrimary,
   });
+
+  /// Henüz uygulanmamış bir satır.
+  ///
+  /// `onTap` **yoktur** — bu, "sonra uygulanacak" diyen bir SnackBar'ın
+  /// yerini alan şey değil, onun tam tersi: satır dokunulabilir olduğunu hiç
+  /// iddia etmiyor. `>` oku yerine "Yakında" etiketi gösterilir, metin
+  /// soluklaşır ve erişilebilirlik ağacına devre dışı olarak geçer, böylece
+  /// ekran okuyucu da tıklanabilir bir düğme duyurmaz.
+  const _SettingsRow.upcoming({
+    required this.icon,
+    required this.title,
+    this.value,
+  }) : onTap = null,
+       color = AppColors.textSecondary;
 
   final IconData icon;
   final String title;
   final String? value;
   final Color color;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+
+  bool get _enabled => onTap != null;
 
   @override
   Widget build(BuildContext context) => Semantics(
-    button: true,
+    button: _enabled,
+    enabled: _enabled,
     child: InkWell(
       onTap: onTap,
       child: ConstrainedBox(
@@ -305,15 +343,43 @@ class _SettingsRow extends StatelessWidget {
                 Text(value!, style: AppTypography.bodyMuted),
               ],
               const SizedBox(width: AppSpacing.sm),
-              const Icon(
-                Icons.chevron_right_rounded,
-                size: 22,
-                color: AppColors.textSecondary,
-              ),
+              if (_enabled)
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  size: 22,
+                  color: AppColors.textSecondary,
+                )
+              else
+                const _UpcomingTag(),
             ],
           ),
         ),
       ),
+    ),
+  );
+}
+
+/// "Yakında" etiketi.
+///
+/// Okun yerini alıyor ve bilinçli olarak **oktan dar değil**: satır yüksekliği
+/// ve hizası korunsun diye. Kendi rengi yok, kenarlığı `outline` — dikkat
+/// çekmesi değil, sözü geri alması gerekiyor.
+class _UpcomingTag extends StatelessWidget {
+  const _UpcomingTag();
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(
+      horizontal: AppSpacing.sm,
+      vertical: AppSpacing.xs,
+    ),
+    decoration: BoxDecoration(
+      borderRadius: AppRadius.smallBorder,
+      border: Border.all(color: AppColors.outline),
+    ),
+    child: Text(
+      'Yakında',
+      style: AppTypography.label.copyWith(color: AppColors.textSecondary),
     ),
   );
 }

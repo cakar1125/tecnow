@@ -26,5 +26,9 @@ Future<void> eraseAllLocalData(WidgetRef ref) async {
 
   ref.read(savedItemsProvider.notifier).reflectExternalClear();
   ref.read(interestsProvider.notifier).reflectExternalClear();
+  // Okuma geçmişi de hizalanmalı: liste ekranı eklendikten sonra (2026-07-28)
+  // bu satır olmasaydı `Verileri Sil` sonrasında geçmiş ekranı silinmiş
+  // satırları göstermeye devam ederdi.
+  ref.read(readHistoryProvider.notifier).reflectExternalClear();
   await ref.read(localDataCountsProvider.notifier).reload();
 }

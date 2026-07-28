@@ -64,9 +64,12 @@ class _Content extends ConsumerWidget {
       children: [
         Text('Akışını şekillendir', style: AppTypography.headline),
         const SizedBox(height: AppSpacing.sm),
+        // "örnek konu" ifadesi fixture döneminden kalmıştı. Seçilen konular
+        // artık gerçekten akışı süzüyor (`interest_taxonomy.dart`); onlara
+        // "örnek" demek, kullanıcıya seçiminin sonuçsuz olduğunu söylemekti.
         Text(
           'Devam etmek için en az ${InterestsScreen.minimumSelection} '
-          'örnek konu seç.',
+          'konu seç.',
           style: AppTypography.bodyMuted,
         ),
         const SizedBox(height: AppSpacing.xl),

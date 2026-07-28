@@ -8,8 +8,11 @@ import '../features/explore/explore_screen.dart';
 import '../features/feed/feed_screen.dart';
 import '../features/interests/interests_screen.dart';
 import '../features/onboarding/onboarding_screen.dart';
+import '../features/read_history/read_history_screen.dart';
 import '../features/saved/saved_screen.dart';
+import '../features/settings/about_screen.dart';
 import '../features/settings/settings_screen.dart';
+import '../features/settings/source_policy_screen.dart';
 import '../features/splash/splash_screen.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -73,6 +76,20 @@ GoRouter createRouter({String initialLocation = '/splash'}) => GoRouter(
       path: '/icerik/:id',
       builder: (_, state) =>
           FeedDetailScreen(id: state.pathParameters['id'] ?? ''),
+    ),
+
+    // Ayarlar'dan açılan tam ekran sayfalar. Kabuğun **dışında** duruyorlar:
+    // alt navigasyonu gizleyip geri okuyla dönülür, tıpkı `/interests` gibi.
+    // Bir sekme dalının içine konsalardı, "Ayarlar" sekmesi bu ekranlardan
+    // birinde takılı kalabilirdi.
+    GoRoute(path: aboutRoute, builder: (_, _) => const AboutScreen()),
+    GoRoute(
+      path: sourcePolicyRoute,
+      builder: (_, _) => const SourcePolicyScreen(),
+    ),
+    GoRoute(
+      path: readHistoryRoute,
+      builder: (_, _) => const ReadHistoryScreen(),
     ),
   ],
   errorBuilder: (_, state) => Scaffold(

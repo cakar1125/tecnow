@@ -8,16 +8,24 @@ class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({required this.step, super.key});
   final int step;
 
+  /// Tanıtım metinleri.
+  ///
+  /// Öncesinde burada "**örnek** gelişmeler" ve "yerel **fixture** akışı"
+  /// yazıyordu. O metinler, akış gerçekten uydurma kayıtlardan oluştuğu
+  /// dönemde doğruydu ve dürüstlük gereğiydi. İçerik gerçek kaynaklara
+  /// bağlandıktan sonra (2026-07-28) aynı cümleler ters yönde yanlış hâle
+  /// geldi: kullanıcıya gerçek içeriği örnek diye tanıtıyor, üstüne bir de
+  /// geliştirici jargonunu ("fixture") ekranda gösteriyorlardı.
   static const pages = [
     (
       Icons.explore_outlined,
       'Keşfet',
-      'Teknoloji dünyasındaki örnek gelişmeleri tek akışta keşfet.',
+      'Teknoloji dünyasındaki gelişmeleri tek akışta keşfet.',
     ),
     (
       Icons.tune_rounded,
       'Kişiselleştir',
-      'İlgi alanlarını seç; yerel fixture akışını sana göre düzenle.',
+      'İlgi alanlarını seç; akış sana göre süzülsün.',
     ),
     (
       Icons.bolt_rounded,

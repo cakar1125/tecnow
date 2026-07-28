@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:teknoakis/app/app_version.dart';
 import 'package:teknoakis/app/router.dart';
 import 'package:teknoakis/data/app_preferences.dart';
 import 'package:teknoakis/design_system/theme/app_theme.dart';
@@ -116,9 +117,10 @@ void main() {
     expect(preferences.getBool(AppPreferences.onboardingCompletedKey), isNull);
   });
 
-  /// Okuma geçmişi yazılıyor ama liste ekranı onaylı tasarımda yok; mesaj bu
-  /// gerçeği söylemeli, "sonraki fazda" diye geçiştirmemeli.
-  testWidgets('the reading-history row states what actually exists', (
+  /// Önceden bu satır "Liste ekranı onaylı tasarımda henüz yok." diyen bir
+  /// SnackBar açıyordu ve test **o mesajı** kilitliyordu — yani ekranın
+  /// olmadığını doğruluyordu. Ekran artık var.
+  testWidgets('the reading-history row opens the history screen', (
     tester,
   ) async {
     await pumpSettingsScreen(tester);
@@ -128,12 +130,7 @@ void main() {
     await tester.tap(find.text('Okuma Geçmişi'));
     await tester.pumpAndSettle();
 
-    expect(
-      find.text(
-        'Okuma geçmişi kaydediliyor. Liste ekranı onaylı tasarımda henüz yok.',
-      ),
-      findsOneWidget,
-    );
+    expect(find.byKey(const Key('read-history-empty')), findsOneWidget);
   });
 
   testWidgets('interest row navigates to the existing interests route', (
@@ -147,15 +144,101 @@ void main() {
     expect(find.text('Akışını şekillendir'), findsOneWidget);
   });
 
-  testWidgets('shows the design-fixture-only version footer', (tester) async {
+  testWidgets('the about row opens a real screen', (tester) async {
     await pumpSettingsScreen(tester);
 
-    const footer = 'Uygulama Sürümü: [DESIGN_FIXTURE_ONLY]';
+    await tester.ensureVisible(find.text('TeknoAkış Hakkında'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('TeknoAkış Hakkında'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Hesap yok'), findsOneWidget);
+    expect(find.text('Veriler bu cihazda'), findsOneWidget);
+  });
+
+  testWidgets('the source-policy row opens a real screen', (tester) async {
+    await pumpSettingsScreen(tester);
+
+    await tester.ensureVisible(find.text('Kaynak Politikası'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Kaynak Politikası'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('İçerik nereden geliyor?'), findsOneWidget);
+  });
+
+  testWidgets('the licences row opens Flutter\'s licence page', (tester) async {
+    await pumpSettingsScreen(tester);
+
+    await tester.ensureVisible(find.text('Lisanslar'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Lisanslar'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(LicensePage), findsOneWidget);
+  });
+
+  /// Sürüm satırı `[DESIGN_FIXTURE_ONLY]` yer tutucusunu kullanıcıya olduğu
+  /// gibi gösteriyordu ve test bunu **kilitliyordu**. Artık gerçek sürüm
+  /// yazıyor; biçim (monospace `technical`) onaylı tasarımdaki gibi kalıyor.
+  testWidgets('shows the real application version', (tester) async {
+    await pumpSettingsScreen(tester);
+
+    const footer = 'Uygulama Sürümü: $appVersionLabel';
     await tester.ensureVisible(find.text(footer));
     await tester.pumpAndSettle();
 
     expect(find.text(footer), findsOneWidget);
+    expect(find.textContaining('DESIGN_FIXTURE_ONLY'), findsNothing);
     final footerText = tester.widget<Text>(find.text(footer));
     expect(footerText.style?.fontFamily, AppTypography.technical.fontFamily);
+  });
+
+  /// Uygulanmamış satırlar **dokunulabilir görünmemeli**.
+  ///
+  /// Bir SnackBar'ın "sonraki fazda uygulanacak" demesi kusuru kabul etmekti,
+  /// gidermek değil: satırda hâlâ `>` oku duruyor, yani bir ekran vaat
+  /// ediyordu. Test hem vaadin kalktığını hem de eski özrün geri gelmediğini
+  /// ölçer.
+  testWidgets('upcoming rows promise nothing and apologise for nothing', (
+    tester,
+  ) async {
+    await pumpSettingsScreen(tester);
+
+    for (final title in [
+      'Dil',
+      'Tema',
+      'İçerik Tercihleri',
+      'Asistan Konuşmaları',
+      'Verileri Dışa Aktar',
+    ]) {
+      await tester.ensureVisible(find.text(title));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(title));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Bu ekran sonraki fazda uygulanacak.'),
+        findsNothing,
+        reason: '$title satırı hâlâ "sonraki fazda" özrü gösteriyor',
+      );
+      expect(
+        find.byType(SnackBar),
+        findsNothing,
+        reason: '$title satırı dokununca bildirim gösteriyor',
+      );
+    }
+
+    expect(find.text('Yakında'), findsNWidgets(5));
+  });
+
+  /// Etkin satırlar okunu korumalı: "Yakında" düzeltmesi, gerçekten çalışan
+  /// satırların da yönlendirme işaretini silseydi karşı yönde bir kusur olurdu.
+  testWidgets('working rows keep their chevron', (tester) async {
+    await pumpSettingsScreen(tester);
+
+    // İlgi Alanları, Kaydedilen İçerikler, Okuma Geçmişi, Verileri Sil,
+    // Hakkında, Kaynak Politikası, Lisanslar.
+    expect(find.byIcon(Icons.chevron_right_rounded), findsNWidgets(7));
   });
 }

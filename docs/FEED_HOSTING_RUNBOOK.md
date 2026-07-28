@@ -18,6 +18,8 @@ bırakıldı; hiçbiri tahmin değil, hepsi tek tek yapılabilir.
 | Zamanlayıcı (`.github/workflows/publish-feed.yml`) | ✅ yazıldı, **hiç çalıştırılmadı** |
 | Yayım sayfası (`docs/feed_site_index.html`) | ✅ |
 | Uygulamanın ağ katmanı | ✅ (TASK-0016) |
+| Yedek adres + failover (`FEED_URL_FALLBACK`) | ✅ 14 testle kilitli |
+| CNAME yazımı (`vars.FEED_DOMAIN`) | ✅ değişken tanımsızken atlanır |
 
 **Ölçülmemiş:** iş akışı hiçbir zaman GitHub'da çalışmadı ve uygulama
 gerçek bir uzak sunucuya hiç bağlanmadı. Bunların ikisi de ancak depo
@@ -76,6 +78,62 @@ Depo → **Settings → Pages → Build and deployment → Source: GitHub Action
 Klasik "Deploy from a branch" seçilmemeli; iş akışı `deploy-pages` eylemini
 kullanıyor.
 
+### 2b. Kendi alan adını bağla — **ilk APK'dan önce**
+
+Adres APK'ya derleme zamanında gömülüyor ve çalışma zamanında
+değiştirilemiyor. `github.io` adresiyle bir sürüm yayınlanırsa o sürümü
+kuran herkes GitHub'a kalıcı olarak bağlanmış olur. Kendi alan adınla
+barındırıcıyı istediğin zaman değiştirirsin: DNS'i çevirirsin, kurulu
+uygulamalar hiç etkilenmez.
+
+**Sıra önemli — Cloudflare proxy'si baştan açılmaz.**
+
+1. Cloudflare'e alan adını ekle. `feed.<alanadı>` için `CNAME` →
+   `<kullanıcı>.github.io`, **"DNS only" (gri bulut)**.
+2. Depo → Settings → Pages → **Custom domain** = `feed.<alanadı>`,
+   **Enforce HTTPS** işaretle. Sertifika sağlanana kadar bekle
+   (dakikalar–1 saat).
+3. Sertifika sağlandıktan **sonra** Cloudflare proxy'sini aç (turuncu bulut),
+   SSL/TLS modu **Full (strict)**.
+
+GitHub'ın Let's Encrypt sertifikasını verebilmesi için doğrulamanın doğrudan
+GitHub'a ulaşması gerekir. Proxy baştan açık olursa sertifika sağlanamaz ve
+uygulama `https` dışını **reddettiği** için feed hiç okunamaz — üstelik bu
+sessiz bir arıza olur, çünkü uygulama paketlenmiş içerikle çalışmaya devam
+eder.
+
+**CDN neden ilk günden:** istekleri Cloudflare karşılar, Pages yalnız cache
+yenilemelerini görür. Pages'in 100 GB/ay yumuşak sınırı ve "ücretsiz
+barındırma ticari hizmet için kullanılamaz" şartı böylece devreden çıkar.
+`feed.json` için ~5 dakikalık Edge TTL yeterli (üretici altı saatte bir
+yayımlıyor).
+
+### 2c. Ayna yayını — yedek adres
+
+Alan adı **barındırıcı** değişimini çözer, alan adının **kaybını** çözmez:
+süresi dolarsa ya da DNS kesilirse yayın yapılacak yer kalmadığı için yeni
+adresi duyurmanın da yolu yoktur. Uygulama bu yüzden ikinci bir adres taşır
+(`FEED_URL_FALLBACK`) ve birincil cevap vermediğinde ona düşer.
+
+**Yedek, birincilden bağımsız bir kökende olmalı.** Özel alan adı
+tanımlandığında GitHub `<kullanıcı>.github.io/<depo>` adresini o alan adına
+yönlendirir; yani birincil deponun kendi `github.io` adresi yedek olamaz —
+alan adı ölürse yönlendirme de ölü adrese gider. Kurulumda bunu **ölç**:
+
+```bash
+curl -I https://<kullanıcı>.github.io/<depo>/feed.json    # 301 bekleniyor
+```
+
+Yedek için ikinci bir public depo açılır: aynı iş akışı, Pages açık,
+**özel alan adı verilmez**. Kendi `FEED_URL` değişkeni kendi adresini
+gösterir, böylece yayım koruması kendi yayımıyla karşılaştırma yapar.
+İki depo arası token gerekmez; ayna kendi üreticisini çalıştırır.
+
+```
+Birincil : https://feed.<alanadı>/feed.json
+Yedek    : https://<kullanıcı>.github.io/<ayna-depo>/feed.json
+```
+
 ### 3. İlk koşuyu elle çalıştır
 
 **Actions → Feed yayımla → Run workflow.**
@@ -105,12 +163,22 @@ feed'i durduramaz** — koruma karşılaştıracak bir şey bulamaz.
 
 ```bash
 cd mobile
-flutter build apk --release --dart-define=FEED_URL=https://<kullanıcı>.github.io/<depo>/feed.json
+flutter build apk --release \
+  --dart-define=FEED_URL=https://feed.<alanadı>/feed.json \
+  --dart-define=FEED_URL_FALLBACK=https://<kullanıcı>.github.io/<ayna-depo>/feed.json
 ```
 
-Uygulama kodunda değişiklik yok. Adres verilmediğinde uygulama paketlenmiş
-içerikle çalışır ve arayüz bunu olduğu gibi söyler ("İçerik uygulamayla
-birlikte geliyor"); "güncelleniyor" numarası yapmaz.
+**İki adres birden verilir.** Yedek atlanırsa uygulama tek adrese bağlı
+kalır ve bu, sürüm yayınlandıktan sonra geri alınamaz.
+
+Adres verilmediğinde uygulama paketlenmiş içerikle çalışır ve arayüz bunu
+olduğu gibi söyler ("İçerik uygulamayla birlikte geliyor"); "güncelleniyor"
+numarası yapmaz.
+
+Failover davranışı: birincil ağ hatası, `2xx` dışı yanıt ya da bozuk gövde
+verdiğinde yedek denenir. İkisi de başarısızsa gösterilen içerik
+**değişmez** ve durum satırı "Güncellenemedi · N gün önce alınan içerik
+gösteriliyor" der — sessizce donmaz.
 
 ### 6. Cihazda ölç (ilk kez gerçek ağ)
 
@@ -122,7 +190,9 @@ Bunlar bugüne kadar **hiç** ölçülmedi, çünkü ölçülecek bir adres yokt
 - [ ] Uçak modu → açık moda geçiş; çevrimdışıyken önbellekten okuma
 - [ ] Yavaş bağlantı (Android geliştirici seçeneklerinden kısıtlama)
 - [ ] CDN önbelleği: yayımdan sonra yeni içeriğin cihaza ne kadar sürede
-      geldiği (Pages varsayılanı ~10 dakika `max-age`)
+      geldiği (Cloudflare Edge TTL + Pages `max-age`)
+- [ ] **Failover**: birincil adres telefonun DNS'inde engellenip uygulamanın
+      aynaya düştüğü ve tazelemeye devam ettiği görülür
 
 ---
 

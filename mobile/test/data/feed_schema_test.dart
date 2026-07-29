@@ -101,12 +101,114 @@ void main() {
       );
     });
 
-    test('bilinmeyen kaynak türü reddedilir', () {
+    /// Politika alanın **varlığını** şart koşuyor, değerinin bu sürümce
+    /// biliniyor olmasını değil. Bilinmeyen bir kaynak türü kaydı düşürmez;
+    /// `other`a düşer ve içerik görünür kalır.
+    ///
+    /// Davranış 29 Temmuz 2026'da değişti. Eskiden reddediliyordu ve bu bir
+    /// **güven kapısı sanılıyordu**; ölçüldüğünde değildi:
+    /// - Allowlist yalnız üreticide zorlanıyor (`tool/feed/source_allowlist.dart`);
+    ///   `lib/` içinde tek bir referansı yok.
+    /// - Feed'i değiştirebilen biri `sourceKind: "github"` de yazabilirdi,
+    ///   yani katılık düşmanca bir yayına karşı hiçbir şey kazandırmıyordu.
+    /// - Üretici bilinmeyen bir değer üretemiyor: bağlayıcılar ya sabit enum
+    ///   yazıyor ya da `SourceAllowlist.sourceKindFor` çağırıyor.
+    ///
+    /// Geriye tek gerçek etki kalıyordu: **gelecekteki** bir kaynak türü
+    /// yüzünden kurulu uygulamanın tüm feed'i düşürmesi.
+    test('bilinmeyen kaynak türü kaydı düşürmez, other olur', () {
       final json = sampleItem().toJson()..['sourceKind'] = 'twitter';
+      expect(FeedItem.fromJson(json).sourceKind, FeedSourceKind.other);
+    });
+
+    /// Gevşeme **dar**: gevşeyen şey değerin tanınırlığı, varlığı değil.
+    /// Boş bir alan gelecekteki bir değer değil, bozuk bir alandır — üretici
+    /// kusuru olarak ölümcül kalır.
+    test('kaynak türü boş metinse hâlâ reddedilir', () {
+      final json = sampleItem().toJson()..['sourceKind'] = '';
       expect(
         () => FeedItem.fromJson(json),
         throwsA(isA<FeedFormatException>()),
       );
+    });
+  });
+
+  /// İleri uyumluluk: yayın bu sürümden yeni olduğunda uygulama **bildiklerini
+  /// göstermeye devam eder**.
+  ///
+  /// Ölçülen kusur (2026-07-29): paketlenmiş 200 kayıttan tek birine bilinmeyen
+  /// bir `kind` yazıldığında 200'ü birden reddediliyordu. Yayımlanmış bir
+  /// uygulamada bu, güncellemeyen kullanıcının **hiçbir** taze içerik
+  /// alamaması demekti — sessizce, çünkü önbellek korunuyor ve ekran
+  /// "Güncellenemedi" deyip duruyor.
+  group('ileri uyumluluk', () {
+    Map<String, Object?> feedWith(List<Map<String, Object?>> items) => {
+      'schemaVersion': feedSchemaVersion,
+      'generatedAt': DateTime.utc(2026, 7, 29).toIso8601String(),
+      'items': items,
+    };
+
+    test('bilinmeyen tür atlanır, diğer kayıtlar okunur', () {
+      final feed = Feed.fromJson(
+        feedWith([
+          sampleItem(url: 'https://github.com/ornek/bir').toJson(),
+          sampleItem().toJson()..['kind'] = 'leaderboard',
+          sampleItem(url: 'https://github.com/ornek/iki').toJson(),
+        ]),
+      );
+
+      expect(feed.items.map((item) => item.url.path), [
+        '/ornek/bir',
+        '/ornek/iki',
+      ]);
+      expect(feed.unsupportedItemCount, 1);
+    });
+
+    /// Dürüstlük kuralı ödün vermiyor: özetin kaynağı bilinmiyorsa kayıt
+    /// gösterilmez. `original`a düşürmek, TeknoAkış özetini kaynağın kendi
+    /// metniymiş gibi sunmak olurdu.
+    test('bilinmeyen özet kökeni atlanır', () {
+      final feed = Feed.fromJson(
+        feedWith([
+          sampleItem(url: 'https://github.com/ornek/kalan').toJson(),
+          sampleItem().toJson()..['summaryOrigin'] = 'community',
+        ]),
+      );
+
+      expect(feed.items.single.url.path, '/ornek/kalan');
+      expect(feed.unsupportedItemCount, 1);
+    });
+
+    /// Bilinmeyen **değer** atlanır ama bozuk **yapı** hâlâ ölümcül: üretici
+    /// kusurunu maskelemek, sessizce eksik içerik yayımlamak olurdu.
+    test('zorunlu alan eksikse feed hâlâ reddedilir', () {
+      expect(
+        () => Feed.fromJson(feedWith([sampleItem().toJson()..remove('title')])),
+        throwsA(isA<FeedFormatException>()),
+      );
+    });
+
+    /// Bugün doğru ama hiçbir yerde kilitli değildi: yeni bir opsiyonel alan
+    /// eklemek kurulu uygulamayı bozmamalı. Aşama 2'nin sıralama kartı buna
+    /// dayanacak.
+    test('tanınmayan opsiyonel alan yok sayılır', () {
+      final json = sampleItem().toJson()
+        ..['leaderboardRank'] = 3
+        ..['gelecektekiAlan'] = {'ic': 'ice'};
+
+      expect(FeedItem.fromJson(json).title, sampleItem().title);
+    });
+
+    test('her şey tanınıyorsa atlanan kayıt sayısı sıfırdır', () {
+      final feed = Feed.fromJson(
+        feedWith([
+          sampleItem(url: 'https://github.com/ornek/a').toJson(),
+          sampleItem(url: 'https://github.com/ornek/b').toJson(),
+        ]),
+      );
+
+      expect(feed.items, hasLength(2));
+      expect(feed.unsupportedItemCount, 0);
     });
   });
 

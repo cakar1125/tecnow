@@ -42,6 +42,10 @@ String sourceKindLabel(FeedSourceKind kind) => switch (kind) {
   FeedSourceKind.huggingFace => 'Hugging Face',
   FeedSourceKind.officialBlog => 'Resmi bloglar',
   FeedSourceKind.documentation => 'Resmi dokümantasyon',
+  // Yayın bu uygulama sürümünden yeni bir kaynak türü taşıyor. Kaynağın
+  // **adı** küratörlü ve başlıkta zaten görünüyor; burada uydurma bir
+  // kategori yazmak yerine tanımadığımızı söylüyoruz.
+  FeedSourceKind.other => 'Bu sürümde tanımlı değil',
 };
 
 /// Kaynağın altında gösterilecek tür etiketi — ad zaten aynı şeyi söylüyorsa

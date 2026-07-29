@@ -15,11 +15,30 @@ library;
 
 /// Şema sürümü. Uyumsuz bir değişiklikte artar; uygulama bilmediği bir
 /// sürümü **okumayı reddeder**, sessizce yanlış ayrıştırmaz.
+///
+/// **Katkı için artırılmaz.** Yeni bir kayıt türü ya da yeni bir alan eklemek
+/// uyumsuz değişiklik değildir ve sürümü artırmak kurulu her uygulamayı
+/// akıştan koparırdı. İleri uyumluluk kayıt seviyesinde çözülür; bkz.
+/// [FeedItemUnsupportedException].
 const feedSchemaVersion = 1;
 
 enum FeedItemKind { repository, aiModel, tool, skill, mcp, announcement }
 
-enum FeedSourceKind { github, huggingFace, officialBlog, documentation }
+enum FeedSourceKind {
+  github,
+  huggingFace,
+  officialBlog,
+  documentation,
+
+  /// Bu uygulama sürümünün **tanımadığı** bir kaynak türü.
+  ///
+  /// Üretici bunu asla yazmaz; yalnız ayrıştırma sırasında, yayın bu
+  /// sürümden yeni bir kaynak türü taşıdığında ortaya çıkar. Kaydı düşürmek
+  /// yerine buraya düşürmek bilinçli: kaynağın **adı** (`sourceName`)
+  /// küratörlüdür ve zaten görünür, yani kullanıcı içeriği kimin yayımladığını
+  /// yine görür. Türü bilmemek, içeriği gizlemek için yeterli sebep değil.
+  other,
+}
 
 /// Özetin nereden geldiği. Politika, TeknoAkış özetinin orijinal kaynaktan
 /// **görsel olarak ayrılmasını** şart koşar; arayüz bu alana bakarak ayırır.
@@ -189,12 +208,27 @@ final class FeedItem {
 
   static FeedItem fromJson(Map<String, Object?> json) => FeedItem(
     id: _requireString(json, 'id'),
-    kind: _requireEnum(json, 'kind', FeedItemKind.values),
+    // Tür, ekranı ve rotayı belirliyor — uydurulamaz, kayıt atlanır.
+    kind: _requireKnownEnum(json, 'kind', FeedItemKind.values),
     title: _requireString(json, 'title'),
     summary: _requireString(json, 'summary'),
-    summaryOrigin: _requireEnum(json, 'summaryOrigin', SummaryOrigin.values),
+    // Dürüstlük kuralı: özetin kaynağı bilinmiyorsa kayıt **gösterilmez**.
+    // Tanınmayan bir değeri `original`a düşürmek, TeknoAkış özetini kaynağın
+    // kendi metniymiş gibi sunmak olurdu; politika bunu yasaklıyor.
+    summaryOrigin: _requireKnownEnum(
+      json,
+      'summaryOrigin',
+      SummaryOrigin.values,
+    ),
     sourceName: _requireString(json, 'sourceName'),
-    sourceKind: _requireEnum(json, 'sourceKind', FeedSourceKind.values),
+    // Kaynak türü yalnız etiket/süzgeç sürüyor ve küratörlü `sourceName`
+    // zaten görünüyor — bilinmeyen değer kaydı düşürmez.
+    sourceKind: _enumOrElse(
+      json,
+      'sourceKind',
+      FeedSourceKind.values,
+      FeedSourceKind.other,
+    ),
     url: _requireUri(json, 'url'),
     publishedAt: _requireDate(json, 'publishedAt'),
     checkedAt: _requireDate(json, 'checkedAt'),
@@ -222,11 +256,20 @@ final class Feed {
     required this.schemaVersion,
     required this.generatedAt,
     required this.items,
+    this.unsupportedItemCount = 0,
   });
 
   final int schemaVersion;
   final DateTime generatedAt;
   final List<FeedItem> items;
+
+  /// Bu sürümün tanımadığı için **atlanan** kayıt sayısı.
+  ///
+  /// Ayrıştırma anında gözlemlenir, feed'in içeriği değildir — bu yüzden
+  /// [toJson] onu yazmaz. Sayılmasının sebebi: atlanan kayıt sessizce
+  /// kaybolmamalı. Sıfırdan büyük olması "yayın bu uygulamadan yeni" demektir
+  /// ve bu, güncelleme çağrısı gibi bir davranışın ölçülebilir tek dayanağı.
+  final int unsupportedItemCount;
 
   /// Geri çekilmemiş kayıtlar — arayüzün göstereceği küme.
   List<FeedItem> get visibleItems =>
@@ -240,6 +283,11 @@ final class Feed {
 
   /// Bilinmeyen bir şema sürümü **reddedilir**: yanlış ayrıştırıp sessizce
   /// bozuk içerik göstermektense okumamak doğrudur.
+  ///
+  /// Tanınmayan **kayıt** ise reddedilmez, atlanır — ikisi ayrı sorun. Sürüm
+  /// uyumsuzluğu yapının değiştiğini söyler; tek bir kaydın bilinmeyen bir tür
+  /// taşıması ise yalnız o kaydın yeni olduğunu söyler. Bkz.
+  /// [FeedItemUnsupportedException].
   static Feed fromJson(Map<String, Object?> json) {
     final version = json['schemaVersion'];
     if (version is! int) {
@@ -256,14 +304,24 @@ final class Feed {
     if (rawItems is! List) {
       throw const FeedFormatException('items alanı eksik veya liste değil');
     }
+
+    // `map` yerine döngü: atlanan kayıt sayılabilmeli ve tek bir tanınmayan
+    // kayıt listenin geri kalanını düşürmemeli.
+    final items = <FeedItem>[];
+    var unsupported = 0;
+    for (final raw in rawItems) {
+      try {
+        items.add(FeedItem.fromJson((raw as Map).cast<String, Object?>()));
+      } on FeedItemUnsupportedException {
+        unsupported++;
+      }
+    }
+
     return Feed(
       schemaVersion: version,
       generatedAt: _requireDate(json, 'generatedAt'),
-      items: rawItems
-          .map(
-            (item) => FeedItem.fromJson((item as Map).cast<String, Object?>()),
-          )
-          .toList(growable: false),
+      items: List.unmodifiable(items),
+      unsupportedItemCount: unsupported,
     );
   }
 }
@@ -273,6 +331,35 @@ class FeedFormatException implements Exception {
   final String message;
   @override
   String toString() => 'FeedFormatException: $message';
+}
+
+/// Kayıt **bozuk değil, bu sürümden yeni**.
+///
+/// [FeedFormatException]'dan ayrı olması işin özü. İkisi de "ayrıştıramadım"
+/// diyor ama sonuçları zıt:
+///
+/// - `FeedFormatException` → yayın bozuk. Feed **reddedilir**; sessizce yanlış
+///   ayrıştırıp bozuk içerik göstermek daha kötü olurdu.
+/// - `FeedItemUnsupportedException` → yayın ileri. Kayıt **atlanır**, feed'in
+///   geri kalanı okunur.
+///
+/// Ayrım neden şart, ölçüldü (2026-07-29): paketlenmiş 200 kayıttan **tek
+/// birine** bilinmeyen bir `kind` yazıldığında bugünkü kod 200'ünü birden
+/// reddediyordu. Yayımlanmış bir uygulamada bunun anlamı, güncellemeyen
+/// kullanıcının yeni türü değil **hiçbir şeyi** bir daha alamamasıdır:
+/// tazeleme başarısız olur, önbellek korunur ve ekran sonsuza dek
+/// "Güncellenemedi · N gün önce" der. Çökme yok, veri kaybı yok — sessiz ölüm.
+class FeedItemUnsupportedException implements Exception {
+  const FeedItemUnsupportedException(this.field, this.value);
+
+  /// Tanınmayan değeri taşıyan alan (`kind`, `summaryOrigin`).
+  final String field;
+  final String value;
+
+  @override
+  String toString() =>
+      'FeedItemUnsupportedException: $field alanı bu sürümün tanımadığı bir '
+      'değer taşıyor: $value';
 }
 
 /// Kanonik URL'den kararlı bir kimlik üretir.
@@ -348,7 +435,13 @@ DateTime _requireDate(Map<String, Object?> json, String key) {
   return value.toUtc();
 }
 
-T _requireEnum<T extends Enum>(
+/// Alan **zorunlu**; değeri tanınmıyorsa kayıt atlanabilir.
+///
+/// İki ayrı hata fırlatır ve fark kasıtlı:
+/// - alan yok / metin değil → [FeedFormatException] (üretici kusuru, ölümcül)
+/// - alan var ama değer bilinmiyor → [FeedItemUnsupportedException] (ileri
+///   yayın, kayıt atlanır)
+T _requireKnownEnum<T extends Enum>(
   Map<String, Object?> json,
   String key,
   List<T> values,
@@ -357,5 +450,22 @@ T _requireEnum<T extends Enum>(
   for (final value in values) {
     if (value.name == raw) return value;
   }
-  throw FeedFormatException('$key alanı bilinmeyen değer taşıyor: $raw');
+  throw FeedItemUnsupportedException(key, raw);
+}
+
+/// Tanınmayan değerde kaydı düşürmeyen alan: [fallback]'e düşer.
+///
+/// Yalnız kaydın **gösterilebilirliğini** bozmayan alanlarda kullanılır.
+/// Alanın kendisi yine zorunlu — eksikse üretici kusurudur ve ölümcül kalır.
+T _enumOrElse<T extends Enum>(
+  Map<String, Object?> json,
+  String key,
+  List<T> values,
+  T fallback,
+) {
+  final raw = _requireString(json, key);
+  for (final value in values) {
+    if (value.name == raw) return value;
+  }
+  return fallback;
 }

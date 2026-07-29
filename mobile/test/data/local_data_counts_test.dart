@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:teknoakis/data/feed/feed_schema.dart';
+import 'package:teknoakis/data/local/schema.dart';
 import 'package:teknoakis/data/providers.dart';
 import 'package:teknoakis/data/repositories/read_history_repository.dart';
 import 'package:teknoakis/data/repositories/saved_items_repository.dart';
@@ -77,9 +78,14 @@ void main() {
 
   /// Sayı ile liste **aynı nesneden** gelmeli.
   ///
-  /// Ayrı ayrı okunduklarında ayrışabiliyorlardı: geçmiş deposu 500 satıra
-  /// kadar tutuyor ama liste varsayılan olarak 50 okuyordu. Ayarlar
-  /// "312 kayıt" derken listenin 50 satır göstermesi mümkündü.
+  /// Ayrı ayrı okunduklarında ayrışabiliyorlardı: geçmiş deposu tavanına kadar
+  /// tutuyor ama liste sabit 50 okuyordu. Ayarlar "312 kayıt" derken listenin
+  /// 50 satır göstermesi mümkündü.
+  ///
+  /// Tavanı **aşacak kadar** yazılıyor: sınır ısırmazsa bu test sayı/liste
+  /// ayrışmasını hiç zorlamaz. Sayılar sabite göreli — 29 Temmuz 2026'da tavan
+  /// 500'den 50'ye indiğinde buradaki `120` sabiti kırılmıştı, çünkü tavanın
+  /// asla ısırmayacağını varsayıyordu.
   test('the count is exactly the length of the list it describes', () async {
     final history = InMemoryReadHistoryRepository();
     final scope = container(
@@ -87,7 +93,8 @@ void main() {
       history: history,
     );
 
-    for (var index = 0; index < 120; index++) {
+    const written = LocalSchema.readHistoryLimit + 70;
+    for (var index = 0; index < written; index++) {
       await scope
           .read(readHistoryProvider.notifier)
           .record('kayit-$index', 'skill');
@@ -96,7 +103,8 @@ void main() {
     final counts = await scope.read(localDataCountsProvider.future);
     final entries = await scope.read(readHistoryProvider.future);
     expect(counts.readHistory, entries.length);
-    expect(entries, hasLength(120));
+    // Tavan gerçekten uygulanıyor: yazılan 120, görünen 50.
+    expect(entries, hasLength(LocalSchema.readHistoryLimit));
   });
 
   /// Aynı içeriği ikinci kez okumak sayıyı artırmamalı: depo tekilleştiriyor

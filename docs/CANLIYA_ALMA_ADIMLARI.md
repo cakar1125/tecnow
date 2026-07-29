@@ -69,7 +69,11 @@ Kaydet düğmesi yok, seçim anında geçerli olur.
 Depo → **Actions** sekmesi → sol listede **Feed yayımla** → sağda
 **Run workflow** → dal `master` → yeşil **Run workflow**.
 
-Koşu 3–5 dakika sürer (Flutter kurulumu + 16 kaynaktan derleme).
+Koşu 3–5 dakika sürer (Flutter kurulumu + tüm kaynaklardan derleme).
+
+> Kaynak sayısı burada **yazılmıyor**: bu satır bir kez "16 kaynak" dedi ve
+> kaynak eklendiğinde güncellenmedi (düzeltildi 2026-07-29, kodda 18 vardı).
+> Güncel liste tek yerde: `mobile/tool/feed/sources.dart`.
 
 **Nasıl anlarım:** koşunun yanında yeşil tik. Sonra tarayıcıda aç:
 

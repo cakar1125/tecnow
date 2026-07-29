@@ -6,11 +6,21 @@ abstract final class LocalSchema {
 
   /// Okuma geçmişinde tutulacak en fazla kayıt.
   ///
-  /// Sınır **ölçümle** kondu: satır başına ~60 bayt, günde 20 açılış eden bir
-  /// kullanıcıda üç yılda 21.900 satır ≈ 1,3 MB eder ve büyümenin durduğu bir
-  /// nokta yoktu. 500 kayıt, tasarlanacak bir geçmiş ekranının göstereceğinden
-  /// fazlası ve toplamı ~30 KB'de sabitler.
-  static const readHistoryLimit = 500;
+  /// Sınırın **var olma** sebebi ölçümdü: satır başına ~60 bayt, günde 20
+  /// açılış eden bir kullanıcıda üç yılda 21.900 satır ≈ 1,3 MB eder ve
+  /// büyümenin durduğu bir nokta yoktu.
+  ///
+  /// Sınırın **değeri** 500'dü ve yanlıştı (düzeltildi 2026-07-29). Gerekçesi
+  /// "geçmiş ekranının göstereceğinden fazlası" idi; ekran gerçekte bu sabitin
+  /// tamamını istiyor (`providers.dart`). Asıl kısıt başka yerde: feed **200
+  /// kayıtlık kayan bir pencere** ve geçmiş yalnız kimlik tutuyor. Pencereden
+  /// düşen içeriğin kimliği karşılığını bulamıyor, ekranda başlıksız bir satır
+  /// olarak kalıyor — `ReadHistoryEntry.resolved` tam bunu ölçüyor. 500 tavan,
+  /// pencerenin 2.5 katı olduğu için satırların çoğu **tasarımı gereği** ölüydü.
+  ///
+  /// 50, pencerenin içinde kalır: her satır başlığıyla çözülür. Ekranın vaadi
+  /// "arşiv" değil, "son okuduklarım" — sayı artık o vaadi anlatıyor.
+  static const readHistoryLimit = 50;
 
   /// Yeni kurulum da **migration yolundan** geçer.
   ///

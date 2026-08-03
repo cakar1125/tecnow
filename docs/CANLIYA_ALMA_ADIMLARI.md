@@ -44,10 +44,15 @@ gösterir.
 Git Bash'te (tek tek yapıştır):
 
 ```bash
-cd "C:/Users/user/Desktop/stitch_techpulse_social (14)"
+cd "C:/YEDEKK/OLD_DESTOP/stitch_techpulse_social (14)"
 git remote add origin https://github.com/<KULLANICI>/teknoakis.git
 git push -u origin master
 ```
+
+> Proje 1 Ağustos 2026'da Masaüstü'nden `C:/YEDEKK/OLD_DESTOP/` altına taşındı.
+> Taşınma sonrası git "dubious ownership" hatası veriyordu (dizin sahipliği
+> değişti); tek seferlik şu komutla açıldı:
+> `git config --global --add safe.directory 'C:/YEDEKK/OLD_DESTOP/stitch_techpulse_social (14)'`
 
 İlk push'ta tarayıcıda GitHub girişi açılır — beklenen davranış, izin ver.
 
@@ -177,7 +182,7 @@ Yedek adres, alan adının kaybına karşı. Ayna **ayrı bir depo** olmalı ve
 2. Git Bash:
 
 ```bash
-cd "C:/Users/user/Desktop/stitch_techpulse_social (14)"
+cd "C:/YEDEKK/OLD_DESTOP/stitch_techpulse_social (14)"
 git remote add ayna https://github.com/<KULLANICI>/teknoakis-ayna.git
 git push ayna master
 ```

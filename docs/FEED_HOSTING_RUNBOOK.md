@@ -36,9 +36,9 @@ makinede `gh` komutu kurulu değil. Depoyu tarayıcıdan açıp bağlamak
 gerekiyor.
 
 ```bash
-cd "C:/Users/user/Desktop/stitch_techpulse_social (14)"
+cd "C:/YEDEKK/OLD_DESTOP/stitch_techpulse_social (14)"
 git remote add origin https://github.com/<kullanıcı>/<depo>.git
-git push -u origin phase-02a-shell-migration
+git push -u origin master
 ```
 
 #### Çalışma dalı **varsayılan dal olmalı** — yoksa zamanlayıcı hiç çalışmaz

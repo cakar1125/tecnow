@@ -7,12 +7,14 @@ import '../../tool/feed/summary_guard.dart';
 final _now = DateTime.utc(2026, 7, 27);
 
 FeedItem _item({
+  String id = 'a',
   String title = 'Nexus-7B released',
   String summary = 'A new open-weights model with 7B parameters.',
   SummaryOrigin origin = SummaryOrigin.original,
   String language = 'en',
+  String? summarySourceHash,
 }) => FeedItem(
-  id: 'a',
+  id: id,
   kind: FeedItemKind.aiModel,
   title: title,
   summary: summary,
@@ -31,6 +33,27 @@ FeedItem _item({
     popularity: 5,
   ),
   topics: const ['llm'],
+  summarySourceHash: summarySourceHash,
+);
+
+/// Önceki yayında duran, taşınmaya hazır bir kayıt.
+///
+/// Damga **gerçek kaynak metinden** üretilir — elle uydurulmuş bir damga testi
+/// yeşil gösterip üretimde taşımayı hiç çalıştırmazdı.
+FeedItem _published({
+  String id = 'a',
+  String title = 'Nexus-7B released',
+  String sourceSummary = 'A new open-weights model with 7B parameters.',
+  String turkish = 'Yeni bir açık ağırlıklı model yayımlandı.',
+}) => _item(
+  id: id,
+  title: title,
+  summary: turkish,
+  origin: SummaryOrigin.teknoakis,
+  language: 'tr',
+  summarySourceHash: fnv1aHex(
+    sourceTextOf(_item(id: id, title: title, summary: sourceSummary)),
+  ),
 );
 
 /// Sabit bir cevap veren sahte model.
@@ -211,6 +234,182 @@ void main() {
       expect(pass.budgetExhausted, isTrue);
       expect(pass.items, hasLength(3));
       expect(pass.items.last.summaryOrigin, SummaryOrigin.original);
+    });
+  });
+
+  /// Taşıma: önceki yayında aynı kaynak metinden üretilmiş bir özet varsa
+  /// model **hiç çağrılmaz**.
+  ///
+  /// Düzeltilen kusur (ölçüldü 2026-08-03): üretici feed'i her koşuda
+  /// kaynaklardan yeniden kurduğu için geçen koşunun Türkçe özetleri
+  /// kayboluyor, bütçe aynı işi tekrar satın almaya gidiyordu. Yayımlanan 200
+  /// kaydın 180'i bu yüzden İngilizce kalmıştı.
+  group('özet taşıma', () {
+    test('kaynak metin aynıysa özet taşınır, model çağrılmaz', () async {
+      final summarizer = FakeSummarizer('çağrılmamalı');
+
+      final pass = await applySummaries(
+        [_item()],
+        summarizer: summarizer,
+        previous: [_published()],
+      );
+
+      expect(summarizer.seen, isEmpty, reason: 'model çağrılmamalı');
+      expect(pass.carried, 1);
+      expect(pass.summarized, 0);
+      expect(
+        pass.items.single.summary,
+        'Yeni bir açık ağırlıklı model yayımlandı.',
+      );
+      expect(pass.items.single.summaryOrigin, SummaryOrigin.teknoakis);
+      expect(pass.items.single.language, 'tr');
+    });
+
+    /// Eski özet artık başka bir metni anlatıyor olurdu. Damganın var olma
+    /// sebebi tam olarak bu.
+    test('kaynak metin değiştiyse taşınmaz, yeniden özetlenir', () async {
+      final summarizer = FakeSummarizer('Güncellenmiş Türkçe özet.');
+
+      final pass = await applySummaries(
+        [_item(summary: 'Now with 70B parameters and a new license.')],
+        summarizer: summarizer,
+        previous: [_published()],
+      );
+
+      expect(summarizer.seen, hasLength(1), reason: 'model çağrılmalı');
+      expect(pass.carried, 0);
+      expect(pass.summarized, 1);
+      expect(pass.items.single.summary, 'Güncellenmiş Türkçe özet.');
+    });
+
+    /// Damgasız kayıt, bu alan eklenmeden önceki bir sürümden gelmiş olabilir;
+    /// kaynak metninin değişip değişmediği **bilinemez**, o yüzden taşınmaz.
+    test('damgası olmayan önceki kayıt taşınmaz', () async {
+      final summarizer = FakeSummarizer('Yeni özet.');
+
+      final pass = await applySummaries(
+        [_item()],
+        summarizer: summarizer,
+        previous: [
+          _item(summary: 'Eski Türkçe özet.', origin: SummaryOrigin.teknoakis),
+        ],
+      );
+
+      expect(summarizer.seen, hasLength(1));
+      expect(pass.carried, 0);
+    });
+
+    test('önceki yayın yoksa davranış değişmez', () async {
+      final summarizer = FakeSummarizer('Türkçe özet.');
+
+      final pass = await applySummaries([_item()], summarizer: summarizer);
+
+      expect(summarizer.seen, hasLength(1));
+      expect(pass.carried, 0);
+      expect(pass.summarized, 1);
+    });
+
+    /// Taşıma bir çağrı harcamaz; harcasaydı bütçe yine aynı işe giderdi ve
+    /// düzeltme hiçbir şey kazandırmazdı.
+    test('taşınan kayıt bütçeden düşmez', () async {
+      final summarizer = FakeSummarizer('Yeni kayıt için özet.');
+
+      final pass = await applySummaries(
+        [_item(id: 'a'), _item(id: 'b', title: 'Başka bir model')],
+        summarizer: summarizer,
+        budget: 1,
+        previous: [_published(id: 'a')],
+      );
+
+      expect(pass.carried, 1);
+      expect(pass.summarized, 1, reason: 'bütçe yeni kayda kaldı');
+      expect(summarizer.seen, hasLength(1));
+    });
+
+    /// Kapı kuralları zamanla sıkılaşabilir. Taşımak, yeni kuralı sessizce
+    /// atlamak anlamına gelmemeli.
+    test('taşınan özet kapıdan geçemezse taşınmaz', () async {
+      final summarizer = FakeSummarizer('Kaynağa sadık yeni özet.');
+      // Kaynakta olmayan bir sayı taşıyan "önceki" özet.
+      final poisoned = _published(
+        turkish: 'Model 99 milyar parametreyle geldi.',
+      );
+
+      final pass = await applySummaries(
+        [_item()],
+        summarizer: summarizer,
+        previous: [poisoned],
+      );
+
+      expect(pass.carried, 0, reason: 'kapı reddetmeli');
+      expect(summarizer.seen, hasLength(1), reason: 'yeniden üretilmeli');
+    });
+  });
+
+  /// Sıralı yedekleme — feed adresi failover'ıyla aynı desen.
+  group('FallbackSummarizer', () {
+    test('birincil çökerse ikincil kullanılır', () async {
+      final backup = FakeSummarizer('Yedekten gelen özet.');
+      final chain = FallbackSummarizer([ThrowingSummarizer(), backup]);
+
+      final result = await chain.summarize(title: 't', sourceText: 's');
+
+      expect(result, 'Yedekten gelen özet.');
+      expect(backup.seen, hasLength(1));
+    });
+
+    /// `null` bir hata değil, "bu kayıt için özet yok" demektir. Yedeğe
+    /// taşımak, bilerek özet üretmeyen bir sağlayıcının kararını ezmek olurdu.
+    test('birincil null dönerse ikinciye geçilmez', () async {
+      final backup = FakeSummarizer('Kullanılmamalı.');
+      final chain = FallbackSummarizer([FakeSummarizer(null), backup]);
+
+      expect(await chain.summarize(title: 't', sourceText: 's'), isNull);
+      expect(backup.seen, isEmpty);
+    });
+
+    /// Hepsi çökerse koşu **kırmızıya dönmez**: `applySummaries` hatayı yutar
+    /// ve kayıt orijinal metniyle kalır.
+    test('hepsi çökerse kayıt orijinal kalır', () async {
+      final pass = await applySummaries(
+        [_item()],
+        summarizer: FallbackSummarizer([
+          ThrowingSummarizer(),
+          ThrowingSummarizer(),
+        ]),
+      );
+
+      expect(pass.failed, 1);
+      expect(pass.summarized, 0);
+      expect(pass.items.single.summaryOrigin, SummaryOrigin.original);
+    });
+  });
+
+  /// OpenAI uyumlu yanıt ayrıştırma (NVIDIA NIM bu biçimi kullanıyor).
+  ///
+  /// Canlı çağrı test edilemiyor ama **ayrıştırma** edilebilir — gerçek bir
+  /// hatanın oluşabileceği yer burası.
+  group('parseOpenAiText', () {
+    test('geçerli yanıttan metin çıkarılır', () {
+      const body =
+          '{"choices":[{"message":{"role":"assistant",'
+          '"content":"  Türkçe özet.  "}}]}';
+
+      expect(parseOpenAiText(body), 'Türkçe özet.');
+    });
+
+    test('bozuk gövde null döner', () {
+      expect(parseOpenAiText('bu JSON değil'), isNull);
+      expect(parseOpenAiText('[]'), isNull);
+    });
+
+    test('içerik yoksa veya boşsa null döner', () {
+      expect(parseOpenAiText('{"choices":[]}'), isNull);
+      expect(parseOpenAiText('{"choices":[{"message":{}}]}'), isNull);
+      expect(
+        parseOpenAiText('{"choices":[{"message":{"content":"   "}}]}'),
+        isNull,
+      );
     });
   });
 }

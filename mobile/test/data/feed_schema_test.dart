@@ -199,6 +199,24 @@ void main() {
       expect(FeedItem.fromJson(json).title, sampleItem().title);
     });
 
+    /// Özet taşıma, damganın **yayımlanan dosyada** hayatta kalmasına bağlı:
+    /// bir sonraki koşu onu yayındaki feed'den okuyup "kaynak metin hâlâ aynı
+    /// mı" sorusunu cevaplıyor. Gidiş-dönüşte düşerse taşıma sessizce kapanır
+    /// ve her koşu özetleri yeniden satın alır.
+    test('özet damgası JSON gidiş-dönüşünde korunur', () {
+      final hash = fnv1aHex('Nexus-7B\nAçık ağırlıklı model.');
+      final json = sampleItem().toJson()..['summarySourceHash'] = hash;
+
+      expect(FeedItem.fromJson(json).summarySourceHash, hash);
+    });
+
+    /// Damga yalnız TeknoAkış özetlerinde bulunur; olmayan kayıtta `null`
+    /// kalmalı ve `toJson` anahtarı hiç yazmamalı.
+    test('damgasız kayıt anahtarı hiç yazmaz', () {
+      expect(sampleItem().toJson().containsKey('summarySourceHash'), isFalse);
+      expect(sampleItem().summarySourceHash, isNull);
+    });
+
     test('her şey tanınıyorsa atlanan kayıt sayısı sıfırdır', () {
       final feed = Feed.fromJson(
         feedWith([

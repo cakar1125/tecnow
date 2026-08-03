@@ -121,6 +121,7 @@ final class FeedItem {
     this.mergedUrls = const [],
     this.retractedAt,
     this.correctionNote,
+    this.summarySourceHash,
   });
 
   /// Kanonik URL'den türetilen kararlı kimlik ([feedItemId]).
@@ -155,6 +156,26 @@ final class FeedItem {
   final DateTime? retractedAt;
   final String? correctionNote;
 
+  /// Özetin **üretildiği kaynak metnin** damgası ([fnv1aHex]).
+  ///
+  /// Yalnız [SummaryOrigin.teknoakis] kayıtlarda dolu olur ve **yalnız üretici
+  /// kullanır**; uygulama bu alanı hiç okumaz.
+  ///
+  /// Sebebi: üretici her koşuda feed'i kaynaklardan yeniden kuruyor ve geçen
+  /// koşuda Türkçeleştirilmiş bir kayıt yeniden `original` olarak geliyordu —
+  /// yani aynı özet her koşuda yeniden satın alınıyordu. Özeti taşımak için
+  /// "kaynak metin hâlâ aynı mı" sorusunun cevaplanması gerekiyor, ama
+  /// yayımlanmış kayıtta artık kaynak metin **yok**: yerinde Türkçe özet
+  /// duruyor. Damga o soruyu cevaplayan tek çapa.
+  ///
+  /// Kaynak metin değişmişse taşıma yapılmaz ve kayıt yeniden özetlenir; eski
+  /// özet artık başka bir metni anlatıyor olurdu.
+  ///
+  /// Şema açısından **katkı niteliğinde bir alan**: `schemaVersion`
+  /// artırılmaz ve kurulu uygulamalar tanımadıkları anahtarı yok sayar
+  /// (D-012, `feed_schema_test.dart` → "tanınmayan opsiyonel alan yok sayılır").
+  final String? summarySourceHash;
+
   bool get isRetracted => retractedAt != null;
 
   /// Özet katmanı için: yalnız özetle ilgili üç alan değişir.
@@ -166,6 +187,7 @@ final class FeedItem {
     required String summary,
     required SummaryOrigin summaryOrigin,
     required String language,
+    String? summarySourceHash,
   }) => FeedItem(
     id: id,
     kind: kind,
@@ -183,6 +205,7 @@ final class FeedItem {
     mergedUrls: mergedUrls,
     retractedAt: retractedAt,
     correctionNote: correctionNote,
+    summarySourceHash: summarySourceHash,
   );
 
   Map<String, Object?> toJson() => {
@@ -204,6 +227,9 @@ final class FeedItem {
     if (retractedAt != null)
       'retractedAt': retractedAt!.toUtc().toIso8601String(),
     if (correctionNote != null) 'correctionNote': correctionNote,
+    // Üreticinin kendi defteri: uygulama okumaz, ama bir sonraki koşu bu
+    // damgaya bakıp özeti yeniden satın almak yerine taşır.
+    if (summarySourceHash != null) 'summarySourceHash': summarySourceHash,
   };
 
   static FeedItem fromJson(Map<String, Object?> json) => FeedItem(
@@ -248,6 +274,7 @@ final class FeedItem {
         ? null
         : _requireDate(json, 'retractedAt'),
     correctionNote: json['correctionNote'] as String?,
+    summarySourceHash: json['summarySourceHash'] as String?,
   );
 }
 
@@ -373,10 +400,20 @@ class FeedItemUnsupportedException implements Exception {
 /// 64-bit işaretli olduğu için karışım sonucu negatif olabilir ve
 /// `toRadixString(16)` başa `-` koyar; bu yüzden değer iki 32-bit yarıya
 /// bölünüp maskelenerek yazılır.
-String feedItemId(Uri url) {
-  final canonical = canonicalizeUrl(url).toString();
+String feedItemId(Uri url) => fnv1aHex(canonicalizeUrl(url).toString());
+
+/// FNV-1a 64-bit, **16 haneli küçük harf onaltılık**.
+///
+/// [feedItemId] ile [FeedItem.summarySourceHash] aynı işlevi paylaşıyor;
+/// ikisinin ayrı ayrı yazılması, birinin değişip diğerinin unutulduğu bir
+/// gelecek demekti.
+///
+/// Dart tam sayıları 64-bit **işaretli** olduğu için karışım sonucu negatif
+/// olabilir ve `toRadixString(16)` başa `-` koyar; bu yüzden değer iki 32-bit
+/// yarıya bölünüp maskelenerek yazılır.
+String fnv1aHex(String input) {
   var hash = 0xcbf29ce484222325;
-  for (final unit in canonical.codeUnits) {
+  for (final unit in input.codeUnits) {
     hash ^= unit;
     hash = hash * 0x100000001b3;
   }

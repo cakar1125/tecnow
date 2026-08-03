@@ -231,9 +231,32 @@ tersine çevirmek, kırılmayı ilk kez üretimde görmek olur.
 ### Maliyet
 
 Public depoda GitHub Actions ve Pages ücretsiz. Günde 4 koşu × ~3 dakika
-≈ ayda 6 saat; ücretsiz kotanın çok altında. `ANTHROPIC_API_KEY` sırrı
-eklenirse özet katmanı devreye girer ve **o** ücretlidir; eklenmezse
-özetler kaynağın kendi metniyle kalır.
+≈ ayda 6 saat; ücretsiz kotanın çok altında.
+
+Özet katmanı **iki sır** tanıyor, ikisi de isteğe bağlı. Hiçbiri yoksa
+özetler kaynağın kendi metniyle kalır ve feed yine eksiksiz üretilir.
+
+| Sır | Sağlayıcı | Not |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | Anthropic | Ücretli |
+| `NVIDIA_API_KEY` | NVIDIA NIM | Ücretsiz katman; **40 istek/dakika**, üretici çağrılar arasında 1,5 sn bekler |
+
+İkisi de tanımlıysa sıralı yedekleme kurulur (Anthropic birincil, NVIDIA
+yedek) ve **yalnız fırlatılan hata** zinciri ilerletir. Bu sıra geçicidir;
+hangi sağlayıcının birincil olacağı `summary_guard` ret oranı ölçülerek
+seçilecek. Tek sağlayıcı zorlamak için:
+`dart run tool/feed/generate.dart --summarizer nvidia`.
+Model `NVIDIA_MODEL` ortam değişkeniyle kod değiştirmeden denenebilir.
+
+> **Çağrı sayısı artık koşu başına sabit değil.** İş akışı üreticiye
+> `--previous build/previous.json` veriyor ve kaynak metni değişmemiş
+> kayıtların özeti **taşınıyor** — model yeniden çağrılmıyor. Ölçüldü
+> (2026-08-03, gerçek 200 kayıtlık dosyayla): 1. koşu 120 çağrı / 0 taşıma,
+> 2. koşu 60 çağrı / **120 taşıma** ve kapsam 200/200 Türkçe. Kararlı durumda
+> yalnız **yeni** kayıtlar çağrı üretir.
+>
+> Taşımadan önce her koşu aynı kayıtları yeniden özetliyordu; yayımlanan 200
+> kaydın 180'i bu yüzden İngilizce kalmıştı.
 
 ---
 

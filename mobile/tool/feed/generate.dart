@@ -177,6 +177,8 @@ Future<GenerationReport> generateFeed({
   required DateTime now,
   int limit = 200,
   Summarizer summarizer = const DisabledSummarizer(),
+  int summaryBudget = defaultSummaryBudget,
+  List<FeedItem> previous = const [],
 }) async {
   final outcomes = <SourceOutcome>[];
   final collected = <FeedItem>[];
@@ -237,7 +239,12 @@ Future<GenerationReport> generateFeed({
   // Özetleme **en sona** bırakılır: birleştirme ve limit sonrasında kalan
   // kayıtlar özetlenir. Önce özetlemek, birleştirmede kaybedilecek kopyalar
   // için de model çağrısı yapmak olurdu.
-  final summaries = await applySummaries(trimmed, summarizer: summarizer);
+  final summaries = await applySummaries(
+    trimmed,
+    summarizer: summarizer,
+    budget: summaryBudget,
+    previous: previous,
+  );
 
   return GenerationReport(
     feed: Feed(
@@ -260,35 +267,109 @@ String encodeFeed(Feed feed) =>
 /// Çıkış kodları: 0 tam başarı, 2 kısmi (bazı kaynaklar okunamadı ama feed
 /// yazıldı), 1 çalışma hatası. Barındırma iş akışı 2'yi nasıl yorumlayacağına
 /// kendi karar verir — sessizce başarı saymasın diye ayrıldı.
+/// Özet sağlayıcısını ortamdaki anahtarlardan kurar.
+///
+/// Hiç anahtar yoksa katman tamamen kapalıdır ve feed **yine eksiksiz**
+/// üretilir — anahtar bir kolaylıktır, koşul değil.
+///
+/// İkisi de varsa sıralı yedekleme kurulur: Anthropic birincil, NVIDIA yedek.
+/// Bu sıra **geçicidir ve ölçümle değişecektir**; karşılaştırma için
+/// `--summarizer anthropic|nvidia` ile tek sağlayıcı zorlanabilir.
+Summarizer _buildSummarizer(String provider) {
+  final anthropicKey = Platform.environment['ANTHROPIC_API_KEY'];
+  final nvidiaKey = Platform.environment['NVIDIA_API_KEY'];
+
+  final providers = <Summarizer>[
+    if (provider != 'nvidia' && (anthropicKey?.isNotEmpty ?? false))
+      AnthropicSummarizer(apiKey: anthropicKey!),
+    if (provider != 'anthropic' && (nvidiaKey?.isNotEmpty ?? false))
+      NvidiaSummarizer(
+        apiKey: nvidiaKey!,
+        model:
+            Platform.environment['NVIDIA_MODEL'] ??
+            'meta/llama-3.3-70b-instruct',
+      ),
+  ];
+
+  if (providers.isEmpty) {
+    stdout.writeln(
+      '  özet · anahtar yok (ANTHROPIC_API_KEY / NVIDIA_API_KEY) — '
+      'kayıtlar kaynağın kendi metniyle kalıyor.',
+    );
+    return const DisabledSummarizer();
+  }
+
+  stdout.writeln('  özet · ${providers.length} sağlayıcı hazır.');
+  return providers.length == 1
+      ? providers.single
+      : FallbackSummarizer(providers);
+}
+
+/// Yayımdaki feed'i okur; okunamazsa **boş liste**.
+///
+/// Taşıma bir iyileştirmedir, koşulun kendisi değil. Dosya yoksa (ilk yayım),
+/// indirilememişse ya da bozuksa üretim eksiksiz sürer — yalnız o koşuda
+/// özetler yeniden üretilir. Bu yüzden burada hiçbir hata yukarı taşınmaz.
+List<FeedItem> _readPreviousItems(String path) {
+  final file = File(path);
+  if (!file.existsSync()) {
+    stdout.writeln('  taşıma · $path yok, özetler sıfırdan üretilecek.');
+    return const [];
+  }
+  try {
+    final decoded = jsonDecode(file.readAsStringSync());
+    if (decoded is! Map<String, Object?>) {
+      throw const FormatException('feed bir nesne değil');
+    }
+    return Feed.fromJson(decoded).items;
+  } catch (error) {
+    stdout.writeln('  taşıma · $path okunamadı ($error); taşıma kapalı.');
+    return const [];
+  }
+}
+
 Future<int> run(List<String> args, {FeedFetcher? fetcher}) async {
   String? output = 'assets/feed/feed.json';
+  String? previousPath;
   var limit = 200;
+  var summaryBudget = defaultSummaryBudget;
+  var provider = 'auto';
   var dryRun = false;
 
   for (var i = 0; i < args.length; i++) {
     switch (args[i]) {
       case '--out':
         output = i + 1 < args.length ? args[++i] : null;
+      case '--previous':
+        previousPath = i + 1 < args.length ? args[++i] : null;
       case '--limit':
         limit = int.tryParse(i + 1 < args.length ? args[++i] : '') ?? limit;
+      case '--summary-budget':
+        summaryBudget =
+            int.tryParse(i + 1 < args.length ? args[++i] : '') ?? summaryBudget;
+      case '--summarizer':
+        provider = i + 1 < args.length ? args[++i] : provider;
       case '--dry-run':
         dryRun = true;
       case '--help':
         stdout.writeln(
           'Kullanım: dart run tool/feed/generate.dart '
-          '[--out <yol>] [--limit <n>] [--dry-run]',
+          '[--out <yol>] [--previous <yol>] [--limit <n>] '
+          '[--summary-budget <n>] [--summarizer auto|anthropic|nvidia] '
+          '[--dry-run]',
         );
         return 0;
     }
   }
 
-  // Anahtar yoksa katman tamamen kapalıdır ve feed yine eksiksiz üretilir.
-  final apiKey = Platform.environment['ANTHROPIC_API_KEY'];
-  if (apiKey == null || apiKey.isEmpty) {
-    stdout.writeln(
-      '  ANTHROPIC_API_KEY yok — özetler kaynağın kendi metniyle kalıyor.',
-    );
-  }
+  // Yayımdaki kopya: özetleri taşımak için. Okunamaması **hata değildir** —
+  // ilk yayımda dosya yoktur, sonrasında indirme başarısız olabilir. Her iki
+  // durumda da üretim eksiksiz sürer, yalnız taşıma devre dışı kalır.
+  final previous = previousPath == null
+      ? const <FeedItem>[]
+      : _readPreviousItems(previousPath);
+
+  final summarizer = _buildSummarizer(provider);
 
   final report = await generateFeed(
     fetcher:
@@ -297,9 +378,9 @@ Future<int> run(List<String> args, {FeedFetcher? fetcher}) async {
     sources: defaultSources(),
     now: DateTime.now().toUtc(),
     limit: limit,
-    summarizer: apiKey == null || apiKey.isEmpty
-        ? const DisabledSummarizer()
-        : AnthropicSummarizer(apiKey: apiKey),
+    summaryBudget: summaryBudget,
+    previous: previous,
+    summarizer: summarizer,
   );
 
   for (final outcome in report.outcomes) {
@@ -324,10 +405,12 @@ Future<int> run(List<String> args, {FeedFetcher? fetcher}) async {
   final summaries = report.summaries;
   if (summaries != null &&
       (summaries.summarized > 0 ||
+          summaries.carried > 0 ||
           summaries.rejected.isNotEmpty ||
           summaries.failed > 0)) {
     stdout.writeln(
       '  özet · ${summaries.summarized} Türkçeleştirildi'
+      '${summaries.carried > 0 ? ', ${summaries.carried} taşındı' : ''}'
       '${summaries.failed > 0 ? ', ${summaries.failed} çağrı hatası' : ''}'
       '${summaries.budgetExhausted ? ', bütçe doldu' : ''}',
     );

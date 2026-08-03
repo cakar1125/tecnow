@@ -70,12 +70,19 @@ jobs:
           # Actions'ın kendi token'ı GitHub API kotasını yükseltir; ek bir
           # sır gerekmiyor.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # İsteğe bağlı. Yoksa özetler kaynağın kendi metniyle kalır ve
-          # feed yine eksiksiz üretilir.
+          # İkisi de isteğe bağlı. Hiçbiri yoksa özetler kaynağın kendi
+          # metniyle kalır ve feed yine eksiksiz üretilir.
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
         run: |
           set +e
-          dart run tool/feed/generate.dart --out build/publish/feed.json
+          # `--previous`: yayımdaki kopya bir üstteki adımda zaten indirildi.
+          # Kaynak metni değişmemiş kayıtların özeti **taşınır**, model
+          # yeniden çağrılmaz. Dosya yoksa (ilk yayım) taşıma sessizce kapalı
+          # kalır ve üretim eksiksiz sürer.
+          dart run tool/feed/generate.dart \
+            --out build/publish/feed.json \
+            --previous build/previous.json
           status=$?
           set -e
           # 0 tam başarı · 2 kısmi (bazı kaynaklar okunamadı ama dosya

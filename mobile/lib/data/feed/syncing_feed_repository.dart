@@ -14,9 +14,20 @@ import 'feed_repository.dart';
 import 'feed_schema.dart';
 
 /// Bu süre geçtikten sonra içerik "bayat" sayılır ve açılışta bir tazeleme
-/// denenir. Üretici günde birkaç kez çalıştığı için daha sık denemek yalnız
-/// pil ve veri harcar.
-const feedStaleAfter = Duration(hours: 12);
+/// denenir.
+///
+/// **Yalnız geri düşüş değeridir.** Gerçek aralık artık feed'in kendisinden
+/// okunuyor ([Feed.refreshAfter]); bu sabit yalnız elde okunabilir bir kopya
+/// yokken kullanılıyor.
+///
+/// Değer 2026-08-06'da **12 saatten 15 dakikaya** indirildi. Eski gerekçe
+/// "üretici günde birkaç kez çalışıyor, daha sık denemek pil ve veri harcar"dı
+/// ve ölçümle geçersiz kaldı: kendi barındırmamızda koşullu istek çalışıyor
+/// (`If-None-Match` → `304`, **0 bayt gövde**, ~150 ms). Yani değişmemiş
+/// içeriği kontrol etmenin maliyeti neredeyse yok. Eski değerle bir kullanıcı
+/// yeni bir gelişmeyi 18 saate kadar geç görebiliyordu (6 saat üretim + 12
+/// saat istemci).
+const feedStaleAfter = feedDefaultRefreshAfter;
 
 final class SyncingFeedRepository implements FeedRepository {
   SyncingFeedRepository({
@@ -75,12 +86,29 @@ final class SyncingFeedRepository implements FeedRepository {
   ///
   /// Uzak adres yoksa `false`: tazelenemeyen bir içerik bayat sayılmaz,
   /// yoksa arayüz kullanıcıya çözemeyeceği bir sorun bildirirdi.
+  ///
+  /// Aralık **elde tutulan feed'den** okunur ([Feed.refreshAfter]), sabitten
+  /// değil: tempo sunucudan yönetilebilsin diye. Çağıran açıkça bir süre
+  /// verirse o kazanır — testlerin ve gelecekte "şimdi tazele" gibi
+  /// davranışların ihtiyacı.
   @override
-  Future<bool> isStale({Duration after = feedStaleAfter}) async {
+  Future<bool> isStale({Duration? after}) async {
     if (endpoints.isEmpty) return false;
     final last = await lastSyncAt();
     if (last == null) return true;
-    return _clock().difference(last) >= after;
+    return _clock().difference(last) >= (after ?? await _refreshAfter());
+  }
+
+  /// Yürürlükteki tazeleme aralığı.
+  ///
+  /// Okunamayan bir kopya yüzünden açılış tazelemesi **hiç yapılmamamalı**;
+  /// o yüzden hata varsayılana düşer, yukarı çıkmaz.
+  Future<Duration> _refreshAfter() async {
+    try {
+      return (await load()).refreshAfter;
+    } on Object {
+      return feedStaleAfter;
+    }
   }
 
   /// Adresleri **sırayla** dener; ilk başarılı olan kazanır.

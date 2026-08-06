@@ -287,17 +287,48 @@ final class FeedItem {
   );
 }
 
+/// Sunucu bir tazeleme aralığı bildirmediğinde kullanılan değer.
+///
+/// Bu sabit yalnız **geri düşüş**tür: paketlenmiş dosya, alanı taşımayan eski
+/// bir yayın ya da bozuk bir değer geldiğinde devreye girer.
+const feedDefaultRefreshAfter = Duration(minutes: 15);
+
+/// Sunucudan gelen aralığın kabul edilebilir sınırları.
+///
+/// Alt sınır bizi kendimize karşı korur: yanlışlıkla `1` yazılmış bir değer,
+/// kurulu her uygulamayı dakikada bir ağa çıkarırdı ve bunu geri almanın tek
+/// yolu yeni bir yayın olurdu — ama o yayını çeken istekler zaten sunucuyu
+/// dövüyor olurdu. Üst sınır, unutulmuş büyük bir değerin içeriği süresiz
+/// dondurmasını engeller.
+const feedMinRefreshAfter = Duration(minutes: 5);
+const feedMaxRefreshAfter = Duration(hours: 24);
+
 final class Feed {
   const Feed({
     required this.schemaVersion,
     required this.generatedAt,
     required this.items,
+    this.refreshAfter = feedDefaultRefreshAfter,
     this.unsupportedItemCount = 0,
   });
 
   final int schemaVersion;
   final DateTime generatedAt;
   final List<FeedItem> items;
+
+  /// İçeriğin ne kadar sonra bayat sayılacağı — **sunucudan** gelir.
+  ///
+  /// Derleme zamanı sabiti olarak tutulmadı ve bu bilinçli bir karar:
+  /// `applicationId` ve veritabanı adıyla aynı sınıfta bir **tek yönlü
+  /// kapı**ydı. Mağaza yayınından sonra tempoyu değiştirmek yeni bir sürüm
+  /// gerektirir ve güncellemeyen kullanıcı eski temposunda **kalıcı olarak**
+  /// kalırdı. Sunucudan okununca tempo tek dosya değişikliğiyle ayarlanıyor.
+  ///
+  /// Alan **isteğe bağlıdır ve `schemaVersion` yükseltilmedi.** Yükseltilseydi
+  /// eski sürümler feed'i topluca **reddederdi** (bkz. [fromJson] sürüm
+  /// kontrolü); eklenen alan ise okunmadığında sessizce yok sayılır. Geriye
+  /// dönük uyumluluğun yönü burada ters: yeni yayını eski uygulama okuyacak.
+  final Duration refreshAfter;
 
   /// Bu sürümün tanımadığı için **atlanan** kayıt sayısı.
   ///
@@ -314,6 +345,7 @@ final class Feed {
   Map<String, Object?> toJson() => {
     'schemaVersion': schemaVersion,
     'generatedAt': generatedAt.toUtc().toIso8601String(),
+    'refreshAfterMinutes': refreshAfter.inMinutes,
     'items': items.map((item) => item.toJson()).toList(),
   };
 
@@ -357,8 +389,23 @@ final class Feed {
       schemaVersion: version,
       generatedAt: _requireDate(json, 'generatedAt'),
       items: List.unmodifiable(items),
+      refreshAfter: _readRefreshAfter(json['refreshAfterMinutes']),
       unsupportedItemCount: unsupported,
     );
+  }
+
+  /// Eksik, yanlış türde ya da sınır dışı bir değer **feed'i düşürmez**.
+  ///
+  /// Bu alan içerik değil, bir ayar. Bozuk bir ayar yüzünden 200 kaydı
+  /// göstermemek orantısız olurdu: varsayılana dönülür ve okuma sürer.
+  /// Sınır dışı değer reddedilmek yerine **kırpılır** — sunucu 1 dakika
+  /// derse 5'e, bir hafta derse 24 saate çekilir.
+  static Duration _readRefreshAfter(Object? raw) {
+    if (raw is! int || raw <= 0) return feedDefaultRefreshAfter;
+    final value = Duration(minutes: raw);
+    if (value < feedMinRefreshAfter) return feedMinRefreshAfter;
+    if (value > feedMaxRefreshAfter) return feedMaxRefreshAfter;
+    return value;
   }
 }
 

@@ -56,6 +56,76 @@ void main() {
     });
   });
 
+  group('tazeleme aralığı', () {
+    Feed decode(Object? refreshAfterMinutes) => Feed.fromJson({
+      'schemaVersion': feedSchemaVersion,
+      'generatedAt': '2026-08-06T09:00:00Z',
+      'refreshAfterMinutes': ?refreshAfterMinutes,
+      'items': <Object?>[],
+    });
+
+    test('sunucunun bildirdiği aralık okunur', () {
+      expect(decode(30).refreshAfter, const Duration(minutes: 30));
+    });
+
+    test('gidiş-dönüşte korunur', () {
+      final feed = Feed(
+        schemaVersion: feedSchemaVersion,
+        generatedAt: DateTime.utc(2026, 8, 6),
+        items: const [],
+        refreshAfter: const Duration(minutes: 45),
+      );
+
+      final decoded = Feed.fromJson(
+        jsonDecode(jsonEncode(feed.toJson())) as Map<String, Object?>,
+      );
+
+      expect(decoded.refreshAfter, const Duration(minutes: 45));
+    });
+
+    /// Alan **isteğe bağlı** olmak zorunda: yayına eklendiğinde kurulu her
+    /// uygulama onu tanımıyor olacak ve tanımayan sürüm feed'i okumaya devam
+    /// etmeli.
+    test('alan yoksa varsayılana düşer', () {
+      expect(decode(null).refreshAfter, feedDefaultRefreshAfter);
+    });
+
+    /// Bozuk bir **ayar** yüzünden 200 kayıt gösterilmemesi orantısız olurdu.
+    test('bozuk değer feed’i düşürmez, varsayılana düşer', () {
+      for (final bad in <Object>['30', 0, -5, 12.5, true]) {
+        expect(
+          decode(bad).refreshAfter,
+          feedDefaultRefreshAfter,
+          reason: '$bad için varsayılan bekleniyor',
+        );
+      }
+    });
+
+    /// Sunucudan gelen değer bizi kendimize karşı korumalı: yanlışlıkla
+    /// yazılmış küçük bir sayı kurulu her uygulamayı ağa boğardı.
+    test('alt sınırın altındaki değer kırpılır', () {
+      expect(decode(1).refreshAfter, feedMinRefreshAfter);
+    });
+
+    test('üst sınırın üstündeki değer kırpılır', () {
+      expect(decode(60 * 24 * 7).refreshAfter, feedMaxRefreshAfter);
+    });
+
+    /// Alanın eklenmesi sürüm yükseltmesi **değildir**. Yükseltilseydi eski
+    /// sürümler feed'i topluca reddederdi.
+    test('alan şema sürümünü yükseltmedi', () {
+      expect(feedSchemaVersion, 1);
+      final json = Feed(
+        schemaVersion: feedSchemaVersion,
+        generatedAt: DateTime.utc(2026, 8, 6),
+        items: const [],
+        refreshAfter: const Duration(minutes: 20),
+      ).toJson();
+      expect(json['schemaVersion'], 1);
+      expect(json['refreshAfterMinutes'], 20);
+    });
+  });
+
   group('şema sürümü', () {
     test('gelecekteki bir sürüm reddedilir', () {
       expect(

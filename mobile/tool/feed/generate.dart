@@ -22,6 +22,22 @@ import 'merge.dart';
 import 'sources.dart';
 import 'summarize.dart';
 
+/// Yayına yazılan tazeleme aralığı — uygulamaların bu dosyaya ne sıklıkta
+/// bakacağı.
+///
+/// Buradan yönetiliyor çünkü uygulamada derleme zamanı sabiti olarak
+/// tutulduğunda mağaza yayınından sonra değiştirilemiyordu: güncellemeyen
+/// kullanıcı eski temposunda kalıcı olarak kalırdı.
+///
+/// Üretim temposuyla (`publish-feed.yml`, saatte bir) eşleştirilmedi ve bu
+/// kasıtlı: iş akışı gecikebiliyor (GitHub zamanlanmış işleri yoğunlukta 5–20
+/// dakika erteliyor), o yüzden istemci daha sık bakıyor. Değişmemiş içerikte
+/// isteğin bedeli **0 bayt gövde** (`If-None-Match` → `304`), yani sık bakmak
+/// bedava; geç görmek değil.
+///
+/// Sınırlar okuma tarafında: [feedMinRefreshAfter] / [feedMaxRefreshAfter].
+const feedPublishedRefreshAfter = Duration(minutes: 15);
+
 /// Bir kaynağın o koşudaki sonucu.
 final class SourceOutcome {
   const SourceOutcome({
@@ -86,6 +102,25 @@ List<FeedItem> _newest(List<FeedItem> items, int count) {
   return _byNewest(items).sublist(0, count);
 }
 
+/// AÇIK SORUN — geleceğe tarihli kayıt sıralamanın tepesini işgal ediyor.
+///
+/// Ölçüldü 2026-08-06, yayındaki gerçek feed'de: VS Code 1.133 Insiders kaydı
+/// `publishedAt: 2026-08-11` taşıyor, yani o günden **beş gün sonrası**.
+/// Kaynak yayın tarihini ileri yazmış; biz olduğu gibi taşıyoruz ve kayıt,
+/// gerçek zaman ona yetişene kadar listenin birinci sırasında kalıyor.
+///
+/// **Denenen ve reddedilen çözüm:** sıralama anahtarını `now`'a kırpmak.
+/// İşe yaramadı ve ölçüm bunu gösterdi (2026-08-06, üretici gerçek veriyle
+/// koşturuldu): `now` koşu anıdır, yani **her gerçek kaydın tarihinden
+/// yenidir**. Kırpılmış kayıt yine hepsini geçiyor, üstelik `now` her koşuda
+/// ilerlediği için süresiz. Kırpma bu vakada tam bir no-op.
+///
+/// **Doğru çözüm, durum gerektiriyor:** kaydı **ilk gördüğümüz** an
+/// saklanmalı ve sıralama `min(publishedAt, firstSeenAt)` ile yapılmalı. O
+/// zaman kayıt ilk koşuda tepede başlar, ertesi gün yayınlanan gerçek kayıtlar
+/// onu geçer. Bunun için `FeedItem`'a taşınan ve `previous`'tan devralınan bir
+/// alan gerekiyor — `applySummaries`'in özetleri devrettiği mekanizmanın
+/// aynısı. Ayrı bir iş olarak duruyor.
 List<FeedItem> _byNewest(Iterable<FeedItem> items) => [...items]
   ..sort((a, b) {
     final byDate = b.publishedAt.compareTo(a.publishedAt);
@@ -179,6 +214,7 @@ Future<GenerationReport> generateFeed({
   Summarizer summarizer = const DisabledSummarizer(),
   int summaryBudget = defaultSummaryBudget,
   List<FeedItem> previous = const [],
+  Duration refreshAfter = feedPublishedRefreshAfter,
 }) async {
   final outcomes = <SourceOutcome>[];
   final collected = <FeedItem>[];
@@ -251,6 +287,7 @@ Future<GenerationReport> generateFeed({
       schemaVersion: feedSchemaVersion,
       generatedAt: now,
       items: summaries.items,
+      refreshAfter: refreshAfter,
     ),
     outcomes: outcomes,
     summaries: summaries,

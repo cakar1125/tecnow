@@ -7,13 +7,25 @@ name: Feed yayımla
 # Kurulum ve kararların gerekçesi: docs/FEED_HOSTING_RUNBOOK.md
 
 on:
-  # Altı saatte bir. Uygulama içeriği 12 saatte bir bayat sayıyor
-  # (`feedStaleAfter`), yani bu tempo her kullanıcıya taze dosya bırakır.
+  # Saatte bir. Önceki tempo altı saatteydi ve gerekçesi "istemci zaten 12
+  # saatte bir bakıyor"du; 2026-08-06'da ölçüm o gerekçeyi geçersiz kıldı.
+  # Kendi barındırmamızda koşullu istek çalışıyor (`If-None-Match` → `304`,
+  # **0 bayt**), yani sık bakmanın maliyeti yok. Darboğaz istemci değil
+  # üretim tarafıydı: kullanıcı ne kadar sık bakarsa baksın, altı saatte bir
+  # üretilen bir dosyadan daha tazesini göremiyordu.
+  #
+  # Neden 17. dakika: GitHub zamanlanmış işleri saat başlarında yoğunlukta
+  # geciktiriyor. Ofsetli dakika bu kuyruğun dışında kalıyor.
+  #
+  # Daha sık denendi ve **reddedildi**: 15 dakikada bir, 18 kaynağa günde
+  # ~1.700 istek demek — günde birkaç kez değişen içerik için üçüncü
+  # tarafların sunucularına gereksiz yük, ve koşu ~6 dakika sürdüğü için
+  # koşular birbirine binerdi.
   #
   # UYARI: GitHub, 60 gün hiç hareket görmeyen depolarda zamanlanmış
   # iş akışlarını **otomatik kapatır**. Runbook'ta yazılı.
   schedule:
-    - cron: '17 2,8,14,20 * * *'
+    - cron: '17 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -36,10 +48,20 @@ jobs:
     defaults:
       run:
         working-directory: mobile
+    # Hazır adımlar **tam commit SHA'sına** sabitlenir, etikete değil.
+    #
+    # Etiket taşınabilir bir işaretçidir: `@v4`, deponun sahibi (ya da onu ele
+    # geçiren biri) tarafından başka bir commit'e çevrilebilir. Bu adımlar
+    # bizim iş akışımızda, bizim secret'larımıza erişebilecek bağlamda
+    # çalışıyor — `ANTHROPIC_API_KEY` eklendiği gün bu bir tedarik zinciri
+    # riski olur. SHA taşınamaz.
+    #
+    # Yükseltirken: yeni sürümün SHA'sını `gh api repos/<depo>/commits/<etiket>`
+    # ile alın ve yorumdaki sürüm etiketini de güncelleyin.
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
           # Sabitlenmiş: üretici çıktısı belirlenimci olmalı ve SDK
           # yükseltmesi kimsenin fark etmediği bir gün gelmemeli.
@@ -132,12 +154,17 @@ jobs:
             echo "::notice::FEED_DOMAIN tanımsız; github.io adresi kullanılıyor."
           fi
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         if: steps.guard.outputs.publish == 'true'
         with:
           path: mobile/build/publish
 
       - id: deploy
         if: steps.guard.outputs.publish == 'true'
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
 # Actions kaydı 2026-08-06'da web arayüzünden tetiklendi.
+#
+# Not: yeni depoya ilk push'tan sonra GitHub bu iş akışını Actions listesine
+# hiç almadı ("This workflow does not exist"), dosya geçerli olmasına rağmen.
+# Web arayüzünden atılan bir commit kaydı tetikledi. Aynı belirti tekrarlarsa
+# çözüm budur.

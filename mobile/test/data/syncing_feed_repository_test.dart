@@ -20,16 +20,23 @@ final _mirror = Uri.https('ayna.github.io', '/depo/feed.json');
 /// beklenerek ölçülemez.
 final _now = DateTime.utc(2026, 7, 27, 12);
 
-String _payload({required DateTime generatedAt, String title = 'Uzak kayıt'}) =>
-    jsonEncode(
-      testFeed([
-        testFeedItem(
-          id: '00000000000000aa',
-          kind: FeedItemKind.repository,
-          title: title,
-        ),
-      ], generatedAt: generatedAt).toJson(),
-    );
+String _payload({
+  required DateTime generatedAt,
+  String title = 'Uzak kayıt',
+  Duration refreshAfter = feedDefaultRefreshAfter,
+}) => jsonEncode(
+  testFeed(
+    [
+      testFeedItem(
+        id: '00000000000000aa',
+        kind: FeedItemKind.repository,
+        title: title,
+      ),
+    ],
+    generatedAt: generatedAt,
+    refreshAfter: refreshAfter,
+  ).toJson(),
+);
 
 /// Bellek içi önbellek. Gerçek sqflite davranışı `feed_cache_test.dart`
 /// içinde ayrıca ölçülüyor; burada ölçülen **karar mantığı**.
@@ -489,7 +496,11 @@ void main() {
       final cache = _MemoryCache()
         ..entry = _cached(
           generatedAt: DateTime.utc(2026, 7, 27),
-          fetchedAt: _now.subtract(const Duration(hours: 11, minutes: 59)),
+          // Pencerenin **hemen içi**, sabite göre ifade edilir. Daha önce
+          // burada `11 saat 59 dakika` yazıyordu ve 12 saatlik pencereye
+          // sabitlenmişti: pencere 2026-08-06'da 15 dakikaya indirilince test
+          // düştü, çünkü niyetini değil o günkü sayıyı söylüyordu.
+          fetchedAt: _now.subtract(feedStaleAfter - const Duration(minutes: 1)),
         );
 
       expect(await _repository(cache: cache).isStale(), isFalse);
@@ -500,6 +511,45 @@ void main() {
         ..entry = _cached(
           generatedAt: DateTime.utc(2026, 7, 27),
           fetchedAt: _now.subtract(feedStaleAfter),
+        );
+
+      expect(await _repository(cache: cache).isStale(), isTrue);
+    });
+
+    /// Tempo **sunucudan** yönetilebilmeli: `feedStaleAfter` derleme zamanı
+    /// sabiti olarak kalsaydı, mağaza yayınından sonra aralığı değiştirmek yeni
+    /// bir sürüm gerektirir ve güncellemeyen kullanıcı eski temposunda kalıcı
+    /// olarak kalırdı.
+    test('aralık sabitten değil feed’den okunur', () async {
+      const serverInterval = Duration(hours: 1);
+      // Sabite göre çoktan bayat (15 dk), sunucunun dediğine göre değil.
+      final cache = _MemoryCache()
+        ..entry = _cached(
+          generatedAt: DateTime.utc(2026, 7, 27),
+          fetchedAt: _now.subtract(const Duration(minutes: 30)),
+          payload: _payload(
+            generatedAt: DateTime.utc(2026, 7, 27),
+            refreshAfter: serverInterval,
+          ),
+        );
+
+      expect(
+        await _repository(cache: cache).isStale(),
+        isFalse,
+        reason: 'sunucu bir saat dedi; 30 dakika henüz bayat değil',
+      );
+    });
+
+    test('sunucunun bildirdiği aralık dolunca bayat olur', () async {
+      const serverInterval = Duration(hours: 1);
+      final cache = _MemoryCache()
+        ..entry = _cached(
+          generatedAt: DateTime.utc(2026, 7, 27),
+          fetchedAt: _now.subtract(const Duration(hours: 1, minutes: 1)),
+          payload: _payload(
+            generatedAt: DateTime.utc(2026, 7, 27),
+            refreshAfter: serverInterval,
+          ),
         );
 
       expect(await _repository(cache: cache).isStale(), isTrue);

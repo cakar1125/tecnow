@@ -277,10 +277,15 @@ final class FakeFeedRepository implements FeedRepository {
   Future<bool> isStale() async => stale;
 }
 
-Feed testFeed(List<FeedItem> items, {DateTime? generatedAt}) => Feed(
+Feed testFeed(
+  List<FeedItem> items, {
+  DateTime? generatedAt,
+  Duration refreshAfter = feedDefaultRefreshAfter,
+}) => Feed(
   schemaVersion: feedSchemaVersion,
   generatedAt: generatedAt ?? DateTime.utc(2026, 7, 27),
   items: items,
+  refreshAfter: refreshAfter,
 );
 
 /// Ekran testlerinin belirlenimci feed'i.

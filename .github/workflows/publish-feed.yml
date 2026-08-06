@@ -140,3 +140,4 @@ jobs:
       - id: deploy
         if: steps.guard.outputs.publish == 'true'
         uses: actions/deploy-pages@v4
+# Actions kaydı 2026-08-06'da web arayüzünden tetiklendi.

@@ -87,7 +87,7 @@ class SettingsScreen extends ConsumerWidget {
     color: AppColors.background,
     child: Column(
       children: [
-        const AppTopBar(title: 'Tecnow'),
+        const AppTopBar(title: 'TecNow'),
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(
@@ -217,7 +217,7 @@ class SettingsScreen extends ConsumerWidget {
                       onTap: () => showLicensePage(
                         context: context,
                         useRootNavigator: true,
-                        applicationName: 'Tecnow',
+                        applicationName: 'TecNow',
                         applicationVersion: appVersionLabel,
                       ),
                     ),

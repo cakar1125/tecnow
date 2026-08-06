@@ -49,7 +49,7 @@ class FeedItemDetail extends StatelessWidget {
           children: [
             AppBadge(label: categoryLabel, color: accent, icon: categoryIcon),
             if (item.summaryOrigin != SummaryOrigin.original)
-              const AppBadge(label: 'TECNOW ÖZETİ', color: AppColors.aiAccent),
+              const AppBadge(label: 'TecNow ÖZETİ', color: AppColors.aiAccent),
             if (!item.language.toLowerCase().startsWith('tr'))
               AppBadge(
                 label: item.language.toUpperCase(),

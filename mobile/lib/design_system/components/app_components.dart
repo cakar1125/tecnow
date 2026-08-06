@@ -34,7 +34,7 @@ class AppScaffold extends StatelessWidget {
 }
 
 class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
-  const AppTopBar({this.title = 'Tecnow', this.actions, super.key});
+  const AppTopBar({this.title = 'TecNow', this.actions, super.key});
 
   final String title;
   final List<Widget>? actions;
@@ -882,11 +882,20 @@ class FeedItemCard extends StatelessWidget {
                           label: 'ÖRNEK',
                           color: AppColors.textSecondary,
                         ),
-                      // Politika: Tecnow özeti kaynağın kendi metninden
+                      // Politika: TecNow özeti kaynağın kendi metninden
                       // görsel olarak ayrılır.
+                      //
+                      // Marka **tümü büyük harf yazılmaz.** Ad "Tec Now"
+                      // (teknoloji + şimdi) okunacak şekilde kuruldu ve bu
+                      // ayrım yalnız deve sırtı yazımda görünüyor: `TECNOW`
+                      // yazıldığında okuma "TECNO + W"ye düşüyor. TECNO,
+                      // Transsion'ın markası ve Türkiye'de **sınıf 42**'de
+                      // (yazılım hizmetleri) tescilli — bkz. DECISION_LOG
+                      // D-018. Rozetin geri kalanı diğer rozetlerle aynı
+                      // biçimde büyük harf.
                       if (item.summaryAuthor == SummaryAuthor.generated)
                         const AppBadge(
-                          label: 'TECNOW ÖZETİ',
+                          label: 'TecNow ÖZETİ',
                           color: AppColors.aiAccent,
                         ),
                       if (languageBadge(item) case final code?)
@@ -1052,7 +1061,7 @@ class ExploreResultCard extends StatelessWidget {
             if (item.isSample)
               const AppBadge(label: 'ÖRNEK', color: AppColors.textSecondary),
             if (item.summaryAuthor == SummaryAuthor.generated)
-              const AppBadge(label: 'TECNOW ÖZETİ', color: AppColors.aiAccent),
+              const AppBadge(label: 'TecNow ÖZETİ', color: AppColors.aiAccent),
             if (languageBadge(item) case final code?)
               AppBadge(label: code, color: AppColors.textSecondary),
           ],

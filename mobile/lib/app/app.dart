@@ -20,7 +20,7 @@ class TecnowApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Tecnow',
+      title: 'TecNow',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.dark,
       locale: _turkish,

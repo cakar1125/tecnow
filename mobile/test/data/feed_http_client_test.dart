@@ -124,7 +124,7 @@ void main() {
       expect(response.statusCode, 200);
       expect(response.body, '{"ok": true}');
       expect(response.isOk, isTrue);
-      expect(seenUserAgents.single, 'Tecnow');
+      expect(seenUserAgents.single, 'TecNow');
     });
 
     /// Hata kodu istisna değil: çağıran taraf bunu "içerik değişmedi" olarak

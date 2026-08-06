@@ -66,11 +66,15 @@ void main() {
       expect(find.text('ÖRNEK'), findsNothing);
     });
 
-    /// Politika: Tecnow özeti kaynağın kendi metninden görsel olarak
+    /// Politika: TecNow özeti kaynağın kendi metninden görsel olarak
     /// ayrılır.
-    testWidgets('Tecnow özeti ayrıca işaretlenir', (tester) async {
+    testWidgets('TecNow özeti ayrıca işaretlenir', (tester) async {
       await _pumpFeed(tester);
-      expect(find.text('TECNOW ÖZETİ'), findsOneWidget);
+      // Yazım **kasıtlı**: marka deve sırtı, açıklama büyük harf. Tümü büyük
+      // harf (`TECNOW`) yazıldığında ad "TECNO + W" okunuyor ve TECNO,
+      // Transsion'ın Türkiye'de sınıf 42'de tescilli markası. Bu beklenti
+      // yazımı kilitliyor — bkz. DECISION_LOG D-018.
+      expect(find.text('TecNow ÖZETİ'), findsOneWidget);
     });
 
     /// Anahtarsız üretilen feed'de özetler kaynağın kendi dilinde kalıyor;

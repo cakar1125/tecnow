@@ -80,7 +80,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               ),
               const SizedBox(height: AppSpacing.xl),
               Text(
-                'TECNOW',
+                'TecNow',
                 style: AppTypography.display.copyWith(color: AppColors.primary),
               ),
               const SizedBox(height: AppSpacing.sm),

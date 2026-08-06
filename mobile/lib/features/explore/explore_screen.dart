@@ -60,7 +60,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
     return CustomScrollView(
       key: const Key('explore-scroll'),
       slivers: [
-        const SliverToBoxAdapter(child: AppTopBar(title: 'Tecnow')),
+        const SliverToBoxAdapter(child: AppTopBar(title: 'TecNow')),
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(

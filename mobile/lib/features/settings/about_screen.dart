@@ -37,7 +37,7 @@ class AboutScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Tecnow', style: AppTypography.display),
+            Text('TecNow', style: AppTypography.display),
             const SizedBox(height: AppSpacing.sm),
             Text(
               'Teknoloji dünyasında olan biteni tek akışta izlemek için bir '

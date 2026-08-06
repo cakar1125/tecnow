@@ -59,12 +59,13 @@ void main() {
       expect(find.textContaining('Popülerlik: 10'), findsOneWidget);
     });
 
-    /// Politika: Tecnow özeti kaynağın kendi metninden görsel olarak
+    /// Politika: TecNow özeti kaynağın kendi metninden görsel olarak
     /// ayrılır — kartta olduğu gibi detayda da.
-    testWidgets('Tecnow özeti detayda da işaretlenir', (tester) async {
+    testWidgets('TecNow özeti detayda da işaretlenir', (tester) async {
       await _pump(tester, const FeedDetailScreen(id: '0000000000000002'));
 
-      expect(find.text('TECNOW ÖZETİ'), findsOneWidget);
+      // Yazım kilitli: marka deve sırtı. Bkz. DECISION_LOG D-018.
+      expect(find.text('TecNow ÖZETİ'), findsOneWidget);
     });
   });
 

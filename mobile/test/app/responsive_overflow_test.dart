@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
-import 'package:teknoakis/app/router.dart';
-import 'package:teknoakis/design_system/theme/app_theme.dart';
+import 'package:tecnow/app/router.dart';
+import 'package:tecnow/design_system/theme/app_theme.dart';
 
 import '../support/test_overrides.dart';
 

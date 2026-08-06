@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:teknoakis/data/feed/feed_schema.dart';
-import 'package:teknoakis/ui/content_card_model.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
+import 'package:tecnow/ui/content_card_model.dart';
 
 FeedItem _item({
   SummaryOrigin origin = SummaryOrigin.original,
@@ -61,23 +61,23 @@ void main() {
       );
     });
 
-    test('TeknoAkış özeti ayrı işaretlenir', () {
+    test('Tecnow özeti ayrı işaretlenir', () {
       expect(
         ContentCardModel.fromFeedItem(
-          _item(origin: SummaryOrigin.teknoakis),
+          _item(origin: SummaryOrigin.generated),
         ).summaryAuthor,
-        SummaryAuthor.teknoakis,
+        SummaryAuthor.generated,
       );
     });
 
-    /// Elle yazılan özet de TeknoAkış'ın metnidir; kaynağın kendi
+    /// Elle yazılan özet de Tecnow'un metnidir; kaynağın kendi
     /// açıklamasıyla aynı kefeye konmaz.
     test('elle yazılan özet kaynak sayılmaz', () {
       expect(
         ContentCardModel.fromFeedItem(
           _item(origin: SummaryOrigin.manual),
         ).summaryAuthor,
-        SummaryAuthor.teknoakis,
+        SummaryAuthor.generated,
       );
     });
 
@@ -92,7 +92,7 @@ void main() {
           author,
           origin == SummaryOrigin.original
               ? SummaryAuthor.source
-              : SummaryAuthor.teknoakis,
+              : SummaryAuthor.generated,
           reason: '$origin',
         );
       }

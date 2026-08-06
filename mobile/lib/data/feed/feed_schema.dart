@@ -1,4 +1,4 @@
-/// TeknoAkış içerik feed'inin sözleşmesi.
+/// Tecnow içerik feed'inin sözleşmesi.
 ///
 /// Bu dosya **hem üretici hem uygulama** tarafından kullanılır: üretici
 /// (`tool/feed/`) buradaki tiplerle JSON yazar, uygulama aynı tiplerle okur.
@@ -7,7 +7,7 @@
 ///
 /// Alanlar `docs/CONTENT_TRUST_POLICY.md` maddelerinden türetilmiştir:
 /// her içerikte orijinal URL, kaynak türü, yayın tarihi ve son kontrol zamanı
-/// tutulur; TeknoAkış özeti orijinal kaynaktan görsel olarak ayrılır
+/// tutulur; Tecnow özeti orijinal kaynaktan görsel olarak ayrılır
 /// ([FeedItem.summaryOrigin]); kopyalar tek kayıt altında birleştirilir
 /// ([FeedItem.mergedUrls]); yanlış içerik geri çekme kaydıyla yönetilir
 /// ([FeedItem.retractedAt]).
@@ -40,14 +40,23 @@ enum FeedSourceKind {
   other,
 }
 
-/// Özetin nereden geldiği. Politika, TeknoAkış özetinin orijinal kaynaktan
-/// **görsel olarak ayrılmasını** şart koşar; arayüz bu alana bakarak ayırır.
+/// Özetin nereden geldiği. Politika, bizim ürettiğimiz özetin orijinal
+/// kaynaktan **görsel olarak ayrılmasını** şart koşar; arayüz bu alana bakarak
+/// ayırır.
+///
+/// **Değer adları markadan bağımsız tutulur.** Bu adlar JSON'a `value.name` ile
+/// olduğu gibi yazılıyor, yani tel biçiminin parçası. Yayından sonra bir değeri
+/// yeniden adlandırmak, kurulu uygulamalarda o kaydın **sessizce düşmesi**
+/// demek (bilinmeyen `summaryOrigin` → `FeedItemUnsupportedException`). Ürün
+/// adı değişebilir, tel biçimi değişmemeli: 2026-08-06'da `teknoakis` değeri
+/// tam bu yüzden `generated` ile değiştirildi — yayından **önce**, bedava
+/// olduğu son anda.
 enum SummaryOrigin {
   /// Kaynağın kendi açıklaması, olduğu gibi.
   original,
 
-  /// Derleme anında üretilmiş TeknoAkış özeti (doğrulama kapısından geçmiş).
-  teknoakis,
+  /// Derleme anında bizim ürettiğimiz özet (doğrulama kapısından geçmiş).
+  generated,
 
   /// Elle yazılmış özet.
   manual,
@@ -158,7 +167,7 @@ final class FeedItem {
 
   /// Özetin **üretildiği kaynak metnin** damgası ([fnv1aHex]).
   ///
-  /// Yalnız [SummaryOrigin.teknoakis] kayıtlarda dolu olur ve **yalnız üretici
+  /// Yalnız [SummaryOrigin.generated] kayıtlarda dolu olur ve **yalnız üretici
   /// kullanır**; uygulama bu alanı hiç okumaz.
   ///
   /// Sebebi: üretici her koşuda feed'i kaynaklardan yeniden kuruyor ve geçen
@@ -239,7 +248,7 @@ final class FeedItem {
     title: _requireString(json, 'title'),
     summary: _requireString(json, 'summary'),
     // Dürüstlük kuralı: özetin kaynağı bilinmiyorsa kayıt **gösterilmez**.
-    // Tanınmayan bir değeri `original`a düşürmek, TeknoAkış özetini kaynağın
+    // Tanınmayan bir değeri `original`a düşürmek, Tecnow özetini kaynağın
     // kendi metniymiş gibi sunmak olurdu; politika bunu yasaklıyor.
     summaryOrigin: _requireKnownEnum(
       json,

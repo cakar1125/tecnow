@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:teknoakis/data/feed/feed_schema.dart';
-import 'package:teknoakis/data/feed/syncing_feed_repository.dart';
-import 'package:teknoakis/data/providers.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
+import 'package:tecnow/data/feed/syncing_feed_repository.dart';
+import 'package:tecnow/data/providers.dart';
 
 import '../support/test_overrides.dart';
 

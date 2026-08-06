@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:teknoakis/design_system/components/app_components.dart';
-import 'package:teknoakis/legacy/notifications_screen.dart';
+import 'package:tecnow/design_system/components/app_components.dart';
+import 'package:tecnow/legacy/notifications_screen.dart';
 
 import '../test_harness.dart';
 

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:teknoakis/data/feed/feed_schema.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
 
 FeedItem sampleItem({
   String url = 'https://github.com/ornek/depo',
@@ -165,7 +165,7 @@ void main() {
     });
 
     /// Dürüstlük kuralı ödün vermiyor: özetin kaynağı bilinmiyorsa kayıt
-    /// gösterilmez. `original`a düşürmek, TeknoAkış özetini kaynağın kendi
+    /// gösterilmez. `original`a düşürmek, Tecnow özetini kaynağın kendi
     /// metniymiş gibi sunmak olurdu.
     test('bilinmeyen özet kökeni atlanır', () {
       final feed = Feed.fromJson(
@@ -210,7 +210,7 @@ void main() {
       expect(FeedItem.fromJson(json).summarySourceHash, hash);
     });
 
-    /// Damga yalnız TeknoAkış özetlerinde bulunur; olmayan kayıtta `null`
+    /// Damga yalnız Tecnow özetlerinde bulunur; olmayan kayıtta `null`
     /// kalmalı ve `toJson` anahtarı hiç yazmamalı.
     test('damgasız kayıt anahtarı hiç yazmaz', () {
       expect(sampleItem().toJson().containsKey('summarySourceHash'), isFalse);
@@ -361,7 +361,7 @@ void main() {
   });
 
   group('özet kaynağı', () {
-    /// "TeknoAkış özeti, orijinal kaynaktan görsel olarak ayrılır." Arayüzün
+    /// "Tecnow özeti, orijinal kaynaktan görsel olarak ayrılır." Arayüzün
     /// ayırabilmesi için alan gidiş-dönüşte korunmalı.
     test('özet kaynağı gidiş-dönüşte korunur', () {
       for (final origin in SummaryOrigin.values) {

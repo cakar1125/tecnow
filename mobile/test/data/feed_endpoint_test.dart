@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:teknoakis/data/feed/feed_endpoint.dart';
+import 'package:tecnow/data/feed/feed_endpoint.dart';
 
 void main() {
   group('parseFeedEndpoint', () {

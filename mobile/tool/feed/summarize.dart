@@ -1,4 +1,4 @@
-/// Türkçe TeknoAkış özeti — **derleme zamanı**.
+/// Türkçe Tecnow özeti — **derleme zamanı**.
 ///
 /// Uygulama AI'a hiç dokunmaz: anahtar burada, üreticinin ortam değişkeninde
 /// durur ve mobil pakete girmez. Üretilen özet feed'e **metin olarak** iner.
@@ -15,7 +15,7 @@ library;
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:teknoakis/data/feed/feed_schema.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
 
 import 'summary_guard.dart';
 
@@ -110,12 +110,12 @@ final class SummaryPass {
 
 /// Özet katmanını uygular.
 ///
-/// Yalnız [SummaryOrigin.original] taşıyan kayıtlar adaydır: TeknoAkış'ın
+/// Yalnız [SummaryOrigin.original] taşıyan kayıtlar adaydır: Tecnow'un
 /// kendi kurduğu cümleler (Hugging Face yapısal özeti) zaten Türkçedir ve
 /// yeniden özetlenmez.
 ///
 /// [previous] verilirse **taşıma** devreye girer: bir kaydın kimliği önceki
-/// yayında varsa ve o kayıt aynı kaynak metinden üretilmiş bir TeknoAkış özeti
+/// yayında varsa ve o kayıt aynı kaynak metinden üretilmiş bir Tecnow özeti
 /// taşıyorsa, özet olduğu gibi alınır ve **model çağrılmaz**.
 ///
 /// Bu bir hız iyileştirmesi değil, bir kusurun düzeltilmesi: üretici feed'i her
@@ -136,12 +136,12 @@ Future<SummaryPass> applySummaries(
   var failed = 0;
   var calls = 0;
 
-  // Yalnız taşınabilir olanlar: TeknoAkış özeti **ve** damgası olanlar.
+  // Yalnız taşınabilir olanlar: Tecnow özeti **ve** damgası olanlar.
   // Damgasız bir kayıt eski bir sürümden gelmiş olabilir; kaynak metninin
   // değişip değişmediği bilinemeyeceği için taşınmaz.
   final carryable = {
     for (final item in previous)
-      if (item.summaryOrigin == SummaryOrigin.teknoakis &&
+      if (item.summaryOrigin == SummaryOrigin.generated &&
           item.summarySourceHash != null)
         item.id: item,
   };
@@ -170,7 +170,7 @@ Future<SummaryPass> applySummaries(
         result.add(
           item.withSummary(
             summary: earlier.summary,
-            summaryOrigin: SummaryOrigin.teknoakis,
+            summaryOrigin: SummaryOrigin.generated,
             language: earlier.language,
             summarySourceHash: sourceHash,
           ),
@@ -219,7 +219,7 @@ Future<SummaryPass> applySummaries(
     result.add(
       item.withSummary(
         summary: generated.trim(),
-        summaryOrigin: SummaryOrigin.teknoakis,
+        summaryOrigin: SummaryOrigin.generated,
         language: 'tr',
         // Bir sonraki koşu bu damgaya bakıp özeti yeniden satın almayacak.
         summarySourceHash: sourceHash,

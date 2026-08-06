@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:teknoakis/data/feed/feed_cache.dart';
-import 'package:teknoakis/data/feed/feed_http_client.dart';
-import 'package:teknoakis/data/feed/feed_repository.dart';
-import 'package:teknoakis/data/feed/feed_schema.dart';
-import 'package:teknoakis/data/feed/syncing_feed_repository.dart';
+import 'package:tecnow/data/feed/feed_cache.dart';
+import 'package:tecnow/data/feed/feed_http_client.dart';
+import 'package:tecnow/data/feed/feed_repository.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
+import 'package:tecnow/data/feed/syncing_feed_repository.dart';
 
 import '../support/test_overrides.dart';
 

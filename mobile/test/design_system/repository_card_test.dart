@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:teknoakis/design_system/components/app_components.dart';
-import 'package:teknoakis/fixtures/fixtures.dart';
+import 'package:tecnow/design_system/components/app_components.dart';
+import 'package:tecnow/fixtures/fixtures.dart';
 
 import '../test_harness.dart';
 

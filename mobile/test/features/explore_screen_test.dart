@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:teknoakis/data/feed/feed_schema.dart';
-import 'package:teknoakis/design_system/components/app_components.dart';
-import 'package:teknoakis/features/explore/explore_screen.dart';
-import 'package:teknoakis/ui/explore_search.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
+import 'package:tecnow/design_system/components/app_components.dart';
+import 'package:tecnow/features/explore/explore_screen.dart';
+import 'package:tecnow/ui/explore_search.dart';
 
 import '../support/test_overrides.dart';
 

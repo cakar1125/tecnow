@@ -34,7 +34,7 @@ class AppScaffold extends StatelessWidget {
 }
 
 class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
-  const AppTopBar({this.title = 'TeknoAkış', this.actions, super.key});
+  const AppTopBar({this.title = 'Tecnow', this.actions, super.key});
 
   final String title;
   final List<Widget>? actions;
@@ -882,11 +882,11 @@ class FeedItemCard extends StatelessWidget {
                           label: 'ÖRNEK',
                           color: AppColors.textSecondary,
                         ),
-                      // Politika: TeknoAkış özeti kaynağın kendi metninden
+                      // Politika: Tecnow özeti kaynağın kendi metninden
                       // görsel olarak ayrılır.
-                      if (item.summaryAuthor == SummaryAuthor.teknoakis)
+                      if (item.summaryAuthor == SummaryAuthor.generated)
                         const AppBadge(
-                          label: 'TEKNOAKIŞ ÖZETİ',
+                          label: 'TECNOW ÖZETİ',
                           color: AppColors.aiAccent,
                         ),
                       if (languageBadge(item) case final code?)
@@ -1051,11 +1051,8 @@ class ExploreResultCard extends StatelessWidget {
             // "ÖRNEK" yazmak yalan olurdu.
             if (item.isSample)
               const AppBadge(label: 'ÖRNEK', color: AppColors.textSecondary),
-            if (item.summaryAuthor == SummaryAuthor.teknoakis)
-              const AppBadge(
-                label: 'TEKNOAKIŞ ÖZETİ',
-                color: AppColors.aiAccent,
-              ),
+            if (item.summaryAuthor == SummaryAuthor.generated)
+              const AppBadge(label: 'TECNOW ÖZETİ', color: AppColors.aiAccent),
             if (languageBadge(item) case final code?)
               AppBadge(label: code, color: AppColors.textSecondary),
           ],

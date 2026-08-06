@@ -96,7 +96,7 @@ Uri? resolveRedirect(Uri from, String? location) {
 
 final class IoFeedHttpClient implements FeedHttpClient {
   IoFeedHttpClient({
-    this.userAgent = 'TeknoAkis',
+    this.userAgent = 'Tecnow',
     this.timeout = const Duration(seconds: 20),
     this.maxBytes = defaultMaxBytes,
   });

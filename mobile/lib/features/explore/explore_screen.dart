@@ -60,7 +60,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
     return CustomScrollView(
       key: const Key('explore-scroll'),
       slivers: [
-        const SliverToBoxAdapter(child: AppTopBar(title: 'TeknoAkış')),
+        const SliverToBoxAdapter(child: AppTopBar(title: 'Tecnow')),
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(
@@ -177,7 +177,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
       const SizedBox(height: AppSpacing.xxl),
       const _SectionHeader(title: 'Başlangıç İçin'),
       const SizedBox(height: AppSpacing.md),
-      // Bu bölüm TeknoAkış'ın kendi yazacağı başlangıç rehberleri için
+      // Bu bölüm Tecnow'un kendi yazacağı başlangıç rehberleri için
       // ayrıldı. Feed'de rehber diye bir kayıt türü yok; buraya kayıt
       // koymak, okuma süresi dahil her alanını uydurmak olurdu. Bölüm
       // kaldırılmadı çünkü boşluğun **sebebini** söylemek, boşluğu
@@ -186,7 +186,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
         key: Key('explore-starter-placeholder'),
         title: 'Rehberler henüz hazır değil',
         message:
-            'Başlangıç rehberleri TeknoAkış tarafından yazılacak. Hazır '
+            'Başlangıç rehberleri Tecnow tarafından yazılacak. Hazır '
             'olmadan örnek metin gösterilmiyor.',
       ),
       const SizedBox(height: AppSpacing.xxl),

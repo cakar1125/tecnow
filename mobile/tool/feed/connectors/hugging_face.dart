@@ -8,7 +8,7 @@
 /// vermiyor; açıklama ancak model kartı ayrıca çekilirse gelir. Bu yüzden
 /// açıklama geldiğinde ([SummaryOrigin.original]) olduğu gibi kullanılır;
 /// gelmediğinde yanıttaki **yapısal veriden** Türkçe bir satır kurulur ve
-/// [SummaryOrigin.teknoakis] ile işaretlenir; arayüz bunu kaynağın kendi
+/// [SummaryOrigin.generated] ile işaretlenir; arayüz bunu kaynağın kendi
 /// metninden görsel olarak ayırır. Uydurma yapılmaz: cümledeki her öğe
 /// (sahip, görev, lisans) yanıtta vardır, yoksa cümleden çıkarılır.
 ///
@@ -16,7 +16,7 @@
 /// sahibi gerçekten yazmamıştır — o kayıt elenir.
 library;
 
-import 'package:teknoakis/data/feed/feed_schema.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
 
 import '../source_allowlist.dart';
 import 'connector_support.dart';
@@ -113,7 +113,7 @@ ConnectorResult parseHuggingFaceModels(
         title: modelId,
         summary: truncateSummary(summary),
         summaryOrigin: description == null
-            ? SummaryOrigin.teknoakis
+            ? SummaryOrigin.generated
             : SummaryOrigin.original,
         sourceName: 'Hugging Face',
         sourceKind: FeedSourceKind.huggingFace,

@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:teknoakis/data/local/app_database.dart';
-import 'package:teknoakis/data/local/schema.dart';
-import 'package:teknoakis/data/repositories/interests_repository.dart';
-import 'package:teknoakis/data/repositories/local_data_repository.dart';
-import 'package:teknoakis/data/repositories/read_history_repository.dart';
-import 'package:teknoakis/data/repositories/saved_items_repository.dart';
+import 'package:tecnow/data/local/app_database.dart';
+import 'package:tecnow/data/local/schema.dart';
+import 'package:tecnow/data/repositories/interests_repository.dart';
+import 'package:tecnow/data/repositories/local_data_repository.dart';
+import 'package:tecnow/data/repositories/read_history_repository.dart';
+import 'package:tecnow/data/repositories/saved_items_repository.dart';
 
 void main() {
   sqfliteFfiInit();
@@ -45,7 +45,7 @@ void main() {
         id: 'item-1',
         kind: 'article',
         title: 'Yerel veri',
-        sourceLabel: 'TeknoAkış',
+        sourceLabel: 'Tecnow',
         summary: 'SQLite temeli',
         savedAt: savedAt,
       ),
@@ -56,7 +56,7 @@ void main() {
     expect(items.single.id, 'item-1');
     expect(items.single.kind, 'article');
     expect(items.single.title, 'Yerel veri');
-    expect(items.single.sourceLabel, 'TeknoAkış');
+    expect(items.single.sourceLabel, 'Tecnow');
     expect(items.single.summary, 'SQLite temeli');
     expect(items.single.savedAt, savedAt);
 

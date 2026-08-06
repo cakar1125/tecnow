@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:teknoakis/data/feed/feed_schema.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
 
 import '../../../tool/feed/connectors/connector_support.dart';
 import '../../../tool/feed/connectors/hugging_face.dart';
@@ -42,7 +42,7 @@ void main() {
 
   group('özet kaynağı', () {
     /// Liste uç noktası açıklama alanı **döndürmez**. Uydurmak yerine
-    /// yanıttaki yapısal veriden Türkçe bir satır kurulur ve TeknoAkış özeti
+    /// yanıttaki yapısal veriden Türkçe bir satır kurulur ve Tecnow özeti
     /// olarak işaretlenir; arayüz bunu kaynağın kendi metninden ayırır.
     test('açıklama gelmediğinde yapısal veriden cümle kurulur', () {
       final item = _byTitle('meta-llama/Llama-4-8B-Instruct');
@@ -51,7 +51,7 @@ void main() {
         'Hugging Face üzerinde meta-llama tarafından yayımlanan model. '
         'Görev: text-generation. Lisans: llama4.',
       );
-      expect(item.summaryOrigin, SummaryOrigin.teknoakis);
+      expect(item.summaryOrigin, SummaryOrigin.generated);
       expect(item.language, 'tr', reason: 'kurulan cümle Türkçe');
     });
 

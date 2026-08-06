@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:teknoakis/data/interests_migration.dart';
-import 'package:teknoakis/data/local/app_database.dart';
-import 'package:teknoakis/data/repositories/interests_repository.dart';
+import 'package:tecnow/data/interests_migration.dart';
+import 'package:tecnow/data/local/app_database.dart';
+import 'package:tecnow/data/repositories/interests_repository.dart';
 
 /// Faz 1'de ilgi alanları `shared_preferences`'ta bir string listesiydi.
 /// Bu testler, mevcut kullanıcıların seçimlerinin taşımada kaybolmadığını

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/providers.dart';
 import 'app.dart';
 
-export 'app.dart' show TeknoakisApp;
+export 'app.dart' show TecnowApp;
 
 /// Uygulamayı, yerel veri tohumlaması bir kez tamamlandıktan sonra başlatır.
 ///
@@ -20,7 +20,7 @@ Future<void> bootstrap({
   runApp(
     UncontrolledProviderScope(
       container: container,
-      child: builder?.call(container) ?? const TeknoakisApp(),
+      child: builder?.call(container) ?? const TecnowApp(),
     ),
   );
 }
@@ -53,7 +53,7 @@ Future<void> _step(String description, Future<void> Function() run) async {
       FlutterErrorDetails(
         exception: error,
         stack: stackTrace,
-        library: 'teknoakis',
+        library: 'tecnow',
         context: ErrorDescription('$description sırasında'),
       ),
     );

@@ -43,7 +43,7 @@ void main() {
       ]) {
         expect(
           fetcher.headersFor(url)[HttpHeaders.userAgentHeader],
-          'TeknoAkis-feed-generator',
+          'Tecnow-feed-generator',
         );
       }
     });
@@ -103,7 +103,7 @@ void main() {
       expect(response.statusCode, 200);
       expect(response.body, '{"ok": true}');
       expect(response.isOk, isTrue);
-      expect(seenUserAgents.single, 'TeknoAkis-feed-generator');
+      expect(seenUserAgents.single, 'Tecnow-feed-generator');
     });
 
     test('hata kodu istisna değil, sonuç olarak döner', () async {

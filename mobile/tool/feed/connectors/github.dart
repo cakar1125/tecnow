@@ -8,7 +8,7 @@
 /// * `/repos/{owner}/{repo}/releases` → [parseGitHubReleases]
 library;
 
-import 'package:teknoakis/data/feed/feed_schema.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
 
 import '../source_allowlist.dart';
 import 'connector_support.dart';

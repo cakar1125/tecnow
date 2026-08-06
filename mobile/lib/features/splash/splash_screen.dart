@@ -60,7 +60,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     body: SafeArea(
       child: Center(
         child: Semantics(
-          label: 'TeknoAkış açılış ekranı',
+          label: 'Tecnow açılış ekranı',
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -80,7 +80,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               ),
               const SizedBox(height: AppSpacing.xl),
               Text(
-                'TEKNOAKIŞ',
+                'TECNOW',
                 style: AppTypography.display.copyWith(color: AppColors.primary),
               ),
               const SizedBox(height: AppSpacing.sm),

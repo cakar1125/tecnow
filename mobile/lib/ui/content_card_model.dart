@@ -7,7 +7,7 @@
 /// * [isSample] — `CLAUDE.md`: *"Kurgusal/tasarım verisi gerçek veya
 ///   doğrulanmış gibi sunulmaz."* Fixture kartları görünür biçimde
 ///   işaretlenir; gerçek içerik işaretlenmez, çünkü o işaret orada yalan olur.
-/// * [summaryAuthor] — `CONTENT_TRUST_POLICY.md`: *"TeknoAkış özeti orijinal
+/// * [summaryAuthor] — `CONTENT_TRUST_POLICY.md`: *"Tecnow özeti orijinal
 ///   kaynaktan görsel olarak ayrılır."* Kaynağın kendi metni ile bizim
 ///   yazdığımız özet karıştırılmaz.
 ///
@@ -22,8 +22,8 @@ enum SummaryAuthor {
   /// Kaynağın kendi açıklaması, olduğu gibi.
   source,
 
-  /// TeknoAkış'ın derleme anında ürettiği özet.
-  teknoakis,
+  /// Derleme anında bizim ürettiğimiz özet.
+  generated,
 }
 
 final class ContentCardModel {
@@ -80,7 +80,7 @@ final class ContentCardModel {
 
   /// Feed kaydından kart modeli.
   ///
-  /// [SummaryOrigin.manual] da TeknoAkış'ın yazdığı metindir; kaynağın kendi
+  /// [SummaryOrigin.manual] da Tecnow'un yazdığı metindir; kaynağın kendi
   /// açıklamasıyla aynı kefeye konmaz.
   factory ContentCardModel.fromFeedItem(FeedItem item) => ContentCardModel(
     id: item.id,
@@ -90,7 +90,7 @@ final class ContentCardModel {
     summary: item.summary,
     summaryAuthor: item.summaryOrigin == SummaryOrigin.original
         ? SummaryAuthor.source
-        : SummaryAuthor.teknoakis,
+        : SummaryAuthor.generated,
     language: item.language,
     tags: item.topics,
   );

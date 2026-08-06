@@ -12,7 +12,7 @@
 /// bir arka kapı olurdu.
 library;
 
-import 'package:teknoakis/data/feed/feed_schema.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
 import 'package:xml/xml.dart';
 
 import '../source_allowlist.dart';

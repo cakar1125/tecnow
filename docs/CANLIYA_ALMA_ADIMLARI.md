@@ -4,7 +4,8 @@ Bu belge tek oturumda takip edilmek için yazıldı. Her adımın sonunda
 **"nasıl anlarım"** satırı var; orası tutmuyorsa sonraki adıma geçme.
 
 `<KULLANICI>` = GitHub kullanıcı adın · `<ALANADI>` = aldığın alan adı
-(örnek: `teknoakis.com`)
+(karar: **`tecnow.app`** — `tecnow.com` 1999'dan beri başkasında,
+bkz. `ALAN_ADI_KARARI.md`)
 
 ## Claude'un hazırladıkları (bitti)
 
@@ -31,7 +32,7 @@ almanı öneririm** — DNS zaten orada olur ve 5. adımı tamamen atlarsın.
 ## 2 · GitHub deposunu aç
 
 1. <https://github.com/new>
-2. **Repository name:** `teknoakis`
+2. **Repository name:** `tecnow`
 3. **Public** seç — Pages ücretsiz hesapta yalnız public depolarda çalışır
 4. "Add a README" / `.gitignore` / lisans **işaretleme** — içerik zaten var
 5. **Create repository**
@@ -45,7 +46,7 @@ Git Bash'te (tek tek yapıştır):
 
 ```bash
 cd "C:/YEDEKK/OLD_DESTOP/stitch_techpulse_social (14)"
-git remote add origin https://github.com/<KULLANICI>/teknoakis.git
+git remote add origin https://github.com/<KULLANICI>/tecnow.git
 git push -u origin master
 ```
 
@@ -83,7 +84,7 @@ Koşu 3–5 dakika sürer (Flutter kurulumu + tüm kaynaklardan derleme).
 **Nasıl anlarım:** koşunun yanında yeşil tik. Sonra tarayıcıda aç:
 
 ```
-https://<KULLANICI>.github.io/teknoakis/feed.json
+https://<KULLANICI>.github.io/tecnow/feed.json
 ```
 
 JSON görünmeli. Görünmüyorsa Pages henüz yayına almamıştır, birkaç dakika
@@ -178,25 +179,25 @@ Sonra Actions → Feed yayımla → **Run workflow** (tekrar).
 Yedek adres, alan adının kaybına karşı. Ayna **ayrı bir depo** olmalı ve
 **özel alan adı verilmemeli.**
 
-1. <https://github.com/new> → `teknoakis-ayna` → **Public** → Create
+1. <https://github.com/new> → `tecnow-ayna` → **Public** → Create
 2. Git Bash:
 
 ```bash
 cd "C:/YEDEKK/OLD_DESTOP/stitch_techpulse_social (14)"
-git remote add ayna https://github.com/<KULLANICI>/teknoakis-ayna.git
+git remote add ayna https://github.com/<KULLANICI>/tecnow-ayna.git
 git push ayna master
 ```
 
 3. Ayna depo → Settings → Pages → Source: **GitHub Actions**
 4. Ayna depo → Settings → Variables → `FEED_URL` =
-   `https://<KULLANICI>.github.io/teknoakis-ayna/feed.json`
+   `https://<KULLANICI>.github.io/tecnow-ayna/feed.json`
    **`FEED_DOMAIN` ekleme** — aynada CNAME yazılmamalı
 5. Ayna depo → Actions → **Run workflow**
 
 **Nasıl anlarım:**
 
 ```
-https://<KULLANICI>.github.io/teknoakis-ayna/feed.json
+https://<KULLANICI>.github.io/tecnow-ayna/feed.json
 ```
 
 JSON dönüyor.
@@ -204,7 +205,7 @@ JSON dönüyor.
 ## 12 · Yedeğin gerçekten bağımsız olduğunu ölç
 
 ```bash
-curl -I https://<KULLANICI>.github.io/teknoakis/feed.json
+curl -I https://<KULLANICI>.github.io/tecnow/feed.json
 ```
 
 **`301` bekleniyor** — birincil deponun `github.io` adresi özel alan adına

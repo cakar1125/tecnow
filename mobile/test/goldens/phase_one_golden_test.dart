@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
-import 'package:teknoakis/design_system/theme/app_theme.dart';
-import 'package:teknoakis/features/detail/feed_detail_screen.dart';
-import 'package:teknoakis/features/feed/feed_screen.dart';
+import 'package:tecnow/design_system/theme/app_theme.dart';
+import 'package:tecnow/features/detail/feed_detail_screen.dart';
+import 'package:tecnow/features/feed/feed_screen.dart';
 
 import '../support/test_overrides.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:teknoakis/data/feed/feed_schema.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
 
 import '../../../tool/feed/connectors/connector_support.dart';
 import '../../../tool/feed/connectors/syndication.dart';

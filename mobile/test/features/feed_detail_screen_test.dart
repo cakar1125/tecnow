@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:teknoakis/data/feed/feed_schema.dart';
-import 'package:teknoakis/features/detail/feed_detail_screen.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
+import 'package:tecnow/features/detail/feed_detail_screen.dart';
 
 import '../support/test_overrides.dart';
 
@@ -59,12 +59,12 @@ void main() {
       expect(find.textContaining('Popülerlik: 10'), findsOneWidget);
     });
 
-    /// Politika: TeknoAkış özeti kaynağın kendi metninden görsel olarak
+    /// Politika: Tecnow özeti kaynağın kendi metninden görsel olarak
     /// ayrılır — kartta olduğu gibi detayda da.
-    testWidgets('TeknoAkış özeti detayda da işaretlenir', (tester) async {
+    testWidgets('Tecnow özeti detayda da işaretlenir', (tester) async {
       await _pump(tester, const FeedDetailScreen(id: '0000000000000002'));
 
-      expect(find.text('TEKNOAKIŞ ÖZETİ'), findsOneWidget);
+      expect(find.text('TECNOW ÖZETİ'), findsOneWidget);
     });
   });
 

@@ -124,7 +124,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'TEKNOAKIŞ',
+                        'TECNOW',
                         style: AppTypography.display.copyWith(
                           color: AppColors.primary,
                         ),

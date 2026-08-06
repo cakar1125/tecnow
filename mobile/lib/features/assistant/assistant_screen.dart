@@ -71,7 +71,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
   @override
   Widget build(BuildContext context) => Column(
     children: [
-      const AppTopBar(title: 'TeknoAkış'),
+      const AppTopBar(title: 'Tecnow'),
       Expanded(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(

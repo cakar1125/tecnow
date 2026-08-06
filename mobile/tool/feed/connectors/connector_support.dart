@@ -8,7 +8,7 @@ library;
 
 import 'dart:convert';
 
-import 'package:teknoakis/data/feed/feed_schema.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
 
 /// Bir kaydın neden feed'e alınmadığı.
 ///

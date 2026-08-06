@@ -9,8 +9,8 @@ library;
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:teknoakis/data/feed/feed_schema.dart';
-import 'package:teknoakis/data/interests/interest_taxonomy.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
+import 'package:tecnow/data/interests/interest_taxonomy.dart';
 
 Future<void> main(List<String> args) async {
   final path = args.isEmpty ? 'assets/feed/feed.json' : args.first;

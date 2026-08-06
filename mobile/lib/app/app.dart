@@ -4,8 +4,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import '../design_system/theme/app_theme.dart';
 import 'router.dart';
 
-class TeknoakisApp extends StatelessWidget {
-  const TeknoakisApp({super.key});
+class TecnowApp extends StatelessWidget {
+  const TecnowApp({super.key});
 
   /// Uygulamanın dili. Arayüzün tamamı Türkçe yazıldı ama Flutter'ın **kendi**
   /// hazır ekranları (lisans sayfası, metin seçim menüsü, tarih seçici)
@@ -20,7 +20,7 @@ class TeknoakisApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'TeknoAkış',
+      title: 'Tecnow',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.dark,
       locale: _turkish,

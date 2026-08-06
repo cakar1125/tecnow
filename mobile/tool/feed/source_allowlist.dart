@@ -8,7 +8,7 @@
 /// görünür — üreticinin bir yerinde sessizce genişleyemez.
 library;
 
-import 'package:teknoakis/data/feed/feed_schema.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
 
 /// Bir gelişmenin **sahibi** olan hostlar.
 ///

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:teknoakis/data/feed/feed_schema.dart';
-import 'package:teknoakis/data/repositories/saved_items_repository.dart';
-import 'package:teknoakis/features/saved/saved_screen.dart';
-import 'package:teknoakis/fixtures/fixtures.dart';
-import 'package:teknoakis/ui/saved_filter.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
+import 'package:tecnow/data/repositories/saved_items_repository.dart';
+import 'package:tecnow/features/saved/saved_screen.dart';
+import 'package:tecnow/fixtures/fixtures.dart';
+import 'package:tecnow/ui/saved_filter.dart';
 
 import '../support/test_overrides.dart';
 

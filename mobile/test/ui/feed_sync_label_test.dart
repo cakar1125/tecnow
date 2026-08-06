@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:teknoakis/data/feed/feed_sync_state.dart';
-import 'package:teknoakis/ui/feed_sync_label.dart';
+import 'package:tecnow/data/feed/feed_sync_state.dart';
+import 'package:tecnow/ui/feed_sync_label.dart';
 
 final _now = DateTime.utc(2026, 7, 27, 12);
 

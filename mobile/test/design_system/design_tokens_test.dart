@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:teknoakis/design_system/tokens/app_tokens.dart';
+import 'package:tecnow/design_system/tokens/app_tokens.dart';
 
 void main() {
   test('design token values match the approved master system', () {

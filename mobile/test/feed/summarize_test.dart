@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:teknoakis/data/feed/feed_schema.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
 
 import '../../tool/feed/summarize.dart';
 import '../../tool/feed/summary_guard.dart';
@@ -49,7 +49,7 @@ FeedItem _published({
   id: id,
   title: title,
   summary: turkish,
-  origin: SummaryOrigin.teknoakis,
+  origin: SummaryOrigin.generated,
   language: 'tr',
   summarySourceHash: fnv1aHex(
     sourceTextOf(_item(id: id, title: title, summary: sourceSummary)),
@@ -101,7 +101,7 @@ void main() {
   });
 
   group('kabul edilen özet', () {
-    test('TeknoAkış özeti olarak işaretlenir ve dili Türkçe olur', () async {
+    test('Tecnow özeti olarak işaretlenir ve dili Türkçe olur', () async {
       final pass = await applySummaries(
         [_item()],
         summarizer: FakeSummarizer('7B parametreli yeni açık ağırlıklı model.'),
@@ -109,7 +109,7 @@ void main() {
 
       final item = pass.items.single;
       expect(item.summary, '7B parametreli yeni açık ağırlıklı model.');
-      expect(item.summaryOrigin, SummaryOrigin.teknoakis);
+      expect(item.summaryOrigin, SummaryOrigin.generated);
       expect(item.language, 'tr');
       expect(pass.summarized, 1);
     });
@@ -200,12 +200,12 @@ void main() {
       expect(pass.failed, 0);
     });
 
-    /// TeknoAkış'ın kendi kurduğu cümle zaten Türkçedir.
-    test('TeknoAkış özeti yeniden özetlenmez', () async {
+    /// Tecnow'un kendi kurduğu cümle zaten Türkçedir.
+    test('Tecnow özeti yeniden özetlenmez', () async {
       final summarizer = FakeSummarizer('yeni özet');
       final pass = await applySummaries([
         _item(
-          origin: SummaryOrigin.teknoakis,
+          origin: SummaryOrigin.generated,
           summary: 'Hugging Face üzerinde yayımlanan model.',
           language: 'tr',
         ),
@@ -261,7 +261,7 @@ void main() {
         pass.items.single.summary,
         'Yeni bir açık ağırlıklı model yayımlandı.',
       );
-      expect(pass.items.single.summaryOrigin, SummaryOrigin.teknoakis);
+      expect(pass.items.single.summaryOrigin, SummaryOrigin.generated);
       expect(pass.items.single.language, 'tr');
     });
 
@@ -291,7 +291,7 @@ void main() {
         [_item()],
         summarizer: summarizer,
         previous: [
-          _item(summary: 'Eski Türkçe özet.', origin: SummaryOrigin.teknoakis),
+          _item(summary: 'Eski Türkçe özet.', origin: SummaryOrigin.generated),
         ],
       );
 

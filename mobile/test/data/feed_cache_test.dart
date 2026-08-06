@@ -3,9 +3,9 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:teknoakis/data/feed/feed_cache.dart';
-import 'package:teknoakis/data/local/app_database.dart';
-import 'package:teknoakis/data/local/schema.dart';
+import 'package:tecnow/data/feed/feed_cache.dart';
+import 'package:tecnow/data/local/app_database.dart';
+import 'package:tecnow/data/local/schema.dart';
 
 void main() {
   sqfliteFfiInit();

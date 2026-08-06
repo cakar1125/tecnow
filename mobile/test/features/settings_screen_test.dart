@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:teknoakis/app/app_version.dart';
-import 'package:teknoakis/app/router.dart';
-import 'package:teknoakis/data/app_preferences.dart';
-import 'package:teknoakis/design_system/theme/app_theme.dart';
-import 'package:teknoakis/design_system/tokens/app_tokens.dart';
+import 'package:tecnow/app/app_version.dart';
+import 'package:tecnow/app/router.dart';
+import 'package:tecnow/data/app_preferences.dart';
+import 'package:tecnow/design_system/theme/app_theme.dart';
+import 'package:tecnow/design_system/tokens/app_tokens.dart';
 
 import '../support/test_overrides.dart';
 
@@ -147,9 +147,9 @@ void main() {
   testWidgets('the about row opens a real screen', (tester) async {
     await pumpSettingsScreen(tester);
 
-    await tester.ensureVisible(find.text('TeknoAkış Hakkında'));
+    await tester.ensureVisible(find.text('Tecnow Hakkında'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('TeknoAkış Hakkında'));
+    await tester.tap(find.text('Tecnow Hakkında'));
     await tester.pumpAndSettle();
 
     expect(find.text('Hesap yok'), findsOneWidget);

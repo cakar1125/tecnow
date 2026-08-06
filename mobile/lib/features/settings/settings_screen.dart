@@ -87,7 +87,7 @@ class SettingsScreen extends ConsumerWidget {
     color: AppColors.background,
     child: Column(
       children: [
-        const AppTopBar(title: 'TeknoAkış'),
+        const AppTopBar(title: 'Tecnow'),
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(
@@ -181,7 +181,7 @@ class SettingsScreen extends ConsumerWidget {
                       description:
                           'Proje Asistanı yanıt üretirken gerekli mesaj '
                           'içeriği seçilen AI hizmetine gönderilebilir. '
-                          'TeknoAkış hesap veya sosyal profil oluşturmaz.',
+                          'Tecnow hesap veya sosyal profil oluşturmaz.',
                     ),
                   ],
                 ),
@@ -191,7 +191,7 @@ class SettingsScreen extends ConsumerWidget {
                   children: [
                     _SettingsRow(
                       icon: Icons.info_outline_rounded,
-                      title: 'TeknoAkış Hakkında',
+                      title: 'Tecnow Hakkında',
                       onTap: () => context.push(aboutRoute),
                     ),
                     _SettingsRow(
@@ -217,7 +217,7 @@ class SettingsScreen extends ConsumerWidget {
                       onTap: () => showLicensePage(
                         context: context,
                         useRootNavigator: true,
-                        applicationName: 'TeknoAkış',
+                        applicationName: 'Tecnow',
                         applicationVersion: appVersionLabel,
                       ),
                     ),

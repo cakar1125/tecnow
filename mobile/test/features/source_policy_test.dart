@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:teknoakis/app/router.dart';
-import 'package:teknoakis/data/feed/feed_schema.dart';
-import 'package:teknoakis/design_system/theme/app_theme.dart';
-import 'package:teknoakis/features/settings/source_policy_screen.dart';
+import 'package:tecnow/app/router.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
+import 'package:tecnow/design_system/theme/app_theme.dart';
+import 'package:tecnow/features/settings/source_policy_screen.dart';
 
 import '../support/test_overrides.dart';
 

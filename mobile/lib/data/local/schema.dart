@@ -2,7 +2,17 @@ import 'package:sqflite/sqflite.dart';
 
 abstract final class LocalSchema {
   static const version = 4;
-  static const databaseName = 'teknoakis.db';
+
+  /// Veritabanı dosyasının adı.
+  ///
+  /// **Bu ad tek yönlü bir kapıdır ve markadan bağımsız tutulur.** sqflite
+  /// dosyayı adıyla açar: adı değiştirmek yeni ve **boş** bir veritabanı açmak,
+  /// yani kurulu her cihazda kaydedilenlerin, ilgi alanlarının ve okuma
+  /// geçmişinin bir güncellemede sessizce yok olması demektir — göç yolu yok,
+  /// hata da yok. `teknoakis.db` adı 2026-08-06'da, yayından **önce** bedava
+  /// olduğu son anda markasızlaştırıldı; bundan sonra ürün adı ne olursa olsun
+  /// bu satır değişmemeli.
+  static const databaseName = 'app.db';
 
   /// Okuma geçmişinde tutulacak en fazla kayıt.
   ///

@@ -14,7 +14,7 @@ library;
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:teknoakis/data/feed/feed_schema.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
 
 import 'connectors/connector_support.dart';
 import 'fetch.dart';

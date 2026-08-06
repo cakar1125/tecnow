@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:teknoakis/data/feed/feed_repository.dart';
-import 'package:teknoakis/data/feed/feed_schema.dart';
+import 'package:tecnow/data/feed/feed_repository.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
 import 'package:yaml/yaml.dart' show loadYaml;
 
 String _feedJson({

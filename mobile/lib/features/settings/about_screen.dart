@@ -1,4 +1,4 @@
-/// "TeknoAkış Hakkında".
+/// "Tecnow Hakkında".
 ///
 /// Ayarlar'daki satır önceden yalnız "Bu ekran sonraki fazda uygulanacak."
 /// diyen bir SnackBar açıyordu; satırın sağında ise gidilecek bir ekran
@@ -25,7 +25,7 @@ class AboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: const AppBackTopBar(title: 'TeknoAkış Hakkında'),
+    appBar: const AppBackTopBar(title: 'Tecnow Hakkında'),
     body: SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(
@@ -37,7 +37,7 @@ class AboutScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('TeknoAkış', style: AppTypography.display),
+            Text('Tecnow', style: AppTypography.display),
             const SizedBox(height: AppSpacing.sm),
             Text(
               'Teknoloji dünyasında olan biteni tek akışta izlemek için bir '

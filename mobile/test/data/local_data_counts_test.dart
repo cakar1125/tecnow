@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:teknoakis/data/feed/feed_schema.dart';
-import 'package:teknoakis/data/local/schema.dart';
-import 'package:teknoakis/data/providers.dart';
-import 'package:teknoakis/data/repositories/read_history_repository.dart';
-import 'package:teknoakis/data/repositories/saved_items_repository.dart';
+import 'package:tecnow/data/feed/feed_schema.dart';
+import 'package:tecnow/data/local/schema.dart';
+import 'package:tecnow/data/providers.dart';
+import 'package:tecnow/data/repositories/read_history_repository.dart';
+import 'package:tecnow/data/repositories/saved_items_repository.dart';
 
 import '../support/test_overrides.dart';
 

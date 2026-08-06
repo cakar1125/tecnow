@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:teknoakis/data/local/app_database.dart';
-import 'package:teknoakis/data/repositories/saved_items_repository.dart';
-import 'package:teknoakis/data/saved_items_sample_cleanup.dart';
-import 'package:teknoakis/fixtures/fixtures.dart';
+import 'package:tecnow/data/local/app_database.dart';
+import 'package:tecnow/data/repositories/saved_items_repository.dart';
+import 'package:tecnow/data/saved_items_sample_cleanup.dart';
+import 'package:tecnow/fixtures/fixtures.dart';
 
 /// Kalıcılığın **gerçek** kanıtı: bellek içi sahte depo değil, sqflite.
 ///

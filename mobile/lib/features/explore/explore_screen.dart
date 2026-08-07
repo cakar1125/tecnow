@@ -177,7 +177,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
       const SizedBox(height: AppSpacing.xxl),
       const _SectionHeader(title: 'Başlangıç İçin'),
       const SizedBox(height: AppSpacing.md),
-      // Bu bölüm Tecnow'un kendi yazacağı başlangıç rehberleri için
+      // Bu bölüm TecNow'un kendi yazacağı başlangıç rehberleri için
       // ayrıldı. Feed'de rehber diye bir kayıt türü yok; buraya kayıt
       // koymak, okuma süresi dahil her alanını uydurmak olurdu. Bölüm
       // kaldırılmadı çünkü boşluğun **sebebini** söylemek, boşluğu
@@ -186,7 +186,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
         key: Key('explore-starter-placeholder'),
         title: 'Rehberler henüz hazır değil',
         message:
-            'Başlangıç rehberleri Tecnow tarafından yazılacak. Hazır '
+            'Başlangıç rehberleri TecNow tarafından yazılacak. Hazır '
             'olmadan örnek metin gösterilmiyor.',
       ),
       const SizedBox(height: AppSpacing.xxl),

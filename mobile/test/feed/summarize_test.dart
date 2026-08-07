@@ -101,7 +101,7 @@ void main() {
   });
 
   group('kabul edilen özet', () {
-    test('Tecnow özeti olarak işaretlenir ve dili Türkçe olur', () async {
+    test('TecNow özeti olarak işaretlenir ve dili Türkçe olur', () async {
       final pass = await applySummaries(
         [_item()],
         summarizer: FakeSummarizer('7B parametreli yeni açık ağırlıklı model.'),
@@ -200,8 +200,8 @@ void main() {
       expect(pass.failed, 0);
     });
 
-    /// Tecnow'un kendi kurduğu cümle zaten Türkçedir.
-    test('Tecnow özeti yeniden özetlenmez', () async {
+    /// TecNow'un kendi kurduğu cümle zaten Türkçedir.
+    test('TecNow özeti yeniden özetlenmez', () async {
       final summarizer = FakeSummarizer('yeni özet');
       final pass = await applySummaries([
         _item(

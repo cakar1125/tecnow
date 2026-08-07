@@ -147,9 +147,9 @@ void main() {
   testWidgets('the about row opens a real screen', (tester) async {
     await pumpSettingsScreen(tester);
 
-    await tester.ensureVisible(find.text('Tecnow Hakkında'));
+    await tester.ensureVisible(find.text('TecNow Hakkında'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Tecnow Hakkında'));
+    await tester.tap(find.text('TecNow Hakkında'));
     await tester.pumpAndSettle();
 
     expect(find.text('Hesap yok'), findsOneWidget);

@@ -45,7 +45,7 @@ void main() {
         id: 'item-1',
         kind: 'article',
         title: 'Yerel veri',
-        sourceLabel: 'Tecnow',
+        sourceLabel: 'TecNow',
         summary: 'SQLite temeli',
         savedAt: savedAt,
       ),
@@ -56,7 +56,7 @@ void main() {
     expect(items.single.id, 'item-1');
     expect(items.single.kind, 'article');
     expect(items.single.title, 'Yerel veri');
-    expect(items.single.sourceLabel, 'Tecnow');
+    expect(items.single.sourceLabel, 'TecNow');
     expect(items.single.summary, 'SQLite temeli');
     expect(items.single.savedAt, savedAt);
 

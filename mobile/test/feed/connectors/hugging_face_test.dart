@@ -42,7 +42,7 @@ void main() {
 
   group('özet kaynağı', () {
     /// Liste uç noktası açıklama alanı **döndürmez**. Uydurmak yerine
-    /// yanıttaki yapısal veriden Türkçe bir satır kurulur ve Tecnow özeti
+    /// yanıttaki yapısal veriden Türkçe bir satır kurulur ve TecNow özeti
     /// olarak işaretlenir; arayüz bunu kaynağın kendi metninden ayırır.
     test('açıklama gelmediğinde yapısal veriden cümle kurulur', () {
       final item = _byTitle('meta-llama/Llama-4-8B-Instruct');

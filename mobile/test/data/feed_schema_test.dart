@@ -235,7 +235,7 @@ void main() {
     });
 
     /// Dürüstlük kuralı ödün vermiyor: özetin kaynağı bilinmiyorsa kayıt
-    /// gösterilmez. `original`a düşürmek, Tecnow özetini kaynağın kendi
+    /// gösterilmez. `original`a düşürmek, TecNow özetini kaynağın kendi
     /// metniymiş gibi sunmak olurdu.
     test('bilinmeyen özet kökeni atlanır', () {
       final feed = Feed.fromJson(
@@ -280,7 +280,7 @@ void main() {
       expect(FeedItem.fromJson(json).summarySourceHash, hash);
     });
 
-    /// Damga yalnız Tecnow özetlerinde bulunur; olmayan kayıtta `null`
+    /// Damga yalnız TecNow özetlerinde bulunur; olmayan kayıtta `null`
     /// kalmalı ve `toJson` anahtarı hiç yazmamalı.
     test('damgasız kayıt anahtarı hiç yazmaz', () {
       expect(sampleItem().toJson().containsKey('summarySourceHash'), isFalse);
@@ -431,7 +431,7 @@ void main() {
   });
 
   group('özet kaynağı', () {
-    /// "Tecnow özeti, orijinal kaynaktan görsel olarak ayrılır." Arayüzün
+    /// "TecNow özeti, orijinal kaynaktan görsel olarak ayrılır." Arayüzün
     /// ayırabilmesi için alan gidiş-dönüşte korunmalı.
     test('özet kaynağı gidiş-dönüşte korunur', () {
       for (final origin in SummaryOrigin.values) {

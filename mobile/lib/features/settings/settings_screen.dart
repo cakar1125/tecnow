@@ -181,7 +181,7 @@ class SettingsScreen extends ConsumerWidget {
                       description:
                           'Proje Asistanı yanıt üretirken gerekli mesaj '
                           'içeriği seçilen AI hizmetine gönderilebilir. '
-                          'Tecnow hesap veya sosyal profil oluşturmaz.',
+                          'TecNow hesap veya sosyal profil oluşturmaz.',
                     ),
                   ],
                 ),
@@ -191,7 +191,7 @@ class SettingsScreen extends ConsumerWidget {
                   children: [
                     _SettingsRow(
                       icon: Icons.info_outline_rounded,
-                      title: 'Tecnow Hakkında',
+                      title: 'TecNow Hakkında',
                       onTap: () => context.push(aboutRoute),
                     ),
                     _SettingsRow(

@@ -60,7 +60,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     body: SafeArea(
       child: Center(
         child: Semantics(
-          label: 'Tecnow açılış ekranı',
+          label: 'TecNow açılış ekranı',
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

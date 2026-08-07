@@ -14,7 +14,7 @@ void main() {
   testWidgets('Material\'in hazır metinleri Türkçe geliyor', (tester) async {
     late MaterialLocalizations localizations;
 
-    await tester.pumpWidget(const TecnowApp());
+    await tester.pumpWidget(const TecNowApp());
     await tester.pump();
 
     final context = tester.element(find.byType(Navigator).first);
@@ -25,7 +25,7 @@ void main() {
   });
 
   testWidgets('uygulama tek dil bildiriyor', (tester) async {
-    await tester.pumpWidget(const TecnowApp());
+    await tester.pumpWidget(const TecNowApp());
     await tester.pump();
 
     final app = tester.widget<MaterialApp>(find.byType(MaterialApp));

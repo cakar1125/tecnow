@@ -1,4 +1,4 @@
-/// Tecnow içerik feed'inin sözleşmesi.
+/// TecNow içerik feed'inin sözleşmesi.
 ///
 /// Bu dosya **hem üretici hem uygulama** tarafından kullanılır: üretici
 /// (`tool/feed/`) buradaki tiplerle JSON yazar, uygulama aynı tiplerle okur.
@@ -7,7 +7,7 @@
 ///
 /// Alanlar `docs/CONTENT_TRUST_POLICY.md` maddelerinden türetilmiştir:
 /// her içerikte orijinal URL, kaynak türü, yayın tarihi ve son kontrol zamanı
-/// tutulur; Tecnow özeti orijinal kaynaktan görsel olarak ayrılır
+/// tutulur; TecNow özeti orijinal kaynaktan görsel olarak ayrılır
 /// ([FeedItem.summaryOrigin]); kopyalar tek kayıt altında birleştirilir
 /// ([FeedItem.mergedUrls]); yanlış içerik geri çekme kaydıyla yönetilir
 /// ([FeedItem.retractedAt]).
@@ -248,7 +248,7 @@ final class FeedItem {
     title: _requireString(json, 'title'),
     summary: _requireString(json, 'summary'),
     // Dürüstlük kuralı: özetin kaynağı bilinmiyorsa kayıt **gösterilmez**.
-    // Tanınmayan bir değeri `original`a düşürmek, Tecnow özetini kaynağın
+    // Tanınmayan bir değeri `original`a düşürmek, TecNow özetini kaynağın
     // kendi metniymiş gibi sunmak olurdu; politika bunu yasaklıyor.
     summaryOrigin: _requireKnownEnum(
       json,

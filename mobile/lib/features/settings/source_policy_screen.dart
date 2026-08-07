@@ -107,7 +107,7 @@ class SourcePolicyScreen extends ConsumerWidget {
               Text('İçerik nereden geliyor?', style: AppTypography.headline),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                'Tecnow haber yazmaz. Başkalarının yayımladığı gelişmeleri '
+                'TecNow haber yazmaz. Başkalarının yayımladığı gelişmeleri '
                 'derler, kaynağıyla birlikte gösterir ve orijinaline yönlendirir.',
                 style: AppTypography.bodyMuted,
               ),
@@ -141,7 +141,7 @@ class SourcePolicyScreen extends ConsumerWidget {
                 title: 'Kullanıcı içeriği yok',
                 body:
                     'Akışta gönderi, yorum veya kullanıcı katkısı bulunmaz. '
-                    'Yayımlayan taraf yalnızca Tecnow\'ın kaynak hattıdır.',
+                    'Yayımlayan taraf yalnızca TecNow\'ın kaynak hattıdır.',
               ),
 
               const SizedBox(height: AppSpacing.lg),

@@ -1,4 +1,4 @@
-/// Türkçe Tecnow özeti — **derleme zamanı**.
+/// Türkçe TecNow özeti — **derleme zamanı**.
 ///
 /// Uygulama AI'a hiç dokunmaz: anahtar burada, üreticinin ortam değişkeninde
 /// durur ve mobil pakete girmez. Üretilen özet feed'e **metin olarak** iner.
@@ -110,12 +110,12 @@ final class SummaryPass {
 
 /// Özet katmanını uygular.
 ///
-/// Yalnız [SummaryOrigin.original] taşıyan kayıtlar adaydır: Tecnow'un
+/// Yalnız [SummaryOrigin.original] taşıyan kayıtlar adaydır: TecNow'un
 /// kendi kurduğu cümleler (Hugging Face yapısal özeti) zaten Türkçedir ve
 /// yeniden özetlenmez.
 ///
 /// [previous] verilirse **taşıma** devreye girer: bir kaydın kimliği önceki
-/// yayında varsa ve o kayıt aynı kaynak metinden üretilmiş bir Tecnow özeti
+/// yayında varsa ve o kayıt aynı kaynak metinden üretilmiş bir TecNow özeti
 /// taşıyorsa, özet olduğu gibi alınır ve **model çağrılmaz**.
 ///
 /// Bu bir hız iyileştirmesi değil, bir kusurun düzeltilmesi: üretici feed'i her
@@ -136,7 +136,7 @@ Future<SummaryPass> applySummaries(
   var failed = 0;
   var calls = 0;
 
-  // Yalnız taşınabilir olanlar: Tecnow özeti **ve** damgası olanlar.
+  // Yalnız taşınabilir olanlar: TecNow özeti **ve** damgası olanlar.
   // Damgasız bir kayıt eski bir sürümden gelmiş olabilir; kaynak metninin
   // değişip değişmediği bilinemeyeceği için taşınmaz.
   final carryable = {

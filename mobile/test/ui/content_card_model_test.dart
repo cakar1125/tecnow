@@ -61,7 +61,7 @@ void main() {
       );
     });
 
-    test('Tecnow özeti ayrı işaretlenir', () {
+    test('TecNow özeti ayrı işaretlenir', () {
       expect(
         ContentCardModel.fromFeedItem(
           _item(origin: SummaryOrigin.generated),
@@ -70,7 +70,7 @@ void main() {
       );
     });
 
-    /// Elle yazılan özet de Tecnow'un metnidir; kaynağın kendi
+    /// Elle yazılan özet de TecNow'un metnidir; kaynağın kendi
     /// açıklamasıyla aynı kefeye konmaz.
     test('elle yazılan özet kaynak sayılmaz', () {
       expect(

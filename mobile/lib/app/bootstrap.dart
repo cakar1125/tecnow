@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/providers.dart';
 import 'app.dart';
 
-export 'app.dart' show TecnowApp;
+export 'app.dart' show TecNowApp;
 
 /// Uygulamayı, yerel veri tohumlaması bir kez tamamlandıktan sonra başlatır.
 ///
@@ -20,7 +20,7 @@ Future<void> bootstrap({
   runApp(
     UncontrolledProviderScope(
       container: container,
-      child: builder?.call(container) ?? const TecnowApp(),
+      child: builder?.call(container) ?? const TecNowApp(),
     ),
   );
 }

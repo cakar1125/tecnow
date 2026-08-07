@@ -4,8 +4,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import '../design_system/theme/app_theme.dart';
 import 'router.dart';
 
-class TecnowApp extends StatelessWidget {
-  const TecnowApp({super.key});
+class TecNowApp extends StatelessWidget {
+  const TecNowApp({super.key});
 
   /// Uygulamanın dili. Arayüzün tamamı Türkçe yazıldı ama Flutter'ın **kendi**
   /// hazır ekranları (lisans sayfası, metin seçim menüsü, tarih seçici)

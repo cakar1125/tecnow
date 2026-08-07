@@ -24,7 +24,7 @@ abstract interface class FeedFetcher {
 /// Gerçek HTTP getiricisi.
 final class HttpFeedFetcher implements FeedFetcher {
   HttpFeedFetcher({
-    this.userAgent = 'Tecnow-feed-generator',
+    this.userAgent = 'TecNow-feed-generator',
     this.githubToken,
     this.timeout = const Duration(seconds: 30),
   });

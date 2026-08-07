@@ -1,0 +1,9 @@
+# Şablon. Kopyalayıp `key.properties` adıyla kaydedin ve doldurun.
+# `key.properties` .gitignore'dadır ve depoya **girmez**.
+# Ayrıntılı kurulum: docs/RELEASE_SIGNING.md
+
+storePassword=
+keyPassword=
+keyAlias=upload
+# Yol eğik çizgiyle yazılır. Depo dizininin dışında bir yer seçin.
+storeFile=C:/anahtarlar/tecnow-upload.jks

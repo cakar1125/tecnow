@@ -4,9 +4,9 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:tecnow/data/local/app_database.dart';
-import 'package:tecnow/data/local/schema.dart';
-import 'package:tecnow/data/repositories/read_history_repository.dart';
+import 'package:tecos/data/local/app_database.dart';
+import 'package:tecos/data/local/schema.dart';
+import 'package:tecos/data/repositories/read_history_repository.dart';
 
 void main() {
   sqfliteFfiInit();
@@ -50,7 +50,7 @@ void main() {
     await db.close();
     final databasePath = p.join(
       Directory.systemTemp.path,
-      'tecnow_migration_${DateTime.now().microsecondsSinceEpoch}.db',
+      'tecos_migration_${DateTime.now().microsecondsSinceEpoch}.db',
     );
 
     try {
@@ -96,7 +96,7 @@ void main() {
       await db.close();
       databasePath = p.join(
         Directory.systemTemp.path,
-        'tecnow_v1_${DateTime.now().microsecondsSinceEpoch}.db',
+        'tecos_v1_${DateTime.now().microsecondsSinceEpoch}.db',
       );
       final legacy = await databaseFactoryFfi.openDatabase(
         databasePath,
@@ -228,7 +228,7 @@ void main() {
       await db.close();
       databasePath = p.join(
         Directory.systemTemp.path,
-        'tecnow_v3_${DateTime.now().microsecondsSinceEpoch}.db',
+        'tecos_v3_${DateTime.now().microsecondsSinceEpoch}.db',
       );
       final legacy = await databaseFactoryFfi.openDatabase(
         databasePath,

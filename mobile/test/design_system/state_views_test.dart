@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecnow/design_system/components/app_components.dart';
+import 'package:tecos/design_system/components/app_components.dart';
 
 import '../test_harness.dart';
 

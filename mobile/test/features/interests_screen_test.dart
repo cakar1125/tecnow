@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tecnow/app/router.dart';
-import 'package:tecnow/data/app_preferences.dart';
-import 'package:tecnow/design_system/theme/app_theme.dart';
-import 'package:tecnow/features/interests/interests_screen.dart';
+import 'package:tecos/app/router.dart';
+import 'package:tecos/data/app_preferences.dart';
+import 'package:tecos/design_system/theme/app_theme.dart';
+import 'package:tecos/features/interests/interests_screen.dart';
 
 import '../support/test_overrides.dart';
 
@@ -240,6 +240,125 @@ void main() {
       }
 
       expect(find.text('3/3 seçildi'), findsOneWidget);
+    });
+  });
+
+  /// Sekme sırası — Bundle'ın ana sayfasındaki en ayırt edici mekanik.
+  ///
+  /// Sürükleme **gerçekten** yapılıyor, `onReorderItem` elle çağrılmıyor:
+  /// bu geri çağrının indeks sözleşmesi (aşağı sürüklerken hedefin bir
+  /// kayması) tam olarak elle çağrıldığında görünmeyen şey. Kapının değer
+  /// taşıdığı yer burası.
+  group('sekme sırası', () {
+    Future<void> pumpOrdering(
+      WidgetTester tester, {
+      List<String> interests = const ['bulut', 'oyun', 'mobil'],
+    }) async {
+      // Üç sıra satırı + çip ızgarası varsayılan yüzeye sığmıyor; sürükleme
+      // hedefi ekran dışındaysa jest hiç başlamaz.
+      await tester.binding.setSurfaceSize(const Size(390, 1400));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(
+        memoryDataHarness(const InterestsScreen(), interests: interests),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    /// Sürükleme tutamağını yakalayıp [rows] satır aşağı taşır.
+    Future<void> dragBy(
+      WidgetTester tester,
+      String id, {
+      required double rows,
+    }) async {
+      final handle = find.descendant(
+        of: find.byKey(Key('interest-order-$id')),
+        matching: find.byType(ReorderableDragStartListener),
+      );
+      final height = tester
+          .getSize(find.byKey(Key('interest-order-$id')))
+          .height;
+      final gesture = await tester.startGesture(tester.getCenter(handle));
+      // `ReorderableDragStartListener` anında başlar (uzun basma yok), ama
+      // hareket adım adım veriliyor: tek sıçrayış listenin kendini yeniden
+      // düzenlemesine fırsat vermeden düşüyor.
+      await tester.pump(const Duration(milliseconds: 50));
+      const steps = 4;
+      for (var step = 0; step < steps; step++) {
+        await gesture.moveBy(Offset(0, height * rows / steps));
+        await tester.pump(const Duration(milliseconds: 20));
+      }
+      await gesture.up();
+      await tester.pumpAndSettle();
+    }
+
+    List<String> orderOnScreen(WidgetTester tester) =>
+        [
+          for (final id in ['bulut', 'oyun', 'mobil'])
+            if (find.byKey(Key('interest-order-$id')).evaluate().isNotEmpty) id,
+        ]..sort(
+          (a, b) => tester
+              .getTopLeft(find.byKey(Key('interest-order-$a')))
+              .dy
+              .compareTo(
+                tester.getTopLeft(find.byKey(Key('interest-order-$b'))).dy,
+              ),
+        );
+
+    testWidgets('seçili konular sıralanabilir listede çıkar', (tester) async {
+      await pumpOrdering(tester);
+
+      expect(find.text('Sekme sırası'), findsOneWidget);
+      expect(orderOnScreen(tester), ['bulut', 'oyun', 'mobil']);
+    });
+
+    /// Tek öğeli bir liste sıralanamaz; çizilirse yapılamayan bir şeyi
+    /// vaat eder.
+    testWidgets('iki konunun altında bölüm hiç çizilmez', (tester) async {
+      await pumpOrdering(tester, interests: const ['bulut']);
+
+      expect(find.text('Sekme sırası'), findsNothing);
+    });
+
+    testWidgets('sürüklemek sırayı değiştirir', (tester) async {
+      await pumpOrdering(tester);
+
+      await dragBy(tester, 'bulut', rows: 1);
+
+      expect(orderOnScreen(tester), ['oyun', 'bulut', 'mobil']);
+    });
+
+    /// Aşağı sürüklemede `onReorder`'ın indeksi bir kayar. Kod
+    /// `onReorderItem` kullandığı için düzeltme gerekmiyor; bu test o seçimi
+    /// kilitliyor — eski geri çağrıya dönülürse üç öğe **iki** kayar.
+    testWidgets('sona sürüklemek sırayı bir kaydırmaz', (tester) async {
+      await pumpOrdering(tester);
+
+      await dragBy(tester, 'bulut', rows: 2);
+
+      expect(orderOnScreen(tester), ['oyun', 'mobil', 'bulut']);
+    });
+
+    /// Sıra bir tercih: bırakıldığı anda diske yazılmalı. Alttaki düğmeyi
+    /// beklemek, geri tuşuyla çıkan kullanıcının düzenini kaybetmesi demek.
+    testWidgets('yeni sıra hemen kalıcı olur', (tester) async {
+      final repository = InMemoryInterestsRepository(const [
+        'bulut',
+        'oyun',
+        'mobil',
+      ]);
+      await tester.binding.setSurfaceSize(const Size(390, 1400));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(
+        memoryDataHarness(
+          const InterestsScreen(),
+          interestsRepository: repository,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await dragBy(tester, 'mobil', rows: -2);
+
+      expect(await repository.readAll(), ['mobil', 'bulut', 'oyun']);
     });
   });
 }

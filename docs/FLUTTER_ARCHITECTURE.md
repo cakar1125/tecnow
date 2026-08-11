@@ -4,8 +4,8 @@ Durum: `IMPLEMENTED_LOCAL`
 
 ## Uygulama sınırı
 
-- Uygulama adı: `tecnow`
-- Android/iOS kimliği: `com.tecnow.app`
+- Uygulama adı: `tecos`
+- Android/iOS kimliği: `com.tecos.app`
 - Faz 1 yalnızca yerel fixture verisiyle çalışan, backend'siz bir mobil dikey dilimdir.
 - Mimari feature-first tutuldu; bu ölçekte değer üretmeyen boş `data/domain` katmanları açılmadı.
 

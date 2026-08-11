@@ -18,6 +18,8 @@ import '../../data/feed/feed_schema.dart';
 import '../../data/providers.dart';
 import '../../data/repositories/read_history_repository.dart';
 import '../../design_system/components/app_components.dart';
+import '../../design_system/tokens/app_palette.dart';
+import '../../design_system/tokens/app_text.dart';
 import '../../design_system/tokens/app_tokens.dart';
 import '../../ui/detail_route.dart';
 import '../detail/feed_detail_screen.dart';
@@ -98,7 +100,7 @@ class ReadHistoryScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: context.palette.background,
         surfaceTintColor: Colors.transparent,
         leading: Semantics(
           button: true,
@@ -109,7 +111,7 @@ class ReadHistoryScreen extends ConsumerWidget {
             icon: const Icon(Icons.arrow_back_rounded),
           ),
         ),
-        title: Text('Okuma Geçmişi', style: AppTypography.title),
+        title: Text('Okuma Geçmişi', style: context.text.title),
         actions: [
           if (canClear)
             IconButton(
@@ -187,10 +189,10 @@ class _HistoryRow extends StatelessWidget {
         : 'Bu kayıt artık akışta yok.';
 
     return Material(
-      color: AppColors.surface,
-      shape: const RoundedRectangleBorder(
+      color: context.palette.surface,
+      shape: RoundedRectangleBorder(
         borderRadius: AppRadius.cardBorder,
-        side: BorderSide(color: AppColors.outline),
+        side: BorderSide(color: context.palette.outline),
       ),
       clipBehavior: Clip.antiAlias,
       child: Semantics(
@@ -211,33 +213,33 @@ class _HistoryRow extends StatelessWidget {
                     children: [
                       Text(
                         detailTitle(row.kind),
-                        style: AppTypography.label.copyWith(
+                        style: context.text.label.copyWith(
                           color: row.resolved
-                              ? AppColors.primary
-                              : AppColors.textSecondary,
+                              ? context.palette.primary
+                              : context.palette.textSecondary,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         title,
-                        style: AppTypography.body.copyWith(
+                        style: context.text.body.copyWith(
                           fontWeight: FontWeight.w600,
                           color: row.resolved
-                              ? AppColors.textPrimary
-                              : AppColors.textSecondary,
+                              ? context.palette.textPrimary
+                              : context.palette.textSecondary,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
-                      Text(subtitle, style: AppTypography.bodyMuted),
+                      Text(subtitle, style: context.text.bodyMuted),
                     ],
                   ),
                 ),
                 if (row.resolved) ...[
                   const SizedBox(width: AppSpacing.sm),
-                  const Icon(
+                  Icon(
                     Icons.chevron_right_rounded,
                     size: 22,
-                    color: AppColors.textSecondary,
+                    color: context.palette.textSecondary,
                   ),
                 ],
               ],

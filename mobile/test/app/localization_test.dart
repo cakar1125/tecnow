@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecnow/app/app.dart';
+import 'package:tecos/app/app.dart';
 
 /// Flutter'ın **kendi** ekranları da Türkçe olmalı.
 ///
@@ -14,7 +15,7 @@ void main() {
   testWidgets('Material\'in hazır metinleri Türkçe geliyor', (tester) async {
     late MaterialLocalizations localizations;
 
-    await tester.pumpWidget(const TecNowApp());
+    await tester.pumpWidget(const ProviderScope(child: TecOsApp()));
     await tester.pump();
 
     final context = tester.element(find.byType(Navigator).first);
@@ -25,7 +26,7 @@ void main() {
   });
 
   testWidgets('uygulama tek dil bildiriyor', (tester) async {
-    await tester.pumpWidget(const TecNowApp());
+    await tester.pumpWidget(const ProviderScope(child: TecOsApp()));
     await tester.pump();
 
     final app = tester.widget<MaterialApp>(find.byType(MaterialApp));

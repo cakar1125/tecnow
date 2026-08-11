@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../design_system/components/app_components.dart';
+import '../../design_system/tokens/app_palette.dart';
+import '../../design_system/tokens/app_text.dart';
 import '../../design_system/tokens/app_tokens.dart';
 
 const _starterSuggestions = <({String label, IconData icon})>[
@@ -71,7 +73,7 @@ class _AssistantScreenState extends State<AssistantScreen> {
   @override
   Widget build(BuildContext context) => Column(
     children: [
-      const AppTopBar(title: 'TecNow'),
+      const AppTopBar(title: 'tecOS'),
       Expanded(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(
@@ -88,13 +90,13 @@ class _AssistantScreenState extends State<AssistantScreen> {
               Text(
                 'Fikrini anlat. Sana en uygun AI\'ları, araçları ve geliştirme '
                 'yolunu birlikte belirleyelim.',
-                style: AppTypography.bodyMuted,
+                style: context.text.bodyMuted,
               ),
               const SizedBox(height: AppSpacing.xl),
               Text(
                 'NEREDEN BAŞLAYALIM?',
-                style: AppTypography.label.copyWith(
-                  color: AppColors.textSecondary,
+                style: context.text.label.copyWith(
+                  color: context.palette.textSecondary,
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
@@ -137,18 +139,18 @@ class _AssistantHeading extends StatelessWidget {
         vertical: AppSpacing.md,
       ),
       decoration: BoxDecoration(
-        color: AppColors.aiAccent.withValues(alpha: 0.14),
+        color: context.palette.aiAccent.withValues(alpha: 0.14),
         borderRadius: AppRadius.largeBorder,
-        border: Border.all(color: AppColors.aiAccent.withValues(alpha: 0.55)),
+        border: Border.all(
+          color: context.palette.aiAccent.withValues(alpha: 0.55),
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.auto_awesome, color: AppColors.aiAccent),
+          Icon(Icons.auto_awesome, color: context.palette.aiAccent),
           const SizedBox(width: AppSpacing.sm),
-          Flexible(
-            child: Text('Proje Asistanı', style: AppTypography.headline),
-          ),
+          Flexible(child: Text('Proje Asistanı', style: context.text.headline)),
         ],
       ),
     ),
@@ -175,12 +177,12 @@ class _AssistantStarterCard extends StatelessWidget {
     label: label,
     child: Material(
       color: selected
-          ? AppColors.aiAccent.withValues(alpha: 0.14)
-          : AppColors.surface,
+          ? context.palette.aiAccent.withValues(alpha: 0.14)
+          : context.palette.surface,
       shape: RoundedRectangleBorder(
         borderRadius: AppRadius.cardBorder,
         side: BorderSide(
-          color: selected ? AppColors.aiAccent : AppColors.outline,
+          color: selected ? context.palette.aiAccent : context.palette.outline,
         ),
       ),
       child: InkWell(
@@ -199,11 +201,11 @@ class _AssistantStarterCard extends StatelessWidget {
                   icon,
                   size: 22,
                   color: selected
-                      ? AppColors.aiAccent
-                      : AppColors.textSecondary,
+                      ? context.palette.aiAccent
+                      : context.palette.textSecondary,
                 ),
                 const SizedBox(width: AppSpacing.md),
-                Expanded(child: Text(label, style: AppTypography.body)),
+                Expanded(child: Text(label, style: context.text.body)),
               ],
             ),
           ),
@@ -227,8 +229,8 @@ class _PromptCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.all(AppSpacing.lg),
-    decoration: const BoxDecoration(
-      color: AppColors.surface,
+    decoration: BoxDecoration(
+      color: context.palette.surface,
       borderRadius: AppRadius.cardBorder,
     ),
     child: Column(
@@ -252,12 +254,12 @@ class _PromptCard extends StatelessWidget {
             height: 48,
             child: FilledButton.icon(
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.aiAccent,
-                foregroundColor: AppColors.textPrimary,
-                disabledBackgroundColor: AppColors.aiAccent.withValues(
+                backgroundColor: context.palette.aiAccent,
+                foregroundColor: context.palette.textPrimary,
+                disabledBackgroundColor: context.palette.aiAccent.withValues(
                   alpha: 0.28,
                 ),
-                disabledForegroundColor: AppColors.textPrimary.withValues(
+                disabledForegroundColor: context.palette.textPrimary.withValues(
                   alpha: 0.55,
                 ),
               ),
@@ -279,16 +281,16 @@ class _LocalStorageNote extends StatelessWidget {
   Widget build(BuildContext context) => Row(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      const Icon(
+      Icon(
         Icons.lock_outline_rounded,
         size: 20,
-        color: AppColors.textSecondary,
+        color: context.palette.textSecondary,
       ),
       const SizedBox(width: AppSpacing.sm),
       Expanded(
         child: Text(
           'Konuşma geçmişin ve kaydettiğin projeler bu cihazda saklanır.',
-          style: AppTypography.bodyMuted,
+          style: context.text.bodyMuted,
         ),
       ),
     ],
@@ -302,23 +304,25 @@ class _PhaseWarning extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.all(AppSpacing.md),
     decoration: BoxDecoration(
-      color: AppColors.warning.withValues(alpha: 0.12),
+      color: context.palette.warning.withValues(alpha: 0.12),
       borderRadius: AppRadius.cardBorder,
-      border: Border.all(color: AppColors.warning.withValues(alpha: 0.55)),
+      border: Border.all(
+        color: context.palette.warning.withValues(alpha: 0.55),
+      ),
     ),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Icon(
+        Icon(
           Icons.info_outline_rounded,
           size: 20,
-          color: AppColors.warning,
+          color: context.palette.warning,
         ),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
           child: Text(
             'Asistan henüz uygulanmadı. Bu ekran yalnız giriş tasarımıdır.',
-            style: AppTypography.body.copyWith(color: AppColors.warning),
+            style: context.text.body.copyWith(color: context.palette.warning),
           ),
         ),
       ],

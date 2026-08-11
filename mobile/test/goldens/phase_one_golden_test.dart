@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
-import 'package:tecnow/design_system/theme/app_theme.dart';
-import 'package:tecnow/features/detail/feed_detail_screen.dart';
-import 'package:tecnow/features/feed/feed_screen.dart';
+import 'package:tecos/design_system/theme/app_theme.dart';
+import 'package:tecos/features/detail/feed_detail_screen.dart';
+import 'package:tecos/features/feed/feed_screen.dart';
 
 import '../support/test_overrides.dart';
 
@@ -46,6 +46,39 @@ void main() {
     );
     await tester.pumpAndSettle();
     await screenMatchesGolden(tester, 'ai_model_detail_390x844');
+  });
+
+  /// Açık temanın **kendi** görsel kilidi.
+  ///
+  /// Buradaki golden'ların hepsi koyu temada çekiliyordu; açık tema 2026-08-11'de
+  /// eklendiğinde tek bir görsel kapı bile onu görmüyordu. Bu tehlikeli: bir
+  /// ekran koyu temada kusursuz görünüp açık temada beyaz zemine beyaz metin
+  /// yazabilir ve hiçbir test kırılmaz.
+  ///
+  /// Kontrast kapısı (`palette_contrast_test.dart`) renklerin **birbirine
+  /// göre** doğru olduğunu ölçüyor; bu golden'lar renklerin **doğru yerde**
+  /// kullanıldığını ölçüyor. İkisi farklı sorular: palet kusursuz olabilir
+  /// ama bir widget yine de sabit bir renk taşıyor olabilir.
+  group('açık tema', () {
+    testGoldens('GOLDEN Ana Sayfa açık 390x844', (tester) async {
+      await tester.pumpWidgetBuilder(
+        memoryDataScope(const FeedScreen()),
+        wrapper: materialAppWrapper(theme: AppTheme.light),
+        surfaceSize: const Size(390, 844),
+      );
+      await tester.pumpAndSettle();
+      await screenMatchesGolden(tester, 'home_light_390x844');
+    });
+
+    testGoldens('GOLDEN AI Model Detayı açık 390x844', (tester) async {
+      await tester.pumpWidgetBuilder(
+        memoryDataScope(const FeedDetailScreen(id: '0000000000000002')),
+        wrapper: materialAppWrapper(theme: AppTheme.light),
+        surfaceSize: const Size(390, 844),
+      );
+      await tester.pumpAndSettle();
+      await screenMatchesGolden(tester, 'ai_model_detail_light_390x844');
+    });
   });
 
   /// Dar ekran **ve** büyük yazı, birlikte.

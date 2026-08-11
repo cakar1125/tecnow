@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecnow/data/feed/feed_schema.dart';
-import 'package:tecnow/design_system/components/app_components.dart';
-import 'package:tecnow/features/explore/explore_screen.dart';
-import 'package:tecnow/ui/explore_search.dart';
+import 'package:tecos/data/feed/feed_schema.dart';
+import 'package:tecos/design_system/components/app_components.dart';
+import 'package:tecos/features/explore/explore_screen.dart';
+import 'package:tecos/ui/explore_search.dart';
 
 import '../support/test_overrides.dart';
 
@@ -116,6 +116,11 @@ void main() {
       await _search(tester, 'depo');
 
       await tester.ensureVisible(find.text('Tümünü Gör'));
+      // `ensureVisible` bir kaydırma **animasyonu** başlatır; pump edilmeden
+      // dokunulursa hedef hâlâ eski yerinde olur ve dokunuş boşluğa düşer.
+      // Mağaza bölümü eklendikten sonra sonuçlar daha aşağı indiği için
+      // aradaki bu eksik adım görünür hale geldi.
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Tümünü Gör'));
       await tester.pumpAndSettle();
 
@@ -185,9 +190,14 @@ void main() {
       await tester.pumpWidget(_explore(savedRepository: probe));
       await tester.pumpAndSettle();
 
-      await tester.tap(
-        find.byKey(const Key('explore-bookmark-0000000000000001')),
+      // Mağaza bölümü (kaynak ve ilgi alanı seçimi) aramanın üstünde
+      // durduğu için sonuç kartları ilk karede ekran dışında kalıyor.
+      final bookmark = find.byKey(
+        const Key('explore-bookmark-0000000000000001'),
       );
+      await tester.ensureVisible(bookmark);
+      await tester.pumpAndSettle();
+      await tester.tap(bookmark);
       await tester.pumpAndSettle();
 
       final stored = await probe.readAll();
@@ -205,8 +215,11 @@ void main() {
       final bookmark = find.byKey(
         const Key('explore-bookmark-0000000000000001'),
       );
+      await tester.ensureVisible(bookmark);
+      await tester.pumpAndSettle();
       await tester.tap(bookmark);
       await tester.pumpAndSettle();
+      await tester.ensureVisible(bookmark);
       await tester.tap(bookmark);
       await tester.pumpAndSettle();
 

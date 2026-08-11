@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
-import 'package:tecnow/app/router.dart';
-import 'package:tecnow/design_system/theme/app_theme.dart';
+import 'package:tecos/app/router.dart';
+import 'package:tecos/data/interests/interest_taxonomy.dart';
+import 'package:tecos/design_system/theme/app_theme.dart';
 
 import '../support/test_overrides.dart';
 
@@ -123,6 +124,12 @@ void main() {
               // Geçmiş **dolu** ölçülüyor: boş durum tek satırlık bir metin,
               // taşma riski satırların kendisinde.
               readHistory: _seededHistory(),
+              // Aynı gerekçe ilgi alanları için de geçerli ve ilk kurulumda
+              // atlanmıştı: seçim yokken Ana Sayfa'nın sekme şeridi iki
+              // sekmede kalıyor, İlgi Alanları'ndaki sıralama listesi hiç
+              // çizilmiyor. Yani iki yeni ekran parçası da ölçüsüzdü.
+              // Sözlüğün tamamı seçili: en uzun şerit, en uzun liste.
+              interests: _allInterests,
             ),
           );
           await tester.pumpAndSettle();
@@ -133,6 +140,9 @@ void main() {
     }
   }
 }
+
+/// Sözlüğün tamamı. En uzun sekme şeridi ve en uzun sıralama listesi.
+final _allInterests = [for (final interest in interestTaxonomy) interest.id];
 
 InMemoryReadHistoryRepository _seededHistory() {
   final history = InMemoryReadHistoryRepository();

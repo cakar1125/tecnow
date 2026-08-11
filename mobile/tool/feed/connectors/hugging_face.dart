@@ -16,7 +16,7 @@
 /// sahibi gerçekten yazmamıştır — o kayıt elenir.
 library;
 
-import 'package:tecnow/data/feed/feed_schema.dart';
+import 'package:tecos/data/feed/feed_schema.dart';
 
 import '../source_allowlist.dart';
 import 'connector_support.dart';

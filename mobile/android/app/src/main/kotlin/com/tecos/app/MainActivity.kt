@@ -1,4 +1,4 @@
-package com.tecnow.app
+package com.tecos.app
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -4,8 +4,20 @@ Bu belge tek oturumda takip edilmek için yazıldı. Her adımın sonunda
 **"nasıl anlarım"** satırı var; orası tutmuyorsa sonraki adıma geçme.
 
 `<KULLANICI>` = GitHub kullanıcı adın · `<ALANADI>` = aldığın alan adı
-(karar: **`tecnow.app`** — `tecnow.com` 1999'dan beri başkasında,
-bkz. `ALAN_ADI_KARARI.md`)
+
+> **Alan adı kararı değişti (2026-08-10).** Ürün adı **tecOS**; `tecnow.app`
+> geçersiz bir markaya bağlıydı (TÜRKPATENT'te TECNO, sınıf 09'da üç ve
+> sınıf 42'de bir tescille kayıtlı — bkz. DECISION_LOG D-018).
+>
+> Feed şu an hâlâ **`feed.tecnow.app`** üzerinden yayınlanıyor ve bu
+> **bilinçli**: alan adı kullanıcıya görünmüyor, uygulamaya gömülü değil
+> (GitHub deposu değişkenlerinden okunuyor) ve hiçbir sürüm yayımlanmadığı
+> için taşınması kalıcı bir yükümlülük doğurmuyor. `tecos.app` alındığında
+> `FEED_DOMAIN` / `FEED_URL` değişkenleri ve Cloudflare DNS kaydı
+> güncellenir; kod değişmez.
+>
+> Bu belgedeki `tecnow` geçişleri **GitHub deposunun adı**dır ve öyle kalır —
+> depo adını değiştirmek uzak sunucu adresini ve Pages yayınını bozar.
 
 ## Claude'un hazırladıkları (bitti)
 

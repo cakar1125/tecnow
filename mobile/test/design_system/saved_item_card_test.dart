@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecnow/data/feed/feed_schema.dart';
-import 'package:tecnow/design_system/components/app_components.dart';
-import 'package:tecnow/design_system/tokens/app_tokens.dart';
-import 'package:tecnow/ui/content_card_model.dart';
+import 'package:tecos/design_system/tokens/app_palette.dart';
+import 'package:tecos/data/feed/feed_schema.dart';
+import 'package:tecos/design_system/components/app_components.dart';
+import 'package:tecos/ui/content_card_model.dart';
 
 import '../test_harness.dart';
 
@@ -30,19 +30,34 @@ void main() {
   testWidgets('renders the correct label and color for every content kind', (
     tester,
   ) async {
-    const expectations = {
-      FeedItemKind.repository: ('DEPO', AppColors.primary, Icons.code_rounded),
+    // `const` değil: renkler artık paletten okunuyor ve bir sabit ifadede
+    // nesne alanına erişilemiyor. Bedeli yok — harita test içinde bir kez
+    // kuruluyor.
+    final expectations = {
+      FeedItemKind.repository: (
+        'DEPO',
+        AppPalette.dark.primary,
+        Icons.code_rounded,
+      ),
       FeedItemKind.aiModel: (
         'AI MODEL',
-        AppColors.aiAccent,
+        AppPalette.dark.aiAccent,
         Icons.psychology_outlined,
       ),
-      FeedItemKind.tool: ('ARAÇ', AppColors.warning, Icons.build_outlined),
-      FeedItemKind.skill: ('SKILL', AppColors.success, Icons.school_outlined),
-      FeedItemKind.mcp: ('MCP', AppColors.primary, Icons.hub_outlined),
+      FeedItemKind.tool: (
+        'ARAÇ',
+        AppPalette.dark.warning,
+        Icons.build_outlined,
+      ),
+      FeedItemKind.skill: (
+        'SKILL',
+        AppPalette.dark.success,
+        Icons.school_outlined,
+      ),
+      FeedItemKind.mcp: ('MCP', AppPalette.dark.primary, Icons.hub_outlined),
       FeedItemKind.announcement: (
         'DUYURU',
-        AppColors.success,
+        AppPalette.dark.success,
         Icons.campaign_outlined,
       ),
     };

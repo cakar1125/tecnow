@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/providers.dart';
+import '../../design_system/tokens/app_palette.dart';
+import '../../design_system/tokens/app_text.dart';
 import '../../design_system/tokens/app_tokens.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -60,33 +62,35 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     body: SafeArea(
       child: Center(
         child: Semantics(
-          label: 'TecNow açılış ekranı',
+          label: 'tecOS açılış ekranı',
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 width: 84,
                 height: 84,
-                decoration: const BoxDecoration(
-                  color: AppColors.surface,
+                decoration: BoxDecoration(
+                  color: context.palette.surface,
                   borderRadius: AppRadius.featuredBorder,
-                  boxShadow: AppShadows.cyanGlow,
+                  boxShadow: AppShadows.brandGlow(context.palette),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.terminal_rounded,
                   size: 44,
-                  color: AppColors.primary,
+                  color: context.palette.primary,
                 ),
               ),
               const SizedBox(height: AppSpacing.xl),
               Text(
-                'TecNow',
-                style: AppTypography.display.copyWith(color: AppColors.primary),
+                'tecOS',
+                style: context.text.display.copyWith(
+                  color: context.palette.primary,
+                ),
               ),
               const SizedBox(height: AppSpacing.sm),
               Text(
                 'Teknolojinin nabzı, sana özel.',
-                style: AppTypography.bodyMuted,
+                style: context.text.bodyMuted,
               ),
             ],
           ),

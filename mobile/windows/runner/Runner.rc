@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.tecnow" "\0"
-            VALUE "FileDescription", "tecnow" "\0"
+            VALUE "CompanyName", "com.tecos" "\0"
+            VALUE "FileDescription", "tecos" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "tecnow" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 com.tecnow. All rights reserved." "\0"
-            VALUE "OriginalFilename", "tecnow.exe" "\0"
-            VALUE "ProductName", "tecnow" "\0"
+            VALUE "InternalName", "tecos" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 com.tecos. All rights reserved." "\0"
+            VALUE "OriginalFilename", "tecos.exe" "\0"
+            VALUE "ProductName", "tecos" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecnow/data/feed/feed_repository.dart';
-import 'package:tecnow/data/feed/feed_schema.dart';
-import 'package:tecnow/data/feed/feed_sync_state.dart';
-import 'package:tecnow/data/providers.dart';
+import 'package:tecos/data/feed/feed_repository.dart';
+import 'package:tecos/data/feed/feed_schema.dart';
+import 'package:tecos/data/feed/feed_sync_state.dart';
+import 'package:tecos/data/providers.dart';
 
 import '../support/test_overrides.dart';
 

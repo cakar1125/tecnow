@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -11,6 +12,7 @@ import 'feed/feed_repository.dart';
 import 'feed/feed_schema.dart';
 import 'feed/feed_sync_state.dart';
 import 'feed/syncing_feed_repository.dart';
+import 'interests/interest_taxonomy.dart';
 import 'interests_migration.dart';
 import 'local/app_database.dart';
 import 'local/schema.dart';
@@ -206,6 +208,98 @@ final appPreferencesProvider = FutureProvider<AppPreferences>((ref) async {
   return AppPreferences(preferences);
 });
 
+/// Seçili tema.
+///
+/// `AsyncNotifier` değil, düz `Notifier`: `MaterialApp` bir `themeMode`
+/// **beklemez**, ister. Yükleniyor durumu burada bir ekran değil, yanlış
+/// temada geçen birkaç kare demektir — kullanıcının koyu seçtiği bir
+/// uygulamanın açılışta beyaz parlaması. O yüzden değer `bootstrap` içinde,
+/// `runApp`'ten **önce** [ThemeModeNotifier.restore] ile yerine konur ve
+/// uygulama doğru temayla açılır.
+final themeModeProvider = NotifierProvider<ThemeModeNotifier, ThemeMode>(
+  ThemeModeNotifier.new,
+);
+
+final class ThemeModeNotifier extends Notifier<ThemeMode> {
+  @override
+  ThemeMode build() => ThemeMode.system;
+
+  /// Diskteki tercihi yerine koyar. Yazma yapmaz.
+  void restore(ThemeMode mode) => state = mode;
+
+  /// Kullanıcının seçimi: önce ekran değişir, sonra diske yazılır.
+  ///
+  /// Sıra bilinçli — yazma başarısız olsa bile tema o oturumda çalışır ve
+  /// hata kullanıcının seçimini geri almaz.
+  Future<void> select(ThemeMode mode) async {
+    state = mode;
+    final preferences = await ref.read(appPreferencesProvider.future);
+    await preferences.setThemeMode(mode);
+  }
+}
+
+/// Akıştan çıkarılmış kaynaklar.
+///
+/// Keşfet'te açılıp kapanır, **Ana Sayfa'yı** değiştirir. Bu, iki ekranı
+/// birbirine bağlayan tek mekanik: Keşfet artık bir arama sonucu ekranı
+/// değil, akışın kurulduğu yer.
+///
+/// [ThemeModeNotifier] ile aynı desende düz bir `Notifier`: değer
+/// `bootstrap` içinde `runApp`'ten önce yerine konur, böylece uygulama
+/// susturulmuş kaynakları bir kare bile göstermez.
+final mutedSourcesProvider =
+    NotifierProvider<MutedSourcesNotifier, Set<String>>(
+      MutedSourcesNotifier.new,
+    );
+
+/// Susturulmuş kaynakların başlangıç değeri.
+///
+/// Uygulamada boş: gerçek değer diskten okunup `bootstrap` içinde
+/// [MutedSourcesNotifier.restore] ile konuyor. Ayrı bir provider olmasının
+/// sebebi **test**: [MutedSourcesNotifier] `final` ve alt sınıflanamıyor,
+/// testler de "şu kaynak kapalıyken ekran ne yapıyor" diye sormak zorunda.
+/// Sınıf kısıtını gevşetmek yerine tohum dışarı alındı.
+final initialMutedSourcesProvider = Provider<Set<String>>((ref) => const {});
+
+final class MutedSourcesNotifier extends Notifier<Set<String>> {
+  @override
+  Set<String> build() => ref.watch(initialMutedSourcesProvider);
+
+  void restore(Set<String> sources) => state = sources;
+
+  /// Kaynağı akıştan çıkarır ya da geri alır.
+  ///
+  /// Önce ekran, sonra disk — yazma başarısız olsa bile seçim o oturumda
+  /// çalışır ve kullanıcının dokunuşu boşa gitmez.
+  Future<void> toggle(String sourceName) async {
+    final next = {...state};
+    if (!next.remove(sourceName)) next.add(sourceName);
+    state = next;
+    final preferences = await ref.read(appPreferencesProvider.future);
+    await preferences.setMutedSources(next);
+  }
+}
+
+/// Susturulmuş kaynakları eler.
+///
+/// **`AsyncValue` sarmalayan bir provider değil, düz bir liste işlevi.**
+/// Bir ara provider yazıp `feed.whenData(...)` demek doğal duruyordu ve
+/// denendi — testler tuttu: bozuk feed'in hata durumu kayboldu, ekran
+/// sonsuza dek yükleme iskeleti gösterdi. Sebebi bu depoda daha önce iki
+/// kez yazılmış olan tuzak: Riverpod 3 hatayı `AsyncLoading(error: …)`
+/// içinde taşıyabiliyor ve `whenData` yeniden kurarken onu düşürüyor.
+///
+/// Süzme bu yüzden `AsyncValue` çözüldükten **sonra**, kullanıldığı yerde
+/// yapılıyor. Ham [feedProvider] olduğu gibi duruyor: Keşfet'in kaynak
+/// listesi **bütün** kaynakları göstermek zorunda, yoksa kapattığın kaynağı
+/// geri açamazsın.
+List<FeedItem> withoutMutedSources(List<FeedItem> items, Set<String> muted) =>
+    muted.isEmpty
+    ? items
+    : items
+          .where((item) => !muted.contains(item.sourceName))
+          .toList(growable: false);
+
 final savedItemsSampleCleanupProvider = FutureProvider<SavedItemsSampleCleanup>(
   (ref) async {
     final repository = await ref.watch(savedItemsRepositoryProvider.future);
@@ -228,9 +322,34 @@ final interestsMigrationProvider = FutureProvider<InterestsMigration>((
 /// günceller, `invalidate` yoktur. [persist] açıkça çağrılır — çip'e her
 /// dokunuşta veritabanına yazmak, kullanıcı henüz seçimini bitirmeden
 /// kalıcı hale getirirdi.
+///
+/// ## Sıra **yük taşıyor**
+///
+/// Kümenin dolaşım sırası Ana Sayfa'daki sekme sırasıdır. `Set` tipi bunu
+/// vaat etmez ama Dart'ın küme değişmezleri ve `toSet()` `LinkedHashSet`
+/// üretir; o da **ekleme sırasını** korur. Zincirin tamamı bu yüzden çalışıyor:
+/// depo `createdAt + index` yazıp aynı sırayla okuyor
+/// (`SqfliteInterestsRepository`), [toggle] sona ekliyor, [reorder] listeyi
+/// yeniden kuruyor.
+///
+/// İma edilen bu sözleşme, üstüne bir ürün mekaniği kurulacak kadar sağlam
+/// değil — bu yüzden sıranın **okunduğu tek yer** [orderedInterestsProvider]
+/// ve gidiş-dönüş `test/data/interest_order_test.dart` içinde kilitli.
+/// Buraya bir gün `HashSet` ya da `union` girerse test kırılır.
 final interestsProvider = AsyncNotifierProvider<InterestsNotifier, Set<String>>(
   InterestsNotifier.new,
 );
+
+/// Seçili ilgi alanları, **sekme sırasıyla** ve çözülmüş hâlde.
+///
+/// Tanınmayan kimlik sessizce düşer: eski bir sürümden kalan bir değer
+/// yüzünden sekme şeridinde etiketsiz bir boşluk belirmemeli. Aynı davranış
+/// `filterByInterests` içinde de var.
+final orderedInterestsProvider = Provider<List<Interest>>((ref) {
+  final selected = ref.watch(interestsProvider).value;
+  if (selected == null) return const [];
+  return [for (final id in selected) ?interestById(id)];
+});
 
 final class InterestsNotifier extends AsyncNotifier<Set<String>> {
   @override
@@ -245,8 +364,30 @@ final class InterestsNotifier extends AsyncNotifier<Set<String>> {
     state = AsyncData(
       current.contains(value)
           ? ({...current}..remove(value))
+          // Yeni seçim **sona** eklenir: kullanıcının kurduğu sekme sırası,
+          // bir konu daha eklendi diye baştan dizilmemeli.
           : {...current, value},
     );
+  }
+
+  /// Sekme sırasını değiştirir: [from] konumundaki konu [to] konumuna gider.
+  ///
+  /// Düz liste anlamı — `removeAt(from)` sonra `insert(to, …)`. Ekran bunu
+  /// `ReorderableListView.onReorderItem` ile besliyor; **`onReorder` ile
+  /// değil**, çünkü onun verdiği indeks öğe hâlâ listedeymiş gibi hesaplanır
+  /// ve her çağıranın elle bir eksiltmesi gerekir. Bir widget sözleşmesinin
+  /// veri katmanına sızmaması için düzeltme burada da yapılmıyor: bu metodun
+  /// anlamı listenin kendi anlamı.
+  void reorder({required int from, required int to}) {
+    final current = state.value;
+    if (current == null) return;
+    if (from == to) return;
+    final ordered = current.toList();
+    if (from < 0 || from >= ordered.length) return;
+    if (to < 0 || to > ordered.length - 1) return;
+    ordered.insert(to, ordered.removeAt(from));
+    // `LinkedHashSet`: sıra korunur (sınıf başlığındaki nota bakın).
+    state = AsyncData(ordered.toSet());
   }
 
   Future<void> persist() async {

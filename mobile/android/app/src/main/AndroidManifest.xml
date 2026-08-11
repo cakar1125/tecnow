@@ -7,11 +7,11 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:label="TecNow"
+        android:label="tecOS"
         android:name="${applicationName}"
         android:enableOnBackInvokedCallback="true"
         android:usesCleartextTraffic="false"
-        android:icon="@drawable/tecnow_splash_icon">
+        android:icon="@drawable/tecos_splash_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"

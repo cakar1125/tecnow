@@ -4,13 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('Android entry activity matches the application namespace', () {
-    const packageName = 'com.tecnow.app';
+    const packageName = 'com.tecos.app';
     final gradle = File('android/app/build.gradle.kts').readAsStringSync();
     final manifest = File(
       'android/app/src/main/AndroidManifest.xml',
     ).readAsStringSync();
     final activity = File(
-      'android/app/src/main/kotlin/com/tecnow/app/MainActivity.kt',
+      'android/app/src/main/kotlin/com/tecos/app/MainActivity.kt',
     );
 
     expect(gradle, contains('namespace = "$packageName"'));

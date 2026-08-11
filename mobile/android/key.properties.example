@@ -6,4 +6,4 @@ storePassword=
 keyPassword=
 keyAlias=upload
 # Yol eğik çizgiyle yazılır. Depo dizininin dışında bir yer seçin.
-storeFile=C:/anahtarlar/tecnow-upload.jks
+storeFile=C:/anahtarlar/tecos-upload.jks

@@ -27,7 +27,7 @@ Bu, Play Console'da uygulamayı ilk oluştururken bir kez sorulur.
 Bilgisayarınızda, **depo dizininin dışında** bir yere üretin. Örnek: `C:\anahtarlar\`.
 
 ```powershell
-keytool -genkey -v -keystore C:\anahtarlar\tecnow-upload.jks ^
+keytool -genkey -v -keystore C:\anahtarlar\tecos-upload.jks ^
   -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias upload
 ```
 
@@ -39,7 +39,7 @@ Komut sırayla soracak:
 | Soru | Ne yazılır |
 |---|---|
 | Keystore password | Kendi belirlediğiniz parola — **not edin** |
-| First and last name | Ad soyad ya da `TecNow` |
+| First and last name | Ad soyad ya da `tecOS` |
 | Organizational unit / Organization | Boş bırakılabilir |
 | City / State / Country code | Şehir, il, `TR` |
 | Is CN=... correct? | `yes` |
@@ -55,7 +55,7 @@ olmasını ister; 10000 bunu fazlasıyla karşılar.
 storePassword=BURAYA_KEYSTORE_PAROLASI
 keyPassword=BURAYA_ANAHTAR_PAROLASI
 keyAlias=upload
-storeFile=C:/anahtarlar/tecnow-upload.jks
+storeFile=C:/anahtarlar/tecos-upload.jks
 ```
 
 Notlar:
@@ -87,7 +87,7 @@ Sahip (`Owner`) satırında debug değil, kendi bilgileriniz görünmeli.
 
 Kaybı geri alınamaz olan iki şey:
 
-1. `tecnow-upload.jks` dosyası
+1. `tecos-upload.jks` dosyası
 2. Parolaları
 
 İkisini de **iki ayrı yerde** saklayın (ör. şifreli bir disk + bir parola

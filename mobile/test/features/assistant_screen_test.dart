@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecnow/features/assistant/assistant_screen.dart';
+import 'package:tecos/features/assistant/assistant_screen.dart';
 
 import '../test_harness.dart';
 

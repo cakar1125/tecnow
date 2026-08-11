@@ -5,10 +5,13 @@ import 'package:go_router/go_router.dart';
 import '../../data/feed/feed_schema.dart';
 import '../../data/providers.dart';
 import '../../design_system/components/app_components.dart';
+import '../../design_system/tokens/app_palette.dart';
+import '../../design_system/tokens/app_text.dart';
 import '../../design_system/tokens/app_tokens.dart';
 import '../../ui/content_card_model.dart';
 import '../../ui/detail_route.dart';
 import '../../ui/explore_search.dart';
+import 'content_store.dart';
 
 /// Keşfet.
 ///
@@ -60,7 +63,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
     return CustomScrollView(
       key: const Key('explore-scroll'),
       slivers: [
-        const SliverToBoxAdapter(child: AppTopBar(title: 'TecNow')),
+        const SliverToBoxAdapter(child: AppTopBar(title: 'tecOS')),
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(
@@ -107,6 +110,13 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xl),
+                // Mağaza aramanın **üstünde**: bu ekranın birinci işi
+                // akışı kurmak, arama ikinci. Sıra ters olsaydı ekran yine
+                // bir arama ekranı olurdu, altında birkaç ayar barındıran.
+                if (feed.value case final all?) ...[
+                  ContentStore(items: all),
+                  const SizedBox(height: AppSpacing.xxl),
+                ],
                 ..._sections(feed),
               ],
             ),
@@ -177,7 +187,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
       const SizedBox(height: AppSpacing.xxl),
       const _SectionHeader(title: 'Başlangıç İçin'),
       const SizedBox(height: AppSpacing.md),
-      // Bu bölüm TecNow'un kendi yazacağı başlangıç rehberleri için
+      // Bu bölüm tecOS'un kendi yazacağı başlangıç rehberleri için
       // ayrıldı. Feed'de rehber diye bir kayıt türü yok; buraya kayıt
       // koymak, okuma süresi dahil her alanını uydurmak olurdu. Bölüm
       // kaldırılmadı çünkü boşluğun **sebebini** söylemek, boşluğu
@@ -186,7 +196,7 @@ class _ExploreScreenState extends ConsumerState<ExploreScreen> {
         key: Key('explore-starter-placeholder'),
         title: 'Rehberler henüz hazır değil',
         message:
-            'Başlangıç rehberleri TecNow tarafından yazılacak. Hazır '
+            'Başlangıç rehberleri tecOS tarafından yazılacak. Hazır '
             'olmadan örnek metin gösterilmiyor.',
       ),
       const SizedBox(height: AppSpacing.xxl),
@@ -224,7 +234,7 @@ class _SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Row(
     children: [
-      Expanded(child: Text(title, style: AppTypography.title)),
+      Expanded(child: Text(title, style: context.text.title)),
       if (actionLabel != null && onAction != null) ...[
         const SizedBox(width: AppSpacing.sm),
         Semantics(
@@ -244,8 +254,8 @@ class _SectionHeader extends StatelessWidget {
                   ),
                   child: Text(
                     actionLabel!,
-                    style: AppTypography.label.copyWith(
-                      color: AppColors.primary,
+                    style: context.text.label.copyWith(
+                      color: context.palette.primary,
                     ),
                   ),
                 ),

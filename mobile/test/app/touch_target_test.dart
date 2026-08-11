@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
-import 'package:tecnow/app/router.dart';
-import 'package:tecnow/design_system/theme/app_theme.dart';
-import 'package:tecnow/design_system/tokens/app_tokens.dart';
+import 'package:tecos/app/router.dart';
+import 'package:tecos/data/interests/interest_taxonomy.dart';
+import 'package:tecos/design_system/theme/app_theme.dart';
+import 'package:tecos/design_system/tokens/app_tokens.dart';
 
 import '../support/test_overrides.dart';
 
@@ -91,6 +92,11 @@ void main() {
       await tester.pumpWidget(
         memoryDataScope(
           MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
+          // Seçim yokken Ana Sayfa'nın sekme şeridi iki sekmede kalıyor ve
+          // İlgi Alanları'ndaki sıralama listesi hiç çizilmiyor — yani
+          // dolu hâlleri ölçüsüz kalırdı. Kapı ekranı kullanıldığı gibi
+          // görmeli.
+          interests: [for (final interest in interestTaxonomy) interest.id],
         ),
       );
       await tester.pumpAndSettle();

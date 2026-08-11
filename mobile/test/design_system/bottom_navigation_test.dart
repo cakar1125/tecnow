@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
-import 'package:tecnow/design_system/components/app_components.dart';
-import 'package:tecnow/design_system/theme/app_theme.dart';
-import 'package:tecnow/design_system/tokens/app_tokens.dart';
+import 'package:tecos/design_system/tokens/app_palette.dart';
+import 'package:tecos/design_system/components/app_components.dart';
+import 'package:tecos/design_system/theme/app_theme.dart';
+import 'package:tecos/design_system/tokens/app_tokens.dart';
 
 /// `DECISION_LOG.md` D-005 ve `CLAUDE.md` alt navigasyon etiketlerini sabitler;
 /// bu adlar kısaltılarak "düzeltilemez".
@@ -124,12 +125,12 @@ void main() {
             )
             .first,
       );
-      expect(material.color, AppColors.surfaceHigh);
+      expect(material.color, AppPalette.dark.surfaceHigh);
 
       final text = tester.widget<Text>(find.text('örnek bildirim'));
       expect(
         text.style?.color ?? AppTypography.body.color,
-        AppColors.textPrimary,
+        AppPalette.dark.textPrimary,
       );
     });
   });

@@ -18,6 +18,8 @@ import 'package:flutter/material.dart';
 
 import '../../data/feed/feed_schema.dart';
 import '../../design_system/components/app_components.dart';
+import '../../design_system/tokens/app_palette.dart';
+import '../../design_system/tokens/app_text.dart';
 import '../../design_system/tokens/app_tokens.dart';
 
 class FeedItemDetail extends StatelessWidget {
@@ -37,7 +39,10 @@ class FeedItemDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (categoryLabel, _, categoryIcon) = categoryOf(item.kind);
+    final (categoryLabel, _, categoryIcon) = categoryOf(
+      context.palette,
+      item.kind,
+    );
 
     return ListView(
       key: const Key('detail-content'),
@@ -49,11 +54,11 @@ class FeedItemDetail extends StatelessWidget {
           children: [
             AppBadge(label: categoryLabel, color: accent, icon: categoryIcon),
             if (item.summaryOrigin != SummaryOrigin.original)
-              const AppBadge(label: 'TecNow ÖZETİ', color: AppColors.aiAccent),
+              AppBadge(label: 'tecOS ÖZETİ', color: context.palette.aiAccent),
             if (!item.language.toLowerCase().startsWith('tr'))
               AppBadge(
                 label: item.language.toUpperCase(),
-                color: AppColors.textSecondary,
+                color: context.palette.textSecondary,
               ),
           ],
         ),
@@ -61,20 +66,20 @@ class FeedItemDetail extends StatelessWidget {
         Text(
           item.title,
           key: const Key('detail-title'),
-          style: AppTypography.headline.copyWith(color: accent),
+          style: context.text.headline.copyWith(color: accent),
         ),
         const SizedBox(height: AppSpacing.xs),
-        Text(item.sourceName, style: AppTypography.bodyMuted),
+        Text(item.sourceName, style: context.text.bodyMuted),
         const SizedBox(height: AppSpacing.lg),
-        Text(item.summary, style: AppTypography.body),
+        Text(item.summary, style: context.text.body),
 
         // Geri çekilmiş içerik akışta gösterilmiyor ama elle girilen bir
         // adresle buraya gelinebilir; düzeltme kaydı saklanmaz.
         if (item.correctionNote case final note?) ...[
           const SizedBox(height: AppSpacing.lg),
           _Panel(
-            accent: AppColors.warning,
-            child: Text('Düzeltme: $note', style: AppTypography.body),
+            accent: context.palette.warning,
+            child: Text('Düzeltme: $note', style: context.text.body),
           ),
         ],
 
@@ -88,12 +93,12 @@ class FeedItemDetail extends StatelessWidget {
         const SizedBox(height: AppSpacing.sm),
         Text(
           item.url.host,
-          style: AppTypography.technical,
+          style: context.text.technical,
           textAlign: TextAlign.center,
         ),
 
         const SizedBox(height: AppSpacing.xl),
-        Text('Güven sinyalleri', style: AppTypography.title),
+        Text('Güven sinyalleri', style: context.text.title),
         const SizedBox(height: AppSpacing.md),
         _Panel(
           child: Column(
@@ -116,7 +121,7 @@ class FeedItemDetail extends StatelessWidget {
                   padding: const EdgeInsets.only(top: AppSpacing.sm),
                   child: Text(
                     'Popülerlik: $count',
-                    style: AppTypography.technical,
+                    style: context.text.technical,
                   ),
                 ),
             ],
@@ -137,14 +142,14 @@ class FeedItemDetail extends StatelessWidget {
 
         if (item.topics.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.xl),
-          Text('Konular', style: AppTypography.title),
+          Text('Konular', style: context.text.title),
           const SizedBox(height: AppSpacing.md),
           Wrap(
             spacing: AppSpacing.sm,
             runSpacing: AppSpacing.sm,
             children: [
               for (final topic in item.topics)
-                AppBadge(label: topic, color: AppColors.textSecondary),
+                AppBadge(label: topic, color: context.palette.textSecondary),
             ],
           ),
         ],
@@ -153,14 +158,14 @@ class FeedItemDetail extends StatelessWidget {
         // gizlenmez (`CONTENT_TRUST_POLICY.md`).
         if (item.mergedUrls.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.xl),
-          Text('Aynı gelişmenin diğer kaynakları', style: AppTypography.title),
+          Text('Aynı gelişmenin diğer kaynakları', style: context.text.title),
           const SizedBox(height: AppSpacing.md),
           for (final url in item.mergedUrls)
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.sm),
               child: TextButton(
                 onPressed: () => onOpenSource(url),
-                child: Text(url.host, style: AppTypography.technical),
+                child: Text(url.host, style: context.text.technical),
               ),
             ),
         ],
@@ -204,15 +209,17 @@ class _Signal extends StatelessWidget {
         Icon(
           met ? Icons.check_circle_outline : Icons.remove_circle_outline,
           size: 18,
-          color: met ? AppColors.success : AppColors.textSecondary,
+          color: met ? context.palette.success : context.palette.textSecondary,
         ),
         const SizedBox(width: AppSpacing.sm),
         Expanded(
           child: Text(
             label,
             style: met
-                ? AppTypography.body
-                : AppTypography.body.copyWith(color: AppColors.textSecondary),
+                ? context.text.body
+                : context.text.body.copyWith(
+                    color: context.palette.textSecondary,
+                  ),
           ),
         ),
       ],
@@ -244,10 +251,10 @@ class _Fact extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.start,
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      Flexible(child: Text(label, style: AppTypography.bodyMuted)),
+      Flexible(child: Text(label, style: context.text.bodyMuted)),
       const SizedBox(width: AppSpacing.md),
       Flexible(
-        child: Text(value, style: AppTypography.body, textAlign: TextAlign.end),
+        child: Text(value, style: context.text.body, textAlign: TextAlign.end),
       ),
     ],
   );
@@ -263,9 +270,9 @@ class _Panel extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.all(AppSpacing.lg),
     decoration: BoxDecoration(
-      color: AppColors.surface,
+      color: context.palette.surface,
       borderRadius: AppRadius.cardBorder,
-      border: Border.all(color: accent ?? AppColors.outline),
+      border: Border.all(color: accent ?? context.palette.outline),
     ),
     child: child,
   );

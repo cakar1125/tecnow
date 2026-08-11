@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecnow/data/feed/feed_schema.dart';
+import 'package:tecos/data/feed/feed_schema.dart';
 
 import '../../tool/feed/summarize.dart';
 import '../../tool/feed/summary_guard.dart';
@@ -101,7 +101,7 @@ void main() {
   });
 
   group('kabul edilen özet', () {
-    test('TecNow özeti olarak işaretlenir ve dili Türkçe olur', () async {
+    test('tecOS özeti olarak işaretlenir ve dili Türkçe olur', () async {
       final pass = await applySummaries(
         [_item()],
         summarizer: FakeSummarizer('7B parametreli yeni açık ağırlıklı model.'),
@@ -200,8 +200,8 @@ void main() {
       expect(pass.failed, 0);
     });
 
-    /// TecNow'un kendi kurduğu cümle zaten Türkçedir.
-    test('TecNow özeti yeniden özetlenmez', () async {
+    /// tecOS'un kendi kurduğu cümle zaten Türkçedir.
+    test('tecOS özeti yeniden özetlenmez', () async {
       final summarizer = FakeSummarizer('yeni özet');
       final pass = await applySummaries([
         _item(

@@ -1,18 +1,6 @@
 import 'package:flutter/material.dart';
 
-abstract final class AppColors {
-  static const background = Color(0xFF0A0C10);
-  static const surface = Color(0xFF11151B);
-  static const surfaceHigh = Color(0xFF181D25);
-  static const outline = Color(0xFF2B3440);
-  static const primary = Color(0xFF00F0FF);
-  static const aiAccent = Color(0xFFA855F7);
-  static const textPrimary = Color(0xFFF7FAFC);
-  static const textSecondary = Color(0xFF94A3B8);
-  static const success = Color(0xFF10B981);
-  static const warning = Color(0xFFF59E0B);
-  static const critical = Color(0xFFEF4444);
-}
+import 'app_palette.dart';
 
 abstract final class AppSpacing {
   static const xs = 4.0;
@@ -49,16 +37,33 @@ abstract final class AppRadius {
   static const featuredBorder = BorderRadius.all(featured);
 }
 
+/// Metnin **biçimi**: punto, ağırlık, satır yüksekliği, yazı ailesi.
+///
+/// Buradaki renkler yalnız birer taban değer. Uygulamada hiçbir widget bu
+/// sınıfı doğrudan kullanmaz — renk temaya göre değişiyor ve doğrudan
+/// kullanım koyu temanın rengini açık temaya taşır. Widget'ların erişim yolu
+/// `context.text` (`app_text.dart`); tema da `AppTheme._build` içinde
+/// renkleri paletten geçirerek `TextTheme`'i kurar.
+///
+/// Kural bir yorumla değil kapıyla korunuyor:
+/// `test/design_system/typography_usage_test.dart`.
 abstract final class AppTypography {
-  static const _base = TextStyle(
-    color: AppColors.textPrimary,
+  /// Taban renk kaynağı.
+  ///
+  /// Koyu palet **tek gerçek kaynak** olduğu için buradan okunuyor. İkinci
+  /// bir renk listesi (eski `AppColors`) tutulsaydı ikisi ayrışırdı; bu tam
+  /// olarak paletin çözdüğü sorun.
+  static const _ink = AppPalette.dark;
+
+  static final _base = TextStyle(
+    color: _ink.textPrimary,
     fontFamily: 'Inter',
     fontFamilyFallback: ['Roboto'],
     textBaseline: TextBaseline.alphabetic,
   );
-  static const display = TextStyle(
+  static final display = TextStyle(
     inherit: false,
-    color: AppColors.textPrimary,
+    color: _ink.textPrimary,
     fontFamily: 'Inter',
     fontFamilyFallback: ['Roboto'],
     fontSize: 32,
@@ -66,9 +71,9 @@ abstract final class AppTypography {
     height: 1.18,
     fontWeight: FontWeight.w700,
   );
-  static const headline = TextStyle(
+  static final headline = TextStyle(
     inherit: false,
-    color: AppColors.textPrimary,
+    color: _ink.textPrimary,
     fontFamily: 'Inter',
     fontFamilyFallback: ['Roboto'],
     fontSize: 24,
@@ -76,9 +81,9 @@ abstract final class AppTypography {
     height: 1.25,
     fontWeight: FontWeight.w700,
   );
-  static const title = TextStyle(
+  static final title = TextStyle(
     inherit: false,
-    color: AppColors.textPrimary,
+    color: _ink.textPrimary,
     fontFamily: 'Inter',
     fontFamilyFallback: ['Roboto'],
     fontSize: 18,
@@ -86,18 +91,18 @@ abstract final class AppTypography {
     height: 1.33,
     fontWeight: FontWeight.w600,
   );
-  static const body = TextStyle(
+  static final body = TextStyle(
     inherit: false,
-    color: AppColors.textPrimary,
+    color: _ink.textPrimary,
     fontFamily: 'Inter',
     fontFamilyFallback: ['Roboto'],
     fontSize: 14,
     textBaseline: TextBaseline.alphabetic,
     height: 1.5,
   );
-  static const label = TextStyle(
+  static final label = TextStyle(
     inherit: false,
-    color: AppColors.textSecondary,
+    color: _ink.textSecondary,
     fontFamily: 'Inter',
     fontFamilyFallback: ['Roboto'],
     fontSize: 12,
@@ -113,9 +118,9 @@ abstract final class AppTypography {
   /// ortasından ikinci satıra taşar. Sıkıştırılmış bu varyant 69.2 dp'ye
   /// iner ve 360/390/430 dp'de tek satırda kalır.
   /// Ölçüm ve regresyon kilidi: `test/design_system/bottom_navigation_test.dart`.
-  static const navLabel = TextStyle(
+  static final navLabel = TextStyle(
     inherit: false,
-    color: AppColors.textSecondary,
+    color: _ink.textSecondary,
     fontFamily: 'Inter',
     fontFamilyFallback: ['Roboto'],
     fontSize: 11,
@@ -124,9 +129,9 @@ abstract final class AppTypography {
     height: 1.33,
     fontWeight: FontWeight.w600,
   );
-  static const technical = TextStyle(
+  static final technical = TextStyle(
     inherit: false,
-    color: AppColors.textSecondary,
+    color: _ink.textSecondary,
     fontFamily: 'JetBrains Mono',
     fontFamilyFallback: ['monospace'],
     fontSize: 12,
@@ -134,14 +139,28 @@ abstract final class AppTypography {
     height: 1.45,
   );
   static TextStyle get bodyMuted =>
-      _base.copyWith(fontSize: 14, height: 1.5, color: AppColors.textSecondary);
+      _base.copyWith(fontSize: 14, height: 1.5, color: _ink.textSecondary);
 }
 
+/// Gölgeler de temaya bağlı.
+///
+/// Sabit oldukları sürece açık temada iki şey bozuluyordu: siyah gölge açık
+/// zeminde kirli bir gri halka bırakıyor, ve marka parıltısı camgöbeği kalıp
+/// açık temanın koyu turkuazıyla çelişiyordu. İkisi de artık paletten
+/// besleniyor — bu yüzden sabit değil, fonksiyon.
 abstract final class AppShadows {
-  static const card = [
-    BoxShadow(color: Color(0x3D000000), blurRadius: 16, offset: Offset(0, 6)),
+  static List<BoxShadow> card(AppPalette palette) => [
+    BoxShadow(
+      color: palette.shadow,
+      blurRadius: 16,
+      offset: const Offset(0, 6),
+    ),
   ];
-  static const cyanGlow = [BoxShadow(color: Color(0x2E00F0FF), blurRadius: 20)];
+
+  /// Marka parıltısı: açılış ve karşılama ekranındaki simgenin arkasında.
+  static List<BoxShadow> brandGlow(AppPalette palette) => [
+    BoxShadow(color: palette.primary.withValues(alpha: 0.18), blurRadius: 20),
+  ];
 }
 
 abstract final class AppDurations {

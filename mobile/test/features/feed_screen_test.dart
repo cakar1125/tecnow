@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecnow/app/router.dart';
-import 'package:tecnow/data/feed/feed_repository.dart';
-import 'package:tecnow/data/feed/feed_schema.dart';
-import 'package:tecnow/design_system/components/app_components.dart';
-import 'package:tecnow/design_system/theme/app_theme.dart';
-import 'package:tecnow/features/feed/feed_screen.dart';
+import 'package:tecos/app/router.dart';
+import 'package:tecos/data/feed/feed_repository.dart';
+import 'package:tecos/data/feed/feed_schema.dart';
+import 'package:tecos/data/providers.dart';
+import 'package:tecos/design_system/components/feed_items.dart';
+import 'package:tecos/design_system/theme/app_theme.dart';
+import 'package:tecos/features/feed/feed_screen.dart';
 
 import '../support/test_overrides.dart';
 
@@ -28,10 +30,21 @@ Future<void> _pumpFeed(
   await tester.pumpAndSettle();
 }
 
-Future<void> _selectTab(WidgetTester tester, HomeTab tab) async {
-  await tester.tap(find.byKey(Key('feed-tab-${tab.name}-idle')));
+Future<void> _selectTab(WidgetTester tester, String key) async {
+  await tester.tap(find.byKey(Key('feed-tab-$key-idle')));
   await tester.pumpAndSettle();
 }
+
+/// Şeritteki sekme etiketleri, soldan sağa.
+List<String> _tabLabels(WidgetTester tester) => tester
+    .widgetList<Text>(
+      find.descendant(
+        of: find.byKey(const Key('feed-tab-scroll')),
+        matching: find.byType(Text),
+      ),
+    )
+    .map((text) => text.data!)
+    .toList(growable: false);
 
 /// Sekme etiketleri kart rozetleriyle aynı metni taşıyabilir (örn. "GİTHUB"),
 /// bu yüzden sekme beklentileri sekme şeridine daraltılır.
@@ -40,14 +53,50 @@ Finder _tab(String label) => find.descendant(
   matching: find.text(label),
 );
 
-void main() {
-  testWidgets('dört sekme de çizilir', (tester) async {
-    await _pumpFeed(tester);
+/// Akıştaki kayıt sayısı.
+///
+/// Akış iki anatomi kullanıyor: ilk kayıt [FeedHeroItem], sonrakiler
+/// [FeedRowItem]. Testler "kaç kayıt görünüyor" diye soruyor, "hangi kutu
+/// çizildi" diye değil — bu yüzden ikisinin toplamına bakılıyor ve anatomi
+/// değişince testler değişmiyor.
+final Finder _feedItems = find.byWidgetPredicate(
+  (widget) => widget is FeedHeroItem || widget is FeedRowItem,
+);
 
-    expect(_tab('SANA ÖZEL'), findsOneWidget);
-    expect(_tab('GÜNDEM'), findsOneWidget);
-    expect(_tab('GİTHUB'), findsOneWidget);
-    expect(_tab('AI MODELLERİ'), findsOneWidget);
+void main() {
+  /// Şerit artık uygulamanın kendi şemasından (tür/kaynak) değil
+  /// **kullanıcının seçtiği konulardan** kuruluyor. Gerekçesi ve `TÜMÜ`
+  /// sekmesini zorunlu kılan ölçüm `lib/features/feed/home_tabs.dart`
+  /// başlığında.
+  group('sekme şeridi', () {
+    testWidgets('seçim yokken iki sabit sekme kalır', (tester) async {
+      await _pumpFeed(tester);
+
+      expect(_tabLabels(tester), ['SANA ÖZEL', 'TÜMÜ']);
+    });
+
+    testWidgets('seçilen konular araya girer', (tester) async {
+      await _pumpFeed(tester, interests: const ['bulut', 'yapay-zeka']);
+
+      expect(_tabLabels(tester), ['SANA ÖZEL', 'BULUT', 'YAPAY ZEKÂ', 'TÜMÜ']);
+    });
+
+    /// Sıra kullanıcıya ait: depodaki sıra şeride birebir yansımalı.
+    /// Yansımazsa Ayarlar'daki sürükle-bırak hiçbir şey yapmıyor demektir ve
+    /// ekranda her şey doğru görünür.
+    testWidgets('şeridin sırası kullanıcının sırasıdır', (tester) async {
+      await _pumpFeed(tester, interests: const ['yapay-zeka', 'bulut']);
+
+      expect(_tabLabels(tester), ['SANA ÖZEL', 'YAPAY ZEKÂ', 'BULUT', 'TÜMÜ']);
+    });
+
+    /// Türkçe büyütme: `toUpperCase()` "Mobil"i "MOBIL" yapıyor.
+    testWidgets('etiketler Türkçe yazılır', (tester) async {
+      await _pumpFeed(tester, interests: const ['mobil']);
+
+      expect(_tab('MOBİL'), findsOneWidget);
+      expect(_tab('MOBIL'), findsNothing);
+    });
   });
 
   group('paketlenmiş feed', () {
@@ -57,7 +106,7 @@ void main() {
       expect(find.text('ornek/depo'), findsOneWidget);
       expect(find.text('ornek/model'), findsOneWidget);
       expect(find.text('Bir duyuru'), findsOneWidget);
-      expect(find.byType(FeedItemCard), findsNWidgets(3));
+      expect(_feedItems, findsNWidgets(3));
     });
 
     /// Gerçek içerik "ÖRNEK" diye işaretlenmez — o etiket orada yalan olur.
@@ -66,22 +115,34 @@ void main() {
       expect(find.text('ÖRNEK'), findsNothing);
     });
 
-    /// Politika: TecNow özeti kaynağın kendi metninden görsel olarak
+    /// Politika: tecOS özeti kaynağın kendi metninden görsel olarak
     /// ayrılır.
-    testWidgets('TecNow özeti ayrıca işaretlenir', (tester) async {
+    testWidgets('tecOS özeti ayrıca işaretlenir', (tester) async {
       await _pumpFeed(tester);
-      // Yazım **kasıtlı**: marka deve sırtı, açıklama büyük harf. Tümü büyük
-      // harf (`TECNOW`) yazıldığında ad "TECNO + W" okunuyor ve TECNO,
-      // Transsion'ın Türkiye'de sınıf 42'de tescilli markası. Bu beklenti
-      // yazımı kilitliyor — bkz. DECISION_LOG D-018.
-      expect(find.text('TecNow ÖZETİ'), findsOneWidget);
+      // Yazım **kasıtlı**: marka kendi biçimini korur (`tecOS`), açıklama
+      // büyük harf. Ad "TecNow"dan buraya taşındı — o ad, TÜRKPATENT'te
+      // sınıf 09 ve 42'de tescilli TECNO markasını bütünüyle içeriyordu.
+      // Bu beklenti yazımı kilitliyor — bkz. DECISION_LOG D-018.
+      expect(find.text('tecOS ÖZETİ'), findsOneWidget);
     });
 
-    /// Anahtarsız üretilen feed'de özetler kaynağın kendi dilinde kalıyor;
-    /// kullanıcı bunu kartın üzerinde görmeli.
-    testWidgets('Türkçe olmayan özet dil rozetiyle gösterilir', (tester) async {
+    /// Dil rozeti akıştan **kaldırıldı** (2026-08-11) — ölçümle.
+    ///
+    /// Rozet "özet kaynağın kendi dilinde" demek için konmuştu. Gerçek
+    /// üretim ölçüldüğünde iki şey çıktı:
+    ///
+    /// 1. 200 kaydın **180'i** İngilizce. %90'a takılan bir etiket hiçbir
+    ///    kaydı diğerinden ayırmaz; yalnız her satıra gürültü ekler.
+    /// 2. Türkçe olan 20 kayıt, **tam olarak** tecOS'un özetlediği 20 kayıt
+    ///    (kesişim 20, fark 0). Yani rozet, yanında duran `tecOS ÖZETİ`
+    ///    gerekçesinin üstüne sıfır bilgi koyuyordu.
+    ///
+    /// Dil detay ekranında duruyor — orada tek kayda bakılıyor ve oranın
+    /// gürültüsü yok. Bu test o kararı kilitliyor: rozet akışa geri
+    /// gelirse kırılır.
+    testWidgets('dil rozeti akışta gösterilmez', (tester) async {
       await _pumpFeed(tester);
-      expect(find.text('EN'), findsNWidgets(2));
+      expect(find.text('EN'), findsNothing);
     });
 
     /// Kaynaklar "ne işe yarar" alanı vermiyor; boş bir başlık göstermek de
@@ -93,31 +154,76 @@ void main() {
   });
 
   group('sekmeler', () {
-    testWidgets('GÜNDEM yalnız duyuruları gösterir', (tester) async {
-      await _pumpFeed(tester);
-      await _selectTab(tester, HomeTab.gundem);
-
-      expect(find.text('Bir duyuru'), findsOneWidget);
-      expect(find.text('ornek/depo'), findsNothing);
-    });
-
-    testWidgets('AI MODELLERİ yalnız modelleri gösterir', (tester) async {
-      await _pumpFeed(tester);
-      await _selectTab(tester, HomeTab.aiModelleri);
+    testWidgets('konu sekmesi yalnız o konuyu gösterir', (tester) async {
+      // Test feed'inde `llm` konulu tek kayıt AI modeli.
+      await _pumpFeed(tester, interests: const ['yapay-zeka', 'oyun']);
+      await _selectTab(tester, 'yapay-zeka');
 
       expect(find.text('ornek/model'), findsOneWidget);
-      expect(find.byType(FeedItemCard), findsOneWidget);
+      expect(_feedItems, findsOneWidget);
     });
 
-    testWidgets('GİTHUB kaynağa göre süzer, türe göre değil', (tester) async {
-      await _pumpFeed(tester);
-      await _selectTab(tester, HomeTab.github);
+    /// Ölçüldü (2026-08-11, 200 kayıtlık üretim): kayıtların **67'si** sekiz
+    /// ilgi alanının hiçbirine girmiyor. `TÜMÜ` olmasaydı akışın üçte biri
+    /// Ana Sayfa'dan sessizce görünmez olurdu.
+    testWidgets('TÜMÜ hiçbir kaydı elemez', (tester) async {
+      await _pumpFeed(tester, interests: const ['yapay-zeka']);
+      await _selectTab(tester, 'tumu');
 
-      expect(find.text('ornek/depo'), findsOneWidget);
+      expect(_feedItems, findsNWidgets(3));
+    });
+
+    /// Kapatılan kaynak `TÜMÜ` sekmesinde de gelmez: susturma kullanıcının
+    /// kararı ve hiçbir sekme onu geçersiz kılmaz.
+    testWidgets('TÜMÜ kapatılmış kaynağı geri getirmez', (tester) async {
+      await tester.pumpWidget(
+        memoryDataHarness(
+          const Scaffold(body: FeedScreen()),
+          mutedSources: const {'GitHub'},
+        ),
+      );
+      await tester.pumpAndSettle();
+      await _selectTab(tester, 'tumu');
+
+      expect(find.text('ornek/depo'), findsNothing);
+      expect(_feedItems, findsNWidgets(2));
+    });
+
+    /// Boş bir sekme "içerik yok" demekle yetinmez: gerçek akışta "Oyun"
+    /// konusu 200 kayıtta yalnız 2 kayıt buluyor, yani bu ekran istisna
+    /// değil beklenen bir hâl.
+    testWidgets('boş konu sekmesi konunun adını söyler', (tester) async {
+      await _pumpFeed(tester, interests: const ['oyun']);
+      await _selectTab(tester, 'oyun');
+
+      expect(find.textContaining('"Oyun" konusunda'), findsOneWidget);
+    });
+
+    /// Bir sekme kaybolduğunda ekran boş kalmamalı: kullanıcı Keşfet'ten
+    /// bulunduğu sekmenin konusunu kapatabilir.
+    testWidgets('kaybolan sekmeden ilk sekmeye düşülür', (tester) async {
+      final repository = InMemoryInterestsRepository(const ['oyun', 'bulut']);
+      await tester.pumpWidget(
+        memoryDataHarness(
+          const Scaffold(body: FeedScreen()),
+          interestsRepository: repository,
+        ),
+      );
+      await tester.pumpAndSettle();
+      await _selectTab(tester, 'oyun');
+      expect(find.byKey(const Key('feed-tab-oyun-selected')), findsOneWidget);
+
+      // Keşfet'ten "Oyun" kapatıldı.
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(FeedScreen)),
+      );
+      container.read(interestsProvider.notifier).toggle('oyun');
+      await tester.pumpAndSettle();
+
+      expect(_tabLabels(tester), ['SANA ÖZEL', 'BULUT', 'TÜMÜ']);
       expect(
-        find.text('ornek/model'),
-        findsNothing,
-        reason: 'Hugging Face kaydı GitHub sekmesine girmemeli',
+        find.byKey(const Key('feed-tab-sana-ozel-selected')),
+        findsOneWidget,
       );
     });
   });
@@ -127,7 +233,7 @@ void main() {
     /// şey anlatmaz, sadece bozuk görünür.
     testWidgets('ilgi alanı yoksa akışın tamamı gösterilir', (tester) async {
       await _pumpFeed(tester);
-      expect(find.byType(FeedItemCard), findsNWidgets(3));
+      expect(_feedItems, findsNWidgets(3));
     });
 
     /// **Kimlik** verilir, feed'in konu slug'ı değil.
@@ -143,7 +249,7 @@ void main() {
       await _pumpFeed(tester, interests: const ['yapay-zeka']);
 
       expect(find.text('ornek/model'), findsOneWidget);
-      expect(find.byType(FeedItemCard), findsOneWidget);
+      expect(_feedItems, findsOneWidget);
     });
 
     testWidgets('eşleşme yoksa yönlendirici bir boş durum çıkar', (
@@ -152,8 +258,11 @@ void main() {
       // Geçerli bir ilgi alanı, ama bu feed'de oyunla ilgili kayıt yok.
       await _pumpFeed(tester, interests: const ['oyun']);
 
-      expect(find.byType(FeedItemCard), findsNothing);
-      expect(find.textContaining('ilgi alanlarını'), findsOneWidget);
+      expect(_feedItems, findsNothing);
+      // Yönlendirme **Keşfet'e**, Ayarlar'a değil: konu seçimi artık içerik
+      // mağazasında ve alt gezinmeden tek dokunuş uzakta. Ayarlar → İlgi
+      // Alanları hâlâ çalışıyor ama iki dokunuş.
+      expect(find.textContaining('Keşfet\'ten'), findsOneWidget);
     });
 
     /// Tanınmayan kimlik yüzünden ekran boşalmaz: eski bir sürümden kalmış
@@ -161,7 +270,7 @@ void main() {
     testWidgets('tanınmayan kimlik akışı boşaltmaz', (tester) async {
       await _pumpFeed(tester, interests: const ['bilinmeyen-alan']);
 
-      expect(find.byType(FeedItemCard), findsNWidgets(3));
+      expect(_feedItems, findsNWidgets(3));
     });
   });
 
@@ -181,7 +290,14 @@ void main() {
   testWidgets('bozuk feed hata durumu gösterir', (tester) async {
     await tester.pumpWidget(
       memoryDataScopeWithFailingFeed(
-        const MaterialApp(home: Scaffold(body: FeedScreen())),
+        MaterialApp(
+          // Tema **verilmek zorunda**: ekranlar renkleri `AppPalette`
+          // uzantısından okuyor ve uzantı yoksa `context.palette` atıyor.
+          // Sessiz bir varsayılan, açık temada kırılan bir ekranı burada
+          // görünmez kılardı.
+          theme: AppTheme.dark,
+          home: const Scaffold(body: FeedScreen()),
+        ),
       ),
     );
     await tester.pumpAndSettle();
@@ -381,7 +497,7 @@ void main() {
       );
       await _pumpFeed(tester, repository: repository);
 
-      expect(find.byType(FeedItemCard), findsNWidgets(3));
+      expect(_feedItems, findsNWidgets(3));
       expect(find.textContaining('Güncellenemedi'), findsOneWidget);
       expect(find.byKey(const Key('feed-error')), findsNothing);
     });

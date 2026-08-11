@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecnow/data/feed/feed_schema.dart';
-import 'package:tecnow/ui/content_card_model.dart';
+import 'package:tecos/data/feed/feed_schema.dart';
+import 'package:tecos/ui/content_card_model.dart';
 
 FeedItem _item({
   SummaryOrigin origin = SummaryOrigin.original,
@@ -61,7 +61,7 @@ void main() {
       );
     });
 
-    test('TecNow özeti ayrı işaretlenir', () {
+    test('tecOS özeti ayrı işaretlenir', () {
       expect(
         ContentCardModel.fromFeedItem(
           _item(origin: SummaryOrigin.generated),
@@ -70,7 +70,7 @@ void main() {
       );
     });
 
-    /// Elle yazılan özet de TecNow'un metnidir; kaynağın kendi
+    /// Elle yazılan özet de tecOS'un metnidir; kaynağın kendi
     /// açıklamasıyla aynı kefeye konmaz.
     test('elle yazılan özet kaynak sayılmaz', () {
       expect(

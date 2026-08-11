@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tecnow/app/app_version.dart';
-import 'package:tecnow/app/router.dart';
-import 'package:tecnow/data/app_preferences.dart';
-import 'package:tecnow/design_system/theme/app_theme.dart';
-import 'package:tecnow/design_system/tokens/app_tokens.dart';
+import 'package:tecos/design_system/tokens/app_palette.dart';
+import 'package:tecos/app/app_version.dart';
+import 'package:tecos/app/router.dart';
+import 'package:tecos/data/app_preferences.dart';
+import 'package:tecos/design_system/theme/app_theme.dart';
+import 'package:tecos/design_system/tokens/app_tokens.dart';
 
 import '../support/test_overrides.dart';
 
@@ -45,10 +46,10 @@ void main() {
     await pumpSettingsScreen(tester);
 
     final deleteLabel = tester.widget<Text>(find.text('Verileri Sil'));
-    expect(deleteLabel.style?.color, AppColors.critical);
+    expect(deleteLabel.style?.color, AppPalette.dark.critical);
 
     final deleteIcon = tester.widget<Icon>(find.byIcon(Icons.delete_outline));
-    expect(deleteIcon.color, AppColors.critical);
+    expect(deleteIcon.color, AppPalette.dark.critical);
   });
 
   testWidgets('local data rows report real record counts', (tester) async {
@@ -147,9 +148,9 @@ void main() {
   testWidgets('the about row opens a real screen', (tester) async {
     await pumpSettingsScreen(tester);
 
-    await tester.ensureVisible(find.text('TecNow Hakkında'));
+    await tester.ensureVisible(find.text('tecOS Hakkında'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('TecNow Hakkında'));
+    await tester.tap(find.text('tecOS Hakkında'));
     await tester.pumpAndSettle();
 
     expect(find.text('Hesap yok'), findsOneWidget);
@@ -205,9 +206,10 @@ void main() {
   ) async {
     await pumpSettingsScreen(tester);
 
+    // 'Tema' bu listede **değil**: 2026-08-11'de gerçek bir kontrole
+    // dönüştü (açık · koyu · sistem). Ölçümü ayrı testte.
     for (final title in [
       'Dil',
-      'Tema',
       'İçerik Tercihleri',
       'Asistan Konuşmaları',
       'Verileri Dışa Aktar',
@@ -229,7 +231,52 @@ void main() {
       );
     }
 
-    expect(find.text('Yakında'), findsNWidgets(5));
+    expect(find.text('Yakında'), findsNWidgets(4));
+  });
+
+  /// Tema seçimi **gerçekten çalışıyor** mu?
+  ///
+  /// Üç seçeneğin çizilmesi yetmez: bu ekran uzun süre "dokunulunca hiçbir
+  /// şey yapmayan satır" kusurunun merkeziydi. Ölçülen şey, seçimin diske
+  /// yazılması — uygulama kapanıp açıldığında geri gelmesini sağlayan tek şey.
+  group('tema seçimi', () {
+    testWidgets('üç seçenek çizilir ve varsayılan sistemdir', (tester) async {
+      await pumpSettingsScreen(tester);
+
+      await tester.ensureVisible(find.text('Tema'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Sistem'), findsOneWidget);
+      expect(find.text('Açık'), findsOneWidget);
+      expect(find.text('Koyu'), findsOneWidget);
+
+      final button = tester.widget<SegmentedButton<ThemeMode>>(
+        find.byType(SegmentedButton<ThemeMode>),
+      );
+      expect(button.selected, {ThemeMode.system});
+    });
+
+    testWidgets('seçim diske yazılır', (tester) async {
+      await pumpSettingsScreen(tester);
+
+      await tester.ensureVisible(find.text('Tema'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Açık'));
+      await tester.pumpAndSettle();
+
+      final preferences = await SharedPreferences.getInstance();
+      expect(
+        AppPreferences(preferences).themeMode,
+        ThemeMode.light,
+        reason: 'seçim yalnız ekranda kaldı, diske yazılmadı',
+      );
+
+      await tester.tap(find.text('Koyu'));
+      await tester.pumpAndSettle();
+
+      final after = await SharedPreferences.getInstance();
+      expect(AppPreferences(after).themeMode, ThemeMode.dark);
+    });
   });
 
   /// Etkin satırlar okunu korumalı: "Yakında" düzeltmesi, gerçekten çalışan

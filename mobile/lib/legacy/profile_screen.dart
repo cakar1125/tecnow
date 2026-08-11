@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../design_system/components/app_components.dart';
+import '../design_system/tokens/app_text.dart';
 import '../design_system/tokens/app_tokens.dart';
 import '../fixtures/fixtures.dart';
 
@@ -31,13 +32,13 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: AppSpacing.md),
             Text(
               'Örnek Kullanıcı',
-              style: AppTypography.headline,
+              style: context.text.headline,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
               '@ornek_profil · FIXTURE_ONLY',
-              style: AppTypography.technical,
+              style: context.text.technical,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.xl),
@@ -52,7 +53,7 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: AppSpacing.xl),
             SecondaryButton(label: 'Profili düzenle', onPressed: () {}),
             const SizedBox(height: AppSpacing.xl),
-            Text('Kaydedilen örnekler', style: AppTypography.title),
+            Text('Kaydedilen örnekler', style: context.text.title),
             const SizedBox(height: AppSpacing.md),
             const RepositoryCard(item: repositoryFixture),
           ],
@@ -69,8 +70,8 @@ class _ProfileStat extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
     children: [
-      Text(value, style: AppTypography.title),
-      Text(label, style: AppTypography.label),
+      Text(value, style: context.text.title),
+      Text(label, style: context.text.label),
     ],
   );
 }

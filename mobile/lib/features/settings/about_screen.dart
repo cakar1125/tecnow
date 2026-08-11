@@ -1,4 +1,4 @@
-/// "TecNow Hakkında".
+/// "tecOS Hakkında".
 ///
 /// Ayarlar'daki satır önceden yalnız "Bu ekran sonraki fazda uygulanacak."
 /// diyen bir SnackBar açıyordu; satırın sağında ise gidilecek bir ekran
@@ -15,6 +15,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/app_version.dart';
 import '../../design_system/components/app_components.dart';
+import '../../design_system/tokens/app_palette.dart';
+import '../../design_system/tokens/app_text.dart';
 import '../../design_system/tokens/app_tokens.dart';
 import 'source_policy_screen.dart';
 
@@ -25,7 +27,7 @@ class AboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: const AppBackTopBar(title: 'TecNow Hakkında'),
+    appBar: const AppBackTopBar(title: 'tecOS Hakkında'),
     body: SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(
@@ -37,13 +39,13 @@ class AboutScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('TecNow', style: AppTypography.display),
+            Text('tecOS', style: context.text.display),
             const SizedBox(height: AppSpacing.sm),
             Text(
               'Teknoloji dünyasında olan biteni tek akışta izlemek için bir '
               'rehber. Sosyal ağ değil: burada gönderi paylaşılmaz, yorum '
               'yazılmaz, kimse takip edilmez.',
-              style: AppTypography.bodyMuted,
+              style: context.text.bodyMuted,
             ),
             const SizedBox(height: AppSpacing.xl),
 
@@ -82,7 +84,7 @@ class AboutScreen extends StatelessWidget {
             Center(
               child: Text(
                 'Sürüm $appVersionLabel',
-                style: AppTypography.bodyMuted,
+                style: context.text.bodyMuted,
               ),
             ),
           ],
@@ -111,7 +113,7 @@ class _AboutFact extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 2),
-          child: Icon(icon, size: 22, color: AppColors.primary),
+          child: Icon(icon, size: 22, color: context.palette.primary),
         ),
         const SizedBox(width: AppSpacing.md),
         Expanded(
@@ -120,10 +122,10 @@ class _AboutFact extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: AppTypography.body.copyWith(fontWeight: FontWeight.w600),
+                style: context.text.body.copyWith(fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: AppSpacing.xs),
-              Text(body, style: AppTypography.bodyMuted),
+              Text(body, style: context.text.bodyMuted),
             ],
           ),
         ),

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import '../../data/feed/feed_schema.dart' show FeedItemKind;
 import '../../fixtures/fixtures.dart';
 import '../../ui/content_card_model.dart';
+import '../tokens/app_palette.dart';
+import '../tokens/app_text.dart';
 import '../tokens/app_tokens.dart';
 
 class AppScaffold extends StatelessWidget {
@@ -34,7 +36,7 @@ class AppScaffold extends StatelessWidget {
 }
 
 class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
-  const AppTopBar({this.title = 'TecNow', this.actions, super.key});
+  const AppTopBar({this.title = 'tecOS', this.actions, super.key});
 
   final String title;
   final List<Widget>? actions;
@@ -46,13 +48,13 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      backgroundColor: AppColors.background,
+      backgroundColor: context.palette.background,
       surfaceTintColor: Colors.transparent,
       title: Semantics(
         header: true,
         child: Text(
           title,
-          style: AppTypography.title.copyWith(color: AppColors.primary),
+          style: context.text.title.copyWith(color: context.palette.primary),
         ),
       ),
       centerTitle: true,
@@ -72,7 +74,7 @@ class AppBackTopBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.palette.background,
       surfaceTintColor: Colors.transparent,
       leading: Semantics(
         button: true,
@@ -83,7 +85,7 @@ class AppBackTopBar extends StatelessWidget implements PreferredSizeWidget {
           icon: const Icon(Icons.arrow_back_rounded),
         ),
       ),
-      title: Text(title, style: AppTypography.title),
+      title: Text(title, style: context.text.title),
     );
   }
 }
@@ -188,7 +190,10 @@ class DestructiveButton extends StatelessWidget {
   Widget build(BuildContext context) => SizedBox(
     height: 48,
     child: FilledButton(
-      style: FilledButton.styleFrom(backgroundColor: AppColors.critical),
+      style: FilledButton.styleFrom(
+        backgroundColor: context.palette.critical,
+        foregroundColor: context.palette.onPrimary,
+      ),
       onPressed: onPressed,
       child: Text(label),
     ),
@@ -279,7 +284,7 @@ class AppFilterChip extends StatelessWidget {
         ? Icon(
             Icons.check_rounded,
             size: 18,
-            color: selected ? AppColors.textPrimary : Colors.transparent,
+            color: selected ? context.palette.textPrimary : Colors.transparent,
           )
         : null,
   );
@@ -290,15 +295,15 @@ class CategoryBadge extends StatelessWidget {
   final String label;
   @override
   Widget build(BuildContext context) =>
-      AppBadge(label: label, color: AppColors.primary);
+      AppBadge(label: label, color: context.palette.primary);
 }
 
 class VerifiedBadge extends StatelessWidget {
   const VerifiedBadge({super.key});
   @override
-  Widget build(BuildContext context) => const AppBadge(
+  Widget build(BuildContext context) => AppBadge(
     label: 'DOĞRULANMIŞ ÖRNEK',
-    color: AppColors.success,
+    color: context.palette.success,
     icon: Icons.verified_outlined,
   );
 }
@@ -306,9 +311,9 @@ class VerifiedBadge extends StatelessWidget {
 class TrendingBadge extends StatelessWidget {
   const TrendingBadge({super.key});
   @override
-  Widget build(BuildContext context) => const AppBadge(
+  Widget build(BuildContext context) => AppBadge(
     label: 'YÜKSELEN',
-    color: AppColors.warning,
+    color: context.palette.warning,
     icon: Icons.trending_up_rounded,
   );
 }
@@ -344,7 +349,7 @@ class AppBadge extends StatelessWidget {
           const SizedBox(width: AppSpacing.xs),
         ],
         Flexible(
-          child: Text(label, style: AppTypography.label.copyWith(color: color)),
+          child: Text(label, style: context.text.label.copyWith(color: color)),
         ),
       ],
     ),
@@ -357,17 +362,18 @@ class SourceAvatar extends StatelessWidget {
   final bool ai;
 
   @override
-  Widget build(BuildContext context) => Semantics(
-    label: '$label kaynağı',
-    child: CircleAvatar(
-      radius: 22,
-      backgroundColor: (ai ? AppColors.aiAccent : AppColors.primary).withValues(
-        alpha: 0.16,
+  Widget build(BuildContext context) {
+    final accent = ai ? context.palette.aiAccent : context.palette.primary;
+    return Semantics(
+      label: '$label kaynağı',
+      child: CircleAvatar(
+        radius: 22,
+        backgroundColor: accent.withValues(alpha: 0.16),
+        foregroundColor: accent,
+        child: Text(label.characters.first.toUpperCase()),
       ),
-      foregroundColor: ai ? AppColors.aiAccent : AppColors.primary,
-      child: Text(label.characters.first.toUpperCase()),
-    ),
-  );
+    );
+  }
 }
 
 class SocialActionBar extends StatelessWidget {
@@ -450,9 +456,9 @@ class TechnologyCard extends StatelessWidget {
       children: [
         CategoryBadge(label: item.category),
         const SizedBox(height: AppSpacing.md),
-        Text(item.title, style: AppTypography.title),
+        Text(item.title, style: context.text.title),
         const SizedBox(height: AppSpacing.sm),
-        Text(item.summary, style: AppTypography.bodyMuted),
+        Text(item.summary, style: context.text.bodyMuted),
         const SizedBox(height: AppSpacing.lg),
         const SocialActionBar(),
       ],
@@ -471,7 +477,7 @@ class RepositoryCard extends StatelessWidget {
     label: '${item.name} repository kartı',
     child: _AppCard(
       onTap: onTap,
-      accent: AppColors.primary,
+      accent: context.palette.primary,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -484,21 +490,21 @@ class RepositoryCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          Text(item.name, style: AppTypography.title),
+          Text(item.name, style: context.text.title),
           const SizedBox(height: AppSpacing.sm),
-          Text(item.description, style: AppTypography.bodyMuted),
+          Text(item.description, style: context.text.bodyMuted),
           const SizedBox(height: AppSpacing.lg),
           Wrap(
             spacing: AppSpacing.md,
             runSpacing: AppSpacing.sm,
             children: [
-              Text('★ ${item.stars}', style: AppTypography.technical),
-              Text('⑂ ${item.forks}', style: AppTypography.technical),
-              Text('! ${item.issues}', style: AppTypography.technical),
+              Text('★ ${item.stars}', style: context.text.technical),
+              Text('⑂ ${item.forks}', style: context.text.technical),
+              Text('! ${item.issues}', style: context.text.technical),
               Text(
                 '● ${item.language}',
-                style: AppTypography.technical.copyWith(
-                  color: AppColors.primary,
+                style: context.text.technical.copyWith(
+                  color: context.palette.primary,
                 ),
               ),
             ],
@@ -520,7 +526,7 @@ class AIModelCard extends StatelessWidget {
     label: '${item.name} yapay zekâ modeli kartı',
     child: _AppCard(
       onTap: onTap,
-      accent: AppColors.aiAccent,
+      accent: context.palette.aiAccent,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -529,7 +535,7 @@ class AIModelCard extends StatelessWidget {
             children: [
               const SourceAvatar(label: 'S', ai: true),
               const SizedBox(width: AppSpacing.md),
-              Expanded(child: Text(item.name, style: AppTypography.title)),
+              Expanded(child: Text(item.name, style: context.text.title)),
             ],
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -537,10 +543,10 @@ class AIModelCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           Text(
             item.maker,
-            style: AppTypography.label.copyWith(color: AppColors.aiAccent),
+            style: context.text.label.copyWith(color: context.palette.aiAccent),
           ),
           const SizedBox(height: AppSpacing.sm),
-          Text(item.summary, style: AppTypography.bodyMuted),
+          Text(item.summary, style: context.text.bodyMuted),
           const SizedBox(height: AppSpacing.lg),
           Wrap(
             spacing: AppSpacing.sm,
@@ -563,11 +569,11 @@ class _Metric extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.all(AppSpacing.md),
-    decoration: const BoxDecoration(
-      color: AppColors.background,
+    decoration: BoxDecoration(
+      color: context.palette.background,
       borderRadius: AppRadius.smallBorder,
     ),
-    child: Text('$label\n$value', style: AppTypography.technical),
+    child: Text('$label\n$value', style: context.text.technical),
   );
 }
 
@@ -582,13 +588,13 @@ class EmptyStateView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.inbox_outlined, size: 48, color: AppColors.primary),
+          Icon(Icons.inbox_outlined, size: 48, color: context.palette.primary),
           const SizedBox(height: AppSpacing.lg),
-          Text(title, style: AppTypography.title, textAlign: TextAlign.center),
+          Text(title, style: context.text.title, textAlign: TextAlign.center),
           const SizedBox(height: AppSpacing.sm),
           Text(
             message,
-            style: AppTypography.bodyMuted,
+            style: context.text.bodyMuted,
             textAlign: TextAlign.center,
           ),
         ],
@@ -614,13 +620,13 @@ class ErrorStateView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.error_outline, size: 48, color: AppColors.critical),
+          Icon(Icons.error_outline, size: 48, color: context.palette.critical),
           const SizedBox(height: AppSpacing.lg),
-          Text(title, style: AppTypography.title, textAlign: TextAlign.center),
+          Text(title, style: context.text.title, textAlign: TextAlign.center),
           const SizedBox(height: AppSpacing.sm),
           Text(
             message,
-            style: AppTypography.bodyMuted,
+            style: context.text.bodyMuted,
             textAlign: TextAlign.center,
           ),
           if (onRetry != null) ...[
@@ -666,7 +672,7 @@ class _LoadingSkeletonState extends State<LoadingSkeleton> {
     duration: AppDurations.slow,
     height: 120,
     decoration: BoxDecoration(
-      color: bright ? AppColors.surfaceHigh : AppColors.surface,
+      color: bright ? context.palette.surfaceHigh : context.palette.surface,
       borderRadius: AppRadius.cardBorder,
     ),
   );
@@ -712,11 +718,11 @@ class _AppCard extends StatelessWidget {
   final Color? accent;
   @override
   Widget build(BuildContext context) => Material(
-    color: AppColors.surface,
+    color: context.palette.surface,
     shape: RoundedRectangleBorder(
       borderRadius: AppRadius.cardBorder,
       side: BorderSide(
-        color: accent?.withValues(alpha: 0.45) ?? AppColors.outline,
+        color: accent?.withValues(alpha: 0.45) ?? context.palette.outline,
       ),
     ),
     child: InkWell(
@@ -742,11 +748,9 @@ class SavedItemCard extends StatelessWidget {
   final VoidCallback onRemove;
   final VoidCallback onOpenDetails;
 
-  (String, Color, IconData) get _category => categoryOf(item.kind);
-
   @override
   Widget build(BuildContext context) {
-    final (label, color, icon) = _category;
+    final (label, color, icon) = categoryOf(context.palette, item.kind);
 
     return _AppCard(
       accent: color,
@@ -765,17 +769,17 @@ class SavedItemCard extends StatelessWidget {
               const SizedBox(width: AppSpacing.sm),
               // Yalnız fixture kaydında. Gerçek içerikte bu etiket yalan olur.
               if (item.isSample)
-                Text('Örnek kayıt', style: AppTypography.technical),
+                Text('Örnek kayıt', style: context.text.technical),
             ],
           ),
           const SizedBox(height: AppSpacing.md),
-          Text(item.title, style: AppTypography.title),
+          Text(item.title, style: context.text.title),
           const SizedBox(height: AppSpacing.sm),
-          Text('Kaynak: ${item.sourceLabel}', style: AppTypography.technical),
+          Text('Kaynak: ${item.sourceLabel}', style: context.text.technical),
           const SizedBox(height: AppSpacing.sm),
-          Text(item.summary, style: AppTypography.bodyMuted),
+          Text(item.summary, style: context.text.bodyMuted),
           const SizedBox(height: AppSpacing.lg),
-          const Divider(height: 1, color: AppColors.outline),
+          Divider(height: 1, color: context.palette.outline),
           const SizedBox(height: AppSpacing.lg),
           Row(
             children: [
@@ -804,22 +808,27 @@ class SavedItemCard extends StatelessWidget {
 ///
 /// Mor **yalnız AI/Asistan bağlamında** kullanılır (`CLAUDE.md` değişmez
 /// kuralı); model kartı dışında hiçbir tür bu rengi almaz.
-(String, Color, IconData) categoryOf(FeedItemKind kind) => switch (kind) {
-  FeedItemKind.repository => ('DEPO', AppColors.primary, Icons.code_rounded),
-  FeedItemKind.aiModel => (
-    'AI MODEL',
-    AppColors.aiAccent,
-    Icons.psychology_outlined,
-  ),
-  FeedItemKind.tool => ('ARAÇ', AppColors.warning, Icons.build_outlined),
-  FeedItemKind.skill => ('SKILL', AppColors.success, Icons.school_outlined),
-  FeedItemKind.mcp => ('MCP', AppColors.primary, Icons.hub_outlined),
-  FeedItemKind.announcement => (
-    'DUYURU',
-    AppColors.success,
-    Icons.campaign_outlined,
-  ),
-};
+///
+/// Palet parametre olarak alınıyor çünkü bu bir widget değil, düz bir
+/// fonksiyon — `context`'i yok. Çağıran `context.palette` verir; renkler
+/// böylece temayla birlikte değişir.
+(String, Color, IconData) categoryOf(AppPalette palette, FeedItemKind kind) =>
+    switch (kind) {
+      FeedItemKind.repository => ('DEPO', palette.primary, Icons.code_rounded),
+      FeedItemKind.aiModel => (
+        'AI MODEL',
+        palette.aiAccent,
+        Icons.psychology_outlined,
+      ),
+      FeedItemKind.tool => ('ARAÇ', palette.warning, Icons.build_outlined),
+      FeedItemKind.skill => ('SKILL', palette.success, Icons.school_outlined),
+      FeedItemKind.mcp => ('MCP', palette.primary, Icons.hub_outlined),
+      FeedItemKind.announcement => (
+        'DUYURU',
+        palette.success,
+        Icons.campaign_outlined,
+      ),
+    };
 
 /// Özetin dilini gösteren etiket. Anahtarsız üretilen feed'de özetler
 /// kaynağın kendi dilindedir; kullanıcı bunu **kartın üzerinde** görmeli,
@@ -853,7 +862,8 @@ class FeedItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (label, color, icon) = categoryOf(item.kind);
+    final palette = context.palette;
+    final (label, color, icon) = categoryOf(palette, item.kind);
 
     return Semantics(
       button: onTap != null,
@@ -874,32 +884,30 @@ class FeedItemCard extends StatelessWidget {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       AppBadge(label: label, color: color, icon: icon),
-                      Text(item.sourceLabel, style: AppTypography.technical),
+                      Text(item.sourceLabel, style: context.text.technical),
                       // Örnek işareti yalnız fixture kartlarında. Gerçek
                       // içerikte "ÖRNEK" yazmak yalan olurdu.
                       if (item.isSample)
-                        const AppBadge(
-                          label: 'ÖRNEK',
-                          color: AppColors.textSecondary,
-                        ),
-                      // Politika: TecNow özeti kaynağın kendi metninden
+                        AppBadge(label: 'ÖRNEK', color: palette.textSecondary),
+                      // Politika: tecOS özeti kaynağın kendi metninden
                       // görsel olarak ayrılır.
                       //
-                      // Marka **tümü büyük harf yazılmaz.** Ad "Tec Now"
-                      // (teknoloji + şimdi) okunacak şekilde kuruldu ve bu
-                      // ayrım yalnız deve sırtı yazımda görünüyor: `TECNOW`
-                      // yazıldığında okuma "TECNO + W"ye düşüyor. TECNO,
-                      // Transsion'ın markası ve Türkiye'de **sınıf 42**'de
-                      // (yazılım hizmetleri) tescilli — bkz. DECISION_LOG
-                      // D-018. Rozetin geri kalanı diğer rozetlerle aynı
-                      // biçimde büyük harf.
+                      // Marka **kendi yazımını korur** (`tecOS`), açıklama
+                      // büyük harf. Rozetin tümünü büyük harfe çevirmek adı
+                      // `TECOS` yapar ve markanın biçimini yok eder.
+                      //
+                      // Ad buraya "TecNow"dan taşındı. TÜRKPATENT sicilinde
+                      // TECNO, Transsion'ın markası olarak sınıf 09'da üç
+                      // (2018 104811 · 2023 040621 · 2024 051932) ve sınıf
+                      // 42'de bir (2025 027616) tescille kayıtlı; "TecNow"
+                      // o markayı **bütünüyle içeriyordu**. "tecOS" yalnız
+                      // `TEC` önekini paylaşıyor — sicilde 11.421 marka o
+                      // öneki taşıyor, yani tek başına ayırt edici değil.
+                      // Bkz. DECISION_LOG D-018.
                       if (item.summaryAuthor == SummaryAuthor.generated)
-                        const AppBadge(
-                          label: 'TecNow ÖZETİ',
-                          color: AppColors.aiAccent,
-                        ),
+                        AppBadge(label: 'tecOS ÖZETİ', color: palette.aiAccent),
                       if (languageBadge(item) case final code?)
-                        AppBadge(label: code, color: AppColors.textSecondary),
+                        AppBadge(label: code, color: palette.textSecondary),
                     ],
                   ),
                 ),
@@ -913,11 +921,15 @@ class FeedItemCard extends StatelessWidget {
                       key: Key('feed-bookmark-${item.id}'),
                       tooltip: isSaved ? 'Kaydı kaldır' : 'Kaydet',
                       onPressed: toggle,
+                      constraints: const BoxConstraints(
+                        minWidth: AppTouchTarget.minimum,
+                        minHeight: AppTouchTarget.minimum,
+                      ),
                       icon: Icon(
                         isSaved ? Icons.bookmark : Icons.bookmark_outline,
                         color: isSaved
-                            ? AppColors.primary
-                            : AppColors.textSecondary,
+                            ? palette.primary
+                            : palette.textSecondary,
                       ),
                     ),
                   ),
@@ -925,11 +937,11 @@ class FeedItemCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppSpacing.md),
-            Text(item.title, style: AppTypography.headline),
+            Text(item.title, style: context.text.headline),
             const SizedBox(height: AppSpacing.sm),
             Text(
               item.summary,
-              style: AppTypography.bodyMuted,
+              style: context.text.bodyMuted,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
             ),
@@ -940,21 +952,16 @@ class FeedItemCard extends StatelessWidget {
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(AppSpacing.md),
-                decoration: const BoxDecoration(
-                  color: AppColors.surfaceHigh,
+                decoration: BoxDecoration(
+                  color: palette.surfaceHigh,
                   borderRadius: AppRadius.smallBorder,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'NE İŞE YARAR?',
-                      style: AppTypography.label.copyWith(
-                        color: AppColors.primary,
-                      ),
-                    ),
+                    Text('NE İŞE YARAR?', style: context.text.labelAccent),
                     const SizedBox(height: AppSpacing.xs),
-                    Text(explanation, style: AppTypography.bodyMuted),
+                    Text(explanation, style: context.text.bodyMuted),
                   ],
                 ),
               ),
@@ -970,11 +977,11 @@ class FeedItemCard extends StatelessWidget {
                       horizontal: AppSpacing.sm,
                       vertical: AppSpacing.xs,
                     ),
-                    decoration: const BoxDecoration(
-                      color: AppColors.surfaceHigh,
+                    decoration: BoxDecoration(
+                      color: palette.surfaceHigh,
                       borderRadius: AppRadius.smallBorder,
                     ),
-                    child: Text(tag, style: AppTypography.technical),
+                    child: Text(tag, style: context.text.technical),
                   ),
               ],
             ),
@@ -1010,124 +1017,130 @@ class ExploreResultCard extends StatelessWidget {
   final VoidCallback? onToggleSave;
 
   @override
-  Widget build(BuildContext context) => _AppCard(
-    onTap: onTap,
-    accent: categoryOf(item.kind).$2,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Text(
-                categoryOf(item.kind).$1,
-                style: AppTypography.technical.copyWith(
-                  color: categoryOf(item.kind).$2,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            if (onToggleSave case final toggle?) ...[
-              const SizedBox(width: AppSpacing.sm),
-              Semantics(
-                button: true,
-                selected: isSaved,
-                label: isSaved ? 'Kaydı kaldır' : 'Kaydet',
-                child: IconButton(
-                  key: Key('explore-bookmark-${item.id}'),
-                  tooltip: isSaved ? 'Kaydı kaldır' : 'Kaydet',
-                  onPressed: toggle,
-                  icon: Icon(
-                    isSaved ? Icons.bookmark : Icons.bookmark_outline,
-                    color: isSaved
-                        ? AppColors.primary
-                        : AppColors.textSecondary,
+  Widget build(BuildContext context) {
+    final palette = context.palette;
+    final (categoryLabel, accent, _) = categoryOf(palette, item.kind);
+
+    return _AppCard(
+      onTap: onTap,
+      accent: accent,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  categoryLabel,
+                  style: context.text.technical.copyWith(
+                    color: accent,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
+              if (onToggleSave case final toggle?) ...[
+                const SizedBox(width: AppSpacing.sm),
+                Semantics(
+                  button: true,
+                  selected: isSaved,
+                  label: isSaved ? 'Kaydı kaldır' : 'Kaydet',
+                  child: IconButton(
+                    key: Key('explore-bookmark-${item.id}'),
+                    tooltip: isSaved ? 'Kaydı kaldır' : 'Kaydet',
+                    onPressed: toggle,
+                    // 44x44 açıkça: Material'in varsayılanı yoğunluk
+                    // ayarına göre 40 dp'ye inebiliyor ve
+                    // `touch_target_test` bunu yakaladı.
+                    constraints: const BoxConstraints(
+                      minWidth: AppTouchTarget.minimum,
+                      minHeight: AppTouchTarget.minimum,
+                    ),
+                    icon: Icon(
+                      isSaved ? Icons.bookmark : Icons.bookmark_outline,
+                      color: isSaved ? palette.primary : palette.textSecondary,
+                    ),
+                  ),
+                ),
+              ],
             ],
-          ],
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        Wrap(
-          spacing: AppSpacing.sm,
-          runSpacing: AppSpacing.sm,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            Text(item.title, style: AppTypography.title),
-            // Örnek işareti yalnız fixture kartlarında. Gerçek içerikte
-            // "ÖRNEK" yazmak yalan olurdu.
-            if (item.isSample)
-              const AppBadge(label: 'ÖRNEK', color: AppColors.textSecondary),
-            if (item.summaryAuthor == SummaryAuthor.generated)
-              const AppBadge(label: 'TecNow ÖZETİ', color: AppColors.aiAccent),
-            if (languageBadge(item) case final code?)
-              AppBadge(label: code, color: AppColors.textSecondary),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        Text(
-          item.summary,
-          style: AppTypography.bodyMuted,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-        const SizedBox(height: AppSpacing.md),
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(AppSpacing.md),
-          decoration: const BoxDecoration(
-            color: AppColors.surfaceHigh,
-            borderRadius: AppRadius.smallBorder,
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          const SizedBox(height: AppSpacing.sm),
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              const Icon(
-                Icons.info_outline,
-                size: 20,
-                color: AppColors.warning,
-              ),
+              Text(item.title, style: context.text.title),
+              // Örnek işareti yalnız fixture kartlarında. Gerçek içerikte
+              // "ÖRNEK" yazmak yalan olurdu.
+              if (item.isSample)
+                AppBadge(label: 'ÖRNEK', color: palette.textSecondary),
+              if (item.summaryAuthor == SummaryAuthor.generated)
+                AppBadge(label: 'tecOS ÖZETİ', color: palette.aiAccent),
+              if (languageBadge(item) case final code?)
+                AppBadge(label: code, color: palette.textSecondary),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            item.summary,
+            style: context.text.bodyMuted,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(AppSpacing.md),
+            decoration: BoxDecoration(
+              color: palette.surfaceHigh,
+              borderRadius: AppRadius.smallBorder,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.info_outline, size: 20, color: palette.warning),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'NEDEN EŞLEŞTİ?',
+                        style: context.text.label.copyWith(
+                          color: palette.warning,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(matchReason, style: context.text.bodyMuted),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Divider(height: 1, color: palette.outline),
+          const SizedBox(height: AppSpacing.md),
+          Row(
+            children: [
+              Icon(Icons.public, size: 18, color: palette.textSecondary),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'NEDEN EŞLEŞTİ?',
-                      style: AppTypography.label.copyWith(
-                        color: AppColors.warning,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xs),
-                    Text(matchReason, style: AppTypography.bodyMuted),
-                  ],
+                child: Text(
+                  item.sourceLabel,
+                  style: context.text.technical,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
           ),
-        ),
-        const SizedBox(height: AppSpacing.md),
-        const Divider(height: 1, color: AppColors.outline),
-        const SizedBox(height: AppSpacing.md),
-        Row(
-          children: [
-            const Icon(Icons.public, size: 18, color: AppColors.textSecondary),
-            const SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Text(
-                item.sourceLabel,
-                style: AppTypography.technical,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }
 
 // `ExploreStarterCard` buradan kaldırıldı (2026-07-28).
@@ -1148,7 +1161,8 @@ class ExplorePopularRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final (_, accent, icon) = categoryOf(item.kind);
+    final palette = context.palette;
+    final (_, accent, icon) = categoryOf(palette, item.kind);
 
     return Semantics(
       button: true,
@@ -1177,18 +1191,15 @@ class ExplorePopularRow extends StatelessWidget {
                     runSpacing: AppSpacing.xs,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      Text(item.title, style: AppTypography.title),
+                      Text(item.title, style: context.text.title),
                       if (item.isSample)
-                        const AppBadge(
-                          label: 'ÖRNEK',
-                          color: AppColors.textSecondary,
-                        ),
+                        AppBadge(label: 'ÖRNEK', color: palette.textSecondary),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     item.summary,
-                    style: AppTypography.bodyMuted,
+                    style: context.text.bodyMuted,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -1196,10 +1207,7 @@ class ExplorePopularRow extends StatelessWidget {
               ),
             ),
             const SizedBox(width: AppSpacing.sm),
-            const Icon(
-              Icons.chevron_right_rounded,
-              color: AppColors.textSecondary,
-            ),
+            Icon(Icons.chevron_right_rounded, color: palette.textSecondary),
           ],
         ),
       ),

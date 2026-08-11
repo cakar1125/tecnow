@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/providers.dart';
 import 'app.dart';
 
-export 'app.dart' show TecNowApp;
+export 'app.dart' show TecOsApp;
 
 /// Uygulamayı, yerel veri tohumlaması bir kez tamamlandıktan sonra başlatır.
 ///
@@ -20,7 +20,7 @@ Future<void> bootstrap({
   runApp(
     UncontrolledProviderScope(
       container: container,
-      child: builder?.call(container) ?? const TecNowApp(),
+      child: builder?.call(container) ?? const TecOsApp(),
     ),
   );
 }
@@ -43,6 +43,16 @@ Future<void> seedLocalData(ProviderContainer container) async {
     );
     await cleanup.removeIfNeeded();
   });
+  // Tema tercihi `runApp`'ten önce okunur. Sonra okunsaydı uygulama önce
+  // varsayılan temayla bir kare çizer, ardından kullanıcının seçtiğine
+  // atlardı — koyu tema seçmiş birine açılışta beyaz bir parlama.
+  await _step('tema ve kaynak tercihleri', () async {
+    final preferences = await container.read(appPreferencesProvider.future);
+    container.read(themeModeProvider.notifier).restore(preferences.themeMode);
+    container
+        .read(mutedSourcesProvider.notifier)
+        .restore(preferences.mutedSources);
+  });
 }
 
 Future<void> _step(String description, Future<void> Function() run) async {
@@ -53,7 +63,7 @@ Future<void> _step(String description, Future<void> Function() run) async {
       FlutterErrorDetails(
         exception: error,
         stack: stackTrace,
-        library: 'tecnow',
+        library: 'tecos',
         context: ErrorDescription('$description sırasında'),
       ),
     );

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tecnow/data/feed/feed_repository.dart';
-import 'package:tecnow/data/feed/feed_schema.dart';
-import 'package:tecnow/data/providers.dart';
-import 'package:tecnow/data/repositories/interests_repository.dart';
-import 'package:tecnow/data/repositories/local_data_repository.dart';
-import 'package:tecnow/data/repositories/read_history_repository.dart';
-import 'package:tecnow/data/repositories/saved_items_repository.dart';
-import 'package:tecnow/fixtures/fixtures.dart';
+import 'package:tecos/data/feed/feed_repository.dart';
+import 'package:tecos/data/feed/feed_schema.dart';
+import 'package:tecos/data/providers.dart';
+import 'package:tecos/data/repositories/interests_repository.dart';
+import 'package:tecos/data/repositories/local_data_repository.dart';
+import 'package:tecos/data/repositories/read_history_repository.dart';
+import 'package:tecos/data/repositories/saved_items_repository.dart';
+import 'package:tecos/fixtures/fixtures.dart';
 
 import '../test_harness.dart';
 
@@ -140,20 +140,24 @@ Widget memoryDataHarness(
   List<SavedItem>? savedItems,
   SavedItemsRepository? savedRepository,
   List<String>? interests,
+  InMemoryInterestsRepository? interestsRepository,
   ReadHistoryRepository? readHistory,
   List<FeedItem>? feed,
   FeedRepository? feedRepository,
   UrlOpener? urlOpener,
+  Set<String>? mutedSources,
   double textScale = 1,
 }) => memoryDataScope(
   testApp(child, textScale: textScale),
   savedItems: savedItems,
   savedRepository: savedRepository,
   interests: interests,
+  interestsRepository: interestsRepository,
   readHistory: readHistory,
   feed: feed,
   feedRepository: feedRepository,
   urlOpener: urlOpener,
+  mutedSources: mutedSources,
 );
 
 /// Router'ı kendisi kuran testler için: yalnız scope, kendi `MaterialApp`'ini
@@ -163,10 +167,19 @@ Widget memoryDataScope(
   List<SavedItem>? savedItems,
   SavedItemsRepository? savedRepository,
   List<String>? interests,
+
+  /// Çağıran depoyu elinde tutmak istediğinde: bir seçimin gerçekten
+  /// **yazıldığını** ölçmek için ekrandaki duruma değil depoya bakmak
+  /// gerekiyor ([savedRepository] ile aynı gerekçe).
+  InMemoryInterestsRepository? interestsRepository,
   ReadHistoryRepository? readHistory,
   List<FeedItem>? feed,
   FeedRepository? feedRepository,
   UrlOpener? urlOpener,
+
+  /// Akıştan çıkarılmış kaynaklar. Uygulamada `bootstrap` diskten okuyup
+  /// `runApp`'ten önce yerine koyuyor; testte aynı işi bu parametre yapar.
+  Set<String>? mutedSources,
 }) {
   // Örnekler önceden kurulur: `localDataRepositoryProvider` diğer üçüyle
   // **aynı** nesneleri görmeli, yoksa "Verileri Sil" testte hiçbir şeyi
@@ -178,27 +191,26 @@ Widget memoryDataScope(
   final saved =
       savedRepository ??
       InMemorySavedItemsRepository(savedItems ?? seededSavedItems());
-  final interestsRepository = InMemoryInterestsRepository(
-    interests ?? const [],
-  );
+  final interestsStore =
+      interestsRepository ?? InMemoryInterestsRepository(interests ?? const []);
   final history = readHistory ?? InMemoryReadHistoryRepository();
 
   return ProviderScope(
     overrides: [
       savedItemsRepositoryProvider.overrideWith((ref) async => saved),
-      interestsRepositoryProvider.overrideWith(
-        (ref) async => interestsRepository,
-      ),
+      interestsRepositoryProvider.overrideWith((ref) async => interestsStore),
       readHistoryRepositoryProvider.overrideWith((ref) async => history),
       localDataRepositoryProvider.overrideWith(
         (ref) async =>
-            InMemoryLocalDataRepository(saved, interestsRepository, history),
+            InMemoryLocalDataRepository(saved, interestsStore, history),
       ),
       feedRepositoryProvider.overrideWithValue(
         feedRepository ?? FakeFeedRepository(feed ?? testFeedItems()),
       ),
       // Testler gerçek tarayıcı açmaz; varsayılan olarak "açıldı" der.
       urlOpenerProvider.overrideWithValue(urlOpener ?? (url) async => true),
+      if (mutedSources != null)
+        initialMutedSourcesProvider.overrideWithValue(mutedSources),
     ],
     child: child,
   );

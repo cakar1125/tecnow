@@ -12,7 +12,7 @@
 /// 2. Aynı tür **ve** normalleştirilmiş başlık birebir aynı.
 library;
 
-import 'package:tecnow/data/feed/feed_schema.dart';
+import 'package:tecos/data/feed/feed_schema.dart';
 
 /// İki kaydın aynı gelişme sayılması için kullanılan başlık biçimi.
 ///

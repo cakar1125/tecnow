@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecnow/data/feed/feed_schema.dart';
-import 'package:tecnow/data/interests/interest_taxonomy.dart';
+import 'package:tecos/data/feed/feed_schema.dart';
+import 'package:tecos/data/interests/interest_taxonomy.dart';
 
 import '../support/test_overrides.dart';
 

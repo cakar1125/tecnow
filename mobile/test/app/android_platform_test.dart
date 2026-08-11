@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecnow/app/router.dart';
-import 'package:tecnow/design_system/theme/app_theme.dart';
-import 'package:tecnow/features/settings/settings_screen.dart';
+import 'package:tecos/app/router.dart';
+import 'package:tecos/design_system/theme/app_theme.dart';
+import 'package:tecos/features/settings/settings_screen.dart';
 
 import '../test_harness.dart';
 

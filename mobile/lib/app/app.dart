@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/providers.dart';
 import '../design_system/theme/app_theme.dart';
 import 'router.dart';
 
-class TecNowApp extends StatelessWidget {
-  const TecNowApp({super.key});
+class TecOsApp extends ConsumerWidget {
+  const TecOsApp({super.key});
 
   /// Uygulamanın dili. Arayüzün tamamı Türkçe yazıldı ama Flutter'ın **kendi**
   /// hazır ekranları (lisans sayfası, metin seçim menüsü, tarih seçici)
@@ -18,11 +20,17 @@ class TecNowApp extends StatelessWidget {
   static const _turkish = Locale('tr');
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
-      title: 'TecNow',
+      title: 'tecOS',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.dark,
+      // Her iki tema da veriliyor; hangisinin çizileceğine `themeMode` karar
+      // verir. `theme` açık, `darkTheme` koyu olmak **zorunda** — Flutter
+      // `ThemeMode.system` durumunda cihazın parlaklığına göre bu iki
+      // yuvadan seçer, adlarına göre değil.
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: ref.watch(themeModeProvider),
       locale: _turkish,
       supportedLocales: const [_turkish],
       localizationsDelegates: const [

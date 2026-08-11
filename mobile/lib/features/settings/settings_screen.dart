@@ -6,6 +6,8 @@ import '../../app/app_version.dart';
 import '../../data/providers.dart';
 import '../../data/repositories/local_data_repository.dart';
 import '../../design_system/components/app_components.dart';
+import '../../design_system/tokens/app_palette.dart';
+import '../../design_system/tokens/app_text.dart';
 import '../../design_system/tokens/app_tokens.dart';
 import '../read_history/read_history_screen.dart';
 import 'about_screen.dart';
@@ -84,10 +86,10 @@ class SettingsScreen extends ConsumerWidget {
     WidgetRef ref,
     AsyncValue<LocalDataCounts> counts,
   ) => Material(
-    color: AppColors.background,
+    color: context.palette.background,
     child: Column(
       children: [
-        const AppTopBar(title: 'TecNow'),
+        const AppTopBar(title: 'tecOS'),
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(
@@ -99,7 +101,7 @@ class SettingsScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text('Ayarlar', style: AppTypography.headline),
+                Text('Ayarlar', style: context.text.headline),
                 const SizedBox(height: AppSpacing.xl),
                 _SettingsSection(
                   title: 'KİŞİSELLEŞTİRME',
@@ -109,19 +111,15 @@ class SettingsScreen extends ConsumerWidget {
                       title: 'İlgi Alanları',
                       onTap: () => context.push('/interests'),
                     ),
-                    // Tek dil ve tek tema var; seçilecek bir şey olmadığı için
-                    // bunlar bir ekran değil, birer olgu. Değer gösteriliyor,
-                    // gidilecek yer olduğu iddia edilmiyor.
+                    // Tek dil var; seçilecek bir şey olmadığı için bu bir
+                    // ekran değil, bir olgu. Değer gösteriliyor, gidilecek
+                    // yer olduğu iddia edilmiyor.
                     const _SettingsRow.upcoming(
                       icon: Icons.language_rounded,
                       title: 'Dil',
                       value: 'Türkçe',
                     ),
-                    const _SettingsRow.upcoming(
-                      icon: Icons.palette_outlined,
-                      title: 'Tema',
-                      value: 'Koyu',
-                    ),
+                    const _ThemeRow(),
                     const _SettingsRow.upcoming(
                       icon: Icons.tune_rounded,
                       title: 'İçerik Tercihleri',
@@ -159,7 +157,7 @@ class SettingsScreen extends ConsumerWidget {
                     _SettingsRow(
                       icon: Icons.delete_outline,
                       title: 'Verileri Sil',
-                      color: AppColors.critical,
+                      color: context.palette.critical,
                       onTap: () => _confirmLocalDataDeletion(context, ref),
                     ),
                   ],
@@ -181,7 +179,7 @@ class SettingsScreen extends ConsumerWidget {
                       description:
                           'Proje Asistanı yanıt üretirken gerekli mesaj '
                           'içeriği seçilen AI hizmetine gönderilebilir. '
-                          'TecNow hesap veya sosyal profil oluşturmaz.',
+                          'tecOS hesap veya sosyal profil oluşturmaz.',
                     ),
                   ],
                 ),
@@ -191,7 +189,7 @@ class SettingsScreen extends ConsumerWidget {
                   children: [
                     _SettingsRow(
                       icon: Icons.info_outline_rounded,
-                      title: 'TecNow Hakkında',
+                      title: 'tecOS Hakkında',
                       onTap: () => context.push(aboutRoute),
                     ),
                     _SettingsRow(
@@ -217,7 +215,7 @@ class SettingsScreen extends ConsumerWidget {
                       onTap: () => showLicensePage(
                         context: context,
                         useRootNavigator: true,
-                        applicationName: 'TecNow',
+                        applicationName: 'tecOS',
                         applicationVersion: appVersionLabel,
                       ),
                     ),
@@ -229,7 +227,7 @@ class SettingsScreen extends ConsumerWidget {
                 // için var. Değişen tek şey içerik.
                 Text(
                   'Uygulama Sürümü: $appVersionLabel',
-                  style: AppTypography.technical,
+                  style: context.text.technical,
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -255,15 +253,15 @@ class _SettingsSection extends StatelessWidget {
         padding: const EdgeInsets.only(left: AppSpacing.sm),
         child: Text(
           title,
-          style: AppTypography.label.copyWith(color: AppColors.primary),
+          style: context.text.label.copyWith(color: context.palette.primary),
         ),
       ),
       const SizedBox(height: AppSpacing.sm),
       Material(
-        color: AppColors.surface,
-        shape: const RoundedRectangleBorder(
+        color: context.palette.surface,
+        shape: RoundedRectangleBorder(
           borderRadius: AppRadius.cardBorder,
-          side: BorderSide(color: AppColors.outline),
+          side: BorderSide(color: context.palette.outline),
         ),
         clipBehavior: Clip.antiAlias,
         child: Column(
@@ -271,10 +269,10 @@ class _SettingsSection extends StatelessWidget {
             for (var index = 0; index < children.length; index++) ...[
               children[index],
               if (index < children.length - 1)
-                const Divider(
+                Divider(
                   height: 1,
                   thickness: 1,
-                  color: AppColors.outline,
+                  color: context.palette.outline,
                 ),
             ],
           ],
@@ -290,7 +288,7 @@ class _SettingsRow extends StatelessWidget {
     required this.title,
     required VoidCallback this.onTap,
     this.value,
-    this.color = AppColors.textPrimary,
+    this.color,
   });
 
   /// Henüz uygulanmamış bir satır.
@@ -305,58 +303,158 @@ class _SettingsRow extends StatelessWidget {
     required this.title,
     this.value,
   }) : onTap = null,
-       color = AppColors.textSecondary;
+       color = null;
 
   final IconData icon;
   final String title;
   final String? value;
-  final Color color;
+
+  /// Satırın rengi. `null` ise temadan çözülür — dokunulabilir satır birincil
+  /// metin rengini, "yakında" satırı ikincil rengi alır.
+  ///
+  /// Varsayılan bir renk **sabit olarak yazılamıyor**: yapıcı parametresinin
+  /// varsayılanı derleme zamanı sabiti olmak zorunda, tema rengi ise
+  /// çalışma zamanında `context`'ten geliyor. Çözüm alanı boş bırakıp
+  /// [build] içinde çözmek.
+  final Color? color;
+
   final VoidCallback? onTap;
 
   bool get _enabled => onTap != null;
 
   @override
-  Widget build(BuildContext context) => Semantics(
-    button: _enabled,
-    enabled: _enabled,
-    child: InkWell(
-      onTap: onTap,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 64),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-          child: Row(
-            children: [
-              Icon(icon, size: 22, color: color),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Text(
-                  title,
-                  style: AppTypography.body.copyWith(
-                    color: color,
-                    fontWeight: FontWeight.w600,
+  Widget build(BuildContext context) {
+    final resolved =
+        color ??
+        (_enabled
+            ? context.palette.textPrimary
+            : context.palette.textSecondary);
+
+    return Semantics(
+      button: _enabled,
+      enabled: _enabled,
+      child: InkWell(
+        onTap: onTap,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 64),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            child: Row(
+              children: [
+                Icon(icon, size: 22, color: resolved),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: context.text.body.copyWith(
+                      color: resolved,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-              if (value != null) ...[
+                if (value != null) ...[
+                  const SizedBox(width: AppSpacing.sm),
+                  Text(value!, style: context.text.bodyMuted),
+                ],
                 const SizedBox(width: AppSpacing.sm),
-                Text(value!, style: AppTypography.bodyMuted),
+                if (_enabled)
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    size: 22,
+                    color: context.palette.textSecondary,
+                  )
+                else
+                  const _UpcomingTag(),
               ],
-              const SizedBox(width: AppSpacing.sm),
-              if (_enabled)
-                const Icon(
-                  Icons.chevron_right_rounded,
-                  size: 22,
-                  color: AppColors.textSecondary,
-                )
-              else
-                const _UpcomingTag(),
-            ],
+            ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
+}
+
+/// Tema seçimi.
+///
+/// Diğer ayar satırlarından farklı olarak **kendi ekranını açmıyor**, seçimi
+/// yerinde yaptırıyor. Üç seçenek için bir ekran açmak, iki dokunuşu dört
+/// dokunuş yapardı; ve seçimin sonucu — uygulamanın rengi — zaten aynı
+/// ekranda, anında görülüyor.
+///
+/// "Sistem" varsayılan ve listede **ilk**: uygulamanın kendi zevkini
+/// dayatmaması gereken yer burası.
+class _ThemeRow extends ConsumerWidget {
+  const _ThemeRow();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selected = ref.watch(themeModeProvider);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.md,
+        AppSpacing.lg,
+        AppSpacing.md,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.palette_outlined,
+                size: 22,
+                color: context.palette.textPrimary,
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Text(
+                'Tema',
+                style: context.text.body.copyWith(
+                  color: context.palette.textPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          SegmentedButton<ThemeMode>(
+            segments: const [
+              ButtonSegment(
+                value: ThemeMode.system,
+                icon: Icon(Icons.brightness_auto_outlined),
+                label: Text('Sistem'),
+              ),
+              ButtonSegment(
+                value: ThemeMode.light,
+                icon: Icon(Icons.light_mode_outlined),
+                label: Text('Açık'),
+              ),
+              ButtonSegment(
+                value: ThemeMode.dark,
+                icon: Icon(Icons.dark_mode_outlined),
+                label: Text('Koyu'),
+              ),
+            ],
+            selected: {selected},
+            showSelectedIcon: false,
+            onSelectionChanged: (selection) =>
+                ref.read(themeModeProvider.notifier).select(selection.first),
+            style: ButtonStyle(
+              // `QUALITY_GATES.md`: minimum 44×44 dokunma alanı. Material'in
+              // varsayılanı 40 dp ve `test/app/touch_target_test.dart` her
+              // rotayı gezdiği için bu satır kapının kendisi tarafından
+              // ölçülüyor.
+              minimumSize: const WidgetStatePropertyAll(
+                Size(0, AppTouchTarget.minimum),
+              ),
+              textStyle: WidgetStatePropertyAll(context.text.label),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 /// "Yakında" etiketi.
@@ -375,11 +473,11 @@ class _UpcomingTag extends StatelessWidget {
     ),
     decoration: BoxDecoration(
       borderRadius: AppRadius.smallBorder,
-      border: Border.all(color: AppColors.outline),
+      border: Border.all(color: context.palette.outline),
     ),
     child: Text(
       'Yakında',
-      style: AppTypography.label.copyWith(color: AppColors.textSecondary),
+      style: context.text.label.copyWith(color: context.palette.textSecondary),
     ),
   );
 }
@@ -403,7 +501,7 @@ class _PrivacyItem extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 2),
-          child: Icon(icon, size: 22, color: AppColors.primary),
+          child: Icon(icon, size: 22, color: context.palette.primary),
         ),
         const SizedBox(width: AppSpacing.md),
         Expanded(
@@ -412,10 +510,10 @@ class _PrivacyItem extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: AppTypography.body.copyWith(fontWeight: FontWeight.w600),
+                style: context.text.body.copyWith(fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: AppSpacing.xs),
-              Text(description, style: AppTypography.bodyMuted),
+              Text(description, style: context.text.bodyMuted),
             ],
           ),
         ),

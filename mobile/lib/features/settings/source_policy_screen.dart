@@ -20,6 +20,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/feed/feed_schema.dart';
 import '../../data/providers.dart';
 import '../../design_system/components/app_components.dart';
+import '../../design_system/tokens/app_palette.dart';
+import '../../design_system/tokens/app_text.dart';
 import '../../design_system/tokens/app_tokens.dart';
 
 const sourcePolicyRoute = '/kaynak-politikasi';
@@ -104,12 +106,12 @@ class SourcePolicyScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('İçerik nereden geliyor?', style: AppTypography.headline),
+              Text('İçerik nereden geliyor?', style: context.text.headline),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                'TecNow haber yazmaz. Başkalarının yayımladığı gelişmeleri '
+                'tecOS haber yazmaz. Başkalarının yayımladığı gelişmeleri '
                 'derler, kaynağıyla birlikte gösterir ve orijinaline yönlendirir.',
-                style: AppTypography.bodyMuted,
+                style: context.text.bodyMuted,
               ),
               const SizedBox(height: AppSpacing.xl),
 
@@ -141,13 +143,15 @@ class SourcePolicyScreen extends ConsumerWidget {
                 title: 'Kullanıcı içeriği yok',
                 body:
                     'Akışta gönderi, yorum veya kullanıcı katkısı bulunmaz. '
-                    'Yayımlayan taraf yalnızca TecNow\'ın kaynak hattıdır.',
+                    'Yayımlayan taraf yalnızca tecOS\'ın kaynak hattıdır.',
               ),
 
               const SizedBox(height: AppSpacing.lg),
               Text(
                 'BU AKIŞTAKİ KAYNAKLAR',
-                style: AppTypography.label.copyWith(color: AppColors.primary),
+                style: context.text.label.copyWith(
+                  color: context.palette.primary,
+                ),
               ),
               const SizedBox(height: AppSpacing.md),
               _SourceList(feed: feed),
@@ -175,7 +179,7 @@ class _SourceList extends StatelessWidget {
         return Text(
           'Akış henüz yüklenmedi.',
           key: const Key('source-policy-empty'),
-          style: AppTypography.bodyMuted,
+          style: context.text.bodyMuted,
         );
       }
       return Column(
@@ -188,7 +192,7 @@ class _SourceList extends StatelessWidget {
       return Text(
         'Kaynak listesi okunamadı.',
         key: const Key('source-policy-error'),
-        style: AppTypography.bodyMuted,
+        style: context.text.bodyMuted,
       );
     }
     return const LoadingSkeleton(key: Key('source-policy-loading'));
@@ -214,17 +218,17 @@ class _SourceRow extends StatelessWidget {
               children: [
                 Text(
                   source.name,
-                  style: AppTypography.body.copyWith(
+                  style: context.text.body.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 if (subtitle != null)
-                  Text(subtitle, style: AppTypography.bodyMuted),
+                  Text(subtitle, style: context.text.bodyMuted),
               ],
             ),
           ),
           const SizedBox(width: AppSpacing.md),
-          Text('${source.itemCount} içerik', style: AppTypography.bodyMuted),
+          Text('${source.itemCount} içerik', style: context.text.bodyMuted),
         ],
       ),
     );
@@ -250,7 +254,7 @@ class _PolicyRule extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 2),
-          child: Icon(icon, size: 22, color: AppColors.primary),
+          child: Icon(icon, size: 22, color: context.palette.primary),
         ),
         const SizedBox(width: AppSpacing.md),
         Expanded(
@@ -259,10 +263,10 @@ class _PolicyRule extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: AppTypography.body.copyWith(fontWeight: FontWeight.w600),
+                style: context.text.body.copyWith(fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: AppSpacing.xs),
-              Text(body, style: AppTypography.bodyMuted),
+              Text(body, style: context.text.bodyMuted),
             ],
           ),
         ),

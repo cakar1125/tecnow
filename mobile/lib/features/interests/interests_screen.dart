@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../data/interests/interest_taxonomy.dart';
 import '../../data/providers.dart';
 import '../../design_system/components/app_components.dart';
+import '../../design_system/tokens/app_palette.dart';
+import '../../design_system/tokens/app_text.dart';
 import '../../design_system/tokens/app_tokens.dart';
 
 /// İlgi alanı seçimi. İki bağlamda açılıyor ve **ikisinde farklı davranıyor**.
@@ -97,7 +99,7 @@ class _Content extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Akışını şekillendir', style: AppTypography.headline),
+        Text('Akışını şekillendir', style: context.text.headline),
         const SizedBox(height: AppSpacing.sm),
         // "örnek konu" ifadesi fixture döneminden kalmıştı. Seçilen konular
         // artık gerçekten akışı süzüyor (`interest_taxonomy.dart`); onlara
@@ -105,35 +107,42 @@ class _Content extends ConsumerWidget {
         Text(
           'Devam etmek için en az ${InterestsScreen.minimumSelection} '
           'konu seç.',
-          style: AppTypography.bodyMuted,
+          style: context.text.bodyMuted,
         ),
         const SizedBox(height: AppSpacing.xl),
         Expanded(
           child: SingleChildScrollView(
-            child: Wrap(
-              spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.sm,
-              // Ekranda **etiket** görünür, veritabanına **kimlik** yazılır.
-              // Önceden etiketin kendisi saklanıyordu ve feed'in konuları
-              // İngilizce slug olduğu için "Sana Özel" sekmesi hiçbir zaman
-              // eşleşme bulamıyordu.
-              children: interestTaxonomy
-                  .map(
-                    (interest) => AppFilterChip(
-                      key: Key('interest-${interest.id}'),
-                      label: interest.label,
-                      selected: selected.contains(interest.id),
-                      // Burada zorunlu: kullanıcı arka arkaya en az üç çipe
-                      // dokunuyor ve çipin seçilince genişlemesi `Wrap`
-                      // düzenini yeniden akıtıp komşuları parmağın altından
-                      // kaydırıyordu (cihazda görüldü, 2026-07-28).
-                      stableWidth: true,
-                      onSelected: (_) => ref
-                          .read(interestsProvider.notifier)
-                          .toggle(interest.id),
-                    ),
-                  )
-                  .toList(growable: false),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Wrap(
+                  spacing: AppSpacing.sm,
+                  runSpacing: AppSpacing.sm,
+                  // Ekranda **etiket** görünür, veritabanına **kimlik**
+                  // yazılır. Önceden etiketin kendisi saklanıyordu ve feed'in
+                  // konuları İngilizce slug olduğu için "Sana Özel" sekmesi
+                  // hiçbir zaman eşleşme bulamıyordu.
+                  children: interestTaxonomy
+                      .map(
+                        (interest) => AppFilterChip(
+                          key: Key('interest-${interest.id}'),
+                          label: interest.label,
+                          selected: selected.contains(interest.id),
+                          // Burada zorunlu: kullanıcı arka arkaya en az üç
+                          // çipe dokunuyor ve çipin seçilince genişlemesi
+                          // `Wrap` düzenini yeniden akıtıp komşuları parmağın
+                          // altından kaydırıyordu (cihazda görüldü,
+                          // 2026-07-28).
+                          stableWidth: true,
+                          onSelected: (_) => ref
+                              .read(interestsProvider.notifier)
+                              .toggle(interest.id),
+                        ),
+                      )
+                      .toList(growable: false),
+                ),
+                const _TabOrderSection(),
+              ],
             ),
           ),
         ),
@@ -142,7 +151,7 @@ class _Content extends ConsumerWidget {
           label: '${selected.length} ilgi alanı seçildi',
           child: Text(
             '${selected.length}/${InterestsScreen.minimumSelection} seçildi',
-            style: AppTypography.label,
+            style: context.text.label,
           ),
         ),
         const SizedBox(height: AppSpacing.md),
@@ -153,6 +162,132 @@ class _Content extends ConsumerWidget {
           onPressed: enough ? () => _continue(context, ref) : null,
         ),
       ],
+    );
+  }
+}
+
+/// Sekme sırası — sürükle-bırak.
+///
+/// Bundle'ın ana sayfasındaki en ayırt edici mekanik buydu: sekmeler takip
+/// edilen konulardan kuruluyor ve kullanıcı onları **kendi** sırasına diziyor.
+/// Sıralama Ana Sayfa'da değil burada, çünkü sürükleme jesti akışın dikey
+/// kaydırmasıyla çakışır ve günde bir kez yapılan bir işlem, her gün yapılan
+/// bir jesti bozmamalı.
+///
+/// İki konunun altında **hiç çizilmez**: tek öğeli bir liste sıralanamaz,
+/// çizilirse yapılamayan bir şeyi vaat eder.
+class _TabOrderSection extends ConsumerWidget {
+  const _TabOrderSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ordered = ref.watch(orderedInterestsProvider);
+    if (ordered.length < 2) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: AppSpacing.xl),
+        Text('Sekme sırası', style: context.text.title),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          'Ana Sayfa\'daki sekmeler bu sırayla dizilir. "Sana Özel" hep '
+          'başta, "Tümü" hep sonda kalır.',
+          style: context.text.bodyMuted,
+        ),
+        const SizedBox(height: AppSpacing.md),
+        ReorderableListView(
+          key: const Key('interest-order'),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          // Kendi tutamağı çiziliyor: varsayılan davranış mobilde **uzun
+          // basıp sürükle**, yani görünmez bir jest. Görünür bir tutamak hem
+          // mekaniğin varlığını söyler hem uzun basmayı serbest bırakır.
+          buildDefaultDragHandles: false,
+          // `onReorder` **değil**. O geri çağrının sözleşmesinde hedef indeks,
+          // öğe hâlâ listedeymiş gibi hesaplanır ve her çağıranın `to > from`
+          // ise bir eksiltmesi gerekir — unutulması kolay, sessizce yanlış
+          // sıra üreten bir düzeltme. Flutter onu bu yüzden bıraktı;
+          // `onReorderItem` düzeltilmiş indeksi veriyor.
+          onReorderItem: (from, to) {
+            final notifier = ref.read(interestsProvider.notifier);
+            notifier.reorder(from: from, to: to);
+            // Sıra bir tercih: bırakıldığı anda kalıcı olur. Alttaki düğmeyi
+            // beklemek, geri tuşuyla çıkan kullanıcının düzenini kaybetmesi
+            // demekti — Keşfet'teki konu seçimi de aynı anda yazıyor.
+            notifier.persist();
+          },
+          children: [
+            for (var index = 0; index < ordered.length; index++)
+              _OrderRow(
+                key: Key('interest-order-${ordered[index].id}'),
+                position: index,
+                label: ordered[index].label,
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _OrderRow extends StatelessWidget {
+  const _OrderRow({
+    required this.position,
+    required this.label,
+    required Key key,
+  }) : super(key: key);
+
+  final int position;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = context.palette;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+        constraints: const BoxConstraints(
+          minHeight: AppTouchTarget.minimum + AppSpacing.sm,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: AppRadius.smallBorder,
+          border: Border.all(color: palette.outline),
+        ),
+        child: Row(
+          children: [
+            // Sekme şeridindeki yeri: sürüklemenin neyi değiştirdiğini
+            // sayı söylüyor. `SANA ÖZEL` 1. sekme olduğu için sayaç 2'den
+            // başlıyor — ekranda görünen sıra ile aynı olsun diye.
+            Text('${position + 2}', style: context.text.labelAccent),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Text(
+                label,
+                style: context.text.body,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            ReorderableDragStartListener(
+              index: position,
+              child: Semantics(
+                label: '$label sırasını değiştir',
+                child: SizedBox(
+                  width: AppTouchTarget.minimum,
+                  height: AppTouchTarget.minimum,
+                  child: Icon(
+                    Icons.drag_handle_rounded,
+                    color: palette.outlineStrong,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

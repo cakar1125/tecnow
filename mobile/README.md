@@ -1,9 +1,9 @@
-# Tecnow Mobile
+# tecOS Mobile
 
-Tecnow Faz 1, yalnız yerel ve açıkça işaretlenmiş fixture verilerle çalışan Flutter dikey dilimidir.
+tecOS Faz 1, yalnız yerel ve açıkça işaretlenmiş fixture verilerle çalışan Flutter dikey dilimidir.
 
 - Flutter 3.44.8 stable / Dart 3.12.2
-- Android application ID ve iOS bundle önerisi: `com.tecnow.app`
+- Android application ID ve iOS bundle önerisi: `com.tecos.app`
 - Riverpod durum yönetimi, go_router navigasyonu
 - Backend, canlı API, gerçek kimlik doğrulama veya gönderim yoktur
 

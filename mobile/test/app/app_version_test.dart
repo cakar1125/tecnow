@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecnow/app/app_version.dart';
+import 'package:tecos/app/app_version.dart';
 import 'package:yaml/yaml.dart' show loadYaml;
 
 /// `lib/app/app_version.dart` sabitleri `pubspec.yaml` ile aynı kalmalı.

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecnow/data/feed/feed_http_client.dart';
+import 'package:tecos/data/feed/feed_http_client.dart';
 
 void main() {
   group('resolveRedirect', () {
@@ -124,7 +124,7 @@ void main() {
       expect(response.statusCode, 200);
       expect(response.body, '{"ok": true}');
       expect(response.isOk, isTrue);
-      expect(seenUserAgents.single, 'TecNow');
+      expect(seenUserAgents.single, 'tecOS');
     });
 
     /// Hata kodu istisna değil: çağıran taraf bunu "içerik değişmedi" olarak

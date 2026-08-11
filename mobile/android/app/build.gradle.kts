@@ -28,7 +28,7 @@ val keystoreProperties = Properties().apply {
 val hasReleaseKeystore = keystorePropertiesFile.exists()
 
 android {
-    namespace = "com.tecnow.app"
+    namespace = "com.tecos.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -40,7 +40,7 @@ android {
     defaultConfig {
         // Mağaza yayınından sonra **değiştirilemez**. Değiştirmek Play'de yeni
         // bir uygulama demektir: yükleme sayısı, yorumlar ve puan taşınmaz.
-        applicationId = "com.tecnow.app"
+        applicationId = "com.tecos.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

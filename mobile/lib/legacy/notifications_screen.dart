@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../design_system/tokens/app_palette.dart';
+import '../design_system/tokens/app_text.dart';
 import '../design_system/tokens/app_tokens.dart';
 import '../fixtures/fixtures.dart';
 
@@ -25,10 +27,10 @@ class NotificationsScreen extends StatelessWidget {
               button: true,
               label: '${item.title}, ${item.time}',
               child: Material(
-                color: AppColors.surface,
+                color: context.palette.surface,
                 shape: RoundedRectangleBorder(
                   borderRadius: AppRadius.cardBorder,
-                  side: const BorderSide(color: AppColors.outline),
+                  side: BorderSide(color: context.palette.outline),
                 ),
                 clipBehavior: Clip.antiAlias,
                 child: InkWell(
@@ -43,11 +45,13 @@ class NotificationsScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(AppSpacing.lg),
                     child: Row(
                       children: [
-                        const CircleAvatar(
-                          backgroundColor: Color(0x2600F0FF),
+                        CircleAvatar(
+                          backgroundColor: context.palette.primary.withValues(
+                            alpha: 0.15,
+                          ),
                           child: Icon(
                             Icons.notifications_outlined,
-                            color: AppColors.primary,
+                            color: context.palette.primary,
                           ),
                         ),
                         const SizedBox(width: AppSpacing.md),
@@ -55,12 +59,12 @@ class NotificationsScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(item.title, style: AppTypography.title),
-                              Text(item.detail, style: AppTypography.bodyMuted),
+                              Text(item.title, style: context.text.title),
+                              Text(item.detail, style: context.text.bodyMuted),
                             ],
                           ),
                         ),
-                        Text(item.time, style: AppTypography.technical),
+                        Text(item.time, style: context.text.technical),
                       ],
                     ),
                   ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../design_system/components/app_components.dart';
+import '../design_system/tokens/app_text.dart';
 import '../design_system/tokens/app_tokens.dart';
 
 class CreatePostScreen extends StatelessWidget {
@@ -20,11 +21,11 @@ class CreatePostScreen extends StatelessWidget {
           children: [
             const CategoryBadge(label: 'YEREL FORM'),
             const SizedBox(height: AppSpacing.md),
-            Text('Bir teknoloji notu paylaş', style: AppTypography.headline),
+            Text('Bir teknoloji notu paylaş', style: context.text.headline),
             const SizedBox(height: AppSpacing.sm),
             Text(
               'Bu form canlı bir servise bağlanmaz ve gönderi yayınlamaz.',
-              style: AppTypography.bodyMuted,
+              style: context.text.bodyMuted,
             ),
             const SizedBox(height: AppSpacing.xl),
             const AppTextField(

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../design_system/components/app_components.dart';
+import '../../design_system/tokens/app_palette.dart';
+import '../../design_system/tokens/app_text.dart';
 import '../../design_system/tokens/app_tokens.dart';
 
 class OnboardingScreen extends StatelessWidget {
@@ -56,25 +58,25 @@ class OnboardingScreen extends StatelessWidget {
                 width: 160,
                 height: 160,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.08),
+                  color: context.palette.primary.withValues(alpha: 0.08),
                   borderRadius: AppRadius.featuredBorder,
                   border: Border.all(
-                    color: AppColors.primary.withValues(alpha: 0.35),
+                    color: context.palette.primary.withValues(alpha: 0.35),
                   ),
-                  boxShadow: AppShadows.cyanGlow,
+                  boxShadow: AppShadows.brandGlow(context.palette),
                 ),
-                child: Icon(page.$1, size: 72, color: AppColors.primary),
+                child: Icon(page.$1, size: 72, color: context.palette.primary),
               ),
               const SizedBox(height: AppSpacing.xxl),
               Text(
                 page.$2,
-                style: AppTypography.display,
+                style: context.text.display,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppSpacing.md),
               Text(
                 page.$3,
-                style: AppTypography.bodyMuted,
+                style: context.text.bodyMuted,
                 textAlign: TextAlign.center,
               ),
               const Spacer(),
@@ -88,8 +90,8 @@ class OnboardingScreen extends StatelessWidget {
                     margin: const EdgeInsets.all(AppSpacing.xs),
                     decoration: BoxDecoration(
                       color: index == safeStep
-                          ? AppColors.primary
-                          : AppColors.outline,
+                          ? context.palette.primary
+                          : context.palette.outline,
                       borderRadius: AppRadius.smallBorder,
                     ),
                   ),

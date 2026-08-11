@@ -4,19 +4,16 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/feed/feed_schema.dart';
 import '../../data/feed/feed_sync_state.dart';
-import '../../data/interests/interest_taxonomy.dart';
 import '../../data/providers.dart';
 import '../../design_system/components/app_components.dart';
+import '../../design_system/components/feed_items.dart';
+import '../../design_system/tokens/app_palette.dart';
+import '../../design_system/tokens/app_text.dart';
 import '../../design_system/tokens/app_tokens.dart';
-import '../../ui/content_card_model.dart';
 import '../../ui/detail_route.dart';
+import '../../ui/feed_signal.dart';
 import '../../ui/feed_sync_label.dart';
-
-/// Akış sekmeleri.
-///
-/// `lib/fixtures`'taki `FeedTab` yerine burada duruyor: sekmeler artık
-/// fixture alanından değil, **kaydın kendi verisinden** türetiliyor.
-enum HomeTab { sanaOzel, gundem, github, aiModelleri }
+import 'home_tabs.dart';
 
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
@@ -26,7 +23,12 @@ class FeedScreen extends ConsumerStatefulWidget {
 }
 
 class _FeedScreenState extends ConsumerState<FeedScreen> {
-  HomeTab _selectedTab = HomeTab.sanaOzel;
+  /// Seçili sekmenin **kimliği**, indeksi değil.
+  ///
+  /// Sekme listesi kullanıcının seçimiyle değişiyor: Keşfet'ten bir konu
+  /// açıldığında araya sekme giriyor, kapatıldığında çıkıyor. İndeks tutulsaydı
+  /// kullanıcı hiç dokunmadan başka bir sekmeye kayardı.
+  String _selectedKey = HomeTab.forYou.key;
 
   @override
   void initState() {
@@ -39,39 +41,25 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     });
   }
 
-  static const _tabLabels = {
-    HomeTab.sanaOzel: 'SANA ÖZEL',
-    HomeTab.gundem: 'GÜNDEM',
-    HomeTab.github: 'GİTHUB',
-    HomeTab.aiModelleri: 'AI MODELLERİ',
-  };
-
-  /// Sekme filtresi.
+  /// Sekme süzgeci.
   ///
-  /// **Sana Özel**, ilgi alanları seçilmişse konu kesişimine bakar; hiç ilgi
-  /// alanı yoksa akışın tamamını gösterir. Boş bir "sana özel" sekmesi,
-  /// kullanıcıya bir şey seçmediğini anlatmaz — sadece bozuk görünür.
-  List<FeedItem> _filter(List<FeedItem> items, Set<String> interests) =>
-      switch (_selectedTab) {
-        // Eşleşme `interest_taxonomy.dart`'ta: ilgi alanı kimliği, feed'in
-        // konu slug'larıyla anahtar kelime üzerinden eşleşir. Burada
-        // doğrudan karşılaştırma yapılıyordu ve iki sözcük dağarcığı hiç
-        // kesişmediği için sekme **kalıcı olarak boştu** (cihazda bulundu,
-        // 28 Temmuz 2026).
-        HomeTab.sanaOzel => filterByInterests(items, interests),
-        HomeTab.gundem =>
-          items
-              .where((item) => item.kind == FeedItemKind.announcement)
-              .toList(growable: false),
-        HomeTab.github =>
-          items
-              .where((item) => item.sourceKind == FeedSourceKind.github)
-              .toList(growable: false),
-        HomeTab.aiModelleri =>
-          items
-              .where((item) => item.kind == FeedItemKind.aiModel)
-              .toList(growable: false),
-      };
+  /// Kapatılan kaynaklar **önce** eleniyor: hiçbir sekme kullanıcının görmek
+  /// istemediği bir kaynağı geri getirmemeli — `TÜMÜ` bile.
+  ///
+  /// Eşleşme `interest_taxonomy.dart`'ta: ilgi alanı kimliği, feed'in konu
+  /// slug'larıyla anahtar kelime üzerinden eşleşir. Burada bir zamanlar
+  /// doğrudan karşılaştırma yapılıyordu ve iki sözcük dağarcığı hiç
+  /// kesişmediği için açılış sekmesi **kalıcı olarak boştu** (cihazda
+  /// bulundu, 28 Temmuz 2026).
+  List<FeedItem> _filter(
+    HomeTab tab,
+    List<FeedItem> items,
+    Set<String> interests,
+  ) => itemsForTab(
+    tab,
+    withoutMutedSources(items, ref.watch(mutedSourcesProvider)),
+    interests,
+  );
 
   /// Her tür aynı detay ekranına gider.
   ///
@@ -94,8 +82,8 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
 
     return RefreshIndicator(
       key: const Key('feed-refresh'),
-      color: AppColors.primary,
-      backgroundColor: AppColors.surfaceHigh,
+      color: context.palette.primary,
+      backgroundColor: context.palette.surfaceHigh,
       onRefresh: () => ref.read(feedSyncProvider.notifier).refresh(),
       child: scrollView,
     );
@@ -104,6 +92,11 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
   Widget _scrollView(BuildContext context, FeedSyncState? sync) {
     final feed = ref.watch(feedProvider);
     final interests = ref.watch(interestsProvider).value ?? const <String>{};
+    final tabs = homeTabsFor(ref.watch(orderedInterestsProvider));
+    // Seçim listeye **her karede** yeniden bağlanıyor: kullanıcı Keşfet'ten
+    // bulunduğu sekmenin konusunu kapattığında sekme kaybolur ve elde
+    // karşılıksız bir kimlik kalır.
+    final selected = resolveHomeTab(tabs, _selectedKey);
 
     return CustomScrollView(
       key: const Key('feed-scroll'),
@@ -124,22 +117,22 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'TecNow',
-                        style: AppTypography.display.copyWith(
-                          color: AppColors.primary,
+                        'tecOS',
+                        style: context.text.display.copyWith(
+                          color: context.palette.primary,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         'Teknoloji dünyasında önemli olanları keşfet.',
-                        style: AppTypography.bodyMuted,
+                        style: context.text.bodyMuted,
                       ),
                       if (sync != null) ...[
                         const SizedBox(height: AppSpacing.xs),
                         Text(
                           feedSyncLabel(sync, DateTime.now()),
                           key: const Key('feed-sync-status'),
-                          style: AppTypography.label.copyWith(
+                          style: context.text.label.copyWith(
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -151,9 +144,9 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                   key: const Key('feed-search'),
                   tooltip: 'Keşfet',
                   onPressed: () => context.go('/explore'),
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.search_rounded,
-                    color: AppColors.primary,
+                    color: context.palette.primary,
                   ),
                 ),
               ],
@@ -167,21 +160,21 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
             child: Row(
               children: [
-                for (final tab in HomeTab.values)
+                for (final tab in tabs)
                   _FeedTabButton(
                     key: Key(
-                      'feed-tab-${tab.name}-'
-                      '${_selectedTab == tab ? 'selected' : 'idle'}',
+                      'feed-tab-${tab.key}-'
+                      '${selected.key == tab.key ? 'selected' : 'idle'}',
                     ),
-                    label: _tabLabels[tab]!,
-                    selected: _selectedTab == tab,
-                    onTap: () => setState(() => _selectedTab = tab),
+                    label: tab.label,
+                    selected: selected.key == tab.key,
+                    onTap: () => setState(() => _selectedKey = tab.key),
                   ),
               ],
             ),
           ),
         ),
-        _content(feed, interests, context),
+        _content(selected, feed, interests, context),
       ],
     );
   }
@@ -193,12 +186,13 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
   /// arm'ı hiç eşleşmiyordu ve **bozuk bir feed sonsuza dek yükleme iskeleti
   /// gösteriyordu**. "İçerik okunamadı" ekranı ölü koddu.
   Widget _content(
+    HomeTab tab,
     AsyncValue<List<FeedItem>> feed,
     Set<String> interests,
     BuildContext context,
   ) {
     if (feed.value case final items?) {
-      return _list(_filter(items, interests), context);
+      return _list(tab, _filter(tab, items, interests), interests, context);
     }
 
     // Bozuk bir feed sessizce boş liste gibi görünmez: hata olduğu söylenir,
@@ -229,39 +223,96 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     );
   }
 
-  Widget _list(List<FeedItem> items, BuildContext context) => SliverPadding(
-    padding: const EdgeInsets.all(AppSpacing.lg),
-    sliver: items.isEmpty
-        ? SliverFillRemaining(
-            hasScrollBody: false,
-            child: EmptyStateView(
-              title: 'İçerik bulunamadı',
-              message: _selectedTab == HomeTab.sanaOzel
-                  ? 'Seçtiğin ilgi alanlarına uyan içerik yok. '
-                        'Ayarlardan ilgi alanlarını genişletebilirsin.'
-                  : 'Bu sekme için henüz içerik yok.',
-            ),
-          )
-        : SliverList.separated(
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index];
-              // Yer imi durumu kayıt listesinden okunur; kartın kendi
-              // `bool`'undan değil. Aynı kayıt Keşfet'te de görünüyor ve
-              // ikisi aynı şeyi göstermeli.
-              final saved = ref.watch(savedItemIdsProvider);
-              return FeedItemCard(
-                key: ValueKey(item.id),
-                item: ContentCardModel.fromFeedItem(item),
-                onTap: () => _openItem(context, item),
-                isSaved: saved.contains(item.id),
-                onToggleSave: () =>
-                    ref.read(savedItemsProvider.notifier).toggleFeedItem(item),
-              );
-            },
-            separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.lg),
-          ),
-  );
+  /// Boş sekmenin **nedeni**.
+  ///
+  /// Tek bir "bu sekme için içerik yok" cümlesi üç farklı durumu aynı
+  /// gösterirdi ve üçünün de çıkışı ayrı. Ölçüm boş sekmenin istisna değil
+  /// beklenen bir hâl olduğunu söylüyor: gerçek akışta "Oyun" konusu 200
+  /// kayıtta yalnız 2 kayıt buluyor (bkz. `home_tabs.dart`), yani bir kullanıcı
+  /// bu ekranı görecek.
+  String _empty(HomeTab tab) => switch (tab.kind) {
+    HomeTabKind.forYou =>
+      'Seçtiğin ilgi alanlarına uyan içerik yok. '
+          'Keşfet\'ten yeni konular açabilirsin.',
+    HomeTabKind.interest =>
+      '"${tab.interest!.label}" konusunda şu an akışta içerik yok. '
+          'Kaynaklar güncellendikçe burası dolar.',
+    // Süzgeçsiz sekme boşsa sebep ya kapatılmış kaynaklardır ya da akışın
+    // kendisi. İkisi farklı şeyler ve kullanıcının yapacağı da farklı.
+    HomeTabKind.all when ref.watch(mutedSourcesProvider).isNotEmpty =>
+      'Bütün kaynakları kapatmışsın. Keşfet\'ten geri açabilirsin.',
+    HomeTabKind.all => 'Akışta hiç içerik yok.',
+  };
+
+  /// Akış listesi.
+  ///
+  /// İlk kayıt **hero**, sonrakiler kompakt satır; aralarında ince ayraç,
+  /// kart çerçevesi yok. Gerekçesi `feed_items.dart` başlığında ölçümüyle
+  /// birlikte yazılı.
+  Widget _list(
+    HomeTab tab,
+    List<FeedItem> items,
+    Set<String> interests,
+    BuildContext context,
+  ) {
+    if (items.isEmpty) {
+      return SliverFillRemaining(
+        hasScrollBody: false,
+        child: EmptyStateView(title: 'İçerik bulunamadı', message: _empty(tab)),
+      );
+    }
+
+    // Yer imi durumu kayıt listesinden okunur; satırın kendi `bool`'undan
+    // değil. Aynı kayıt Keşfet'te de görünüyor ve ikisi aynı şeyi göstermeli.
+    final saved = ref.watch(savedItemIdsProvider);
+    // Tazelik gerekçesi için tek bir "şimdi": her satır kendi `DateTime.now()`
+    // çağrısını yapsaydı liste kaydırılırken etiket kayabilirdi.
+    final now = DateTime.now();
+
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      sliver: SliverList.separated(
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          final item = items[index];
+          final signal = feedSignalFor(
+            item,
+            interests: interests,
+            now: now,
+            // Konu sekmesinde her kayıt zaten eşleşmiş durumda; orada "SANA"
+            // yazmak hiçbir kaydı ayırt etmez (bkz. `home_tabs.dart`).
+            suppressInterestSignal: suppressesInterestSignal(tab),
+          );
+          void toggle() =>
+              ref.read(savedItemsProvider.notifier).toggleFeedItem(item);
+
+          if (index == 0) {
+            return FeedHeroItem(
+              key: ValueKey(item.id),
+              itemId: item.id,
+              title: item.title,
+              sourceName: item.sourceName,
+              signal: signal,
+              onTap: () => _openItem(context, item),
+              isSaved: saved.contains(item.id),
+              onToggleSave: toggle,
+            );
+          }
+          return FeedRowItem(
+            key: ValueKey(item.id),
+            itemId: item.id,
+            title: item.title,
+            sourceName: item.sourceName,
+            signal: signal,
+            onTap: () => _openItem(context, item),
+            isSaved: saved.contains(item.id),
+            onToggleSave: toggle,
+          );
+        },
+        separatorBuilder: (_, _) => const FeedDivider(),
+      ),
+    );
+  }
 }
 
 class _FeedTabButton extends StatelessWidget {
@@ -318,7 +369,9 @@ class _FeedTabButton extends StatelessWidget {
                   border: Border(
                     bottom: BorderSide(
                       width: 2,
-                      color: selected ? AppColors.primary : Colors.transparent,
+                      color: selected
+                          ? context.palette.primary
+                          : Colors.transparent,
                     ),
                   ),
                 ),
@@ -327,11 +380,11 @@ class _FeedTabButton extends StatelessWidget {
                 // içindir.
                 child: Text(
                   label,
-                  style: AppTypography.label.copyWith(
+                  style: context.text.label.copyWith(
                     fontSize: 13,
                     color: selected
-                        ? AppColors.primary
-                        : AppColors.textSecondary,
+                        ? context.palette.primary
+                        : context.palette.textSecondary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

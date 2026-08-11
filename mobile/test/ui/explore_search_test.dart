@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecnow/data/feed/feed_schema.dart';
-import 'package:tecnow/ui/explore_search.dart';
+import 'package:tecos/data/feed/feed_schema.dart';
+import 'package:tecos/ui/explore_search.dart';
 
 import '../support/test_overrides.dart';
 

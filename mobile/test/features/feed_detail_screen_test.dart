@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecnow/data/feed/feed_schema.dart';
-import 'package:tecnow/features/detail/feed_detail_screen.dart';
+import 'package:tecos/data/feed/feed_schema.dart';
+import 'package:tecos/design_system/theme/app_theme.dart';
+import 'package:tecos/features/detail/feed_detail_screen.dart';
 
 import '../support/test_overrides.dart';
 
@@ -59,13 +60,13 @@ void main() {
       expect(find.textContaining('Popülerlik: 10'), findsOneWidget);
     });
 
-    /// Politika: TecNow özeti kaynağın kendi metninden görsel olarak
+    /// Politika: tecOS özeti kaynağın kendi metninden görsel olarak
     /// ayrılır — kartta olduğu gibi detayda da.
-    testWidgets('TecNow özeti detayda da işaretlenir', (tester) async {
+    testWidgets('tecOS özeti detayda da işaretlenir', (tester) async {
       await _pump(tester, const FeedDetailScreen(id: '0000000000000002'));
 
       // Yazım kilitli: marka deve sırtı. Bkz. DECISION_LOG D-018.
-      expect(find.text('TecNow ÖZETİ'), findsOneWidget);
+      expect(find.text('tecOS ÖZETİ'), findsOneWidget);
     });
   });
 
@@ -84,7 +85,10 @@ void main() {
     testWidgets('bozuk feed hata durumu gösterir', (tester) async {
       await tester.pumpWidget(
         memoryDataScopeWithFailingFeed(
-          const MaterialApp(home: FeedDetailScreen(id: '0000000000000001')),
+          MaterialApp(
+            theme: AppTheme.dark,
+            home: const FeedDetailScreen(id: '0000000000000001'),
+          ),
         ),
       );
       await tester.pumpAndSettle();

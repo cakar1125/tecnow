@@ -23,6 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/feed/feed_schema.dart';
 import '../../data/providers.dart';
 import '../../design_system/components/app_components.dart';
+import '../../design_system/tokens/app_palette.dart';
 import '../../design_system/tokens/app_tokens.dart';
 import '../read_history/read_history_recorder.dart';
 import 'feed_item_detail.dart';
@@ -42,8 +43,10 @@ String detailTitle(FeedItemKind? kind) => switch (kind) {
 
 /// Vurgu rengi. Mor **yalnız** AI bağlamında (`CLAUDE.md` değişmez kuralı);
 /// tür bilinmiyorken de mor kullanılmaz, çünkü o bir iddiadır.
-Color detailAccent(FeedItemKind? kind) =>
-    kind == FeedItemKind.aiModel ? AppColors.aiAccent : AppColors.primary;
+///
+/// Paleti parametre olarak alıyor: bu bir widget değil, `context`'i yok.
+Color detailAccent(AppPalette palette, FeedItemKind? kind) =>
+    kind == FeedItemKind.aiModel ? palette.aiAccent : palette.primary;
 
 class FeedDetailScreen extends ConsumerStatefulWidget {
   const FeedDetailScreen({required this.id, super.key});
@@ -116,7 +119,7 @@ class _FeedDetailScreenState extends ConsumerState<FeedDetailScreen> {
       }
       return FeedItemDetail(
         item: item,
-        accent: detailAccent(item.kind),
+        accent: detailAccent(context.palette, item.kind),
         onOpenSource: _openSource,
       );
     }

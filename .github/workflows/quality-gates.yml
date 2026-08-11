@@ -1,0 +1,82 @@
+name: Kalite kapıları
+
+# `QUALITY_GATES.md`'deki üç kapı: biçim, statik çözümleme, testler.
+#
+# Bu iş akışı olmadan kapılar **yalnız geliştiricinin makinesinde** koşuyordu.
+# 896 test yazılı olması, itilen kodun onlardan geçtiği anlamına gelmiyor —
+# unutulan tek bir `flutter test` yeterli. Kapı ancak otomatikse kapıdır.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+# Aynı dalda arka arkaya itilen commit'lerde eskisi iptal edilir: sonuç
+# yalnız en son hâl için anlamlı.
+concurrency:
+  group: quality-gates-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  gates:
+    # **Windows** — ubuntu değil, ve bu bilinçli.
+    #
+    # Süitte golden testleri var ve golden karşılaştırması yazı tipi
+    # rasterleştirmesine duyarlı: aynı kod, Linux'ta ve Windows'ta piksel
+    # düzeyinde farklı çiziyor. Goldenlar Windows'ta üretiliyor; kapıyı
+    # ubuntu'da koşturmak ya her koşuda yanlış kırmızı verirdi ya da
+    # goldenları kapının dışında bırakmayı gerektirirdi. İkisi de kapının
+    # değerini düşürür.
+    #
+    # Maliyet: Windows koşucusu dakika başına iki kat sayılır, ama **public
+    # depoda Actions dakikaları ücretsiz** — yani burada gerçek bir maliyet
+    # yok. Depo bir gün private olursa bu satır yeniden düşünülmeli.
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: mobile
+
+    steps:
+      # Hazır adımlar tam commit SHA'sına sabitli, etikete değil — gerekçe
+      # `publish-feed.yml` içinde uzun uzun yazılı. Bu iş akışı secret
+      # görmüyor ama aynı disiplin uygulanıyor: istisna, kuralı zamanla
+      # aşındırır.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          # Yayım iş akışıyla **aynı sürüm**. İki iş akışı farklı SDK
+          # kullansaydı, birinde geçen bir şeyin diğerinde kalması mümkün
+          # olurdu ve fark kimsenin baktığı bir yerde görünmezdi.
+          flutter-version: 3.44.8
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      # Biçim kapısı. `--set-exit-if-changed`: dosyayı düzeltmez, **farkı
+      # bildirir**. CI'ın kodu sessizce değiştirmesi, kapının ne dediğini
+      # gizlerdi.
+      - name: Biçim
+        run: dart format --set-exit-if-changed lib test tool
+
+      - name: Statik çözümleme
+        run: flutter analyze
+
+      # Golden farkları koşu çıktısında görünmez; artefakt olarak yüklenmezse
+      # "golden kırıldı" bilgisi elde kalan tek şey olur ve **hangi piksel**
+      # sorusunun cevabı kaybolur. `isolatedDiff` tam da o soruyu cevaplıyor.
+      - name: Testler
+        run: flutter test
+
+      - name: Golden farklarını yükle
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: golden-failures
+          path: mobile/test/goldens/failures/
+          if-no-files-found: ignore
+          retention-days: 7

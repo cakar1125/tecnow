@@ -44,11 +44,43 @@ const _roots = <String>[
 
 const _files = <String>['README.md', 'pubspec.yaml'];
 
-/// Derleme çıktısı kaynak değildir. Son desen **bu dosyanın kendisi**: aradığı
-/// kelimeyi taşımak zorunda ve kendini işaretlemesi kapıyı susturmak için bir
-/// bahane değil, tanımının gereği.
+/// Kaynak **olmayan** yollar. Üç ayrı sebep, tek desen:
+///
+/// **1 · Derleme çıktısı dizinleri.** `.dart_tool`, `build`, `ephemeral`,
+/// `Pods` — hepsi üretilir, hiçbiri yazılmaz.
+///
+/// **2 · `flutter pub get`'in ürettiği yapılandırma dosyaları.** Bunlar
+/// platform dizinlerinin *içinde* durduğu için yukarıdaki dizin kuralı onları
+/// yakalamıyor. Kapı tam bu yüzden 2026-08-12'de CI'da kırıldı ve yerelde
+/// kırılmadı — 895 test geçti, bu bir test kaldı:
+///
+/// ```
+/// ios\Flutter\Generated.xcconfig:3:
+///   FLUTTER_APPLICATION_PATH=D:\a\tecnow\tecnow\mobile
+/// ios\Flutter\flutter_export_environment.sh:4:
+///   export "FLUTTER_APPLICATION_PATH=D:\a\tecnow\tecnow\mobile"
+/// ```
+///
+/// Koşucu depoyu `D:\a\tecnow\tecnow\` altına açıyor ve `pub get` o **mutlak
+/// yolu** dosyaya yazıyor. Satırda geçen "tecnow" ürünün adı değil, **GitHub
+/// deposunun dizin adı** — ve depo adı bilinçli olarak `tecnow` (bkz. bu
+/// dosyanın başlığı: alan adı ve depo adı kapının dışında). Yerelde çalışma
+/// dizini `stitch_techpulse_social (14)` olduğu için aynı satır hiç
+/// oluşmuyordu; kusur koddaydı, ortamda değil.
+///
+/// Kural değişmiyor, **kapsamı düzeliyor**: üretilen dosya kaynak değildir.
+///
+/// **3 · Bu dosyanın kendisi.** Aradığı kelimeyi taşımak zorunda; kendini
+/// işaretlemesi kapıyı susturmak için bahane değil, tanımının gereği.
 final _ignored = RegExp(
-  r'[/\\](\.dart_tool|build|ephemeral|Pods)[/\\]|brand_name_test\.dart$',
+  [
+    r'[/\\](\.dart_tool|build|ephemeral|Pods)[/\\]',
+    r'[/\\](Flutter-)?Generated\.xcconfig$',
+    r'[/\\]flutter_export_environment\.sh$',
+    r'[/\\]local\.properties$',
+    r'[/\\][Gg]enerated[_]?[Pp]lugin[_]?[Rr]egistrant\.',
+    r'brand_name_test\.dart$',
+  ].join('|'),
 );
 
 /// Eski adın **anıldığı** biçim. Tırnak zorunlu: `"TecNow"` bir alıntıdır,
@@ -103,5 +135,36 @@ void main() {
   test('kapı alıntı ile kimliği ayırır', () {
     expect('// Ad "TecNow"dan taşındı'.contains(_quotedMention), isTrue);
     expect('set(BINARY_NAME "tecnow")'.contains(_quotedMention), isFalse);
+  });
+
+  /// Kapının **kapsamı** da ölçülmeli. Bu yolların ilk ikisi CI'da gerçekten
+  /// kapıyı kırdı (2026-08-12): koşucunun çalışma dizini `…\tecnow\tecnow\`
+  /// olduğu için `pub get` depo adını üretilen dosyalara yazdı.
+  test('üretilen yapılandırma dosyaları taranmaz', () {
+    for (final path in [
+      r'ios\Flutter\Generated.xcconfig',
+      r'ios\Flutter\flutter_export_environment.sh',
+      r'macos\Flutter\Flutter-Generated.xcconfig',
+      r'android\local.properties',
+      r'windows\flutter\generated_plugin_registrant.cc',
+      r'ios\Runner\GeneratedPluginRegistrant.m',
+      r'ios\Flutter\ephemeral\Packages\.packages\FlutterFramework',
+    ]) {
+      expect(_ignored.hasMatch(path), isTrue, reason: '$path taranmamalı');
+    }
+  });
+
+  /// Kapsam daralmasının sessizce fazla daralmadığını ölçer. Bu dört dosya
+  /// elle yazılıyor ve kapıyı kuran bulgu **tam olarak** onlardı: taranmaya
+  /// devam etmezlerse kapı adını korur, işini kaybeder.
+  test('elle yazılan platform dosyaları taranmaya devam eder', () {
+    for (final path in [
+      r'linux\CMakeLists.txt',
+      r'macos\Runner\Configs\AppInfo.xcconfig',
+      r'windows\runner\Runner.rc',
+      r'android\app\build.gradle.kts',
+    ]) {
+      expect(_ignored.hasMatch(path), isFalse, reason: '$path taranmalı');
+    }
   });
 }

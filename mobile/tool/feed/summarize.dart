@@ -27,13 +27,19 @@ import 'summary_guard.dart';
 String sourceTextOf(FeedItem item) => '${item.title}\n${item.summary}';
 
 abstract interface class Summarizer {
-  /// Türkçe özet döndürür; üretemezse `null`.
+  /// [language] dilinde özet döndürür; üretemezse `null`.
   ///
   /// `null` bir hata değildir: "bu kayıt için özet yok" demektir ve kayıt
   /// orijinal metniyle yayımlanır.
+  ///
+  /// Dil **çağrı başına** verilir, sağlayıcının kurucusunda değil. İki yerde
+  /// durabilirdi ama o zaman iki gerçek kaynağı olurdu: [applySummaries]'in
+  /// damgaladığı dil ile modelin yazdığı dil ayrışabilir ve çıktı geçerli
+  /// görünüp yanlış etiketli olurdu.
   Future<String?> summarize({
     required String title,
     required String sourceText,
+    required String language,
   });
 }
 
@@ -45,8 +51,26 @@ final class DisabledSummarizer implements Summarizer {
   Future<String?> summarize({
     required String title,
     required String sourceText,
+    required String language,
   }) async => null;
 }
+
+/// Yönergede kullanılacak dil adları.
+///
+/// Kaynaklar (GitHub, Hugging Face, resmi bloglar) evrensel ve İngilizce;
+/// hedef dil **kaynağın bir özelliği değil, üretimin bir parametresi**. Bu
+/// tablo o parametrenin insan tarafından okunabilir karşılığı.
+///
+/// Bilinmeyen kod, kodun kendisiyle yazılır. Zayıf ama sessiz değil: yeni bir
+/// dil gerçekten yayınlanacaksa adı buraya eklenmeli.
+const summaryLanguageNames = <String, String>{
+  'tr': 'Türkçe',
+  'en': 'İngilizce',
+  'de': 'Almanca',
+  'fr': 'Fransızca',
+  'es': 'İspanyolca',
+  'ar': 'Arapça',
+};
 
 /// Modele verilen yönerge — **sağlayıcıdan bağımsız**.
 ///
@@ -55,11 +79,17 @@ final class DisabledSummarizer implements Summarizer {
 ///
 /// Tek yerde durması şart: iki sağlayıcı iki ayrı yönergeyle çalışsaydı,
 /// aralarındaki kalite karşılaştırması modeli değil yönergeyi ölçerdi.
-const _instruction =
-    'Aşağıdaki teknoloji duyurusunu Türkçe olarak en fazla iki cümlede '
-    'özetle. Kaynakta geçmeyen hiçbir sayı, oran, fiyat, ölçüt ya da '
-    'bağlantı ekleme. Yorum katma, tanıtım dili kullanma. Yalnızca özeti '
-    'yaz, başka hiçbir şey yazma.';
+///
+/// Dil dışında **hiçbir şey** değişmez. İki dilin özetleri arasındaki farkın
+/// yönergeden değil modelden gelmesi, kalitenin dil başına ölçülebilmesinin
+/// koşulu.
+String summaryInstructionFor(String language) {
+  final name = summaryLanguageNames[language] ?? language;
+  return 'Aşağıdaki teknoloji duyurusunu $name olarak en fazla iki cümlede '
+      'özetle. Kaynakta geçmeyen hiçbir sayı, oran, fiyat, ölçüt ya da '
+      'bağlantı ekleme. Yorum katma, tanıtım dili kullanma. Yalnızca özeti '
+      'yaz, başka hiçbir şey yazma.';
+}
 
 /// Bir koşuda yapılacak en fazla **yeni** çağrı.
 ///
@@ -126,6 +156,7 @@ final class SummaryPass {
 Future<SummaryPass> applySummaries(
   List<FeedItem> items, {
   required Summarizer summarizer,
+  String language = 'tr',
   int budget = defaultSummaryBudget,
   List<FeedItem> previous = const [],
 }) async {
@@ -139,10 +170,17 @@ Future<SummaryPass> applySummaries(
   // Yalnız taşınabilir olanlar: tecOS özeti **ve** damgası olanlar.
   // Damgasız bir kayıt eski bir sürümden gelmiş olabilir; kaynak metninin
   // değişip değişmediği bilinemeyeceği için taşınmaz.
+  //
+  // Dil de eşleşmeli. Dosya başına tek dil yayınlandığı için normalde zaten
+  // eşleşir, ama hedef dil değiştirildiğinde (ya da yanlış `--previous`
+  // verildiğinde) eşleşmeseydi taşıma, İngilizce bir dosyaya Türkçe özetleri
+  // **sessizce** doldururdu. Sessiz olması burada asıl tehlike: çıktı geçerli
+  // görünür, yalnız yanlış dildedir.
   final carryable = {
     for (final item in previous)
       if (item.summaryOrigin == SummaryOrigin.generated &&
-          item.summarySourceHash != null)
+          item.summarySourceHash != null &&
+          item.language == language)
         item.id: item,
   };
 
@@ -191,6 +229,7 @@ Future<SummaryPass> applySummaries(
       generated = await summarizer.summarize(
         title: item.title,
         sourceText: sourceText,
+        language: language,
       );
     } catch (_) {
       // Model çağrısı bir kaydı düşürebilir, koşuyu değil.
@@ -220,7 +259,7 @@ Future<SummaryPass> applySummaries(
       item.withSummary(
         summary: generated.trim(),
         summaryOrigin: SummaryOrigin.generated,
-        language: 'tr',
+        language: language,
         // Bir sonraki koşu bu damgaya bakıp özeti yeniden satın almayacak.
         summarySourceHash: sourceHash,
       ),
@@ -264,6 +303,7 @@ final class AnthropicSummarizer implements Summarizer {
   Future<String?> summarize({
     required String title,
     required String sourceText,
+    required String language,
   }) async {
     final client = HttpClient()..connectionTimeout = timeout;
     try {
@@ -277,7 +317,10 @@ final class AnthropicSummarizer implements Summarizer {
           'model': model,
           'max_tokens': 300,
           'messages': [
-            {'role': 'user', 'content': '$_instruction\n\n$sourceText'},
+            {
+              'role': 'user',
+              'content': '${summaryInstructionFor(language)}\n\n$sourceText',
+            },
           ],
         }),
       );
@@ -365,6 +408,7 @@ final class NvidiaSummarizer implements Summarizer {
   Future<String?> summarize({
     required String title,
     required String sourceText,
+    required String language,
   }) async {
     await _pace();
 
@@ -382,7 +426,10 @@ final class NvidiaSummarizer implements Summarizer {
           // kapının ret oranını düşürür.
           'temperature': 0.2,
           'messages': [
-            {'role': 'user', 'content': '$_instruction\n\n$sourceText'},
+            {
+              'role': 'user',
+              'content': '${summaryInstructionFor(language)}\n\n$sourceText',
+            },
           ],
         }),
       );
@@ -455,11 +502,16 @@ final class FallbackSummarizer implements Summarizer {
   Future<String?> summarize({
     required String title,
     required String sourceText,
+    required String language,
   }) async {
     Object? firstFailure;
     for (final provider in providers) {
       try {
-        return await provider.summarize(title: title, sourceText: sourceText);
+        return await provider.summarize(
+          title: title,
+          sourceText: sourceText,
+          language: language,
+        );
       } catch (error) {
         firstFailure ??= error;
       }

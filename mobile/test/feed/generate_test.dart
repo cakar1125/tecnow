@@ -332,4 +332,81 @@ void main() {
       expect(names.toSet(), hasLength(names.length));
     });
   });
+
+  group('dil', () {
+    test('dil bildirilmezse varsayılan yazılır', () async {
+      final report = await generateFeed(
+        fetcher: _fetcher(),
+        sources: _sources(),
+        now: _now,
+      );
+
+      expect(report.feed.language, feedDefaultLanguage);
+      expect(report.feed.availableLanguages, isEmpty);
+    });
+
+    test('dil ve dil listesi yayına yazılır', () async {
+      final report = await generateFeed(
+        fetcher: _fetcher(),
+        sources: _sources(),
+        now: _now,
+        language: 'en',
+        availableLanguages: const [
+          FeedLanguage(code: 'tr', url: 'feed.json'),
+          FeedLanguage(code: 'en', url: 'feed.en.json'),
+        ],
+      );
+
+      final json = jsonDecode(encodeFeed(report.feed)) as Map<String, Object?>;
+      expect(json['language'], 'en');
+      expect(json['availableLanguages'], [
+        {'code': 'tr', 'url': 'feed.json'},
+        {'code': 'en', 'url': 'feed.en.json'},
+      ]);
+      // Ek alan uyumsuz değişiklik değil: kurulu uygulamalar tanımadıkları
+      // anahtarı yok sayar, sürüm artsaydı feed'i topluca reddederlerdi.
+      expect(json['schemaVersion'], 1);
+    });
+
+    /// Üretici katı, uygulama hoşgörülü. `Feed.fromJson` böyle bir listeyi
+    /// sessizce boşa düşürüyor — doğru davranış ama teşhis edilemez. Kusur
+    /// üretim anında, yüksek sesle ölmeli.
+    test('dil listesi üretilen dili içermiyorsa üretim durur', () async {
+      expect(
+        () => generateFeed(
+          fetcher: _fetcher(),
+          sources: _sources(),
+          now: _now,
+          language: 'de',
+          availableLanguages: const [
+            FeedLanguage(code: 'tr', url: 'feed.json'),
+          ],
+        ),
+        throwsA(isA<GenerationException>()),
+      );
+    });
+
+    group('--languages ayrıştırma', () {
+      test('boş değer boş liste verir', () {
+        expect(parseLanguageList(''), isEmpty);
+        expect(parseLanguageList('   '), isEmpty);
+      });
+
+      test('kod=yol çiftleri sırayla okunur', () {
+        final parsed = parseLanguageList('tr=feed.json, en=feed.en.json');
+        expect(parsed.map((entry) => entry.code), ['tr', 'en']);
+        expect(parsed.map((entry) => entry.url), ['feed.json', 'feed.en.json']);
+      });
+
+      test('bozuk giriş sessizce atlanmaz', () {
+        for (final bad in ['tr', '=feed.json', 'tr=', 'tr=a,tr=b']) {
+          expect(
+            () => parseLanguageList(bad),
+            throwsA(isA<FormatException>()),
+            reason: '"$bad" reddedilmeli',
+          );
+        }
+      });
+    });
+  });
 }

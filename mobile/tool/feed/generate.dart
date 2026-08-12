@@ -212,10 +212,24 @@ Future<GenerationReport> generateFeed({
   required DateTime now,
   int limit = 200,
   Summarizer summarizer = const DisabledSummarizer(),
+  String language = feedDefaultLanguage,
+  List<FeedLanguage> availableLanguages = const [],
   int summaryBudget = defaultSummaryBudget,
   List<FeedItem> previous = const [],
   Duration refreshAfter = feedPublishedRefreshAfter,
 }) async {
+  // Üretici **katı**, uygulama hoşgörülü. `Feed.fromJson` kendi diliyle
+  // çelişen bir listeyi sessizce boşa düşürüyor — doğru davranış, çünkü
+  // kullanıcı okuduğu dile geri dönemeyen bir seçim listesiyle kalmamalı.
+  // Ama o sessizlik burada olsaydı, hatalı bir yayın "dil seçimi çalışmıyor"
+  // diye kullanıcıya ulaşırdı. Kusur üretim anında, yüksek sesle ölür.
+  if (availableLanguages.isNotEmpty &&
+      !availableLanguages.any((entry) => entry.code == language)) {
+    throw GenerationException(
+      'Dil listesi üretilen dili ($language) içermiyor: '
+      '${availableLanguages.map((entry) => entry.code).join(", ")}',
+    );
+  }
   final outcomes = <SourceOutcome>[];
   final collected = <FeedItem>[];
 
@@ -278,6 +292,7 @@ Future<GenerationReport> generateFeed({
   final summaries = await applySummaries(
     trimmed,
     summarizer: summarizer,
+    language: language,
     budget: summaryBudget,
     previous: previous,
   );
@@ -288,6 +303,8 @@ Future<GenerationReport> generateFeed({
       generatedAt: now,
       items: summaries.items,
       refreshAfter: refreshAfter,
+      language: language,
+      availableLanguages: availableLanguages,
     ),
     outcomes: outcomes,
     summaries: summaries,
@@ -301,6 +318,41 @@ Future<GenerationReport> generateFeed({
 String encodeFeed(Feed feed) =>
     '${const JsonEncoder.withIndent('  ').convert(feed.toJson())}\n';
 
+/// `--languages tr=feed.json,en=feed.en.json` biçimini okur.
+///
+/// Ayrıştırma **katı**: bozuk bir giriş sessizce atlanmaz, hata fırlatır.
+/// Uygulama tarafındaki hoşgörünün ([Feed.fromJson]) burada karşılığı yok ve
+/// olmaması bilinçli — orada amaç kullanıcının içeriği görmeye devam etmesi,
+/// burada amaç yanlış yayının hiç çıkmaması. Aynı kural iki tarafta zıt
+/// davranış gerektiriyor.
+List<FeedLanguage> parseLanguageList(String raw) {
+  final trimmed = raw.trim();
+  if (trimmed.isEmpty) return const [];
+
+  final entries = <FeedLanguage>[];
+  for (final part in trimmed.split(',')) {
+    final piece = part.trim();
+    if (piece.isEmpty) continue;
+
+    final separator = piece.indexOf('=');
+    if (separator <= 0 || separator == piece.length - 1) {
+      throw FormatException('"$piece" <kod>=<yol> biçiminde değil');
+    }
+
+    final code = piece.substring(0, separator).trim();
+    final url = piece.substring(separator + 1).trim();
+    if (code.isEmpty || url.isEmpty) {
+      throw FormatException('"$piece" boş kod ya da yol içeriyor');
+    }
+    if (entries.any((entry) => entry.code == code)) {
+      throw FormatException('"$code" iki kez verildi');
+    }
+
+    entries.add(FeedLanguage(code: code, url: url));
+  }
+  return List.unmodifiable(entries);
+}
+
 /// Çıkış kodları: 0 tam başarı, 2 kısmi (bazı kaynaklar okunamadı ama feed
 /// yazıldı), 1 çalışma hatası. Barındırma iş akışı 2'yi nasıl yorumlayacağına
 /// kendi karar verir — sessizce başarı saymasın diye ayrıldı.
@@ -313,6 +365,19 @@ String encodeFeed(Feed feed) =>
 /// Bu sıra **geçicidir ve ölçümle değişecektir**; karşılaştırma için
 /// `--summarizer anthropic|nvidia` ile tek sağlayıcı zorlanabilir.
 Summarizer _buildSummarizer(String provider) {
+  // `none`: anahtar **olsa bile** çağrı yapılmaz.
+  //
+  // İngilizce yayın için doğru mod ve bedeli sıfır: kaynaklar zaten
+  // İngilizce, yani özetlenmemiş kayıt ([SummaryOrigin.original]) hem doğru
+  // hem de kaynağın kendi cümlesi. Bunu gizli bir özel duruma çevirmek
+  // (`--language en` görünce özetlemeyi kendiliğinden kapatmak) daha kolay
+  // olurdu ama yanlış: kaynak listesine bir gün İngilizce olmayan bir kaynak
+  // eklenirse o özel durum sessizce yanlışa döner. Karar operatörde kalıyor.
+  if (provider == 'none') {
+    stdout.writeln('  özet · kapalı (--summarizer none).');
+    return const DisabledSummarizer();
+  }
+
   final anthropicKey = Platform.environment['ANTHROPIC_API_KEY'];
   final nvidiaKey = Platform.environment['NVIDIA_API_KEY'];
 
@@ -371,10 +436,22 @@ Future<int> run(List<String> args, {FeedFetcher? fetcher}) async {
   var limit = 200;
   var summaryBudget = defaultSummaryBudget;
   var provider = 'auto';
+  var language = feedDefaultLanguage;
+  var availableLanguages = const <FeedLanguage>[];
   var dryRun = false;
 
   for (var i = 0; i < args.length; i++) {
     switch (args[i]) {
+      case '--language':
+        language = i + 1 < args.length ? args[++i] : language;
+      case '--languages':
+        final raw = i + 1 < args.length ? args[++i] : '';
+        try {
+          availableLanguages = parseLanguageList(raw);
+        } on FormatException catch (error) {
+          stderr.writeln('--languages: ${error.message}');
+          return 1;
+        }
       case '--out':
         output = i + 1 < args.length ? args[++i] : null;
       case '--previous':
@@ -392,7 +469,9 @@ Future<int> run(List<String> args, {FeedFetcher? fetcher}) async {
         stdout.writeln(
           'Kullanım: dart run tool/feed/generate.dart '
           '[--out <yol>] [--previous <yol>] [--limit <n>] '
-          '[--summary-budget <n>] [--summarizer auto|anthropic|nvidia] '
+          '[--summary-budget <n>] '
+          '[--summarizer auto|anthropic|nvidia|none] '
+          '[--language <kod>] [--languages <kod>=<yol>,...] '
           '[--dry-run]',
         );
         return 0;
@@ -418,6 +497,8 @@ Future<int> run(List<String> args, {FeedFetcher? fetcher}) async {
     summaryBudget: summaryBudget,
     previous: previous,
     summarizer: summarizer,
+    language: language,
+    availableLanguages: availableLanguages,
   );
 
   for (final outcome in report.outcomes) {

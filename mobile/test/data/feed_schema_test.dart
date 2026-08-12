@@ -440,4 +440,139 @@ void main() {
       }
     });
   });
+
+  group('dil', () {
+    Map<String, Object?> feedJson({
+      String? language,
+      Object? availableLanguages,
+    }) => {
+      'schemaVersion': feedSchemaVersion,
+      'generatedAt': DateTime.utc(2026, 8, 12).toIso8601String(),
+      'language': ?language,
+      'availableLanguages': ?availableLanguages,
+      'items': [sampleItem().toJson()],
+    };
+
+    test('dil ve dil listesi gidiş-dönüşte korunur', () {
+      final feed = Feed(
+        schemaVersion: feedSchemaVersion,
+        generatedAt: DateTime.utc(2026, 8, 12),
+        items: [sampleItem()],
+        language: 'tr',
+        availableLanguages: const [
+          FeedLanguage(code: 'tr', url: 'feed.json'),
+          FeedLanguage(code: 'en', url: 'feed.en.json'),
+        ],
+      );
+
+      final decoded = Feed.fromJson(
+        jsonDecode(jsonEncode(feed.toJson())) as Map<String, Object?>,
+      );
+
+      expect(decoded.language, 'tr');
+      expect(decoded.availableLanguages.map((entry) => entry.code), [
+        'tr',
+        'en',
+      ]);
+      expect(decoded.availableLanguages.last.url, 'feed.en.json');
+    });
+
+    /// Alan **eklendiğinde** yayınlanmış eski dosyalar onu taşımıyor olacak.
+    /// Bunlar Türkçe hedefli üretildi; varsayılan da o.
+    test('alanı taşımayan eski yayın varsayılana düşer', () {
+      final decoded = Feed.fromJson(feedJson());
+      expect(decoded.language, feedDefaultLanguage);
+      expect(decoded.availableLanguages, isEmpty);
+      expect(decoded.items, hasLength(1), reason: 'içerik okunmaya devam eder');
+    });
+
+    /// Şema sürümü **artırılmadı**: artırılsaydı kurulu her uygulama feed'i
+    /// topluca reddederdi. Eklenen alanı tanımayan sürüm onu yok sayar.
+    test('yeni alanlar şema sürümünü artırmaz', () {
+      final feed = Feed(
+        schemaVersion: feedSchemaVersion,
+        generatedAt: DateTime.utc(2026, 8, 12),
+        items: [sampleItem()],
+        language: 'en',
+      );
+      expect(feed.toJson()['schemaVersion'], 1);
+    });
+
+    test('bozuk giriş yalnız kendini düşürür', () {
+      final decoded = Feed.fromJson(
+        feedJson(
+          language: 'tr',
+          availableLanguages: [
+            {'code': 'tr', 'url': 'feed.json'},
+            {'code': 'de'}, // adres yok
+            'yanlış tür',
+            {'code': 'en', 'url': 'feed.en.json'},
+          ],
+        ),
+      );
+      expect(decoded.availableLanguages.map((entry) => entry.code), [
+        'tr',
+        'en',
+      ]);
+    });
+
+    test('tekrar eden dil kodu bir kez sayılır', () {
+      final decoded = Feed.fromJson(
+        feedJson(
+          language: 'tr',
+          availableLanguages: [
+            {'code': 'tr', 'url': 'feed.json'},
+            {'code': 'tr', 'url': 'baska.json'},
+          ],
+        ),
+      );
+      expect(decoded.availableLanguages, hasLength(1));
+      expect(decoded.availableLanguages.single.url, 'feed.json');
+    });
+
+    /// Kendi kendisiyle çelişen liste arayüz süremez: kullanıcı okumakta
+    /// olduğu dile geri dönemezdi.
+    test('okunan dil listede yoksa liste tümden reddedilir', () {
+      final decoded = Feed.fromJson(
+        feedJson(
+          language: 'tr',
+          availableLanguages: [
+            {'code': 'en', 'url': 'feed.en.json'},
+          ],
+        ),
+      );
+      expect(decoded.availableLanguages, isEmpty);
+      expect(decoded.items, hasLength(1));
+    });
+
+    group('adres çözümü', () {
+      final base = Uri.parse('https://feed.example.test/feed.json');
+
+      test('göreli adres feed adresine göre çözülür', () {
+        const entry = FeedLanguage(code: 'en', url: 'feed.en.json');
+        expect(
+          entry.resolve(base),
+          Uri.parse('https://feed.example.test/feed.en.json'),
+        );
+      });
+
+      /// Uygulamanın ağ çıkışı bilinçli olarak dar. Dil listesi akışa açılan
+      /// yeni bir adres alanı olduğu için o darlığın burada da tutması şart.
+      test('başka konağa çözülen adres reddedilir', () {
+        const entry = FeedLanguage(
+          code: 'en',
+          url: 'https://baska-sunucu.example/feed.json',
+        );
+        expect(entry.resolve(base), isNull);
+      });
+
+      test('https dışı adres reddedilir', () {
+        const entry = FeedLanguage(
+          code: 'en',
+          url: 'http://feed.example.test/feed.en.json',
+        );
+        expect(entry.resolve(base), isNull);
+      });
+    });
+  });
 }

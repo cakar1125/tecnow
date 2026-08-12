@@ -303,18 +303,97 @@ const feedDefaultRefreshAfter = Duration(minutes: 15);
 const feedMinRefreshAfter = Duration(minutes: 5);
 const feedMaxRefreshAfter = Duration(hours: 24);
 
+/// Yayın kendi dilini bildirmediğinde varsayılan.
+///
+/// Alanı hiç taşımayan **eski** bir yayın da buraya düşer ve doğru sonuç
+/// verir: bu alan eklenmeden önce üretilen her dosya Türkçe hedefliydi.
+const feedDefaultLanguage = 'tr';
+
+/// Yayının sunduğu bir dil ve o dile ait dosyanın adresi.
+///
+/// [url] **görelidir** ve feed'in okunduğu adrese göre çözülür ([resolve]).
+/// Mutlak adres de yazılabilirdi ama gereksiz: dosyaların nerede durduğunu
+/// sunucu bilir, uygulama değil. Göreli tutmak, yayının bir gün başka bir
+/// konağa taşınmasını uygulama güncellemesi olmadan mümkün kılıyor.
+final class FeedLanguage {
+  const FeedLanguage({required this.code, required this.url});
+
+  /// Dil etiketi: `tr`, `en`, `de`.
+  final String code;
+
+  /// Feed adresine göre **göreli** yol: `feed.en.json`.
+  final String url;
+
+  /// [base], feed'in okunduğu adres.
+  ///
+  /// Çözülen adres **aynı konağa kilitli**; başka bir konağa ya da `https`
+  /// dışına çıkan değer `null` döner. Feed'i biz üretiyoruz, ama uygulamanın
+  /// ağ çıkışı bilinçli olarak dar tutulmuş bir güvenlik özelliği
+  /// (`feed_http_client.dart` → "uygulamanın tek ağ çıkışı"). Yayına sızan
+  /// tek satır uygulamayı başka bir sunucuya yönlendirebilseydi o darlık
+  /// kâğıt üstünde kalırdı — dil listesi, akışa açılan yeni bir adres alanı
+  /// olduğu için tam da böyle bir satır.
+  Uri? resolve(Uri base) {
+    final resolved = base.resolve(url);
+    if (resolved.scheme != 'https') return null;
+    if (resolved.host != base.host) return null;
+    return resolved;
+  }
+
+  Map<String, Object?> toJson() => {'code': code, 'url': url};
+
+  /// Bozuk giriş `null` döner — **kaydı düşürür, listeyi değil**.
+  static FeedLanguage? tryFromJson(Object? raw) {
+    if (raw is! Map) return null;
+    final code = raw['code'];
+    final url = raw['url'];
+    if (code is! String || code.isEmpty) return null;
+    if (url is! String || url.isEmpty) return null;
+    return FeedLanguage(code: code, url: url);
+  }
+}
+
 final class Feed {
   const Feed({
     required this.schemaVersion,
     required this.generatedAt,
     required this.items,
     this.refreshAfter = feedDefaultRefreshAfter,
+    this.language = feedDefaultLanguage,
+    this.availableLanguages = const [],
     this.unsupportedItemCount = 0,
   });
 
   final int schemaVersion;
   final DateTime generatedAt;
   final List<FeedItem> items;
+
+  /// Bu dosyadaki özetlerin **hedef** dili.
+  ///
+  /// [FeedItem.language] ile aynı şey değil ve karıştırılmamalı: hedef dil
+  /// dosyanın tamamı için tektir, ama tek tek kayıtlar çevrilememiş olabilir
+  /// ve o zaman kaynağın kendi dilinde kalırlar. Karma akış istisna değil,
+  /// bugünkü **normal** durum — ölçüldü (2026-08-12, paketlenmiş yayın):
+  /// 200 kaydın 180'i `en`, 20'si `tr`.
+  ///
+  /// Kaynaklar (GitHub, Hugging Face, resmi bloglar) evrensel ve İngilizce;
+  /// Türkçe kaynaktan gelmiyor, `tool/feed/summarize.dart` üretiyor. Yani
+  /// hedef dil bir **üretim parametresi**, kaynakların bir özelliği değil.
+  final String language;
+
+  /// Yayının sunduğu diller. Boşsa: yalnız bu dosya var.
+  ///
+  /// Listeyi **sunucu** bildirir. `FEED_URL` derleme zamanı sabiti olduğu
+  /// için dil listesini APK'ya gömmek [refreshAfter] ile aynı sınıfta bir
+  /// tek yönlü kapı olurdu: güncellemeyen kullanıcı sonradan eklenen dilleri
+  /// kalıcı olarak göremezdi.
+  ///
+  /// **Neden dil başına ayrı dosya, tek dosyada çeviri sözlüğü değil:** yayın
+  /// bugün 193.589 bayt ve ağırlığın çoğu özetler. Çeviriler aynı dosyaya
+  /// konsaydı her kullanıcı okumayacağı dilleri de indirirdi — beş dil ≈ 1 MB
+  /// ve bedeli mobil veriyle ödenirdi. Ayrı dosyada indirme boyutu dil
+  /// sayısından **bağımsız** kalıyor, `ETag`/`304` da dosya başına çalışıyor.
+  final List<FeedLanguage> availableLanguages;
 
   /// İçeriğin ne kadar sonra bayat sayılacağı — **sunucudan** gelir.
   ///
@@ -346,6 +425,11 @@ final class Feed {
     'schemaVersion': schemaVersion,
     'generatedAt': generatedAt.toUtc().toIso8601String(),
     'refreshAfterMinutes': refreshAfter.inMinutes,
+    'language': language,
+    if (availableLanguages.isNotEmpty)
+      'availableLanguages': [
+        for (final entry in availableLanguages) entry.toJson(),
+      ],
     'items': items.map((item) => item.toJson()).toList(),
   };
 
@@ -385,13 +469,57 @@ final class Feed {
       }
     }
 
+    final language = _readLanguage(json['language']);
+
     return Feed(
       schemaVersion: version,
       generatedAt: _requireDate(json, 'generatedAt'),
       items: List.unmodifiable(items),
       refreshAfter: _readRefreshAfter(json['refreshAfterMinutes']),
+      language: language,
+      availableLanguages: _readAvailableLanguages(
+        json['availableLanguages'],
+        language,
+      ),
       unsupportedItemCount: unsupported,
     );
+  }
+
+  /// Eksik ya da boş değer varsayılana düşer; feed'i düşürmez.
+  ///
+  /// [refreshAfter] ile aynı gerekçe: bu bir ayar, içerik değil. Bozuk bir
+  /// ayar yüzünden 200 kaydı göstermemek orantısız olurdu.
+  static String _readLanguage(Object? raw) =>
+      raw is String && raw.isNotEmpty ? raw : feedDefaultLanguage;
+
+  /// Dil listesini okur. Her kural bir kaybı önlüyor:
+  ///
+  /// * Bozuk bir giriş yalnız **kendini** düşürür — tek hatalı satır tüm
+  ///   listeyi silseydi, sunucudaki küçük bir yazım hatası dil seçimini
+  ///   sessizce yok ederdi.
+  /// * Aynı kod iki kez gelirse ilki kalır. Seçim listesinde iki "Türkçe"
+  ///   görünmesi kullanıcıya bir şey anlatmaz.
+  /// * **Okunan dosyanın kendi dili listede yoksa liste tümden reddedilir.**
+  ///   Kendi kendisiyle çelişen bir yapılandırma arayüz süremez: kullanıcı
+  ///   zaten okumakta olduğu dili seçemeyen bir listeyle karşılaşırdı ve
+  ///   başka bir dile geçtikten sonra geri dönemezdi. Boş liste "yalnız bu
+  ///   dosya var" demek — güvenli ve doğru olan taraf.
+  static List<FeedLanguage> _readAvailableLanguages(
+    Object? raw,
+    String language,
+  ) {
+    if (raw is! List) return const [];
+
+    final entries = <FeedLanguage>[];
+    for (final item in raw) {
+      final parsed = FeedLanguage.tryFromJson(item);
+      if (parsed == null) continue;
+      if (entries.any((entry) => entry.code == parsed.code)) continue;
+      entries.add(parsed);
+    }
+
+    if (!entries.any((entry) => entry.code == language)) return const [];
+    return List.unmodifiable(entries);
   }
 
   /// Eksik, yanlış türde ya da sınır dışı bir değer **feed'i düşürmez**.

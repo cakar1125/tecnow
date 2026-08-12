@@ -63,12 +63,19 @@ final class FakeSummarizer implements Summarizer {
   final String? reply;
   final seen = <String>[];
 
+  /// İstenen diller. Dilin çağrıya **gerçekten** ulaştığını ölçebilmek için
+  /// ayrı tutuluyor: hedef dil ile damgalanan dil ayrışırsa çıktı geçerli
+  /// görünüp yanlış etiketli olur ve bunu başka hiçbir kapı yakalamaz.
+  final languages = <String>[];
+
   @override
   Future<String?> summarize({
     required String title,
     required String sourceText,
+    required String language,
   }) async {
     seen.add(sourceText);
+    languages.add(language);
     return reply;
   }
 }
@@ -78,6 +85,7 @@ final class ThrowingSummarizer implements Summarizer {
   Future<String?> summarize({
     required String title,
     required String sourceText,
+    required String language,
   }) async => throw StateError('ağ hatası');
 }
 
@@ -352,10 +360,15 @@ void main() {
       final backup = FakeSummarizer('Yedekten gelen özet.');
       final chain = FallbackSummarizer([ThrowingSummarizer(), backup]);
 
-      final result = await chain.summarize(title: 't', sourceText: 's');
+      final result = await chain.summarize(
+        title: 't',
+        sourceText: 's',
+        language: 'tr',
+      );
 
       expect(result, 'Yedekten gelen özet.');
       expect(backup.seen, hasLength(1));
+      expect(backup.languages, ['tr'], reason: 'dil yedeğe de geçmeli');
     });
 
     /// `null` bir hata değil, "bu kayıt için özet yok" demektir. Yedeğe
@@ -364,7 +377,10 @@ void main() {
       final backup = FakeSummarizer('Kullanılmamalı.');
       final chain = FallbackSummarizer([FakeSummarizer(null), backup]);
 
-      expect(await chain.summarize(title: 't', sourceText: 's'), isNull);
+      expect(
+        await chain.summarize(title: 't', sourceText: 's', language: 'tr'),
+        isNull,
+      );
       expect(backup.seen, isEmpty);
     });
 
@@ -410,6 +426,88 @@ void main() {
         parseOpenAiText('{"choices":[{"message":{"content":"   "}}]}'),
         isNull,
       );
+    });
+  });
+
+  group('hedef dil', () {
+    /// Yönergede dil dışında **hiçbir şey** değişmemeli: iki dilin özetleri
+    /// arasındaki fark modelden gelmeli, yönergeden değil. Aksi hâlde dil
+    /// başına kalite ölçümü anlamsızlaşır.
+    test('yönergede yalnız dil adı değişir', () {
+      final turkish = summaryInstructionFor('tr');
+      final english = summaryInstructionFor('en');
+
+      expect(turkish, contains('Türkçe'));
+      expect(english, contains('İngilizce'));
+      expect(
+        turkish.replaceAll('Türkçe', '·'),
+        english.replaceAll('İngilizce', '·'),
+      );
+    });
+
+    /// Bilinmeyen kod sessizce Türkçeye düşmemeli — o, yanlış dilde bir yayını
+    /// doğru görünen bir etiketle üretmek olurdu.
+    test('bilinmeyen kod kodun kendisiyle yazılır', () {
+      expect(summaryInstructionFor('ja'), contains('ja olarak'));
+      expect(summaryInstructionFor('ja'), isNot(contains('Türkçe')));
+    });
+
+    test('istenen dil modele iletilir ve kayda damgalanır', () async {
+      final summarizer = FakeSummarizer('A concise English summary.');
+      final pass = await applySummaries(
+        [_item()],
+        summarizer: summarizer,
+        language: 'en',
+      );
+
+      expect(summarizer.languages, ['en']);
+      expect(pass.items.single.language, 'en');
+      expect(pass.items.single.summaryOrigin, SummaryOrigin.generated);
+    });
+
+    /// Taşımanın en tehlikeli kaçağı: çıktı geçerli görünür, yalnız yanlış
+    /// dildedir ve hiçbir kapı bunu yakalamaz — `summary_guard` sayı ve
+    /// bağlantı karşılaştırıyor, dil bakmıyor.
+    test('başka dildeki önceki özet taşınmaz', () async {
+      final earlier = _item().withSummary(
+        summary: 'Türkçe bir özet cümlesi.',
+        summaryOrigin: SummaryOrigin.generated,
+        language: 'tr',
+        summarySourceHash: fnv1aHex(sourceTextOf(_item())),
+      );
+
+      final summarizer = FakeSummarizer('An English summary.');
+      final pass = await applySummaries(
+        [_item()],
+        summarizer: summarizer,
+        language: 'en',
+        previous: [earlier],
+      );
+
+      expect(pass.carried, 0, reason: 'dil eşleşmiyor, taşınmamalı');
+      expect(pass.summarized, 1);
+      expect(pass.items.single.language, 'en');
+      expect(pass.items.single.summary, 'An English summary.');
+    });
+
+    test('aynı dildeki önceki özet taşınır', () async {
+      final earlier = _item().withSummary(
+        summary: 'An English summary.',
+        summaryOrigin: SummaryOrigin.generated,
+        language: 'en',
+        summarySourceHash: fnv1aHex(sourceTextOf(_item())),
+      );
+
+      final summarizer = FakeSummarizer('yeniden üretilmemeli');
+      final pass = await applySummaries(
+        [_item()],
+        summarizer: summarizer,
+        language: 'en',
+        previous: [earlier],
+      );
+
+      expect(pass.carried, 1);
+      expect(summarizer.languages, isEmpty, reason: 'model çağrılmamalı');
     });
   });
 }

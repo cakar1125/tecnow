@@ -11,6 +11,7 @@
 /// ```
 library;
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -549,7 +550,34 @@ Future<int> run(List<String> args, {FeedFetcher? fetcher}) async {
   return report.failures.isEmpty ? 0 : 2;
 }
 
+/// `runZonedGuarded`: `try/catch`'in **göremediği** hatayı görür.
+///
+/// Ayrım burada işin özü. `try/catch` yalnız `await`'i beklenen bir future'ın
+/// hatasını yakalar. Kimsenin dinlemediği bir asenkron hata — sözgelimi
+/// zaman aşımına uğradıktan sonra kendi hatasıyla tamamlanan bir soket, ya da
+/// bir `Stream` aboneliğinin ardından gelen bir kesinti — `try/catch`'e hiç
+/// uğramaz; doğruca bölgeye (zone) gider ve varsayılan bölge onu yazıp
+/// süreci **255** ile bitirir.
+///
+/// 255 tam olarak buydu: yakalanamayan bir hata değil, **yakalanmamış** bir
+/// hata. Bu yüzden bir alttaki `catch` bloğu tek başına yetmezdi — kusur
+/// oraya hiç uğramıyordu.
+///
+/// Bölge içindeyken süreç 255 ile ölmüyor; hata yazılıyor ve çıkış kodu
+/// belgelenmiş **1**'e (çalışma hatası) çekiliyor. İş akışı 1'i zaten hata
+/// sayıyor, yani davranış değişmiyor — değişen tek şey **sebebin görünür
+/// olması**.
 Future<void> main(List<String> args) async {
+  await runZonedGuarded(() => _main(args), (error, stackTrace) {
+    stderr
+      ..writeln('YAKALANMAMIŞ ASENKRON HATA · ${error.runtimeType}')
+      ..writeln(error)
+      ..writeln(stackTrace);
+    exitCode = 1;
+  });
+}
+
+Future<void> _main(List<String> args) async {
   try {
     exitCode = await run(args);
   } on GenerationException catch (error) {

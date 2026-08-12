@@ -62,4 +62,49 @@ void main() {
       expect(preferences.themeMode, ThemeMode.system);
     });
   });
+
+  group('içerik dili', () {
+    /// `null` ile `'tr'` **aynı şey değil**: cihazını Almanca kullanan biri,
+    /// yayına Almanca eklendiği gün onu kendiliğinden almalı. Varsayılan sabit
+    /// bir dile bağlansaydı o gün hiçbir şey olmazdı.
+    test('kaydedilmemişse cihaza uyulur (null)', () async {
+      expect((await _preferences()).feedLanguage, isNull);
+    });
+
+    test('seçim saklanır ve geri okunur', () async {
+      final preferences = await _preferences();
+      await preferences.setFeedLanguage('en');
+
+      expect(preferences.feedLanguage, 'en');
+    });
+
+    /// "Cihaza uy"a dönmek bir seçim; anahtarı silerek yapılıyor.
+    test('null yazmak tercihi siler', () async {
+      final preferences = await _preferences();
+      await preferences.setFeedLanguage('en');
+
+      await preferences.setFeedLanguage(null);
+
+      expect(preferences.feedLanguage, isNull);
+    });
+
+    /// Boş dize diskte kalmış bozuk bir değer olabilir; onu bir dil kodu
+    /// sanmak, çözülemeyen bir adres denemesi demek olurdu.
+    test('boş değer cihaza uymak sayılır', () async {
+      final preferences = await _preferences({
+        AppPreferences.feedLanguageKey: '',
+      });
+
+      expect(preferences.feedLanguage, isNull);
+    });
+
+    test('reset dil tercihini de siler', () async {
+      final preferences = await _preferences();
+      await preferences.setFeedLanguage('en');
+
+      await preferences.reset();
+
+      expect(preferences.feedLanguage, isNull);
+    });
+  });
 }

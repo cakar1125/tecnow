@@ -12,6 +12,7 @@ final class AppPreferences {
   static const onboardingCompletedKey = 'onboarding_completed_v1';
   static const themeModeKey = 'theme_mode_v1';
   static const mutedSourcesKey = 'muted_sources_v1';
+  static const feedLanguageKey = 'feed_language_v1';
 
   final SharedPreferences _preferences;
 
@@ -55,9 +56,30 @@ final class AppPreferences {
   Future<void> setMutedSources(Set<String> sources) =>
       _preferences.setStringList(mutedSourcesKey, sources.toList()..sort());
 
+  /// İçerik dili tercihi. `null` = **cihazın diline uy**.
+  ///
+  /// `null`'ın ayrı bir durum olması şart, "tr" yazmakla aynı şey değil:
+  /// cihazını Almanca kullanan biri, yayına Almanca eklendiği gün onu
+  /// kendiliğinden almalı. Varsayılanı sabit bir dile bağlasaydık o gün
+  /// hiçbir şey olmazdı ve kimse ayarı açıp bakmayı akıl etmezdi.
+  ///
+  /// Tercih **doğrulanmadan** saklanıyor: yayının hangi dilleri sunduğunu
+  /// burası bilmiyor, `SyncingFeedRepository` biliyor. Sunulmayan bir dil
+  /// kayıtlıysa oradaki çözüm sessizce varsayılan dosyaya düşer — kullanıcı
+  /// içeriği görmeye devam eder. Tercihi silmiyoruz: dil yarın eklenebilir.
+  String? get feedLanguage {
+    final value = _preferences.getString(feedLanguageKey);
+    return (value == null || value.isEmpty) ? null : value;
+  }
+
+  Future<void> setFeedLanguage(String? code) => (code == null || code.isEmpty)
+      ? _preferences.remove(feedLanguageKey)
+      : _preferences.setString(feedLanguageKey, code);
+
   Future<void> reset() async {
     await _preferences.remove(onboardingCompletedKey);
     await _preferences.remove(themeModeKey);
     await _preferences.remove(mutedSourcesKey);
+    await _preferences.remove(feedLanguageKey);
   }
 }

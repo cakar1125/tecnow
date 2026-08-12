@@ -46,9 +46,16 @@ Future<void> seedLocalData(ProviderContainer container) async {
   // Tema tercihi `runApp`'ten önce okunur. Sonra okunsaydı uygulama önce
   // varsayılan temayla bir kare çizer, ardından kullanıcının seçtiğine
   // atlardı — koyu tema seçmiş birine açılışta beyaz bir parlama.
-  await _step('tema ve kaynak tercihleri', () async {
+  //
+  // İçerik dili de burada: gecikmenin bedeli bir kare değil, **yanlış dilde
+  // bir indirme** olurdu. Açılış tazelemesi tercih okunmadan başlarsa Türkçe
+  // dosya iner, hemen ardından İngilizcesi bir kez daha inerdi.
+  await _step('tema, dil ve kaynak tercihleri', () async {
     final preferences = await container.read(appPreferencesProvider.future);
     container.read(themeModeProvider.notifier).restore(preferences.themeMode);
+    container
+        .read(feedLanguageProvider.notifier)
+        .restore(preferences.feedLanguage);
     container
         .read(mutedSourcesProvider.notifier)
         .restore(preferences.mutedSources);

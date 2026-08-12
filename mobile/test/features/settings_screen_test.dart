@@ -5,6 +5,7 @@ import 'package:tecos/design_system/tokens/app_palette.dart';
 import 'package:tecos/app/app_version.dart';
 import 'package:tecos/app/router.dart';
 import 'package:tecos/data/app_preferences.dart';
+import 'package:tecos/data/feed/feed_schema.dart';
 import 'package:tecos/design_system/theme/app_theme.dart';
 import 'package:tecos/design_system/tokens/app_tokens.dart';
 
@@ -287,5 +288,88 @@ void main() {
     // İlgi Alanları, Kaydedilen İçerikler, Okuma Geçmişi, Verileri Sil,
     // Hakkında, Kaynak Politikası, Lisanslar.
     expect(find.byIcon(Icons.chevron_right_rounded), findsNWidgets(7));
+  });
+
+  /// Dil satırı **veriden** şekil alıyor: seçici, yayın birden fazla dil
+  /// sunduğunda belirir. `FEED_URL` derleme sabiti olduğu için bu davranışın
+  /// yayından önce yerinde olması şart — sonradan eklenirse, güncellemeyen
+  /// kullanıcı yeni dilleri hiç göremez.
+  group('dil satırı', () {
+    Future<void> pumpWith(WidgetTester tester, FakeFeedRepository feed) async {
+      final router = createRouter(initialLocation: '/settings');
+      addTearDown(router.dispose);
+      await tester.pumpWidget(
+        memoryDataScope(
+          MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
+          feedRepository: feed,
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    /// Bugünkü durum. Tek seçenek gösteren bir liste açmak, kullanıcıya seçim
+    /// yaptığını sandıran boş bir jest olurdu.
+    testWidgets('tek dil sunulduğunda satır dokunulabilir değil', (
+      tester,
+    ) async {
+      await pumpWith(tester, FakeFeedRepository(testFeedItems()));
+
+      expect(find.text('Dil'), findsOneWidget);
+      expect(find.text('Türkçe'), findsOneWidget);
+
+      await tester.tap(find.text('Dil'));
+      await tester.pumpAndSettle();
+      expect(find.text('İçerik dili'), findsNothing);
+    });
+
+    testWidgets('iki dil sunulduğunda seçici açılır', (tester) async {
+      await pumpWith(
+        tester,
+        FakeFeedRepository(
+          testFeedItems(),
+          availableLanguages: const [
+            FeedLanguage(code: 'tr', url: 'feed.json'),
+            FeedLanguage(code: 'en', url: 'feed.en.json'),
+          ],
+        ),
+      );
+
+      // Seçim yokken gösterilen şey **sonuç**: kullanıcı hangi dili
+      // okuduğunu görmeli, hangi kuralın onu seçtiğini değil.
+      expect(find.text('Türkçe · otomatik'), findsOneWidget);
+
+      await tester.tap(find.text('Dil'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('İçerik dili'), findsOneWidget);
+      expect(find.text('Cihazın dili'), findsOneWidget);
+      // Dil adları **kendi dillerinde**: İngilizce arayan biri "İngilizce"
+      // yazısını okuyamıyor olabilir.
+      expect(find.text('English'), findsOneWidget);
+    });
+
+    testWidgets('seçim satıra yansır ve diske yazılır', (tester) async {
+      await pumpWith(
+        tester,
+        FakeFeedRepository(
+          testFeedItems(),
+          availableLanguages: const [
+            FeedLanguage(code: 'tr', url: 'feed.json'),
+            FeedLanguage(code: 'en', url: 'feed.en.json'),
+          ],
+        ),
+      );
+
+      await tester.tap(find.text('Dil'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('English'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('English'), findsOneWidget, reason: 'satırdaki değer');
+      expect(find.text('Türkçe · otomatik'), findsNothing);
+
+      final preferences = AppPreferences(await SharedPreferences.getInstance());
+      expect(preferences.feedLanguage, 'en');
+    });
   });
 }

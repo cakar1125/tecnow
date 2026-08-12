@@ -3,12 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/app_version.dart';
+import '../../data/feed/feed_schema.dart' show feedDefaultLanguage;
 import '../../data/providers.dart';
 import '../../data/repositories/local_data_repository.dart';
 import '../../design_system/components/app_components.dart';
 import '../../design_system/tokens/app_palette.dart';
 import '../../design_system/tokens/app_text.dart';
 import '../../design_system/tokens/app_tokens.dart';
+import '../../ui/language_names.dart';
 import '../read_history/read_history_screen.dart';
 import 'about_screen.dart';
 import 'local_data_eraser.dart';
@@ -111,14 +113,7 @@ class SettingsScreen extends ConsumerWidget {
                       title: 'İlgi Alanları',
                       onTap: () => context.push('/interests'),
                     ),
-                    // Tek dil var; seçilecek bir şey olmadığı için bu bir
-                    // ekran değil, bir olgu. Değer gösteriliyor, gidilecek
-                    // yer olduğu iddia edilmiyor.
-                    const _SettingsRow.upcoming(
-                      icon: Icons.language_rounded,
-                      title: 'Dil',
-                      value: 'Türkçe',
-                    ),
+                    const _LanguageRow(),
                     const _ThemeRow(),
                     const _SettingsRow.upcoming(
                       icon: Icons.tune_rounded,
@@ -372,6 +367,186 @@ class _SettingsRow extends StatelessWidget {
       ),
     );
   }
+}
+
+/// İçerik dili.
+///
+/// Satır **yayının sunduğuna göre şekil değiştirir** ve bu, ekranın tek
+/// koşullu parçası:
+///
+/// * Yayın tek dil sunuyorsa (bugünkü durum) satır dokunulabilir değil.
+///   Açılınca tek seçenek gösteren bir liste, kullanıcıya seçim yaptığını
+///   sandıran boş bir jest olurdu.
+/// * Birden fazla dil varsa satır açılır ve seçim yapılır.
+///
+/// Koşul **derleme zamanında değil, veriden** kuruluyor: yayına İngilizce
+/// eklendiği gün kurulu uygulamada seçici kendiliğinden belirir, mağaza
+/// güncellemesi gerekmez. `FEED_URL` derleme sabiti olduğu için bu tersine
+/// çevrilebilir bir karar değildi — yayından önce kapatılması gereken bir
+/// kapıydı.
+class _LanguageRow extends ConsumerWidget {
+  const _LanguageRow();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final options = ref.watch(feedLanguageOptionsProvider).value;
+    final selected = ref.watch(feedLanguageProvider);
+
+    // Yükleniyorken de bir şey yazmak zorundayız: satırın yüksekliği
+    // değişirse ayarlar listesi açılışta zıplar. Elde veri yokken feed'in
+    // varsayılan dili doğru tahmin, çünkü paketlenmiş dosya odur.
+    final current = selected ?? options?.current ?? feedDefaultLanguage;
+
+    if (options == null || !options.hasChoice) {
+      return _SettingsRow.upcoming(
+        icon: Icons.language_rounded,
+        title: 'Dil',
+        value: languageName(current),
+      );
+    }
+
+    return _SettingsRow(
+      icon: Icons.language_rounded,
+      title: 'Dil',
+      value: selected == null
+          // Cihaza uyulduğunda gösterilen şey seçim değil, **sonuç**:
+          // kullanıcı hangi dili okuduğunu görmeli, hangi kuralın onu
+          // seçtiğini değil.
+          ? '${languageName(options.current)} · otomatik'
+          : languageName(selected),
+      onTap: () => _choose(context, ref, options),
+    );
+  }
+
+  Future<void> _choose(
+    BuildContext context,
+    WidgetRef ref,
+    FeedLanguageOptions options,
+  ) async {
+    final chosen = await showModalBottomSheet<_LanguageChoice>(
+      context: context,
+      backgroundColor: context.palette.surface,
+      builder: (context) => _LanguageSheet(options: options),
+    );
+    if (chosen == null) return;
+    await ref.read(feedLanguageProvider.notifier).select(chosen.code);
+  }
+}
+
+/// Seçim sonucu. `null` bir kod "cihaza uy" demek, "iptal" değil — ikisini
+/// ayırt edebilmek için sarmalayıcı bir tip gerekiyor. `showModalBottomSheet`
+/// iptalde zaten `null` döndürüyor ve o `null` ile bu `null` aynı değer
+/// olsaydı, "otomatik"i seçen kullanıcının seçimi sessizce yutulurdu.
+final class _LanguageChoice {
+  const _LanguageChoice(this.code);
+  final String? code;
+}
+
+class _LanguageSheet extends ConsumerWidget {
+  const _LanguageSheet({required this.options});
+
+  final FeedLanguageOptions options;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selected = ref.watch(feedLanguageProvider);
+
+    return SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.lg,
+              AppSpacing.lg,
+              AppSpacing.sm,
+            ),
+            child: Text('İçerik dili', style: context.text.title),
+          ),
+          _LanguageOption(
+            label: 'Cihazın dili',
+            // Otomatik seçimin **bugün ne getirdiğini** yazıyor. "Otomatik"
+            // tek başına, kullanıcının hangi dili okuyacağını söylemez.
+            detail: languageName(options.current),
+            selected: selected == null,
+            onTap: () => Navigator.of(context).pop(const _LanguageChoice(null)),
+          ),
+          for (final entry in options.available)
+            _LanguageOption(
+              label: languageName(entry.code),
+              selected: selected == entry.code,
+              onTap: () =>
+                  Navigator.of(context).pop(_LanguageChoice(entry.code)),
+            ),
+          const SizedBox(height: AppSpacing.md),
+        ],
+      ),
+    );
+  }
+}
+
+class _LanguageOption extends StatelessWidget {
+  const _LanguageOption({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+    this.detail,
+  });
+
+  final String label;
+  final String? detail;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    selected: selected,
+    child: InkWell(
+      onTap: onTap,
+      child: ConstrainedBox(
+        // `QUALITY_GATES.md`: minimum 44×44 dokunma alanı.
+        constraints: const BoxConstraints(minHeight: AppTouchTarget.minimum),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.sm,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  label,
+                  style: context.text.body.copyWith(
+                    color: context.palette.textPrimary,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                  ),
+                ),
+              ),
+              if (detail != null) ...[
+                Text(detail!, style: context.text.bodyMuted),
+                const SizedBox(width: AppSpacing.sm),
+              ],
+              // Seçili olmayan satırda da yer tutuluyor: ikon belirip
+              // kaybolsaydı metinler seçime göre yatay olarak kayardı.
+              SizedBox(
+                width: 22,
+                child: selected
+                    ? Icon(
+                        Icons.check_rounded,
+                        size: 22,
+                        color: context.palette.textPrimary,
+                      )
+                    : null,
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 /// Tema seçimi.

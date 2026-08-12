@@ -244,6 +244,8 @@ final class FakeFeedRepository implements FeedRepository {
     this.lastSync,
     this.remoteEnabled = false,
     this.stale = false,
+    this.language = feedDefaultLanguage,
+    this.availableLanguages = const [],
   });
 
   final List<FeedItem> items;
@@ -270,10 +272,20 @@ final class FakeFeedRepository implements FeedRepository {
   /// bir kez — tazelenmesini ölçmek için.
   int refreshCount = 0;
 
+  /// Yayının dili ve sunduğu diller. Ayarlar ekranının dil satırı buna
+  /// bakarak şekil değiştiriyor; varsayılan boş liste "tek dil" demek ve
+  /// bugünkü gerçek yayının durumu bu.
+  final String language;
+  final List<FeedLanguage> availableLanguages;
+
   @override
   Future<Feed> load() async {
     if (error case final failure?) throw failure;
-    return testFeed(items);
+    return testFeed(
+      items,
+      language: language,
+      availableLanguages: availableLanguages,
+    );
   }
 
   @override
@@ -293,11 +305,15 @@ Feed testFeed(
   List<FeedItem> items, {
   DateTime? generatedAt,
   Duration refreshAfter = feedDefaultRefreshAfter,
+  String language = feedDefaultLanguage,
+  List<FeedLanguage> availableLanguages = const [],
 }) => Feed(
   schemaVersion: feedSchemaVersion,
   generatedAt: generatedAt ?? DateTime.utc(2026, 7, 27),
   items: items,
   refreshAfter: refreshAfter,
+  language: language,
+  availableLanguages: availableLanguages,
 );
 
 /// Ekran testlerinin belirlenimci feed'i.

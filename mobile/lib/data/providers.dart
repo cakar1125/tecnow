@@ -1,3 +1,5 @@
+import 'dart:ui' show PlatformDispatcher;
+
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -45,12 +47,25 @@ final feedCacheProvider = Provider<FeedCache>(
   (ref) => SqfliteFeedCache(ref.watch(databaseProvider.future)),
 );
 
+/// Cihazın dili — içerik dili tercihi yokken kullanılan varsayılan.
+///
+/// Ayrı bir sağlayıcı olması testler için: gerçek `PlatformDispatcher`'ı
+/// okuyan bir kod yolu, ölçümü çalıştığı makinenin diline bağlar.
+final deviceLanguageProvider = Provider<String?>(
+  (ref) => PlatformDispatcher.instance.locale.languageCode,
+);
+
 final feedRepositoryProvider = Provider<FeedRepository>(
   (ref) => SyncingFeedRepository(
     bundled: BundledFeedRepository(),
     cache: ref.watch(feedCacheProvider),
     client: ref.watch(feedHttpClientProvider),
     endpoints: ref.watch(feedEndpointsProvider),
+    // `watch`: dil değiştiğinde depo yeniden kurulur ve bir sonraki tazeleme
+    // doğru dosyaya gider. `read` olsaydı seçim ancak uygulama yeniden
+    // başlatılınca işlerdi.
+    preferredLanguage: ref.watch(feedLanguageProvider),
+    deviceLanguage: ref.watch(deviceLanguageProvider),
   ),
 );
 
@@ -235,6 +250,64 @@ final class ThemeModeNotifier extends Notifier<ThemeMode> {
     state = mode;
     final preferences = await ref.read(appPreferencesProvider.future);
     await preferences.setThemeMode(mode);
+  }
+}
+
+/// Yayının sunduğu diller ve elde tutulan kopyanın dili.
+///
+/// Ayarlar ekranı bunu okuyup seçicisini ona göre kuruyor. Liste **yayından**
+/// geliyor, uygulamadan değil: yeni bir dil eklendiğinde kurulu uygulama onu
+/// bir sonraki tazelemede görüyor ve mağaza güncellemesi gerekmiyor.
+final feedLanguageOptionsProvider = FutureProvider<FeedLanguageOptions>((
+  ref,
+) async {
+  final feed = await ref.watch(feedRepositoryProvider).load();
+  return FeedLanguageOptions(
+    current: feed.language,
+    available: feed.availableLanguages,
+  );
+});
+
+final class FeedLanguageOptions {
+  const FeedLanguageOptions({required this.current, required this.available});
+
+  /// Elde tutulan feed dosyasının dili.
+  final String current;
+
+  /// Yayının sunduğu diller. Bir taneden azsa seçilecek bir şey yok.
+  final List<FeedLanguage> available;
+
+  bool get hasChoice => available.length > 1;
+}
+
+/// Seçili içerik dili. `null` = cihazın diline uy.
+///
+/// [ThemeModeNotifier] ile aynı desen ve aynı sebep: değer `bootstrap`
+/// içinde `runApp`'ten **önce** yerine konur. Burada gecikmenin bedeli yanlış
+/// tema değil, **yanlış dilde bir ağ isteği** olurdu — açılışta Türkçe dosya
+/// indirilir, sonra tercih okunur ve İngilizcesi bir kez daha indirilirdi.
+final feedLanguageProvider = NotifierProvider<FeedLanguageNotifier, String?>(
+  FeedLanguageNotifier.new,
+);
+
+final class FeedLanguageNotifier extends Notifier<String?> {
+  @override
+  String? build() => null;
+
+  /// Diskteki tercihi yerine koyar. Yazma yapmaz.
+  void restore(String? code) => state = code;
+
+  /// Kullanıcının seçimi: önce durum değişir, sonra diske yazılır.
+  ///
+  /// Durum değişince [feedRepositoryProvider] yeniden kurulur; içeriğin
+  /// gerçekten değişmesi için bir tazeleme gerekir, çünkü elde yalnız eski
+  /// dilin kopyası vardır. Çağıran tarafın tazelemeyi tetiklemesi bilinçli:
+  /// ayarlar ekranı ağ isteğini kendi başlatmaz, kullanıcı akışa döndüğünde
+  /// olağan tazeleme yolu işler.
+  Future<void> select(String? code) async {
+    state = code;
+    final preferences = await ref.read(appPreferencesProvider.future);
+    await preferences.setFeedLanguage(code);
   }
 }
 

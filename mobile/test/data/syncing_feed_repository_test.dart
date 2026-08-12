@@ -124,21 +124,33 @@ final class _RoutingHttpClient implements FeedHttpClient {
 
 /// Paketlenmiş dosyayı taklit eden depo.
 final class _BundleStub implements FeedRepository {
-  _BundleStub({required this.generatedAt, this.error});
+  _BundleStub({
+    required this.generatedAt,
+    this.error,
+    this.availableLanguages = const [],
+  });
 
   final DateTime generatedAt;
   final Object? error;
 
+  /// Paketlenmiş dosyanın dil listesi. Gerçek dosyada da var olması, dil
+  /// çözümünün **ilk açılışta, hiç ağa çıkmadan** çalışmasının sebebi.
+  final List<FeedLanguage> availableLanguages;
+
   @override
   Future<Feed> load() async {
     if (error case final failure?) throw failure;
-    return testFeed([
-      testFeedItem(
-        id: '00000000000000bb',
-        kind: FeedItemKind.repository,
-        title: 'Paketlenmiş kayıt',
-      ),
-    ], generatedAt: generatedAt);
+    return testFeed(
+      [
+        testFeedItem(
+          id: '00000000000000bb',
+          kind: FeedItemKind.repository,
+          title: 'Paketlenmiş kayıt',
+        ),
+      ],
+      generatedAt: generatedAt,
+      availableLanguages: availableLanguages,
+    );
   }
 
   @override
@@ -160,14 +172,20 @@ SyncingFeedRepository _repository({
   List<Uri>? endpoints,
   DateTime? bundleGeneratedAt,
   Object? bundleError,
+  String? preferredLanguage,
+  String? deviceLanguage,
+  List<FeedLanguage> bundleLanguages = const [],
 }) => SyncingFeedRepository(
   bundled: _BundleStub(
     generatedAt: bundleGeneratedAt ?? DateTime.utc(2026, 7, 20),
     error: bundleError,
+    availableLanguages: bundleLanguages,
   ),
   cache: cache,
   client: client ?? _FakeHttpClient(),
   endpoints: endpoints ?? [_endpoint],
+  preferredLanguage: preferredLanguage,
+  deviceLanguage: deviceLanguage,
   clock: () => _now,
 );
 
@@ -910,6 +928,146 @@ void main() {
 
       expect(outcome.status, FeedSyncStatus.refreshed);
       expect(client.urls, [_endpoint, _mirror]);
+    });
+  });
+
+  /// İçerik dili — adres çözümü.
+  ///
+  /// Ölçülen sözleşme: dil dosyalarının adresi **yayından** okunuyor ve
+  /// bunun için fazladan bir istek atılmıyor.
+  group('içerik dili', () {
+    const languages = [
+      FeedLanguage(code: 'tr', url: 'feed.json'),
+      FeedLanguage(code: 'en', url: 'feed.en.json'),
+    ];
+    final english = Uri.https('ornek.test', '/feed.en.json');
+
+    _RoutingHttpClient routing() => _RoutingHttpClient({
+      _endpoint: _Route.ok(_payload(generatedAt: DateTime.utc(2026, 7, 26))),
+      english: _Route.ok(
+        _payload(generatedAt: DateTime.utc(2026, 7, 26), title: 'Remote item'),
+      ),
+    });
+
+    test('dil seçilmemişse taban adres istenir', () async {
+      final client = routing();
+      await _repository(
+        cache: _MemoryCache(),
+        client: client,
+        bundleLanguages: languages,
+      ).refresh();
+
+      expect(client.urls, [_endpoint]);
+    });
+
+    /// Fazladan istek **yok**: liste paketlenmiş dosyadan okunuyor. Alternatif
+    /// tasarım (önce varsayılanı indir, listeyi oku, sonra doğrusunu indir)
+    /// her tazelemede iki tam indirme demekti.
+    test('seçilen dilin adresi tek istekte çözülür', () async {
+      final client = routing();
+      await _repository(
+        cache: _MemoryCache(),
+        client: client,
+        bundleLanguages: languages,
+        preferredLanguage: 'en',
+      ).refresh();
+
+      expect(client.urls, [english]);
+    });
+
+    test('seçim yoksa cihazın dili kullanılır', () async {
+      final client = routing();
+      await _repository(
+        cache: _MemoryCache(),
+        client: client,
+        bundleLanguages: languages,
+        deviceLanguage: 'en',
+      ).refresh();
+
+      expect(client.urls, [english]);
+    });
+
+    /// Kullanıcının açık seçimi cihazı ezer: Almanya'da yaşayan biri cihazını
+    /// Almanca kullanıp içeriği Türkçe okumak isteyebilir.
+    test('açık seçim cihaz dilini ezer', () async {
+      final client = routing();
+      await _repository(
+        cache: _MemoryCache(),
+        client: client,
+        bundleLanguages: languages,
+        preferredLanguage: 'tr',
+        deviceLanguage: 'en',
+      ).refresh();
+
+      expect(client.urls, [_endpoint]);
+    });
+
+    /// Sunulmayan bir dil sessizce taban adrese düşer. Kullanıcı yanlış dilde
+    /// de olsa içerik görür; boş ekran görmez.
+    test('sunulmayan dil taban adrese düşer', () async {
+      final client = routing();
+      await _repository(
+        cache: _MemoryCache(),
+        client: client,
+        bundleLanguages: languages,
+        deviceLanguage: 'ja',
+      ).refresh();
+
+      expect(client.urls, [_endpoint]);
+    });
+
+    /// Elde okunabilir kopya yoksa (paketlenmiş dosya da bozuksa) çözüm
+    /// yapılamaz ama tazeleme **yine denenir**.
+    test('kopya okunamıyorsa taban adres denenir', () async {
+      final client = routing();
+      await _repository(
+        cache: _MemoryCache(),
+        client: client,
+        bundleError: const FeedFormatException('bozuk'),
+        preferredLanguage: 'en',
+      ).refresh();
+
+      expect(client.urls, [_endpoint]);
+    });
+
+    /// Kapı 2026-08-12'de bu yüzden genişledi: `feed.en.json` adresi
+    /// `endpoints` listesinde yok ve tam adres eşleşmesi arayan eski kural
+    /// indirilen İngilizce kopyayı **hiç göstermezdi** — dili değiştiren
+    /// kullanıcı her açılışta paketlenmiş Türkçe dosyaya geri düşerdi.
+    test('dil dosyasından gelen önbellek kullanılır', () async {
+      final cache = _MemoryCache()
+        ..entry = _cached(
+          generatedAt: DateTime.utc(2026, 7, 26),
+          sourceUrl: english.toString(),
+        );
+
+      final repository = _repository(
+        cache: cache,
+        bundleGeneratedAt: DateTime.utc(2026, 7, 20),
+        bundleLanguages: languages,
+        preferredLanguage: 'en',
+      );
+
+      expect(await repository.lastSyncAt(), isNotNull);
+      expect((await repository.load()).items.single.title, 'Uzak kayıt');
+    });
+
+    /// Genişleme dar: **başka bir konak** hâlâ yabancı. Yapılandırmadan çıkan
+    /// bir adresin eski kopyası artık başka bir yayının içeriğidir.
+    test('başka konaktan gelen önbellek hâlâ reddedilir', () async {
+      final cache = _MemoryCache()
+        ..entry = _cached(
+          generatedAt: DateTime.utc(2026, 7, 26),
+          sourceUrl: 'https://baska-sunucu.test/feed.json',
+        );
+
+      final repository = _repository(
+        cache: cache,
+        bundleGeneratedAt: DateTime.utc(2026, 7, 20),
+      );
+
+      expect(await repository.lastSyncAt(), isNull);
+      expect((await repository.load()).items.single.title, 'Paketlenmiş kayıt');
     });
   });
 }

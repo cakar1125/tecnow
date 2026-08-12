@@ -35,6 +35,8 @@ final class SyncingFeedRepository implements FeedRepository {
     required this.cache,
     required this.client,
     required this.endpoints,
+    this.preferredLanguage,
+    this.deviceLanguage,
     DateTime Function()? clock,
   }) : _clock = clock ?? DateTime.now;
 
@@ -51,9 +53,21 @@ final class SyncingFeedRepository implements FeedRepository {
   /// duyurulamaz, çünkü duyurunun yapılacağı adres de ölmüştür.
   final List<Uri> endpoints;
 
+  /// Kullanıcının seçtiği içerik dili. `null` = cihazın diline uy.
+  final String? preferredLanguage;
+
+  /// Cihazın dili — [preferredLanguage] yokken kullanılan varsayılan.
+  ///
+  /// Dışarıdan veriliyor: bu sınıf `PlatformDispatcher`'ı okusaydı testler
+  /// gerçek cihaz diline bağlanır ve ölçüm makineye göre değişirdi.
+  final String? deviceLanguage;
+
   /// Testlerin zamanı sabitleyebilmesi için. "12 saat önce senkronize edildi"
   /// davranışı gerçek saat beklenerek ölçülemez.
   final DateTime Function() _clock;
+
+  /// Yürürlükteki dil: seçim varsa o, yoksa cihazın dili.
+  String? get _targetLanguage => preferredLanguage ?? deviceLanguage;
 
   @override
   bool get remoteEnabled => endpoints.isNotEmpty;
@@ -125,16 +139,53 @@ final class SyncingFeedRepository implements FeedRepository {
   Future<FeedSyncOutcome> refresh() async {
     if (endpoints.isEmpty) return FeedSyncOutcome.disabled;
 
+    final targets = await _targetEndpoints();
     final cached = await cache.read();
     FeedSyncOutcome? firstFailure;
 
-    for (final url in endpoints) {
+    for (final url in targets) {
       final outcome = await _refreshFrom(url, cached);
       if (outcome.status != FeedSyncStatus.failed) return outcome;
       firstFailure ??= outcome;
     }
 
     return firstFailure!;
+  }
+
+  /// Yürürlükteki dile göre çözülmüş adresler.
+  ///
+  /// Dil dosyalarının adresleri **elde tutulan feed'den** okunuyor
+  /// ([Feed.availableLanguages]) — ağa fazladan bir istek atılmıyor. Bunun
+  /// mümkün olmasının sebebi paketlenmiş dosyanın da o listeyi taşıması:
+  /// yani ilk açılışta, hiç ağa çıkmadan önce bile hangi dillerin var olduğu
+  /// biliniyor.
+  ///
+  /// Alternatif "önce varsayılan dosyayı indir, listeyi oku, sonra doğru
+  /// dosyayı indir" olurdu ve **her tazelemede iki tam indirme** demekti
+  /// (bugün dosya başına 193.589 bayt).
+  ///
+  /// Çözülemeyen her durumda taban adrese düşülür: dil listede yoksa, adres
+  /// başka bir konağa çıkıyorsa ya da elde okunabilir bir kopya yoksa.
+  /// Kullanıcı yanlış dilde de olsa **içerik görür**; boş ekran görmez.
+  Future<List<Uri>> _targetEndpoints() async {
+    final language = _targetLanguage;
+    if (language == null) return endpoints;
+
+    final Feed current;
+    try {
+      current = await load();
+    } on Object {
+      return endpoints;
+    }
+    if (current.language == language) return endpoints;
+
+    for (final entry in current.availableLanguages) {
+      if (entry.code != language) continue;
+      return [
+        for (final base in endpoints) entry.resolve(base) ?? base,
+      ].toList(growable: false);
+    }
+    return endpoints;
   }
 
   Future<FeedSyncOutcome> _refreshFrom(Uri url, CachedFeed? cached) async {
@@ -277,8 +328,25 @@ final class SyncingFeedRepository implements FeedRepository {
     }
   }
 
-  bool _isKnownOrigin(CachedFeed entry) =>
-      endpoints.any((url) => url.toString() == entry.sourceUrl);
+  /// Önbellek girdisi **tanınan bir yayından** mı geliyor.
+  ///
+  /// Ölçüt 2026-08-12'de tam adres eşleşmesinden **köken** eşleşmesine
+  /// genişledi. Sebep dil dosyaları: kullanıcı İngilizceyi seçtiğinde indirilen
+  /// dosya `…/feed.en.json` oluyor ve bu adres `endpoints` listesinde yok —
+  /// eski kural onu yabancı sayar, indirilen içeriği **hiç göstermezdi**.
+  /// Görünür sonucu: dili değiştiren kullanıcı her açılışta paketlenmiş
+  /// Türkçe dosyaya geri düşerdi ve sebebi hiçbir yerde yazmazdı.
+  ///
+  /// Genişleme dar tutuldu: `https` **ve aynı konak**. Bu, dil adreslerinin
+  /// çözümündeki kısıtın ([FeedLanguage.resolve]) birebir aynısı — iki kural
+  /// aynı cümleyi söylediği için birbirinden ayrı düşemezler. Konak
+  /// değiştiğinde (yapılandırmadan çıkan ya da bu sürümde hiç olmayan adres)
+  /// kopya yine reddediliyor, yani kuralın asıl işi duruyor.
+  bool _isKnownOrigin(CachedFeed entry) {
+    final source = Uri.tryParse(entry.sourceUrl);
+    if (source == null || source.scheme != 'https') return false;
+    return endpoints.any((url) => url.host == source.host);
+  }
 
   static Feed _parse(String raw) {
     final decoded = jsonDecode(raw);

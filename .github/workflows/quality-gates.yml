@@ -69,15 +69,46 @@ jobs:
       # Golden farkları koşu çıktısında görünmez; artefakt olarak yüklenmezse
       # "golden kırıldı" bilgisi elde kalan tek şey olur ve **hangi piksel**
       # sorusunun cevabı kaybolur. `isolatedDiff` tam da o soruyu cevaplıyor.
-      # `--reporter github`: başarısız testler GitHub **annotation**'ı olarak
-      # yayımlanır. Fark önemli — koşu logu jetonsuz okunamıyor (API 403),
-      # annotation'lar public depoda okunabiliyor. Yani kırmızı bir koşunun
-      # sebebi, logu açabilen birine sormadan görülebiliyor.
+      # Çıktı dosyaya da yazılır (`tee`), çünkü koşu logu **jetonsuz
+      # okunamıyor** (API 403) ama annotation'lar public depoda okunabiliyor.
+      # Aşağıdaki adım hatayı logdan çıkarıp annotation'a taşır.
       #
-      # İlk koşu tam olarak bu yüzden teşhis edilemedi: kapı kırıldı, hangi
-      # testin kırıldığı görünmedi.
+      # `--reporter github` denendi ve yetmedi: yalnız "895 tests passed, 1
+      # failed" özetini yayımladı, **hangi** testin kırıldığını değil. İki koşu
+      # bu yüzden teşhis edilemedi; sayı bilmek, adı bilmemek kapıyı yeşile
+      # döndürmeye yaramıyor.
+      #
+      # `pipefail` şart: `tee` her zaman 0 döner ve o olmadan kırık test kapıyı
+      # **yeşil** gösterirdi — kapının kendisini bozan bir hata.
       - name: Testler
-        run: flutter test --reporter github
+        id: tests
+        shell: bash
+        run: |
+          set -o pipefail
+          flutter test --reporter expanded 2>&1 | tee test-output.txt
+
+      # Başarısızlığı **okunabilir** yere taşır. Annotation tek satırlık bir
+      # alan olduğu için satır sonları `%0A` ile kodlanır — kodlanmazsa yalnız
+      # ilk satır görünür ve asıl bilgi (hangi test, hangi beklenti) kaybolur.
+      - name: Başarısız testi annotation'a taşı
+        if: failure() && steps.tests.outcome == 'failure'
+        shell: bash
+        run: |
+          detail=$(grep -B 2 -A 25 '\[E\]' test-output.txt | head -120)
+          if [ -z "$detail" ]; then detail=$(tail -60 test-output.txt); fi
+          detail="${detail//'%'/'%25'}"
+          detail="${detail//$'\r'/}"
+          detail="${detail//$'\n'/'%0A'}"
+          echo "::error title=Basarisiz test::${detail}"
+
+      - name: Test çıktısını yükle
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: test-output
+          path: mobile/test-output.txt
+          if-no-files-found: ignore
+          retention-days: 7
 
       - name: Golden farklarını yükle
         if: failure()

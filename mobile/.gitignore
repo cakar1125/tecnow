@@ -46,3 +46,6 @@ app.*.map.json
 
 # Golden test diff artifacts (generated, not source)
 test/goldens/failures/
+
+# CI test çıktısı (kalite kapısı teşhis dosyası)
+test-output.txt

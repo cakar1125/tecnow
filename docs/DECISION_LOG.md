@@ -332,3 +332,62 @@ sürümü ve `SummaryOrigin` ile aynı sınıf bir tek yönlü kapı; açıkken 
 **Dürüst tavan:** push bildirimi yok (cihaz jetonu kalıcı cihaz kimliği demek,
 D-001 hesapsızlığıyla çelişiyor), kaynakların kendi yayın hızı bir tavan, ve
 GitHub zamanlanmış işleri garantili değil (5–20 dk gecikebilir).
+
+## D-022 — Çok dillilik: dil bir üretim parametresi, kaynak özelliği değil (12 Ağustos 2026)
+
+Kullanıcı sordu: *"diğer dil tercihlerini koyduğumuzda kaynakları değiştirmeden
+o dile göre içerikleri nasıl verebiliriz — çünkü GitHub ve diğer kaynaklarımız
+evrensel, Türk kaynaklar değiller."*
+
+**Ölçüm önce, karar sonra.** Paketlenmiş yayında (200 kayıt): `language: en`
+**180**, `language: tr` **20**; `summaryOrigin: original` 180, `generated` 20.
+Yani uygulama bugün zaten **%90 İngilizce** — anahtar tanımlı olmadığı için
+özetleme katmanı hiç çalışmıyor.
+
+**Bulgu:** Türkçe kaynaktan gelmiyor. `tool/feed/summarize.dart` üretiyor ve
+tek dil bağımlılığı yönergedeki iki kelimeydi ("Türkçe olarak"). Hedef dil bir
+**üretim parametresi**, kaynakların bir özelliği değil. Çok dillilik bir kaynak
+bulma problemi değil, var olan adımı dil başına bir kez daha koşturmak — yani
+maliyet **kullanıcı sayısıyla değil, dil sayısıyla** büyüyor.
+
+**Neyin dile bağlı olmadığı ölçüldü:**
+
+| Katman | Dile bağlı mı | Kanıt |
+|---|---|---|
+| Konu eşleşmesi | Hayır | `itemMatchesInterest` yalnız `item.topics`'e bakıyor |
+| Özet doğrulama kapısı | Hayır | `summary_guard` sayı ve bağlantı karşılaştırıyor |
+| Başlık | Zaten çevrilmiyor | `withSummary` yalnız özeti değiştiriyor |
+| Özet | Evet | Çevrilen tek alan |
+
+**Kararlar:**
+
+1. **Dil başına ayrı dosya** (`feed.json`, `feed.en.json`), tek dosyada çeviri
+   sözlüğü değil. Yayın 193.589 bayt ve ağırlığın çoğu özetler; sözlük olsaydı
+   her kullanıcı okumayacağı dilleri de indirirdi (beş dil ≈ 1 MB).
+2. **Dil listesini sunucu bildiriyor** (`Feed.availableLanguages`, göreli
+   adreslerle). `FEED_URL` derleme zamanı sabiti olduğu için listeyi APK'ya
+   gömmek D-021'deki `refreshAfter` hatasının aynısı olurdu: güncellemeyen
+   kullanıcı sonradan eklenen dilleri **kalıcı olarak** göremezdi.
+3. **`schemaVersion` artırılmadı.** Artsaydı kurulu her uygulama feed'i
+   topluca reddederdi; ek alanı tanımayan sürüm onu yok sayıyor.
+4. **Adresler aynı konağa kilitli.** `feed_http_client` uygulamanın tek ağ
+   çıkışı olarak tanımlı ve bilinçli olarak dar; dil listesi akışa açılan yeni
+   bir adres alanı olduğu için aynı darlık orada da geçerli.
+5. **Üretici katı, uygulama hoşgörülü.** Kendi diliyle çelişen bir liste
+   `Feed.fromJson`'da sessizce boşa düşüyor (kullanıcı içeriği görmeye devam
+   etmeli), `generateFeed`'de ise hata fırlatıyor (hatalı yayın hiç çıkmamalı).
+6. **Adres çözümü fazladan istek atmıyor.** Liste elde tutulan feed'den
+   okunuyor ve paketlenmiş dosya da onu taşıdığı için ilk açılışta, hiç ağa
+   çıkmadan çalışıyor. Alternatif her tazelemede iki tam indirme demekti.
+7. **`--summarizer none`** eklendi. İngilizce yayın için doğru mod ve bedeli
+   **sıfır**, çünkü kaynaklar zaten İngilizce. `--language en` görünce bunu
+   kendiliğinden yapmak daha kolaydı ama yanlış: kaynak listesine İngilizce
+   olmayan bir kaynak eklendiğinde o özel durum sessizce yanlışa dönerdi.
+8. **Önbellek köken kuralı** tam adres eşitliğinden aynı konağa genişledi.
+   Eski kural `feed.en.json`'dan gelen kopyayı yabancı sayıyordu; dili
+   değiştiren kullanıcı her açılışta paketlenmiş Türkçe dosyaya geri düşerdi.
+
+**Açık kalan:** arayüz dizeleri hâlâ gömülü (40 dosyada ~250 dize). Bilinçli
+ertelendi — tek yönlü kapı değil ve İngilizce feed olmadan İngilizce menünün
+müşterisi yok. Sıra: anahtar → Türkçe özetler → cihaz doğrulaması → arayüz
+yerelleştirmesi.

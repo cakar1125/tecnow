@@ -90,12 +90,17 @@ jobs:
       # Başarısızlığı **okunabilir** yere taşır. Annotation tek satırlık bir
       # alan olduğu için satır sonları `%0A` ile kodlanır — kodlanmazsa yalnız
       # ilk satır görünür ve asıl bilgi (hangi test, hangi beklenti) kaybolur.
+      #
+      # `|| true` **şart**: GitHub bash adımlarını `-eo pipefail` ile koşturuyor
+      # ve eşleşme bulamayan `grep` 1 döndürüyor. İlk sürümde bu, adımı
+      # fallback'e hiç ulaşamadan düşürdü — yani teşhis aracının kendisi,
+      # teşhis edeceği durumda kırıldı ve koşu yine sessiz kaldı.
       - name: Başarısız testi annotation'a taşı
         if: failure() && steps.tests.outcome == 'failure'
         shell: bash
         run: |
-          detail=$(grep -B 2 -A 25 '\[E\]' test-output.txt | head -120)
-          if [ -z "$detail" ]; then detail=$(tail -60 test-output.txt); fi
+          detail=$(grep -B 2 -A 25 '\[E\]' test-output.txt | head -120 || true)
+          if [ -z "$detail" ]; then detail=$(tail -80 test-output.txt || true); fi
           detail="${detail//'%'/'%25'}"
           detail="${detail//$'\r'/}"
           detail="${detail//$'\n'/'%0A'}"

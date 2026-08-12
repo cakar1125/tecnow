@@ -51,9 +51,19 @@ final feedCacheProvider = Provider<FeedCache>(
 ///
 /// Ayrı bir sağlayıcı olması testler için: gerçek `PlatformDispatcher`'ı
 /// okuyan bir kod yolu, ölçümü çalıştığı makinenin diline bağlar.
-final deviceLanguageProvider = Provider<String?>(
-  (ref) => PlatformDispatcher.instance.locale.languageCode,
-);
+///
+/// **`locale` değil `locales` okunuyor.** `PlatformDispatcher.locale`,
+/// `locales.first` demek ve liste boşsa **fırlatır**. Boş liste gerçek bir
+/// durum: gömülü ortamlarda ve bazı test koşucularında dil hiç bildirilmiyor.
+/// Bu sağlayıcı `feedRepositoryProvider`'ın kurulum yolunda olduğu için orada
+/// atılan bir istisna feed'i değil **uygulamanın tamamını** düşürürdü — ve
+/// sebebi "cihaz dilini soramadım" olurdu, ki bu tercih bir kolaylık, koşul
+/// değil. Bilinmiyorsa `null`: yayının kendi dili kullanılır.
+final deviceLanguageProvider = Provider<String?>((ref) {
+  final locales = PlatformDispatcher.instance.locales;
+  if (locales.isEmpty) return null;
+  return locales.first.languageCode;
+});
 
 final feedRepositoryProvider = Provider<FeedRepository>(
   (ref) => SyncingFeedRepository(

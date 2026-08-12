@@ -69,8 +69,15 @@ jobs:
       # Golden farkları koşu çıktısında görünmez; artefakt olarak yüklenmezse
       # "golden kırıldı" bilgisi elde kalan tek şey olur ve **hangi piksel**
       # sorusunun cevabı kaybolur. `isolatedDiff` tam da o soruyu cevaplıyor.
+      # `--reporter github`: başarısız testler GitHub **annotation**'ı olarak
+      # yayımlanır. Fark önemli — koşu logu jetonsuz okunamıyor (API 403),
+      # annotation'lar public depoda okunabiliyor. Yani kırmızı bir koşunun
+      # sebebi, logu açabilen birine sormadan görülebiliyor.
+      #
+      # İlk koşu tam olarak bu yüzden teşhis edilemedi: kapı kırıldı, hangi
+      # testin kırıldığı görünmedi.
       - name: Testler
-        run: flutter test
+        run: flutter test --reporter github
 
       - name: Golden farklarını yükle
         if: failure()

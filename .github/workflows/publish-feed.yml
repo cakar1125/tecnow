@@ -102,17 +102,32 @@ jobs:
           # Kaynak metni değişmemiş kayıtların özeti **taşınır**, model
           # yeniden çağrılmaz. Dosya yoksa (ilk yayım) taşıma sessizce kapalı
           # kalır ve üretim eksiksiz sürer.
+          #
+          # Çıktı **dosyaya da** yazılıyor: koşu logu jetonsuz okunamıyor
+          # (API 403) ama annotation'lar public depoda okunabiliyor. Aşağıdaki
+          # blok hata hâlinde son satırları annotation'a taşıyor.
           dart run tool/feed/generate.dart \
             --out build/publish/feed.json \
-            --previous build/previous.json
-          status=$?
+            --previous build/previous.json 2>&1 | tee build/generate.log
+          # `tee` her zaman 0 döner; asıl kod boru hattının **ilk** halkasında.
+          status=${PIPESTATUS[0]}
           set -e
           # 0 tam başarı · 2 kısmi (bazı kaynaklar okunamadı ama dosya
           # yazıldı) · 1 çalışma hatası.
           #
           # 2'yi sessizce başarı saymak, kaynakların teker teker ölmesini
           # görünmez kılardı; uyarı olarak yüzeye çıkarılıyor.
-          if [ "$status" -ne 0 ] && [ "$status" -ne 2 ]; then exit "$status"; fi
+          if [ "$status" -ne 0 ] && [ "$status" -ne 2 ]; then
+            # Sebep görünür olmalı. Bu blok olmadan iki koşu (#96, #99,
+            # 12 Ağustos 2026) yalnız "exit code 255" bırakıp öldü ve kusur
+            # kararsız olduğu için yerelde hiç yeniden üretilemedi.
+            detail=$(tail -40 build/generate.log || true)
+            detail="${detail//'%'/'%25'}"
+            detail="${detail//$'\r'/}"
+            detail="${detail//$'\n'/'%0A'}"
+            echo "::error title=Feed uretimi basarisiz (kod $status)::${detail}"
+            exit "$status"
+          fi
           if [ "$status" -eq 2 ]; then
             echo "::warning::Bazı kaynaklar okunamadı; ayrıntı yukarıdaki çıktıda."
           fi

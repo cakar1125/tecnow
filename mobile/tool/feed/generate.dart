@@ -555,5 +555,26 @@ Future<void> main(List<String> args) async {
   } on GenerationException catch (error) {
     stderr.writeln(error.message);
     exitCode = 1;
+  } catch (error, stackTrace) {
+    // **Beklenmeyen** istisna. Buranın var olma sebebi ölçüldü: yayın iş
+    // akışı 12 Ağustos 2026'da son sekiz koşunun ikisinde (#96, #99) "Feed
+    // üret" adımında **255** ile düştü. 255, Dart'ın yakalanmamış istisna
+    // kodu — yani üreticinin kendi belgelediği hiçbir çıkış kodu değil
+    // (0 tam · 2 kısmi · 1 çalışma hatası) ve tek başına hiçbir şey
+    // söylemiyor. Koşu logu jetonsuz okunamadığı için sebep iki koşu boyunca
+    // görünmez kaldı.
+    //
+    // İstisnanın **tipi ve yığını** yazılıyor: kusur kararsız (aynı kod
+    // yerelde ve diğer altı koşuda çalışıyor), yani bir dahaki sefere
+    // yakalanması gereken şey tam olarak bu satırlar.
+    //
+    // Çıkış kodu 1: belgelenmiş "çalışma hatası". 255'i olduğu gibi bırakmak,
+    // iş akışının `status -ne 0 && status -ne 2` kuralında zaten hataya
+    // düşüyordu ama okunabilir bir iz bırakmıyordu.
+    stderr
+      ..writeln('BEKLENMEYEN HATA · ${error.runtimeType}')
+      ..writeln(error)
+      ..writeln(stackTrace);
+    exitCode = 1;
   }
 }

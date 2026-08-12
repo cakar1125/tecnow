@@ -91,6 +91,28 @@ String summaryInstructionFor(String language) {
       'yaz, başka hiçbir şey yazma.';
 }
 
+/// İstek gövdesini **UTF-8 bayt dizisi** olarak kodlar.
+///
+/// `HttpClientRequest.write(String)` kullanılmıyor ve kullanılamaz: o metot
+/// gövdeyi `request.encoding` ile kodluyor, varsayılanı **Latin-1** ve
+/// yönergemiz Türkçe. `ş`, `ğ`, `ı` Latin-1'de yok.
+///
+/// Ölçüldü (2026-08-12, gerçek NVIDIA uç noktası, `tool/measure_summaries.dart`):
+/// beş çağrının **beşi de** düştü —
+/// `Invalid argument (string): Contains invalid characters.`
+///
+/// Kusurun asıl kötülüğü sessizliğiydi. Çağrı hatası kaydı düşürüyor, koşuyu
+/// değil (`applySummaries` → `failed++`), yani anahtar eklenmiş olsaydı yayın
+/// **başarıyla** tamamlanır, 200 kaydın 200'ü İngilizce kalır ve hiçbir kapı
+/// bir şey söylemezdi. Kodun kendi başlığı bunu önceden yazmıştı: *"Bu sınıfın
+/// canlı yolu ölçülmedi."* Ölçülmemiş yol, çalışan yol değildir.
+///
+/// Başlık da düzeltildi (`charset=utf-8`): `add` zaten baytı olduğu gibi
+/// gönderiyor ama sunucuya gövdenin hangi kodlamada olduğunu söylemek onun
+/// işi değil, bizim işimiz.
+List<int> encodeRequestBody(Map<String, Object?> json) =>
+    utf8.encode(jsonEncode(json));
+
 /// Bir koşuda yapılacak en fazla **yeni** çağrı.
 ///
 /// Sınır aşıldığında kalan kayıtlar orijinal metinleriyle kalır — koşu
@@ -105,10 +127,22 @@ String summaryInstructionFor(String language) {
 ///
 /// Taşıma ([applySummaries] → `previous`) israfı bitirdi, bu yüzden sınır
 /// artık bir **maliyet kapısı** değil, kaçak durumlar için bir tavan. 120
-/// seçildi çünkü: (a) 180 kayıtlık birikim iki koşuda kapanır, (b) NVIDIA'nın
-/// 40 istek/dakika sınırı için gereken 1,5 sn aralıkla en kötü durum ~3
-/// dakikadır, (c) kararlı durumda gerçek çağrı sayısı yalnız **yeni** kayıtlar
-/// kadar olacağı için bu tavana zaten yaklaşılmaz.
+/// seçildi çünkü: (a) 180 kayıtlık birikim iki koşuda kapanır, (b) kararlı
+/// durumda gerçek çağrı sayısı yalnız **yeni** kayıtlar kadar olacağı için bu
+/// tavana zaten yaklaşılmaz.
+///
+/// **(b)'nin eski üçüncü maddesi ölçümle düştü.** "NVIDIA'nın 40 istek/dakika
+/// sınırı için gereken 1,5 sn aralıkla en kötü durum ~3 dakikadır" yazıyordu;
+/// o hesap çağrının kendisini **anlık** varsayıyordu. Ölçüldü (2026-08-12,
+/// `meta/llama-3.3-70b-instruct`, beş çağrı): **7.757 – 19.362 ms**, ortanca
+/// ~16 sn. Yani gerçek hız ~4 çağrı/dakika ve 1,5 sn'lik nezaket aralığı
+/// hiçbir zaman devreye girmiyor — sınırın çok altındayız.
+///
+/// Sonucu: 120 çağrılık bir koşu ~30 dakika sürer, 3 değil. Saatlik cron için
+/// sorun değil ve yalnız ilk iki koşuda görülür (birikim kapandıktan sonra
+/// çağrı sayısı yeni kayıtlar kadar). Hızlandırmak gerekirse yol eşzamanlılık:
+/// beş çağrı paralel ~40/dakika eder ve **tam** sınıra dayanır — o yüzden
+/// ölçülmeden yapılmamalı.
 const defaultSummaryBudget = 120;
 
 final class SummaryPass {
@@ -307,23 +341,25 @@ final class AnthropicSummarizer implements Summarizer {
   }) async {
     final client = HttpClient()..connectionTimeout = timeout;
     try {
+      final payload = encodeRequestBody({
+        'model': model,
+        'max_tokens': 300,
+        'messages': [
+          {
+            'role': 'user',
+            'content': '${summaryInstructionFor(language)}\n\n$sourceText',
+          },
+        ],
+      });
+
       final request = await client.postUrl(_endpoint);
       request.headers
         ..set('x-api-key', apiKey)
         ..set('anthropic-version', '2023-06-01')
-        ..set(HttpHeaders.contentTypeHeader, 'application/json');
-      request.write(
-        jsonEncode({
-          'model': model,
-          'max_tokens': 300,
-          'messages': [
-            {
-              'role': 'user',
-              'content': '${summaryInstructionFor(language)}\n\n$sourceText',
-            },
-          ],
-        }),
-      );
+        ..set(HttpHeaders.contentTypeHeader, 'application/json; charset=utf-8');
+      request
+        ..contentLength = payload.length
+        ..add(payload);
 
       final response = await request.close().timeout(timeout);
       final body = await response.transform(utf8.decoder).join();
@@ -414,25 +450,27 @@ final class NvidiaSummarizer implements Summarizer {
 
     final client = HttpClient()..connectionTimeout = timeout;
     try {
+      final payload = encodeRequestBody({
+        'model': model,
+        'max_tokens': 300,
+        // Özet yaratıcılık işi değil; düşük sıcaklık uydurmayı azaltır ve
+        // kapının ret oranını düşürür.
+        'temperature': 0.2,
+        'messages': [
+          {
+            'role': 'user',
+            'content': '${summaryInstructionFor(language)}\n\n$sourceText',
+          },
+        ],
+      });
+
       final request = await client.postUrl(_endpoint);
       request.headers
         ..set(HttpHeaders.authorizationHeader, 'Bearer $apiKey')
-        ..set(HttpHeaders.contentTypeHeader, 'application/json');
-      request.write(
-        jsonEncode({
-          'model': model,
-          'max_tokens': 300,
-          // Özet yaratıcılık işi değil; düşük sıcaklık uydurmayı azaltır ve
-          // kapının ret oranını düşürür.
-          'temperature': 0.2,
-          'messages': [
-            {
-              'role': 'user',
-              'content': '${summaryInstructionFor(language)}\n\n$sourceText',
-            },
-          ],
-        }),
-      );
+        ..set(HttpHeaders.contentTypeHeader, 'application/json; charset=utf-8');
+      request
+        ..contentLength = payload.length
+        ..add(payload);
 
       final response = await request.close().timeout(timeout);
       final body = await response.transform(utf8.decoder).join();

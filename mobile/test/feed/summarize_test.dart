@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tecos/data/feed/feed_schema.dart';
 
@@ -426,6 +428,57 @@ void main() {
         parseOpenAiText('{"choices":[{"message":{"content":"   "}}]}'),
         isNull,
       );
+    });
+  });
+
+  /// İstek gövdesinin kodlanması.
+  ///
+  /// Ölçülen kusur (2026-08-12, gerçek NVIDIA uç noktası): gövde
+  /// `HttpClientRequest.write(String)` ile yazılıyordu ve o metot
+  /// `request.encoding` kullanıyor — varsayılanı **Latin-1**. Yönerge Türkçe
+  /// olduğu için beş çağrının beşi de düştü:
+  /// `Invalid argument (string): Contains invalid characters.`
+  ///
+  /// Kusur sessizdi: çağrı hatası kaydı düşürüyor, koşuyu değil. Anahtar
+  /// eklenmiş olsaydı yayın "başarıyla" tamamlanır ve 200 kaydın 200'ü
+  /// İngilizce kalırdı.
+  group('istek gövdesi', () {
+    test('Türkçe yönerge UTF-8 kodlanır ve geri okunur', () {
+      final bytes = encodeRequestBody({'content': summaryInstructionFor('tr')});
+      final decoded = jsonDecode(utf8.decode(bytes)) as Map<String, Object?>;
+
+      expect(decoded['content'], contains('Aşağıdaki'));
+      expect(decoded['content'], contains('özetle'));
+    });
+
+    /// Kodlamanın gerçekten UTF-8 olduğunun kanıtı: Latin-1'de her karakter
+    /// bir bayt olurdu. Türkçe harfler iki bayt kaplıyor, yani bayt sayısı
+    /// karakter sayısını **aşmak zorunda**. Bu satır olmadan test, tek baytlı
+    /// bir kodlamada da yeşil kalırdı.
+    test('çok baytlı harfler bir bayttan fazla yer kaplar', () {
+      final text = summaryInstructionFor('tr');
+      final json = jsonEncode({'content': text});
+
+      expect(
+        encodeRequestBody({'content': text}).length,
+        greaterThan(json.length),
+      );
+    });
+
+    /// Yalnız Türkçe değil: hedef dil listesindeki her ad kodlanabilmeli.
+    /// Arapça'nın buraya girmesi bilinçli — Latin-1'e hiç sığmayan bir alfabe,
+    /// aynı kusurun geri gelmesini en hızlı yakalayan durum.
+    test('her hedef dil adı kodlanabilir', () {
+      for (final code in summaryLanguageNames.keys) {
+        final bytes = encodeRequestBody({
+          'content': summaryInstructionFor(code),
+        });
+        expect(
+          utf8.decode(bytes),
+          contains(summaryLanguageNames[code]!),
+          reason: '$code kodlanamadı',
+        );
+      }
     });
   });
 

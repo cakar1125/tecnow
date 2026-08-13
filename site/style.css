@@ -1,0 +1,249 @@
+/* tecOS sitesi — tek dosya, bağımlılık yok.
+ *
+ * Renkler uygulamanın paletinden birebir alındı
+ * (mobile/lib/design_system/tokens/app_palette.dart). İki yüzeyin aynı
+ * kimliği taşıması tesadüfe bırakılamaz: mağazadan uygulamayı indiren
+ * kullanıcı aynı yere geldiğini görmeli.
+ *
+ * Yazı tipi indirilmiyor. Bir CDN'e bağlanmak, "bu site sizi izlemiyor"
+ * diyen bir sayfanın üçüncü bir tarafa istek atması olurdu. */
+
+:root {
+  --bg: #f1f4f8;
+  --surface: #ffffff;
+  --surface-high: #e7ecf2;
+  --outline: #d7dee6;
+  --text: #0a0c10;
+  --text-muted: #4a5765;
+  --accent: #0068a8;
+  --accent-soft: rgba(0, 104, 168, 0.09);
+  --shadow: 0 1px 2px rgba(10, 12, 16, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0a0c10;
+    --surface: #11151b;
+    --surface-high: #181d25;
+    --outline: #2b3440;
+    --text: #f7fafc;
+    --text-muted: #94a3b8;
+    --accent: #00f0ff;
+    --accent-soft: rgba(0, 240, 255, 0.08);
+    --shadow: none;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+/* Üst şerit --------------------------------------------------------------- */
+
+header {
+  border-bottom: 1px solid var(--outline);
+  background: var(--surface);
+}
+
+header .wrap {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 4rem;
+  flex-wrap: wrap;
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.brand span {
+  color: var(--accent);
+}
+
+nav {
+  display: flex;
+  gap: 1.25rem;
+  margin-left: auto;
+  font-size: 0.95rem;
+}
+
+nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+nav a:hover,
+nav a:focus-visible {
+  color: var(--text);
+}
+
+/* Metin ------------------------------------------------------------------- */
+
+main {
+  padding: 3rem 0 4rem;
+}
+
+h1 {
+  font-size: clamp(1.9rem, 5vw, 2.6rem);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin: 0 0 0.75rem;
+  text-wrap: balance;
+}
+
+h2 {
+  font-size: 1.3rem;
+  letter-spacing: -0.015em;
+  margin: 2.75rem 0 0.75rem;
+  text-wrap: balance;
+}
+
+h3 {
+  font-size: 1.05rem;
+  margin: 1.75rem 0 0.5rem;
+}
+
+p,
+li {
+  color: var(--text);
+}
+
+.lede {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  margin: 0 0 2rem;
+}
+
+a {
+  color: var(--accent);
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    monospace;
+  font-size: 0.9em;
+  background: var(--surface-high);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+}
+
+ul {
+  padding-left: 1.25rem;
+}
+
+li + li {
+  margin-top: 0.4rem;
+}
+
+/* Kart ve tablo ----------------------------------------------------------- */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--outline);
+  border-radius: 12px;
+  padding: 1.25rem 1.4rem;
+  box-shadow: var(--shadow);
+}
+
+.card.accent {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.card p:last-child,
+.card ul:last-child {
+  margin-bottom: 0;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  margin: 2rem 0;
+}
+
+.grid h3 {
+  margin-top: 0;
+}
+
+.grid p {
+  color: var(--text-muted);
+  margin-bottom: 0;
+  font-size: 0.97rem;
+}
+
+/* Geniş içerik sayfayı yana kaydırmamalı; kendi kabında kayar. */
+.scroll {
+  overflow-x: auto;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.95rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--outline);
+  vertical-align: top;
+}
+
+th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* Alt bilgi --------------------------------------------------------------- */
+
+footer {
+  border-top: 1px solid var(--outline);
+  padding: 2rem 0 3rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+footer a {
+  color: var(--text-muted);
+}
+
+.updated {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-top: 3rem;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}

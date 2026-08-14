@@ -134,6 +134,24 @@ Birincil : https://feed.<alanadı>/feed.json
 Yedek    : https://<kullanıcı>.github.io/<ayna-depo>/feed.json
 ```
 
+**Kurulmuş hâli (14 Ağustos 2026, ölçüldü):**
+
+| | Depo | Adres |
+|---|---|---|
+| Birincil | `cakar1125/tecnow` | `https://feed.tecnow.app/feed.json` |
+| Yedek | `cakar1125/tecnow-ayna` | `https://cakar1125.github.io/tecnow-ayna/feed.json` |
+
+Yukarıdaki `301` beklentisi ölçüldü ve tuttu:
+
+```
+$ curl -I https://cakar1125.github.io/tecnow/feed.json
+HTTP/1.1 301
+Location: https://feed.tecnow.app/feed.json
+```
+
+Yani birincil deponun `github.io` adresi gerçekten yedek olamıyor; ayrı bir
+depo açmanın sebebi varsayım değil, ölçüm.
+
 ### 3. İlk koşuyu elle çalıştır
 
 **Actions → Feed yayımla → Run workflow.**

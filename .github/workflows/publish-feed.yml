@@ -5,6 +5,14 @@ name: Feed yayımla
 # sürece paketlenmiş içerikle eksiksiz çalışır.
 #
 # Kurulum ve kararların gerekçesi: docs/FEED_HOSTING_RUNBOOK.md
+#
+# Bu dosya **iki depoda** çalışır ve ikisi aynı koddur:
+#   cakar1125/tecnow       → feed.tecnow.app          (birincil)
+#   cakar1125/tecnow-ayna  → github.io/tecnow-ayna    (yedek)
+#
+# Farkı depo değişkenleri kuruyor, dosya değil: aynada `FEED_DOMAIN`
+# **tanımsızdır**, dolayısıyla CNAME yazılmaz. Aynaya `FEED_DOMAIN`
+# eklenirse iki depo aynı alan adına dağıtım yapar ve birincil kırılır.
 
 on:
   # Saatte bir. Önceki tempo altı saatteydi ve gerekçesi "istemci zaten 12

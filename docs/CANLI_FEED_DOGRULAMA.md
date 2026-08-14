@@ -8,10 +8,9 @@ Bugüne kadar bütün cihaz testleri paketlenmiş içerikle yapılmıştı; uygu
 uzak adres verilmeden derlendiği için ağ yolunun hiçbir parçası hiç
 çalıştırılmamıştı.
 
-> **Bu belge yarım.** Uç nokta tarafı ölçüldü; **cihaz tarafı ölçülmedi** —
-> telefon ölçüm sırasında bağlantıdan düştü. Eksik kalanlar aşağıda
-> "Ölçülmeyenler" başlığında tek tek yazılı ve hiçbiri "çalışıyor" diye
-> kaydedilmedi.
+> **Güncelleme — 14 Ağustos 2026:** cihaz tarafı ölçüldü. Altı maddenin
+> **beşi** gerçek telefonda doğrulandı; altıncısı (aynaya düşme) ayna deposu
+> henüz yayın yapmadığı için hâlâ ölçülemedi. Ayrıntı: "Cihaz ölçümü".
 
 ---
 
@@ -128,18 +127,61 @@ kullanıcının ve kural yazmak yayın davranışını değiştirir.
 
 ---
 
-## Ölçülmeyenler
+## Cihaz ölçümü — 14 Ağustos 2026
 
-Telefon ölçüm sırasında bağlantıdan düştü. Bunların **hiçbiri** doğrulanmış
-sayılmaz:
+| | |
+|---|---|
+| Cihaz | OnePlus 8 Pro (IN2023) · Android 13 · SDK 33 |
+| Ağ | Wi-Fi 5 GHz, doğrulanmış |
+| APK | `app-release.apk`, 56,1 MB, **debug anahtarıyla** imzalı (yayın anahtarı yok) |
+| Derleme | `--dart-define=FEED_URL=https://feed.tecnow.app/feed.json`<br>`--dart-define=FEED_URL_FALLBACK=https://cakar1125.github.io/tecnow-ayna/feed.json` |
+| Kurulum | Önceki sürüm **kaldırıldı**, temiz kuruldu — eski şema kalıntısı ölçümü kirletmesin |
 
-- [ ] Uygulamanın gerçekten ağdan indirmesi (durum satırının "Son güncelleme"ye
-      dönmesi)
-- [ ] Aşağı çekme jestinin gerçek bir tazeleme yapması
-- [ ] İkinci tazelemenin `304` alması (cihaz tarafında)
-- [ ] Uçak modu: içeriğin önbellekten gelmesi, durum satırının hatayı söylemesi
-- [ ] Uçak modundan dönüşte kendiliğinden toparlanma
-- [ ] Ayna adresine düşme (ayna yokken zaten ölçülemez)
+### Ölçüm yöntemi
 
-Yapılacak: telefon bağlandığında `tecOS-1.0.3-canli.apk` kurulur, `pm clear`
-ile temiz başlangıç yapılır ve yukarıdaki altı madde tek tek ölçülür.
+Ekran görüntüsü tek başına yetmez: "tazelendi" yazan bir arayüz, ağa hiç
+çıkmadan da aynı şeyi yazabilir. Bu yüzden her adımda uygulamanın **kendi
+UID'sine ait bayt sayacı** okundu (`dumpsys netstats`, `BPF map content`,
+`uid=10477`). Arayüz ne derse desin, sayaç yalan söylemiyor.
+
+Referans değer: açılıştaki tam indirme **41.572 bayt**.
+
+### Sonuçlar
+
+| # | Ölçüm | Sonuç | Kanıt |
+|---|---|---|---|
+| 1 | Gerçekten ağdan indiriyor | ✅ | Ekrandaki ilk kayıt canlı feed'de var, paketlenmişte yok |
+| 2 | Aşağı çekme gerçek istek yapıyor | ✅ | +4.406 bayt indi, +1.077 bayt gitti |
+| 3 | İkinci tazeleme `304` alıyor | ✅ | Tam indirmenin **onda biri** — gövde inmedi |
+| 4 | Uçak modu: önbellek + dürüst hata | ✅ | Sayaç **hiç artmadı**; durum satırı hatayı yazdı |
+| 5 | Dönüşte kendiliğinden toparlanma | ✅ | Uygulama yeniden başlatılmadan `304` deseni geri geldi |
+| 6 | Ayna adresine düşme | ⬜ | **Ölçülemedi** — ayna deposu henüz yayın yapmadı |
+
+**1 · Ağdan indirme.** Paketlenmiş feed 28 Temmuz tarihli. Ekrandaki ilk
+kayıt (`Grok 4.6 is now available in GitHub Copilot`) canlı `feed.json`'da
+iki kez geçiyor, paketlenmiş dosyada **hiç** geçmiyor. Aynı ölçüm TLS'i ve
+gerçek DNS çözümünü de kanıtlıyor: istemci `https` dışını reddediyor,
+dolayısıyla içerik ekrana geldiyse sertifika doğrulanmış demektir.
+
+**3 · Koşullu istek.** 4,4 KB'lik hareket TLS el sıkışması ve başlıklardan
+ibaret. Gövde inseydi sayaç ~41 KB artardı.
+
+**4 · Uçak modu.** İki ayrı durum ölçüldü ve ikisi de doğru çıktı:
+
+- *Soğuk açılış:* içerik 15 dakikadan taze olduğu için uygulama ağa **hiç
+  çıkmadı** ve hata da göstermedi. Gösterse yanlış olurdu — başarısız olan
+  bir şey yok.
+- *Elle tazeleme:* sayaç hiç artmadı (45.978 → 45.978) ve durum satırı
+  şunu yazdı:
+
+  > Güncellenemedi · 1 dakika önce alınan içerik gösteriliyor
+
+  Hata gizlenmedi, içerik de kaybolmadı.
+
+**6 · Neden ölçülemedi.** `FEED_URL_FALLBACK` bu kez APK'ya **gömüldü**
+(önceki ölçümde verilmemişti), yani istemci tarafı hazır. Eksik olan sunucu
+tarafı: `tecnow-ayna` deposu açıldı, kod gitti, Pages "GitHub Actions"a
+alındı ve `FEED_URL` değişkeni yazıldı — ama GitHub `Feed yayımla` iş akışını
+o depoda **kaydetmedi** (API'de yalnız `Kalite kapıları` görünüyor). Sebep
+bilinmiyor; iki ayrı push denendi, ikisi de kaydettirmedi. Ayna yayın yapana
+kadar bu madde açık kalır ve **"çalışıyor" diye yazılmaz**.

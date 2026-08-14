@@ -22,7 +22,7 @@ uzak adres verilmeden derlendiği için ağ yolunun hiçbir parçası hiç
 | Boyut | 58.559.704 bayt |
 | SHA-256 | `01B2ED16FFC1975749055389E0273862CD83C8F4CB3DE7841430BDE753FF8F96` |
 | Derleme | `flutter build apk --release --dart-define=FEED_URL=https://feed.tecnow.app/feed.json` |
-| `FEED_URL_FALLBACK` | **verilmedi** — ayna deposu henüz yok (aşağıya bakın) |
+| `FEED_URL_FALLBACK` | **verilmedi** — o tarihte ayna deposu yoktu. 14 Ağustos ölçümünde verildi, bkz. "Cihaz ölçümü" |
 
 Önceki APK'lar (`tecOS-1.0.2-bundle`, `tecOS-1.0.3-sekmeler`) `--dart-define`
 almadan derlenmişti, yani **paketlenmiş içerikle** çalışıyorlardı. Uygulama
@@ -155,7 +155,7 @@ Referans değer: açılıştaki tam indirme **41.572 bayt**.
 | 3 | İkinci tazeleme `304` alıyor | ✅ | Tam indirmenin **onda biri** — gövde inmedi |
 | 4 | Uçak modu: önbellek + dürüst hata | ✅ | Sayaç **hiç artmadı**; durum satırı hatayı yazdı |
 | 5 | Dönüşte kendiliğinden toparlanma | ✅ | Uygulama yeniden başlatılmadan `304` deseni geri geldi |
-| 6 | Ayna adresine düşme | ⬜ | **Ölçülemedi** — ayna deposu henüz yayın yapmadı |
+| 6 | Ayna adresine düşme | ✅ | Birincil `NXDOMAIN` iken **43.366 bayt** indi; içerik aynada var, pakette yok |
 
 **1 · Ağdan indirme.** Paketlenmiş feed 28 Temmuz tarihli. Ekrandaki ilk
 kayıt (`Grok 4.6 is now available in GitHub Copilot`) canlı `feed.json`'da
@@ -178,10 +178,44 @@ ibaret. Gövde inseydi sayaç ~41 KB artardı.
 
   Hata gizlenmedi, içerik de kaybolmadı.
 
-**6 · Neden ölçülemedi.** `FEED_URL_FALLBACK` bu kez APK'ya **gömüldü**
-(önceki ölçümde verilmemişti), yani istemci tarafı hazır. Eksik olan sunucu
-tarafı: `tecnow-ayna` deposu açıldı, kod gitti, Pages "GitHub Actions"a
-alındı ve `FEED_URL` değişkeni yazıldı — ama GitHub `Feed yayımla` iş akışını
-o depoda **kaydetmedi** (API'de yalnız `Kalite kapıları` görünüyor). Sebep
-bilinmiyor; iki ayrı push denendi, ikisi de kaydettirmedi. Ayna yayın yapana
-kadar bu madde açık kalır ve **"çalışıyor" diye yazılmaz**.
+**6 · Aynaya düşme.** Telefonda tek bir alan adını engellemek root ister,
+bu yüzden ağ değil **kod yolu** ölçüldü: birincili çözülmeyen bir adrese
+(`feed-yok-test.tecnow.app`, doğrulandı `NXDOMAIN`), yedeği gerçek aynaya
+bağlayan ayrı bir APK derlendi. Bu, yedeğin var olma sebebi olan senaryonun
+birebir aynısı — alan adının kaybı.
+
+Ölçüm:
+
+| | |
+|---|---|
+| Birincil | `feed-yok-test.tecnow.app` → `NXDOMAIN` |
+| İndirilen | **43.366 bayt** — tam feed, yani önbellek değil |
+| İçerik | `Grok 4.6…` kaydı aynada **var**, paketlenmiş feed'de **yok** |
+
+Uygulama birincili denedi, çözemedi, yedeğe düştü ve içeriği oradan aldı.
+Ölçümden sonra doğru adresleri taşıyan APK yeniden derlenip kuruldu.
+
+### Ayna kurulumunda çıkan iki tuzak
+
+İkisi de belgelerde yoktu ve ikisi de **sessizce** başarısız oluyordu:
+
+1. **GitHub yeni depoda iş akışını indekslemiyor.** `tecnow-ayna`'ya kod
+   gitti, dosya doğru yerdeydi (`raw` `200`), varsayılan dal `master`'dı —
+   ama `Feed yayımla` API'de `Not Found` döndü ve Actions listesinde
+   görünmedi. Başka dosyaları değiştiren iki push ve bir `schedule`
+   tetiklemesi işe yaramadı. **Çözüm:** iş akışı dosyasının kendisini
+   değiştiren bir push. Dosyaya bir yorum eklemek anında kaydettirdi.
+
+2. **`github-pages` ortamı yanlış dala kilitli açılıyor.** Pages "GitHub
+   Actions" moduna alındığında GitHub ortamı hesabın varsayılan dal adıyla
+   (`main`) oluşturdu, oysa deponun dalı `master`. Sonuç:
+   `Branch "master" is not allowed to deploy to github-pages`.
+   **Çözüm:** Settings → Environments → `github-pages` → Deployment
+   branches → `main` yerine `master`.
+
+Kurulum doğrulaması, bu yüzden, "ayarları yaptım"la bitmez:
+
+```bash
+curl -s .../actions/workflows/publish-feed.yml | grep '"state"'          # active
+curl -s .../environments/github-pages/deployment-branch-policies         # master
+```

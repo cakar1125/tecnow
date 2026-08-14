@@ -536,6 +536,18 @@ Future<int> run(List<String> args, {FeedFetcher? fetcher}) async {
     for (final entry in summaries.rejected.entries) {
       stdout.writeln('  özet · reddedildi (${entry.key.name}): ${entry.value}');
     }
+    // Sayı "bir şey oldu" der, sebep "ne oldu" der. İkincisi olmadan teşhis
+    // koşu süresinden geriye hesaplanmak zorunda kalıyor.
+    final failure = summaries.firstFailure;
+    if (failure != null) {
+      stdout.writeln('  özet · ilk hata: $failure');
+    }
+    if (summaries.abandoned) {
+      stdout.writeln(
+        '  özet · sağlayıcı düştü, kalan çağrılar yapılmadı '
+        '($summaryFailureStreakLimit ardışık hata)',
+      );
+    }
   }
 
   stdout.writeln('Toplam: ${report.feed.items.length} kayıt.');

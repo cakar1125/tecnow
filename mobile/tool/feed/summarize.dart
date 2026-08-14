@@ -153,6 +153,8 @@ final class SummaryPass {
     this.rejected = const {},
     this.failed = 0,
     this.budgetExhausted = false,
+    this.firstFailure,
+    this.abandoned = false,
   });
 
   final List<FeedItem> items;
@@ -170,7 +172,32 @@ final class SummaryPass {
   final int failed;
 
   final bool budgetExhausted;
+
+  /// İlk çağrı hatasının türü ve mesajı — kısaltılmış.
+  ///
+  /// Sayı tek başına teşhis etmiyor. 14 Ağustos 2026'da bir koşu **120 çağrı
+  /// hatası** bildirdi ve sebebi hiçbir yerde yazmadığı için 401 mi, 429 mu,
+  /// zaman aşımı mı olduğu ancak koşu süresinden (60 dakika ÷ 120 ≈ 30 sn =
+  /// zaman aşımı) çıkarılabildi. Kusurun kendisi değil, **sessizliği** pahalı.
+  ///
+  /// Anahtar sızdırmamak için mesaj 200 karaktere kırpılıyor: sağlayıcı hata
+  /// gövdesinde isteği yansıtabilir.
+  final String? firstFailure;
+
+  /// Sağlayıcı düştüğü için özet katmanı **erken bırakıldı**.
+  final bool abandoned;
 }
+
+/// Üst üste bu kadar hata gelirse sağlayıcı düşmüş sayılır ve kalan çağrılar
+/// yapılmaz.
+///
+/// Tek tek hatalar normaldir — bir kaydın metni modeli rahatsız edebilir.
+/// Ama arka arkaya beş hata artık kayıtla ilgili değildir: anahtar, kota ya
+/// da ağ. O noktadan sonra denemeye devam etmek hiçbir şeyi kurtarmıyor,
+/// yalnız koşuyu uzatıyor — 14 Ağustos'ta tam olarak bu oldu ve **bir saat**
+/// harcandı. Beş, gerçek bir arıza ile tesadüfi bir dizi arasındaki makul
+/// ayrım; düşürülürse geçici bir dalgalanma katmanı kapatır.
+const summaryFailureStreakLimit = 5;
 
 /// Özet katmanını uygular.
 ///
@@ -200,6 +227,9 @@ Future<SummaryPass> applySummaries(
   var carried = 0;
   var failed = 0;
   var calls = 0;
+  var failureStreak = 0;
+  String? firstFailure;
+  var abandoned = false;
 
   // Yalnız taşınabilir olanlar: tecOS özeti **ve** damgası olanlar.
   // Damgasız bir kayıt eski bir sürümden gelmiş olabilir; kaynak metninin
@@ -252,7 +282,7 @@ Future<SummaryPass> applySummaries(
       // Kapıdan düştü: taşıma yok, aşağıdaki normal yol yeniden üretmeyi dener.
     }
 
-    if (calls >= budget) {
+    if (calls >= budget || abandoned) {
       result.add(item);
       continue;
     }
@@ -265,9 +295,13 @@ Future<SummaryPass> applySummaries(
         sourceText: sourceText,
         language: language,
       );
-    } catch (_) {
+      failureStreak = 0;
+    } catch (error) {
       // Model çağrısı bir kaydı düşürebilir, koşuyu değil.
       failed++;
+      failureStreak++;
+      firstFailure ??= describeSummaryFailure(error);
+      if (failureStreak >= summaryFailureStreakLimit) abandoned = true;
       result.add(item);
       continue;
     }
@@ -307,7 +341,24 @@ Future<SummaryPass> applySummaries(
     rejected: rejected,
     failed: failed,
     budgetExhausted: calls >= budget,
+    firstFailure: firstFailure,
+    abandoned: abandoned,
   );
+}
+
+/// Çağrı hatasını tek satıra indirir: **tür + kısaltılmış mesaj**.
+///
+/// Tür tek başına yetmiyor — `HttpException` hem 401 hem 429 hem 500 olabilir
+/// ve üçünün cevabı farklı. Mesaj da tek başına yetmiyor: zaman aşımı boş
+/// mesajlı bir `TimeoutException` olarak geliyor ve o boşluk teşhisin
+/// kendisi.
+///
+/// 200 karakter sınırı bir nezaket değil güvenlik: sağlayıcılar hata
+/// gövdesinde isteği yansıtabiliyor ve bu çıktı koşu loguna yazılıyor.
+String describeSummaryFailure(Object error) {
+  final text = error.toString().replaceAll(RegExp(r'\s+'), ' ').trim();
+  final clipped = text.length > 200 ? '${text.substring(0, 200)}…' : text;
+  return '${error.runtimeType}: $clipped';
 }
 
 /// Anthropic Messages API ile özetler.

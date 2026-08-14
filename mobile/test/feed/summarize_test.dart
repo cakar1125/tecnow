@@ -83,12 +83,37 @@ final class FakeSummarizer implements Summarizer {
 }
 
 final class ThrowingSummarizer implements Summarizer {
+  ThrowingSummarizer([this.error]);
+
+  final Object? error;
+  var calls = 0;
+
   @override
   Future<String?> summarize({
     required String title,
     required String sourceText,
     required String language,
-  }) async => throw StateError('ağ hatası');
+  }) async {
+    calls++;
+    throw error ?? StateError('ağ hatası');
+  }
+}
+
+/// İlk çağrıda düşer, sonrakilerde çalışır. Ardışık sayacının gerçekten
+/// **ardışık** olduğunu ölçmek için.
+final class FlakySummarizer implements Summarizer {
+  var calls = 0;
+
+  @override
+  Future<String?> summarize({
+    required String title,
+    required String sourceText,
+    required String language,
+  }) async {
+    calls++;
+    if (calls == 1) throw StateError('geçici');
+    return 'Özet.';
+  }
 }
 
 void main() {
@@ -199,6 +224,58 @@ void main() {
       expect(pass.items, hasLength(2));
       expect(pass.failed, 2);
       expect(pass.summarized, 0);
+    });
+
+    test('ilk hatanın sebebi kaydedilir', () async {
+      final pass = await applySummaries([
+        _item(),
+      ], summarizer: ThrowingSummarizer(StateError('401 Unauthorized')));
+
+      // Sayı "bir şey oldu" der; teşhis için sebep gerekiyor.
+      expect(pass.firstFailure, contains('401 Unauthorized'));
+      expect(pass.firstFailure, contains('StateError'));
+    });
+
+    test('uzun hata mesajı kırpılır', () async {
+      final pass = await applySummaries([
+        _item(),
+      ], summarizer: ThrowingSummarizer(StateError('x' * 500)));
+
+      // Sağlayıcı hata gövdesinde isteği yansıtabilir ve bu çıktı koşu
+      // loguna yazılıyor.
+      expect(pass.firstFailure!.length, lessThan(260));
+      expect(pass.firstFailure, endsWith('…'));
+    });
+
+    test('ardışık hatalar sağlayıcıyı düşmüş sayar ve çağrıyı keser', () async {
+      final summarizer = ThrowingSummarizer();
+      final items = [
+        for (var i = 0; i < 40; i++) _item(id: 'i$i', title: 'Kayıt $i'),
+      ];
+
+      final pass = await applySummaries(items, summarizer: summarizer);
+
+      // 14 Ağustos 2026: durdurucu yokken 120 çağrı denendi ve koşu bir saat
+      // sürdü. Sağlayıcı düştüğünde denemeye devam etmek hiçbir kaydı
+      // kurtarmıyor.
+      expect(summarizer.calls, summaryFailureStreakLimit);
+      expect(pass.abandoned, isTrue);
+      expect(pass.failed, summaryFailureStreakLimit);
+      // Bırakmak kayıt düşürmez: hepsi orijinal metniyle çıkar.
+      expect(pass.items, hasLength(40));
+    });
+
+    test('araya giren başarı ardışık sayacı sıfırlar', () async {
+      final summarizer = FlakySummarizer();
+      final items = [
+        for (var i = 0; i < 8; i++) _item(id: 'i$i', title: 'Kayıt $i'),
+      ];
+
+      final pass = await applySummaries(items, summarizer: summarizer);
+
+      expect(pass.abandoned, isFalse);
+      expect(pass.failed, 1);
+      expect(pass.summarized, 7);
     });
 
     test('boş cevap kaydı olduğu gibi bırakır', () async {

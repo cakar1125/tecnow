@@ -140,6 +140,21 @@ jobs:
             echo "::warning::Bazı kaynaklar okunamadı; ayrıntı yukarıdaki çıktıda."
           fi
 
+          # Özet katmanı **yeşil bir koşuda** sessizce boşa dönebiliyor: çağrı
+          # hataları kaydı düşürür, koşuyu değil. 14 Ağustos 2026'da koşu #129
+          # tam olarak bunu yaptı — 60 dakika sürdü, 120 çağrının 120'si düştü,
+          # sonuç "success" oldu ve dışarıdan hiçbir şey görünmedi.
+          #
+          # Koşu logu jetonsuz okunamıyor (API 403), annotation okunabiliyor.
+          # Sebep bu yüzden buraya taşınıyor.
+          if grep -q 'çağrı hatası' build/generate.log; then
+            detail=$(grep 'özet ·' build/generate.log | head -8)
+            detail="${detail//'%'/'%25'}"
+            detail="${detail//$'\r'/}"
+            detail="${detail//$'\n'/'%0A'}"
+            echo "::warning title=Ozet katmani hata verdi::${detail}"
+          fi
+
       # Üretici dosya yazdı diye yayımlanmaz. Bkz. tool/feed/publish_guard.dart
       - name: Yayım koruması
         id: guard

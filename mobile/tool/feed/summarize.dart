@@ -413,7 +413,13 @@ final class AnthropicSummarizer implements Summarizer {
         ..add(payload);
 
       final response = await request.close().timeout(timeout);
-      final body = await response.transform(utf8.decoder).join();
+      // Gövde okuması da sınırlı. `close()` yalnız **başlıkların** geldiğini
+      // söylüyor; başlıklar gelip gövde yarıda kalırsa bu `await` süresiz
+      // beklerdi ve iş akışının varsayılan sınırı 6 saat.
+      final body = await response
+          .transform(utf8.decoder)
+          .join()
+          .timeout(timeout);
       if (response.statusCode != 200) {
         throw HttpException('Anthropic API ${response.statusCode}: $body');
       }
@@ -468,13 +474,29 @@ final class NvidiaSummarizer implements Summarizer {
   NvidiaSummarizer({
     required this.apiKey,
     this.model = 'meta/llama-3.3-70b-instruct',
-    this.timeout = const Duration(seconds: 30),
+    this.timeout = const Duration(seconds: 90),
     this.minimumInterval = const Duration(milliseconds: 1500),
   });
 
   /// Ortam değişkeninden gelir. Depoya yazılmaz, uygulamaya gömülmez.
   final String apiKey;
   final String model;
+
+  /// Bir çağrının en fazla ne kadar sürebileceği.
+  ///
+  /// **30 saniyeydi ve ölçümle yetersiz çıktı.** 15 Ağustos 2026, koşu #141:
+  /// beş çağrının beşi de `TimeoutException after 0:00:30` ile düştü.
+  ///
+  /// Sebebi uç noktanın biçiminde: akış (streaming) kullanılmıyor, yani yanıt
+  /// başlıkları **üretim tamamen bittikten sonra** geliyor. Ölçülen süre bu
+  /// yüzden ağ gecikmesi değil, 70 milyarlık bir modelin 300 jetona kadar
+  /// üretim süresi. Yerel ölçümde (12 Ağustos, 5 çağrı) medyan ~16 sn, en
+  /// yavaşı 19,4 sn'ydi — sınıra yalnız 10 saniye vardı. Paylaşımlı ücretsiz
+  /// katmanda kuyruk bunu aşıyor.
+  ///
+  /// 90 saniye bir tahmin ve öyle olduğu biliniyor. Tahminin maliyeti
+  /// [summaryFailureStreakLimit] ile sınırlı: yanlışsa koşu 5 × 90 sn = 7,5
+  /// dakika kaybeder, bir saat değil.
   final Duration timeout;
 
   /// İki çağrı arasındaki en kısa süre.
@@ -524,7 +546,13 @@ final class NvidiaSummarizer implements Summarizer {
         ..add(payload);
 
       final response = await request.close().timeout(timeout);
-      final body = await response.transform(utf8.decoder).join();
+      // Gövde okuması da sınırlı. `close()` yalnız **başlıkların** geldiğini
+      // söylüyor; başlıklar gelip gövde yarıda kalırsa bu `await` süresiz
+      // beklerdi ve iş akışının varsayılan sınırı 6 saat.
+      final body = await response
+          .transform(utf8.decoder)
+          .join()
+          .timeout(timeout);
       if (response.statusCode != 200) {
         throw HttpException('NVIDIA API ${response.statusCode}: $body');
       }

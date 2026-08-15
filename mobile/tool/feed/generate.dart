@@ -545,7 +545,13 @@ Future<int> run(List<String> args, {FeedFetcher? fetcher}) async {
     if (summaries.abandoned) {
       stdout.writeln(
         '  özet · sağlayıcı düştü, kalan çağrılar yapılmadı '
-        '($summaryFailureStreakLimit ardışık hata)',
+        '($summaryFailureStreakLimit ardışık hata, hiç başarı yok)',
+      );
+    }
+    if (summaries.timeBudgetExhausted) {
+      stdout.writeln(
+        '  özet · süre bütçesi doldu (${summaryTimeBudget.inMinutes} dk); '
+        'kalan kayıtlar sonraki koşuda denenecek',
       );
     }
   }

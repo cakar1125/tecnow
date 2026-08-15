@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -96,6 +97,22 @@ final class ThrowingSummarizer implements Summarizer {
   }) async {
     calls++;
     throw error ?? StateError('ağ hatası');
+  }
+}
+
+/// İlk çağrı geçer, sonrakilerin hepsi düşer. "Yavaş ama ayakta" sağlayıcı.
+final class SlowAfterFirstSummarizer implements Summarizer {
+  var calls = 0;
+
+  @override
+  Future<String?> summarize({
+    required String title,
+    required String sourceText,
+    required String language,
+  }) async {
+    calls++;
+    if (calls == 1) return 'Özet.';
+    throw TimeoutException('Future not completed', const Duration(seconds: 90));
   }
 }
 
@@ -263,6 +280,45 @@ void main() {
       expect(pass.failed, summaryFailureStreakLimit);
       // Bırakmak kayıt düşürmez: hepsi orijinal metniyle çıkar.
       expect(pass.items, hasLength(40));
+    });
+
+    test('bir çağrı geçtiyse durdurucu çalışmaz', () async {
+      // Koşu #142 (15 Ağustos 2026): üç kayıt Türkçeleşti, sonra beş zaman
+      // aşımı üst üste geldi ve durdurucu katmanı kapattı. Oysa sağlayıcı ölü
+      // değil yavaştı — ölü bir sağlayıcıda hiçbir çağrı geçmez.
+      final summarizer = SlowAfterFirstSummarizer();
+      final items = [
+        for (var i = 0; i < 12; i++) _item(id: 'i$i', title: 'Kayıt $i'),
+      ];
+
+      final pass = await applySummaries(items, summarizer: summarizer);
+
+      expect(pass.summarized, 1);
+      expect(pass.abandoned, isFalse, reason: 'erişim değil hız sorunu');
+      expect(summarizer.calls, 12, reason: 'kalan kayıtlar denenmeli');
+    });
+
+    test('süre bütçesi dolunca kalan kayıtlar denenmez', () async {
+      final summarizer = FakeSummarizer('Özet.');
+      final items = [
+        for (var i = 0; i < 5; i++) _item(id: 'i$i', title: 'Kayıt $i'),
+      ];
+
+      // Sıfır bütçe: ilk kontrolde dolmuş sayılır.
+      final pass = await applySummaries(
+        items,
+        summarizer: summarizer,
+        timeBudget: Duration.zero,
+      );
+
+      expect(pass.timeBudgetExhausted, isTrue);
+      expect(summarizer.languages, isEmpty, reason: 'hiç çağrı yapılmamalı');
+      // Bütçe dolması kayıt düşürmez.
+      expect(pass.items, hasLength(5));
+      expect(
+        pass.items.every((i) => i.summaryOrigin == SummaryOrigin.original),
+        isTrue,
+      );
     });
 
     test('araya giren başarı ardışık sayacı sıfırlar', () async {

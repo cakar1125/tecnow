@@ -155,6 +155,7 @@ final class SummaryPass {
     this.budgetExhausted = false,
     this.firstFailure,
     this.abandoned = false,
+    this.timeBudgetExhausted = false,
   });
 
   final List<FeedItem> items;
@@ -186,18 +187,43 @@ final class SummaryPass {
 
   /// Sağlayıcı düştüğü için özet katmanı **erken bırakıldı**.
   final bool abandoned;
+
+  /// Süre bütçesi dolduğu için kalan kayıtlar denenmedi.
+  ///
+  /// [abandoned] ile aynı şey değil: orada sağlayıcı erişilemiyordu, burada
+  /// çalışıyor ama yavaş. Ayrı tutulmaları teşhis için şart — biri anahtar/ağ
+  /// sorunu, diğeri kapasite sorunu.
+  final bool timeBudgetExhausted;
 }
 
-/// Üst üste bu kadar hata gelirse sağlayıcı düşmüş sayılır ve kalan çağrılar
-/// yapılmaz.
+/// Üst üste bu kadar hata gelirse **ve hiç başarı olmamışsa** sağlayıcı düşmüş
+/// sayılır ve kalan çağrılar yapılmaz.
 ///
 /// Tek tek hatalar normaldir — bir kaydın metni modeli rahatsız edebilir.
 /// Ama arka arkaya beş hata artık kayıtla ilgili değildir: anahtar, kota ya
 /// da ağ. O noktadan sonra denemeye devam etmek hiçbir şeyi kurtarmıyor,
 /// yalnız koşuyu uzatıyor — 14 Ağustos'ta tam olarak bu oldu ve **bir saat**
-/// harcandı. Beş, gerçek bir arıza ile tesadüfi bir dizi arasındaki makul
-/// ayrım; düşürülürse geçici bir dalgalanma katmanı kapatır.
+/// harcandı.
+///
+/// **"Hiç başarı olmamışsa" koşulu 15 Ağustos'ta ölçümle eklendi.** Koşu #142
+/// üç kaydı Türkçeleştirdi, sonra beş zaman aşımı üst üste geldi ve durdurucu
+/// katmanı kapattı — oysa sağlayıcı ölü değildi, **yavaştı**. Ölü bir
+/// sağlayıcıda hiçbir çağrı geçmez; geçen bir çağrı varsa sorun erişim değil
+/// hızdır ve o zaman doğru sınır sayı değil [summaryTimeBudget]'dir.
 const summaryFailureStreakLimit = 5;
+
+/// Özet katmanının tamamına ayrılan duvar saati.
+///
+/// Yavaş bir sağlayıcıda doğru kontrol hata sayısı değil **süre**: çağrıların
+/// bir kısmı geçiyorsa her geçen çağrı bir kaydı kurtarıyor demektir ve
+/// denemeye devam etmenin değeri var. Sınırsız olamaz, çünkü koşular saat
+/// başı tetikleniyor ve üst üste binen koşular kuyruğa giriyor.
+///
+/// 20 dakika, ölçülen tempoya göre seçildi: zamanlayıcı gecikmesiyle birlikte
+/// koşular fiilen ~60 dakika arayla düşüyor (15 Ağustos: 03:57, 04:50, 05:44,
+/// 07:00, 07:46, 08:48, 09:44). Üretimin geri kalanı ~3 dakika, yani 20
+/// dakikalık özet bütçesi bir sonraki koşuya çarpmıyor.
+const summaryTimeBudget = Duration(minutes: 20);
 
 /// Özet katmanını uygular.
 ///
@@ -220,6 +246,7 @@ Future<SummaryPass> applySummaries(
   String language = 'tr',
   int budget = defaultSummaryBudget,
   List<FeedItem> previous = const [],
+  Duration timeBudget = summaryTimeBudget,
 }) async {
   final result = <FeedItem>[];
   final rejected = <SummaryRejection, int>{};
@@ -230,6 +257,8 @@ Future<SummaryPass> applySummaries(
   var failureStreak = 0;
   String? firstFailure;
   var abandoned = false;
+  var timeBudgetExhausted = false;
+  final elapsed = Stopwatch()..start();
 
   // Yalnız taşınabilir olanlar: tecOS özeti **ve** damgası olanlar.
   // Damgasız bir kayıt eski bir sürümden gelmiş olabilir; kaynak metninin
@@ -282,7 +311,12 @@ Future<SummaryPass> applySummaries(
       // Kapıdan düştü: taşıma yok, aşağıdaki normal yol yeniden üretmeyi dener.
     }
 
-    if (calls >= budget || abandoned) {
+    // Süre kontrolü çağrıdan **önce**: bütçe dolduysa yenisi başlatılmaz.
+    // Başlamış bir çağrı kesilmez — `Future.timeout` isteği iptal etmiyor,
+    // yalnız beklemeyi bırakıyor.
+    if (elapsed.elapsed >= timeBudget) timeBudgetExhausted = true;
+
+    if (calls >= budget || abandoned || timeBudgetExhausted) {
       result.add(item);
       continue;
     }
@@ -301,7 +335,12 @@ Future<SummaryPass> applySummaries(
       failed++;
       failureStreak++;
       firstFailure ??= describeSummaryFailure(error);
-      if (failureStreak >= summaryFailureStreakLimit) abandoned = true;
+      // Durdurucu yalnız **hiç başarı yokken** çalışır: geçen bir çağrı varsa
+      // sağlayıcı erişilebilir demektir ve sorun hız, erişim değil. O durumda
+      // doğru sınır süre bütçesi.
+      if (summarized == 0 && failureStreak >= summaryFailureStreakLimit) {
+        abandoned = true;
+      }
       result.add(item);
       continue;
     }
@@ -343,6 +382,7 @@ Future<SummaryPass> applySummaries(
     budgetExhausted: calls >= budget,
     firstFailure: firstFailure,
     abandoned: abandoned,
+    timeBudgetExhausted: timeBudgetExhausted,
   );
 }
 

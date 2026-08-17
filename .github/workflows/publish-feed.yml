@@ -147,12 +147,21 @@ jobs:
           #
           # Koşu logu jetonsuz okunamıyor (API 403), annotation okunabiliyor.
           # Sebep bu yüzden buraya taşınıyor.
-          if grep -q 'çağrı hatası' build/generate.log; then
+          #
+          # Sağlıklı koşuda da yazılıyor. Önce yalnız hatada yazılıyordu ve o
+          # yüzden "koşu başına kaç özet üretiliyor" sorusu dışarıdan
+          # cevaplanamıyordu: hata yoksa hiçbir iz kalmıyordu. Ölçemediğin
+          # şeyin iyileştiğini de söyleyemezsin.
+          if grep -q 'özet ·' build/generate.log; then
             detail=$(grep 'özet ·' build/generate.log | head -8)
             detail="${detail//'%'/'%25'}"
             detail="${detail//$'\r'/}"
             detail="${detail//$'\n'/'%0A'}"
-            echo "::warning title=Ozet katmani hata verdi::${detail}"
+            if grep -q 'çağrı hatası' build/generate.log; then
+              echo "::warning title=Ozet katmani hata verdi::${detail}"
+            else
+              echo "::notice title=Ozet katmani::${detail}"
+            fi
           fi
 
       # Üretici dosya yazdı diye yayımlanmaz. Bkz. tool/feed/publish_guard.dart

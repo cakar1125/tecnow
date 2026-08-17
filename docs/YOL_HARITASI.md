@@ -108,9 +108,12 @@ Yalnız arayüz kabuğu var. Ekonomi ve mimari kararlaştırıldı, kod yazılma
 
 Şema tarafı bitti (D-022), yüzey yok.
 
-- [ ] `tecnow.app` statik sitesi (SEO + gizlilik politikası yüzeyi)
-- [ ] İngilizce feed (`feed.en.json`) — üretici hazır, koşu yapılmadı
-- [ ] Arayüz dizeleri → ARB
+- [x] `tecnow.app` statik sitesi yazıldı (`site/`) — **dağıtım bekliyor**
+- [x] **İngilizce feed (`feed.en.json`)** — 17 Ağustos 2026'da iş akışına
+      eklendi. Model çağrısı yok: kaynaklar zaten İngilizce, yalnız Hugging
+      Face'in yapısal cümlesi yayının dilinde kuruluyor. İki dosya birbirini
+      duyuruyor, yani uygulamadaki dil seçicinin artık seçeceği bir şey var.
+- [ ] Arayüz dizeleri → ARB (~250 dize, 40 dosya) — **sıradaki iş**
 
 ---
 

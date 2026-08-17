@@ -55,6 +55,49 @@ void main() {
       expect(item.language, 'tr', reason: 'kurulan cümle Türkçe');
     });
 
+    /// Cümleyi tecOS kuruyor, dolayısıyla **yayının** dilinde olmalı. Sabit
+    /// Türkçeyken İngilizce yayında bu kayıtlar Türkçe görünürdü — üstelik
+    /// `language: 'tr'` damgasıyla, yani tutarlı ama yanlış.
+    test('kurulan cümle yayının dilini izler', () {
+      final item = parseHuggingFaceModels(
+        feedFixture('huggingface_models.json'),
+        checkedAt: _checkedAt,
+        language: 'en',
+      ).items.firstWhere((i) => i.title == 'meta-llama/Llama-4-8B-Instruct');
+
+      expect(
+        item.summary,
+        'A model published on Hugging Face by meta-llama. '
+        'Task: text-generation. License: llama4.',
+      );
+      expect(item.language, 'en');
+    });
+
+    test('şablonu olmayan dilde İngilizceye düşülür', () {
+      // Yanlış dilde bir cümle yazmaktansa ortak dilde yazmak daha az zarar
+      // verir; sessizce Türkçe bırakmak ise en kötüsü olurdu.
+      final item = parseHuggingFaceModels(
+        feedFixture('huggingface_models.json'),
+        checkedAt: _checkedAt,
+        language: 'de',
+      ).items.firstWhere((i) => i.title == 'meta-llama/Llama-4-8B-Instruct');
+
+      expect(item.summary, startsWith('A model published on Hugging Face'));
+      expect(item.language, 'en');
+    });
+
+    test('kaynağın kendi açıklaması dilden etkilenmez', () {
+      // Açıklama kaynağa ait; onu yayının diline damgalamak yalan olurdu.
+      final item = parseHuggingFaceModels(
+        feedFixture('huggingface_models.json'),
+        checkedAt: _checkedAt,
+        language: 'en',
+      ).items.firstWhere((i) => i.title == 'birisi/aciklamali-model');
+
+      expect(item.summaryOrigin, SummaryOrigin.original);
+      expect(item.language, 'en');
+    });
+
     test('bilinmeyen alan cümleden çıkarılır', () {
       final item = _byTitle('birisi/eski-model');
       expect(

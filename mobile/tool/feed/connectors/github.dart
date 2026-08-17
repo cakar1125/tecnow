@@ -51,6 +51,9 @@ const _toolTopics = <String>{
 ConnectorResult parseGitHubRepositories(
   String body, {
   required DateTime checkedAt,
+  // Kaynağın kendi açıklaması taşınıyor; dili kaynağa ait. İmza ortak
+  // olduğu için alınır, kullanılmaz.
+  String language = 'tr',
 }) {
   final entries = _entries(body, 'items');
   final items = <FeedItem>[];
@@ -139,6 +142,7 @@ ConnectorResult parseGitHubRepositories(
 ConnectorResult parseGitHubReleases(
   String body, {
   required DateTime checkedAt,
+  String language = 'tr',
 }) {
   final entries = _entries(body, null);
   final items = <FeedItem>[];

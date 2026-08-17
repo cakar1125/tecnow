@@ -95,6 +95,53 @@ jobs:
           curl -fsSL --max-time 60 "$FEED_URL" -o build/previous.json \
             || echo "Yayımdaki feed indirilemedi; karşılaştırma yapılmayacak."
 
+          # İngilizce yayın da indiriliyor. İlk koşuda yok, olmaması normal.
+          curl -fsSL --max-time 60 "${FEED_URL%/*}/feed.en.json" \
+            -o build/previous.en.json \
+            || echo "İngilizce yayın indirilemedi (ilk koşuda beklenir)."
+
+      # Türkçeden **önce** üretiliyor. Sebep sıralamada değil, dürüstlükte:
+      # Türkçe feed'in İngilizceyi duyurup duyurmayacağı dosyanın gerçekten
+      # var olmasına bağlı. Ters sırada, üretimi düşmüş bir İngilizce yayın
+      # Türkçe dosyada duyurulmaya devam eder ve uygulamadaki dil seçici
+      # 404 veren bir adrese işaret ederdi.
+      - name: İngilizce feed üret
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set +e
+          # **Model çağrısı yok.** Kaynaklar (GitHub, Hugging Face, resmî
+          # bloglar) zaten İngilizce; İngilizce yayın için kaynağın kendi
+          # metni doğrudan kullanılabilir. Model yalnız derinlik katardı ve
+          # sağlayıcı bugün tek dile bile yetişemiyor — ikinci dili kuyruğa
+          # sokmak Türkçe özetleri yavaşlatırdı.
+          #
+          # Hugging Face'in yapısal cümlesi bu koşuda İngilizce kuruluyor
+          # (`parseHuggingFaceModels(language: 'en')`).
+          dart run tool/feed/generate.dart \
+            --out build/publish/feed.en.json \
+            --language en \
+            --languages tr=feed.json,en=feed.en.json \
+            --summarizer none \
+            --previous build/previous.en.json 2>&1 | tee build/generate.en.log
+          status=${PIPESTATUS[0]}
+          set -e
+
+          if [ "$status" -ne 0 ] && [ "$status" -ne 2 ]; then
+            detail=$(tail -20 build/generate.en.log || true)
+            detail="${detail//'%'/'%25'}"
+            detail="${detail//$'\r'/}"
+            detail="${detail//$'\n'/'%0A'}"
+            echo "::warning title=Ingilizce feed uretilemedi (kod $status)::${detail}"
+            rm -f build/publish/feed.en.json
+            # Yayımdaki kopya varsa korunur. Dağıtım **bütün dizini**
+            # değiştirdiği için dosyayı atlamak, onu silmek demektir.
+            if [ -f build/previous.en.json ]; then
+              cp build/previous.en.json build/publish/feed.en.json
+              echo "::notice::Onceki Ingilizce yayin korundu."
+            fi
+          fi
+
       - name: Feed üret
         env:
           # Actions'ın kendi token'ı GitHub API kotasını yükseltir; ek bir
@@ -114,8 +161,23 @@ jobs:
           # Çıktı **dosyaya da** yazılıyor: koşu logu jetonsuz okunamıyor
           # (API 403) ama annotation'lar public depoda okunabiliyor. Aşağıdaki
           # blok hata hâlinde son satırları annotation'a taşıyor.
+          # `--languages`: her iki dosya da **diğerini duyurur**. Uygulamadaki
+          # dil seçici bu listeyi okuyor; liste olmadan seçilecek dil yok.
+          # Adresler göreli — `FEED_URL` derleme zamanı tek yönlü bir kapı
+          # olduğu için mutlak adres yazmak alan adını şemaya çivilerdi.
+          # Duyuru **dosya varsa** yapılır. Var olmayan bir dili duyurmak,
+          # uygulamadaki dil seçiciye 404 veren bir seçenek koymak olurdu.
+          langs=''
+          if [ -f build/publish/feed.en.json ]; then
+            langs='tr=feed.json,en=feed.en.json'
+          else
+            echo "::notice::Ingilizce yayin yok; dil listesi bos birakildi."
+          fi
+
           dart run tool/feed/generate.dart \
             --out build/publish/feed.json \
+            --language tr \
+            ${langs:+--languages "$langs"} \
             --previous build/previous.json 2>&1 | tee build/generate.log
           # `tee` her zaman 0 döner; asıl kod boru hattının **ilk** halkasında.
           status=${PIPESTATUS[0]}

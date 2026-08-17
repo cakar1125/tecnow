@@ -247,7 +247,11 @@ Future<GenerationReport> generateFeed({
         );
         continue;
       }
-      final result = source.parse(response.body, checkedAt: now);
+      final result = source.parse(
+        response.body,
+        checkedAt: now,
+        language: language,
+      );
 
       // Kapı **tavandan önce** işler: aksi hâlde tavan, zaten yayımlanmayacak
       // kayıtlarla dolar ve iyi olanlar dışarıda kalırdı.

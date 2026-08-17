@@ -29,6 +29,7 @@ ConnectorResult parseSyndicationFeed(
   String body, {
   required DateTime checkedAt,
   String? sourceName,
+  String language = 'tr',
 }) {
   final XmlDocument document;
   try {

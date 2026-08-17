@@ -53,9 +53,35 @@ const _namespacedTagPrefixes = <String>[
 /// Bir kayıtta gösterilecek en fazla etiket sayısı.
 const _maxTopics = 8;
 
+/// Yapısal veriden kurulan cümlenin dili.
+///
+/// Kaynak listesi açıklama döndürmediği için bu cümle **tecOS'un kendi
+/// metnidir** ve yayının dilinde olmalı. Sabit Türkçeyken İngilizce yayında
+/// 20 kayıt Türkçe görünürdü — üstelik `language: 'tr'` damgasıyla, yani
+/// tutarlı ama yanlış.
+///
+/// Bilinmeyen bir dil istenirse İngilizceye düşülür: yanlış dilde bir cümle
+/// yazmaktansa dünyanın ortak dilinde yazmak daha az zarar verir.
+const _factualSummaryTemplates =
+    <String, ({String owner, String plain, String task, String license})>{
+      'tr': (
+        owner: 'Hugging Face üzerinde {owner} tarafından yayımlanan model.',
+        plain: 'Hugging Face üzerinde yayımlanan model.',
+        task: 'Görev: {task}.',
+        license: 'Lisans: {license}.',
+      ),
+      'en': (
+        owner: 'A model published on Hugging Face by {owner}.',
+        plain: 'A model published on Hugging Face.',
+        task: 'Task: {task}.',
+        license: 'License: {license}.',
+      ),
+    };
+
 ConnectorResult parseHuggingFaceModels(
   String body, {
   required DateTime checkedAt,
+  String language = 'tr',
 }) {
   final entries = jsonEntries(body, null, sourceLabel: 'Hugging Face');
   final items = <FeedItem>[];
@@ -100,7 +126,8 @@ ConnectorResult parseHuggingFaceModels(
     final owner = _ownerOf(modelId);
 
     final description = _description(entry);
-    final summary = description ?? _factualSummary(owner, task, license);
+    final summary =
+        description ?? _factualSummary(owner, task, license, language);
     if (summary == null) {
       skipped.add(SkippedRecord(modelId, SkipReason.missingSummary));
       continue;
@@ -120,8 +147,8 @@ ConnectorResult parseHuggingFaceModels(
         url: url,
         publishedAt: createdAt,
         checkedAt: checkedAt,
-        // Kurulan cümle Türkçe, kaynağın kendi açıklaması İngilizce.
-        language: description == null ? 'tr' : 'en',
+        // Kurulan cümle yayının dilinde, kaynağın kendi açıklaması İngilizce.
+        language: description == null ? _resolveLanguage(language) : 'en',
         trust: TrustSignals(
           officialSource: SourceAllowlist.isOfficial(url),
           hasLicense: license != null,
@@ -166,18 +193,28 @@ String? _license(List<String> tags) {
   return null;
 }
 
-/// Yanıttaki yapısal veriden kurulan Türkçe satır.
+/// Şablonu olan dil; yoksa İngilizce.
+String _resolveLanguage(String language) =>
+    _factualSummaryTemplates.containsKey(language) ? language : 'en';
+
+/// Yanıttaki yapısal veriden kurulan satır — **yayının dilinde**.
 ///
 /// Hiçbir öğe bilinmiyorsa `null` döner: "model" demekten ibaret bir cümle
 /// kullanıcıya hiçbir şey anlatmaz, o kayıt elenir.
-String? _factualSummary(String? owner, String? task, String? license) {
+String? _factualSummary(
+  String? owner,
+  String? task,
+  String? license,
+  String language,
+) {
+  final template = _factualSummaryTemplates[_resolveLanguage(language)]!;
   final sentences = <String>[
     if (owner != null)
-      'Hugging Face üzerinde $owner tarafından yayımlanan model.'
+      template.owner.replaceFirst('{owner}', owner)
     else if (task != null || license != null)
-      'Hugging Face üzerinde yayımlanan model.',
-    if (task != null) 'Görev: $task.',
-    if (license != null) 'Lisans: $license.',
+      template.plain,
+    if (task != null) template.task.replaceFirst('{task}', task),
+    if (license != null) template.license.replaceFirst('{license}', license),
   ];
   return sentences.isEmpty ? null : sentences.join(' ');
 }

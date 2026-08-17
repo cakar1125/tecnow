@@ -12,8 +12,21 @@ import 'connectors/syndication.dart';
 import 'source_allowlist.dart';
 
 /// Bağlayıcıların ortak imzası.
+///
+/// [language] yayının dili. Çoğu bağlayıcı için anlamsızdır — kaynağın kendi
+/// metnini taşırlar ve o metnin dili kaynağa aittir. Yalnız kaynak metin
+/// vermediğinde cümleyi **tecOS'un kurduğu** yerde anlam kazanıyor
+/// (`parseHuggingFaceModels`), ve orada kurulan cümle yayının dilinde olmalı.
+///
+/// İmzada zorunlu tutulması bilinçli: varsayılanı olan bir parametre, yeni
+/// bir bağlayıcı yazıldığında sessizce atlanır ve kusur ancak ikinci dil
+/// yayına girdiğinde görünür.
 typedef FeedParser =
-    ConnectorResult Function(String body, {required DateTime checkedAt});
+    ConnectorResult Function(
+      String body, {
+      required DateTime checkedAt,
+      required String language,
+    });
 
 final class FeedSource {
   const FeedSource({
@@ -83,11 +96,13 @@ List<FeedSource> defaultSources() => [
       url: feed.uri,
       // Küratörlü ad kayda **yazılır**: kartta görünen kaynak etiketi
       // beslemenin kendine verdiği ad değil, bizim seçtiğimiz addır.
-      parse: (body, {required checkedAt}) => parseSyndicationFeed(
-        body,
-        checkedAt: checkedAt,
-        sourceName: feed.name,
-      ),
+      parse: (body, {required checkedAt, required language}) =>
+          parseSyndicationFeed(
+            body,
+            checkedAt: checkedAt,
+            language: language,
+            sourceName: feed.name,
+          ),
       maxItems: _perBlog,
     ),
 ];

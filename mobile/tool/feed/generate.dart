@@ -18,6 +18,7 @@ import 'dart:io';
 import 'package:tecos/data/feed/feed_schema.dart';
 
 import 'connectors/connector_support.dart';
+import 'documents.dart';
 import 'fetch.dart';
 import 'merge.dart';
 import 'sources.dart';
@@ -290,12 +291,21 @@ Future<GenerationReport> generateFeed({
   // Özetleme **en sona** bırakılır: birleştirme ve limit sonrasında kalan
   // kayıtlar özetlenir. Önce özetlemek, birleştirmede kaybedilecek kopyalar
   // için de model çağrısı yapmak olurdu.
+  // Belgeler özetlemeden **önce** çekilir, çünkü taşıma damgası belgeyi de
+  // kapsıyor: damga hesaplanırken belge elde olmalı.
+  //
+  // Özetleyici yoksa hiç çekilmez — belge yalnız modele verilmek için var.
+  final documents = summarizer is DisabledSummarizer
+      ? const <String, String>{}
+      : await fetchDocuments(trimmed, fetcher: fetcher);
+
   final summaries = await applySummaries(
     trimmed,
     summarizer: summarizer,
     language: language,
     budget: summaryBudget,
     previous: previous,
+    documents: documents,
   );
 
   return GenerationReport(

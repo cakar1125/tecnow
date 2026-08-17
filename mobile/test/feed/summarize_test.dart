@@ -215,20 +215,54 @@ void main() {
   });
 
   group('modele verilen metin', () {
-    /// Tarih ve makine alanları modele **verilmez**: tarih metne girerse izin
-    /// verilen sayı havuzu genişler ve uydurulmuş bir fiyat kapıdan geçer.
-    test('yalnız başlık ve kaynağın kendi açıklaması gönderilir', () async {
+    test('tür, başlık, açıklama ve konular gönderilir', () async {
       final summarizer = FakeSummarizer(null);
       await applySummaries([_item()], summarizer: summarizer);
 
       final sent = summarizer.seen.single;
-      expect(
-        sent,
-        'Nexus-7B released\nA new open-weights model with 7B '
-        'parameters.',
-      );
+      expect(sent, contains('Yapay zekâ modeli'));
+      expect(sent, contains('Hugging Face'));
+      expect(sent, contains('Nexus-7B released'));
+      expect(sent, contains('A new open-weights model with 7B parameters.'));
+    });
+
+    /// Tarih ve popülerlik modele **verilmez** ve ikisinin sebebi ayrı.
+    ///
+    /// Tarih: metne girerse kapının izin verdiği sayı havuzu genişler ve
+    /// uydurulmuş bir ölçüt kapıdan geçebilir.
+    ///
+    /// Popülerlik: değişken. Yıldız sayısı özete girerse taşınan özet bir
+    /// hafta sonra yanlış sayı taşır — üstelik sessizce, çünkü kapı o sayıyı
+    /// "kaynakta vardı" diye kabul etmiş olur.
+    test('tarih, adres ve popülerlik sızmaz', () async {
+      final summarizer = FakeSummarizer(null);
+      await applySummaries([_item()], summarizer: summarizer);
+
+      final sent = summarizer.seen.single;
       expect(sent, isNot(contains('2026')), reason: 'tarih sızmamalı');
       expect(sent, isNot(contains('huggingface.co')));
+      expect(sent, isNot(contains('popülerlik')));
+      expect(sent, isNot(contains('indirme')));
+    });
+
+    test('belge verilirse metne eklenir ve damgayı değiştirir', () async {
+      final withoutDoc = FakeSummarizer('özet');
+      final pass = await applySummaries([_item()], summarizer: withoutDoc);
+
+      final withDoc = FakeSummarizer('özet');
+      final passWithDoc = await applySummaries(
+        [_item()],
+        summarizer: withDoc,
+        documents: {'a': 'Bu araç, dizin ağaçlarını karşılaştırır.'},
+      );
+
+      expect(withDoc.seen.single, contains('dizin ağaçlarını karşılaştırır'));
+      // Damga belgeyi kapsamasaydı README değiştiğinde özet taşınır ve yayın
+      // kaynağın kendisiyle sessizce ayrışırdı.
+      expect(
+        passWithDoc.items.single.summarySourceHash,
+        isNot(pass.items.single.summarySourceHash),
+      );
     });
   });
 

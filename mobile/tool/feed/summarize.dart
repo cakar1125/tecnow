@@ -24,7 +24,52 @@ import 'summary_guard.dart';
 /// Tarih, kimlik, yıldız sayısı gibi makine alanları **verilmez** — sebebi
 /// `summary_guard.dart` içinde ölçülmüş hâliyle yazılı: tarih metne girerse
 /// izin verilen sayı havuzu genişler ve uydurulmuş bir fiyat kapıdan geçer.
-String sourceTextOf(FeedItem item) => '${item.title}\n${item.summary}';
+/// Modele verilen bağlam bloğu.
+///
+/// **Eskiden yalnız `başlık + açıklama`ydı ve özetlerin yüzeyselliği oradan
+/// geliyordu.** 17 Ağustos 2026'da ölçüldü: yayımlanan 200 kaydın özet
+/// ortalaması 175 karakter, Hugging Face tarafında 97 — kapının üst sınırı
+/// 400 iken. Sebep model değil girdi: `"AI that ships your tickets."`
+/// cümlesinden derin bir özet çıkmaz, çıkarsa uydurmadır.
+///
+/// Oysa bağlayıcılar bunları **zaten topluyordu** ve hiçbiri modele
+/// ulaşmıyordu: tür, konu etiketleri, lisans varlığı, kaynağın resmi olup
+/// olmadığı.
+///
+/// **Popülerlik ve tarih bilerek dışarıda.** Yıldız sayısı ve indirme adedi
+/// değişken; özete girerse taşınan özet bir hafta sonra yanlış sayı taşır.
+/// İkisi de arayüzde zaten canlı gösteriliyor.
+///
+/// Bu metin aynı zamanda kapının ([verifySummary]) kaynak metni: özette geçen
+/// bir sayı ya da bağlantı burada yoksa özet reddedilir. Bloğu genişletmek
+/// bu yüzden yalnız kaliteyi değil, **neyin söylenmesine izin verildiğini**
+/// de değiştirir.
+///
+/// [document] varsa (README ya da model kartı) sona eklenir. **`FeedItem`'a
+/// alan olarak eklenmedi**: yayımlanan `feed.json` her kaydın README'sini
+/// taşısaydı dosya megabaytlara çıkar ve şema değişirdi. Belge yalnız üretim
+/// anında yaşar.
+String sourceTextOf(FeedItem item, {String? document}) {
+  final lines = <String>[
+    '${_kindLabel(item.kind)} · ${item.sourceName}'
+        '${item.trust.officialSource ? ' (resmî kaynak)' : ''}',
+    'BAŞLIK: ${item.title}',
+    'AÇIKLAMA: ${item.summary}',
+    if (item.topics.isNotEmpty) 'KONULAR: ${item.topics.join(', ')}',
+    if (item.trust.hasLicense) 'LİSANS: açık lisanslı',
+    if (document != null && document.isNotEmpty) 'BELGE:\n$document',
+  ];
+  return lines.join('\n');
+}
+
+String _kindLabel(FeedItemKind kind) => switch (kind) {
+  FeedItemKind.repository => 'Kod deposu',
+  FeedItemKind.aiModel => 'Yapay zekâ modeli',
+  FeedItemKind.tool => 'Geliştirici aracı',
+  FeedItemKind.skill => 'Beceri paketi',
+  FeedItemKind.mcp => 'MCP sunucusu',
+  FeedItemKind.announcement => 'Duyuru',
+};
 
 abstract interface class Summarizer {
   /// [language] dilinde özet döndürür; üretemezse `null`.
@@ -85,10 +130,31 @@ const summaryLanguageNames = <String, String>{
 /// koşulu.
 String summaryInstructionFor(String language) {
   final name = summaryLanguageNames[language] ?? language;
-  return 'Aşağıdaki teknoloji duyurusunu $name olarak en fazla iki cümlede '
-      'özetle. Kaynakta geçmeyen hiçbir sayı, oran, fiyat, ölçüt ya da '
-      'bağlantı ekleme. Yorum katma, tanıtım dili kullanma. Yalnızca özeti '
-      'yaz, başka hiçbir şey yazma.';
+  return '''
+Sen bir teknoloji rehberinin editörüsün. Okuyucu yazılım geliştirici ya da
+teknolojiyi yakından takip eden biri; bir kaydın kendisine uygun olup
+olmadığına özete bakarak karar veriyor.
+
+Aşağıdaki kaydı $name olarak özetle.
+
+Özet şu üç soruyu bu sırayla cevaplamalı:
+1. Bu nedir? Türünü ve ne yaptığını somut olarak yaz.
+2. Hangi işi çözüyor ya da neyi mümkün kılıyor?
+3. Onu ayırt eden ne var? Kullandığı teknik, dil, çalıştığı ortam,
+   bağlandığı araçlar ya da lisansı — yalnızca kaynakta geçenlerden.
+
+Kurallar:
+- 2-4 cümle, en fazla 350 karakter.
+- Yalnızca aşağıdaki kaynakta geçen bilgiyi kullan. Kaynakta geçmeyen hiçbir
+  sayı, oran, fiyat, ölçüt, tarih ya da bağlantı ekleme. Bilmediğin bir şeyi
+  tahmin etme, boş bırak.
+- Somut yaz. "Güçlü", "kapsamlı", "devrim niteliğinde", "kolayca" gibi
+  tanıtım sözcüklerini kullanma; ne yaptığını söyle.
+- "Bu depo", "bu proje şunu içerir" gibi dolgu cümlelerle başlama; doğrudan
+  konuya gir.
+- Kaynağın kendi cümlesini çevirmekle yetinme; kaynakta dağınık duran
+  bilgiyi birleştir.
+- Yalnızca özeti yaz. Başlık, madde işareti, tırnak ya da açıklama ekleme.''';
 }
 
 /// İstek gövdesini **UTF-8 bayt dizisi** olarak kodlar.
@@ -247,6 +313,7 @@ Future<SummaryPass> applySummaries(
   int budget = defaultSummaryBudget,
   List<FeedItem> previous = const [],
   Duration timeBudget = summaryTimeBudget,
+  Map<String, String> documents = const {},
 }) async {
   final result = <FeedItem>[];
   final rejected = <SummaryRejection, int>{};
@@ -283,7 +350,9 @@ Future<SummaryPass> applySummaries(
       continue;
     }
 
-    final sourceText = sourceTextOf(item);
+    // Belge damgaya **dahil**: README değişince özet yeniden üretilmeli,
+    // yoksa yayın kaynağın kendisiyle sessizce ayrışır.
+    final sourceText = sourceTextOf(item, document: documents[item.id]);
     final sourceHash = fnv1aHex(sourceText);
 
     // Taşıma bütçeden **düşmez**: harcanan bir çağrı yok.

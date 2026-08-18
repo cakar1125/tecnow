@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../l10n/l10n_context.dart';
 import '../../data/feed/feed_schema.dart' show FeedItemKind;
 import '../../data/providers.dart';
 import '../../data/repositories/saved_items_repository.dart';
@@ -25,9 +26,7 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
     final messenger = ScaffoldMessenger.of(context);
     await ref.read(savedItemsProvider.notifier).remove(item.id);
     if (!mounted) return;
-    messenger.showSnackBar(
-      const SnackBar(content: Text('Kayıt bu cihazdan kaldırıldı.')),
-    );
+    messenger.showSnackBar(SnackBar(content: Text(context.l10n.savedRemoved)));
   }
 
   /// Tür ne olursa olsun aynı detay ekranı. Burada da bir tür `switch`'i
@@ -54,7 +53,7 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
           // sıra, süzgeç eşlemesi değiştiğinde sessizce sapardı.
           child: Row(
             children: [
-              _filterChip('Tümü', null),
+              _filterChip(context.l10n.filterAll, null),
               for (final filter in visibleSavedFilters) ...[
                 const SizedBox(width: AppSpacing.sm),
                 _filterChip(savedFilterLabels[filter]!, filter),
@@ -69,7 +68,7 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
               anySaved: value.isNotEmpty,
             ),
             AsyncError(:final error) => ErrorStateView(
-              title: 'Kayıtlar okunamadı',
+              title: context.l10n.savedUnreadableTitle,
               message: '$error',
             ),
             _ => const LoadingSkeleton(),
@@ -89,23 +88,20 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
 
   /// Boş liste iki farklı şey olabilir ve ikisi aynı cümleyle anlatılamaz:
   /// hiç kaydın olmaması (ilk açılış) ile seçili süzgecin boş olması.
-  Widget _empty(bool anySaved) => anySaved
-      ? const EmptyStateView(
-          key: Key('saved-filter-empty'),
-          title: 'Bu filtrede kayıt kalmadı.',
-          message:
-              'Başka bir kategori seçerek bu cihazdaki kayıtları görebilirsin.',
+  Widget _empty(BuildContext context, bool anySaved) => anySaved
+      ? EmptyStateView(
+          key: const Key('saved-filter-empty'),
+          title: context.l10n.savedEmptyFilterTitle,
+          message: context.l10n.savedEmptyFilterBody,
         )
-      : const EmptyStateView(
-          key: Key('saved-none'),
-          title: 'Henüz kayıt yok',
-          message:
-              'Akışta veya Keşfet\'te bir içeriğin yer imi simgesine dokunarak '
-              'bu cihaza kaydedebilirsin.',
+      : EmptyStateView(
+          key: const Key('saved-none'),
+          title: context.l10n.savedEmptyTitle,
+          message: context.l10n.savedEmptyBody,
         );
 
   Widget _list(List<SavedItem> items, {required bool anySaved}) => items.isEmpty
-      ? _empty(anySaved)
+      ? _empty(context, anySaved)
       : ListView.separated(
           padding: const EdgeInsets.fromLTRB(
             AppSpacing.lg,

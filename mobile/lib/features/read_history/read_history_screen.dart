@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../l10n/l10n_context.dart';
 import '../../data/feed/feed_schema.dart';
 import '../../data/providers.dart';
 import '../../data/repositories/read_history_repository.dart';
@@ -69,11 +70,12 @@ class ReadHistoryScreen extends ConsumerWidget {
     // Messenger dialog'dan önce alınır: `await` sonrasında `context` artık
     // güvenle kullanılamaz.
     final messenger = ScaffoldMessenger.of(context);
+    final l10n = context.l10n;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AppConfirmationDialog(
-        title: 'Geçmişi Temizle',
-        message: 'Okuma geçmişiniz bu cihazdan silinecek.',
+        title: l10n.historyClearTitle,
+        message: l10n.historyClearConfirm,
         onConfirm: () => Navigator.of(dialogContext).pop(true),
       ),
     );
@@ -82,12 +84,10 @@ class ReadHistoryScreen extends ConsumerWidget {
     try {
       // Ayarlar'daki adet bu listeden türüyor; ayrıca tazelemek gerekmiyor.
       await ref.read(readHistoryProvider.notifier).clear();
-      messenger.showSnackBar(
-        const SnackBar(content: Text('Okuma geçmişi silindi.')),
-      );
+      messenger.showSnackBar(SnackBar(content: Text(l10n.historyCleared)));
     } catch (error) {
       messenger.showSnackBar(
-        SnackBar(content: Text('Geçmiş silinemedi: $error')),
+        SnackBar(content: Text(l10n.historyClearFailed('$error'))),
       );
     }
   }
@@ -111,11 +111,14 @@ class ReadHistoryScreen extends ConsumerWidget {
             icon: const Icon(Icons.arrow_back_rounded),
           ),
         ),
-        title: Text('Okuma Geçmişi', style: context.text.title),
+        title: Text(
+          context.l10n.settingsReadHistory,
+          style: context.text.title,
+        ),
         actions: [
           if (canClear)
             IconButton(
-              tooltip: 'Geçmişi temizle',
+              tooltip: context.l10n.historyClearTooltip,
               onPressed: () => _confirmClear(context, ref),
               icon: const Icon(Icons.delete_outline),
             ),
@@ -136,12 +139,10 @@ class ReadHistoryScreen extends ConsumerWidget {
     if (history.hasValue) {
       final entries = history.value!;
       if (entries.isEmpty) {
-        return const EmptyStateView(
-          key: Key('read-history-empty'),
-          title: 'Henüz içerik okumadın',
-          message:
-              'Açtığın içerikler burada birikir. Aynı içeriği tekrar açmak '
-              'yeni satır eklemez, sadece tarihini günceller.',
+        return EmptyStateView(
+          key: const Key('read-history-empty'),
+          title: context.l10n.historyEmptyTitle,
+          message: context.l10n.historyEmptyBody,
         );
       }
       final rows = buildReadHistoryRows(entries, feed.value ?? const []);
@@ -160,10 +161,10 @@ class ReadHistoryScreen extends ConsumerWidget {
     }
 
     if (history.hasError) {
-      return const EmptyStateView(
-        key: Key('read-history-error'),
-        title: 'Geçmiş okunamadı',
-        message: 'Yerel veriler açılamadı.',
+      return EmptyStateView(
+        key: const Key('read-history-error'),
+        title: context.l10n.historyUnreadableTitle,
+        message: context.l10n.historyUnreadableBody,
       );
     }
 
@@ -183,10 +184,10 @@ class _HistoryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final item = row.item;
-    final title = item?.title ?? 'Akıştan kaldırılmış içerik';
+    final title = item?.title ?? context.l10n.historyRemovedItem;
     final subtitle = item != null
         ? item.sourceName
-        : 'Bu kayıt artık akışta yok.';
+        : context.l10n.historyRemovedItemBody;
 
     return Material(
       color: context.palette.surface,

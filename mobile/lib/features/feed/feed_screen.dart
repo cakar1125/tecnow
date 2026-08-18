@@ -10,6 +10,7 @@ import '../../design_system/components/feed_items.dart';
 import '../../design_system/tokens/app_palette.dart';
 import '../../design_system/tokens/app_text.dart';
 import '../../design_system/tokens/app_tokens.dart';
+import '../../l10n/app_localizations.dart';
 import '../../l10n/l10n_context.dart';
 import '../../ui/detail_route.dart';
 import '../../ui/feed_signal.dart';
@@ -125,7 +126,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
-                        'Teknoloji dünyasında önemli olanları keşfet.',
+                        context.l10n.feedTagline,
                         style: context.text.bodyMuted,
                       ),
                       if (sync != null) ...[
@@ -143,7 +144,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                 ),
                 IconButton(
                   key: const Key('feed-search'),
-                  tooltip: 'Keşfet',
+                  tooltip: context.l10n.exploreTooltip,
                   onPressed: () => context.go('/explore'),
                   icon: Icon(
                     Icons.search_rounded,
@@ -199,14 +200,12 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     // Bozuk bir feed sessizce boş liste gibi görünmez: hata olduğu söylenir,
     // çünkü "içerik yok" ile "içerik okunamadı" farklı şeyler.
     if (feed.hasError) {
-      return const SliverFillRemaining(
+      return SliverFillRemaining(
         hasScrollBody: false,
         child: EmptyStateView(
-          key: Key('feed-error'),
-          title: 'İçerik okunamadı',
-          message:
-              'İçerik dosyası açılamadı. Uygulamayı güncellemek sorunu '
-              'çözebilir.',
+          key: const Key('feed-error'),
+          title: context.l10n.feedUnreadableTitle,
+          message: context.l10n.feedUnreadableBody,
         ),
       );
     }
@@ -231,18 +230,14 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
   /// beklenen bir hâl olduğunu söylüyor: gerçek akışta "Oyun" konusu 200
   /// kayıtta yalnız 2 kayıt buluyor (bkz. `home_tabs.dart`), yani bir kullanıcı
   /// bu ekranı görecek.
-  String _empty(HomeTab tab) => switch (tab.kind) {
-    HomeTabKind.forYou =>
-      'Seçtiğin ilgi alanlarına uyan içerik yok. '
-          'Keşfet\'ten yeni konular açabilirsin.',
-    HomeTabKind.interest =>
-      '"${tab.interest!.label}" konusunda şu an akışta içerik yok. '
-          'Kaynaklar güncellendikçe burası dolar.',
+  String _empty(HomeTab tab, L10n l10n) => switch (tab.kind) {
+    HomeTabKind.forYou => l10n.feedEmptyForYou,
+    HomeTabKind.interest => l10n.feedEmptyTopic(tab.interest!.label),
     // Süzgeçsiz sekme boşsa sebep ya kapatılmış kaynaklardır ya da akışın
     // kendisi. İkisi farklı şeyler ve kullanıcının yapacağı da farklı.
     HomeTabKind.all when ref.watch(mutedSourcesProvider).isNotEmpty =>
-      'Bütün kaynakları kapatmışsın. Keşfet\'ten geri açabilirsin.',
-    HomeTabKind.all => 'Akışta hiç içerik yok.',
+      l10n.feedEmptyAllMuted,
+    HomeTabKind.all => l10n.feedEmptyAll,
   };
 
   /// Akış listesi.
@@ -259,7 +254,10 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     if (items.isEmpty) {
       return SliverFillRemaining(
         hasScrollBody: false,
-        child: EmptyStateView(title: 'İçerik bulunamadı', message: _empty(tab)),
+        child: EmptyStateView(
+          title: context.l10n.feedEmptyTitle,
+          message: _empty(tab, context.l10n),
+        ),
       );
     }
 

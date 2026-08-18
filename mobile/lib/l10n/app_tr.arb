@@ -151,5 +151,46 @@
   "aboutNoAccountTitle": "Hesap yok",
   "aboutLocalDataTitle": "Veriler bu cihazda",
   "sourcePolicyDateTitle": "Tarih uydurulmaz",
-  "sourceKindOfficialBlog": "Resmi bloglar"
+  "sourceKindOfficialBlog": "Resmi bloglar",
+  "feedTagline": "Teknoloji dünyasında önemli olanları keşfet.",
+  "exploreTooltip": "Keşfet",
+  "feedUnreadableTitle": "İçerik okunamadı",
+  "feedUnreadableBody": "İçerik dosyası açılamadı. Uygulamayı güncellemek sorunu çözebilir.",
+  "feedEmptyForYou": "Seçtiğin ilgi alanlarına uyan içerik yok. Keşfet'ten yeni konular açabilirsin.",
+  "feedEmptyAllMuted": "Bütün kaynakları kapatmışsın. Keşfet'ten geri açabilirsin.",
+  "feedEmptyAll": "Akışta hiç içerik yok.",
+  "feedEmptyTitle": "İçerik bulunamadı",
+  "historyClearTitle": "Geçmişi Temizle",
+  "historyClearConfirm": "Okuma geçmişiniz bu cihazdan silinecek.",
+  "historyCleared": "Okuma geçmişi silindi.",
+  "historyClearTooltip": "Geçmişi temizle",
+  "historyEmptyTitle": "Henüz içerik okumadın",
+  "historyEmptyBody": "Açtığın içerikler burada birikir. Aynı içeriği tekrar açmak yeni satır eklemez, sadece tarihini günceller.",
+  "historyUnreadableTitle": "Geçmiş okunamadı",
+  "historyUnreadableBody": "Yerel veriler açılamadı.",
+  "historyRemovedItem": "Akıştan kaldırılmış içerik",
+  "historyRemovedItemBody": "Bu kayıt artık akışta yok.",
+  "savedRemoved": "Kayıt bu cihazdan kaldırıldı.",
+  "filterAll": "Tümü",
+  "savedUnreadableTitle": "Kayıtlar okunamadı",
+  "savedEmptyFilterTitle": "Bu filtrede kayıt kalmadı.",
+  "savedEmptyFilterBody": "Başka bir kategori seçerek bu cihazdaki kayıtları görebilirsin.",
+  "savedEmptyTitle": "Henüz kayıt yok",
+  "feedEmptyTopic": "\"{topic}\" konusunda şu an akışta içerik yok. Kaynaklar güncellendikçe burası dolar.",
+  "@feedEmptyTopic": {
+    "placeholders": {
+      "topic": {
+        "type": "String"
+      }
+    }
+  },
+  "historyClearFailed": "Geçmiş silinemedi: {error}",
+  "@historyClearFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "savedEmptyBody": "Akışta veya Keşfet'te bir içeriğin yer imi simgesine dokunarak bu cihaza kaydedebilirsin."
 }

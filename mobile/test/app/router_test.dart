@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import '../test_harness.dart';
 import 'package:tecos/app/router.dart';
-import 'package:tecos/design_system/theme/app_theme.dart';
 
 import '../support/test_overrides.dart';
 
@@ -11,11 +11,7 @@ void main() {
   ) async {
     final router = createRouter(initialLocation: '/home');
     addTearDown(router.dispose);
-    await tester.pumpWidget(
-      memoryDataScope(
-        MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
-      ),
-    );
+    await tester.pumpWidget(memoryDataScope(testRouterApp(router)));
     await tester.pumpAndSettle();
 
     expect(find.text('SANA ÖZEL'), findsOneWidget);

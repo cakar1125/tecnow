@@ -1,0 +1,15 @@
+{
+  "@@locale": "en",
+
+  "feedSyncRefreshing": "Updating…",
+  "feedSyncBundled": "Content ships with the app",
+  "feedSyncFailedBundled": "Couldn't update · showing bundled content",
+  "feedSyncFailedCached": "Couldn't update · showing content from {relative}",
+  "feedSyncNever": "Not updated yet",
+  "feedSyncLast": "Last updated {relative}",
+
+  "relativeJustNow": "just now",
+  "relativeMinutes": "{count, plural, one{{count} minute ago} other{{count} minutes ago}}",
+  "relativeHours": "{count, plural, one{{count} hour ago} other{{count} hours ago}}",
+  "relativeDays": "{count, plural, one{{count} day ago} other{{count} days ago}}"
+}

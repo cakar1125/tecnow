@@ -1,0 +1,58 @@
+{
+  "@@locale": "tr",
+
+  "feedSyncRefreshing": "Güncelleniyor…",
+  "@feedSyncRefreshing": {
+    "description": "Feed tazelenirken durum satırı."
+  },
+
+  "feedSyncBundled": "İçerik uygulamayla birlikte geliyor",
+  "@feedSyncBundled": {
+    "description": "Uzak adres derlemeye verilmediğinde. Tarih verilmez: paketlenmiş içeriğin tazeliği için tutulamayacak bir söz olurdu."
+  },
+
+  "feedSyncFailedBundled": "Güncellenemedi · paketlenmiş içerik gösteriliyor",
+  "@feedSyncFailedBundled": {
+    "description": "Tazeleme düştü ve daha önce hiç indirilmemiş."
+  },
+
+  "feedSyncFailedCached": "Güncellenemedi · {relative} alınan içerik gösteriliyor",
+  "@feedSyncFailedCached": {
+    "description": "Tazeleme düştü ama önbellekte içerik var. Hata gizlenmez, içerik de kaybolmaz.",
+    "placeholders": {
+      "relative": { "type": "String", "example": "1 dakika önce" }
+    }
+  },
+
+  "feedSyncNever": "Henüz güncellenmedi",
+  "@feedSyncNever": {
+    "description": "Uzak adres var ama hiç başarılı tazeleme olmamış."
+  },
+
+  "feedSyncLast": "Son güncelleme: {relative}",
+  "@feedSyncLast": {
+    "placeholders": {
+      "relative": { "type": "String", "example": "az önce" }
+    }
+  },
+
+  "relativeJustNow": "az önce",
+  "@relativeJustNow": {
+    "description": "Bir dakikadan yeni. Gelecekteki damgalar da buraya düşer: cihaz saati geri alındığında '-3 saat önce' yazmak kullanıcının düzeltemeyeceği bir tuhaflık olurdu."
+  },
+
+  "relativeMinutes": "{count, plural, other{{count} dakika önce}}",
+  "@relativeMinutes": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "relativeHours": "{count, plural, other{{count} saat önce}}",
+  "@relativeHours": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "relativeDays": "{count, plural, other{{count} gün önce}}",
+  "@relativeDays": {
+    "placeholders": { "count": { "type": "int" } }
+  }
+}

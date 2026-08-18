@@ -1,10 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tecos/data/feed/feed_sync_state.dart';
+import 'package:tecos/l10n/app_localizations_en.dart';
+import 'package:tecos/l10n/app_localizations_tr.dart';
 import 'package:tecos/ui/feed_sync_label.dart';
 
 final _now = DateTime.utc(2026, 7, 27, 12);
+final _tr = L10nTr();
+final _en = L10nEn();
 
-String _label(FeedSyncState state) => feedSyncLabel(state, _now);
+String _label(FeedSyncState state) => feedSyncLabel(state, _now, _tr);
 
 void main() {
   /// Paketlenmiş içeriğin "ne kadar taze" olduğu sorusunun dürüst cevabı
@@ -120,6 +124,46 @@ void main() {
         ),
         'Güncelleniyor…',
       );
+    });
+  });
+
+  /// Aynı kural İngilizcede de geçerli olmalı. Çeviri, davranışı sessizce
+  /// değiştirebilecek tek yer: bir dilde tarih vaat etmeyen cümle, öbür dilde
+  /// vaat edebilir ve bunu hiçbir Türkçe test yakalamaz.
+  group('İngilizce', () {
+    String label(FeedSyncState state) => feedSyncLabel(state, _now, _en);
+
+    test('ağ kapalıyken tarih vaat edilmez', () {
+      expect(
+        label(const FeedSyncState(remoteEnabled: false)),
+        'Content ships with the app',
+      );
+    });
+
+    test('çoğul biçimleri ayrışır', () {
+      String forElapsed(Duration elapsed) => label(
+        FeedSyncState(remoteEnabled: true, lastSyncAt: _now.subtract(elapsed)),
+      );
+
+      // Türkçede tekil/çoğul ayrımı yok, İngilizcede var: ICU çoğul biçimi
+      // gerçekten kuruluyor mu, ancak burada ölçülebilir.
+      expect(forElapsed(const Duration(minutes: 1)), contains('1 minute ago'));
+      expect(forElapsed(const Duration(minutes: 5)), contains('5 minutes ago'));
+      expect(forElapsed(const Duration(hours: 1)), contains('1 hour ago'));
+      expect(forElapsed(const Duration(days: 3)), contains('3 days ago'));
+    });
+
+    test('hata durumu içeriği gizlemez', () {
+      final text = label(
+        FeedSyncState(
+          remoteEnabled: true,
+          lastSyncAt: _now.subtract(const Duration(hours: 3)),
+          failure: 'Bağlantı kurulamadı',
+        ),
+      );
+
+      expect(text, startsWith("Couldn't update"));
+      expect(text, contains('3 hours ago'));
     });
   });
 

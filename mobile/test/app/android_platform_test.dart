@@ -1,9 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tecos/app/router.dart';
-import 'package:tecos/design_system/theme/app_theme.dart';
 import 'package:tecos/features/settings/settings_screen.dart';
 
 import '../test_harness.dart';
@@ -44,11 +42,7 @@ void main() {
   ) async {
     final router = createRouter(initialLocation: '/onboarding/0');
     addTearDown(router.dispose);
-    await tester.pumpWidget(
-      ProviderScope(
-        child: MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
-      ),
-    );
+    await tester.pumpWidget(ProviderScope(child: testRouterApp(router)));
     await tester.pumpAndSettle();
 
     expect(find.text('Keşfet'), findsOneWidget);

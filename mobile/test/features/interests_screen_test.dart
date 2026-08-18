@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../test_harness.dart';
 import 'package:tecos/app/router.dart';
 import 'package:tecos/data/app_preferences.dart';
-import 'package:tecos/design_system/theme/app_theme.dart';
 import 'package:tecos/features/interests/interests_screen.dart';
 
 import '../support/test_overrides.dart';
@@ -59,7 +59,7 @@ void main() {
 
     await tester.pumpWidget(
       memoryDataScope(
-        MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
+        testRouterApp(router),
         interests: const ['Yapay Zekâ', 'Mobil', 'Açık Kaynak'],
       ),
     );
@@ -93,7 +93,7 @@ void main() {
 
       await tester.pumpWidget(
         memoryDataScope(
-          MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
+          testRouterApp(router),
           interests: const ['yapay-zeka', 'mobil', 'acik-kaynak'],
         ),
       );
@@ -156,11 +156,7 @@ void main() {
     final router = createRouter(initialLocation: '/onboarding/2');
     addTearDown(router.dispose);
 
-    await tester.pumpWidget(
-      memoryDataScope(
-        MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
-      ),
-    );
+    await tester.pumpWidget(memoryDataScope(testRouterApp(router)));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('İlgi alanlarını seç'));

@@ -1,4 +1,4 @@
-import 'dart:ui' show PlatformDispatcher;
+import 'dart:ui' show Locale, PlatformDispatcher;
 
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -63,6 +63,38 @@ final deviceLanguageProvider = Provider<String?>((ref) {
   final locales = PlatformDispatcher.instance.locales;
   if (locales.isEmpty) return null;
   return locales.first.languageCode;
+});
+
+/// Arayüzün desteklediği diller.
+///
+/// **İçeriğin dil listesiyle aynı şey değil.** İçerik listesi sunucudan
+/// geliyor ve büyüyebilir; arayüz listesi derlemeye gömülü, çünkü çeviriler
+/// APK'nın içinde. Sunucu yarın Almanca yayın eklerse içerik Almanca gelir,
+/// arayüz gelmez — ve bu doğru davranıştır: eksik çeviri, yanlış çeviriden
+/// iyidir.
+const supportedUiLocales = [Locale('tr'), Locale('en')];
+
+/// Arayüzün dili.
+///
+/// Sıra: kullanıcının **açık seçimi** → cihazın dili → Türkçe.
+///
+/// Açık seçim, içerik dili tercihiyle aynı ayardan okunuyor. İki ayrı dil
+/// ayarı koymak kullanıcıya cevaplayamayacağı bir soru sormak olurdu:
+/// "menüler hangi dilde olsun" ile "içerik hangi dilde olsun" ayrı ayarlarsa
+/// çoğu kişi ikisini de aynı yapar, geri kalanı da karışık bir uygulama
+/// görür.
+///
+/// **Türkçeye düşülüyor, İngilizceye değil.** Desteklenmeyen bir dilde
+/// yayının kendisi de varsayılana (`feed.json`, Türkçe) düşüyor; arayüzü
+/// İngilizce bırakmak İngilizce menü + Türkçe içerik üretirdi. Tutarlılık,
+/// tek başına daha okunur bir dilden önce geliyor.
+final localeProvider = Provider<Locale>((ref) {
+  final code =
+      ref.watch(feedLanguageProvider) ?? ref.watch(deviceLanguageProvider);
+  return supportedUiLocales.firstWhere(
+    (locale) => locale.languageCode == code,
+    orElse: () => supportedUiLocales.first,
+  );
 });
 
 final feedRepositoryProvider = Provider<FeedRepository>(

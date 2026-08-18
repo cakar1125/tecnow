@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import '../test_harness.dart';
 import 'package:tecos/app/router.dart';
 import 'package:tecos/data/feed/feed_repository.dart';
 import 'package:tecos/data/feed/feed_schema.dart';
 import 'package:tecos/data/providers.dart';
 import 'package:tecos/design_system/components/feed_items.dart';
-import 'package:tecos/design_system/theme/app_theme.dart';
 import 'package:tecos/features/feed/feed_screen.dart';
 
 import '../support/test_overrides.dart';
@@ -289,15 +289,12 @@ void main() {
   /// dek yükleme iskeleti gösteriyordu.
   testWidgets('bozuk feed hata durumu gösterir', (tester) async {
     await tester.pumpWidget(
+      // `testApp`: tema **ve** dil delegeleri verilmek zorunda. Ekranlar
+      // renkleri `AppPalette` uzantısından, metinleri `context.l10n`'den
+      // okuyor; ikisi de yoksa ekran çizilirken atıyor. Sessiz bir
+      // varsayılan, üretimde kırılan bir ekranı burada görünmez kılardı.
       memoryDataScopeWithFailingFeed(
-        MaterialApp(
-          // Tema **verilmek zorunda**: ekranlar renkleri `AppPalette`
-          // uzantısından okuyor ve uzantı yoksa `context.palette` atıyor.
-          // Sessiz bir varsayılan, açık temada kırılan bir ekranı burada
-          // görünmez kılardı.
-          theme: AppTheme.dark,
-          home: const Scaffold(body: FeedScreen()),
-        ),
+        testApp(const Scaffold(body: FeedScreen())),
       ),
     );
     await tester.pumpAndSettle();
@@ -344,11 +341,7 @@ void main() {
     // Duyuru üçüncü kart; varsayılan test yüzeyinde katlamanın altında kalıyor.
     await tester.binding.setSurfaceSize(const Size(390, 1600));
     addTearDown(() => tester.binding.setSurfaceSize(null));
-    await tester.pumpWidget(
-      memoryDataScope(
-        MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
-      ),
-    );
+    await tester.pumpWidget(memoryDataScope(testRouterApp(router)));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Bir duyuru'));

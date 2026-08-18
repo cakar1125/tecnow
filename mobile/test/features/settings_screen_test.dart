@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../test_harness.dart';
 import 'package:tecos/design_system/tokens/app_palette.dart';
 import 'package:tecos/app/app_version.dart';
 import 'package:tecos/app/router.dart';
 import 'package:tecos/data/app_preferences.dart';
 import 'package:tecos/data/feed/feed_schema.dart';
-import 'package:tecos/design_system/theme/app_theme.dart';
 import 'package:tecos/design_system/tokens/app_tokens.dart';
 
 import '../support/test_overrides.dart';
@@ -17,11 +17,7 @@ Future<void> pumpSettingsScreen(WidgetTester tester) async {
 
   // Ayarlar'dan İlgi Alanları'na geçilebildiği için bu test de veri
   // katmanına ulaşır; override'sız bir scope gerçek sqflite'ı arar.
-  await tester.pumpWidget(
-    memoryDataScope(
-      MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
-    ),
-  );
+  await tester.pumpWidget(memoryDataScope(testRouterApp(router)));
   await tester.pumpAndSettle();
 }
 
@@ -299,10 +295,7 @@ void main() {
       final router = createRouter(initialLocation: '/settings');
       addTearDown(router.dispose);
       await tester.pumpWidget(
-        memoryDataScope(
-          MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
-          feedRepository: feed,
-        ),
+        memoryDataScope(testRouterApp(router), feedRepository: feed),
       );
       await tester.pumpAndSettle();
     }

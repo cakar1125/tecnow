@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
+import '../test_harness.dart';
 import 'package:tecos/app/router.dart';
 import 'package:tecos/data/interests/interest_taxonomy.dart';
-import 'package:tecos/design_system/theme/app_theme.dart';
 
 import '../support/test_overrides.dart';
 
@@ -116,10 +116,7 @@ void main() {
             memoryDataScope(
               MediaQuery(
                 data: MediaQueryData(textScaler: TextScaler.linear(scale)),
-                child: MaterialApp.router(
-                  theme: AppTheme.dark,
-                  routerConfig: router,
-                ),
+                child: testRouterApp(router),
               ),
               // Geçmiş **dolu** ölçülüyor: boş durum tek satırlık bir metin,
               // taşma riski satırların kendisinde.

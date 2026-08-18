@@ -75,6 +75,9 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  # ARB dosyalarından `L10n` sınıfını üretir. Ayarlar `l10n.yaml`'da.
+  generate: true
+
   fonts:
     - family: Inter
       fonts:

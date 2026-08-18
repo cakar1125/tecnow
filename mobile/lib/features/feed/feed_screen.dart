@@ -10,6 +10,7 @@ import '../../design_system/components/feed_items.dart';
 import '../../design_system/tokens/app_palette.dart';
 import '../../design_system/tokens/app_text.dart';
 import '../../design_system/tokens/app_tokens.dart';
+import '../../l10n/l10n_context.dart';
 import '../../ui/detail_route.dart';
 import '../../ui/feed_signal.dart';
 import '../../ui/feed_sync_label.dart';
@@ -130,7 +131,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                       if (sync != null) ...[
                         const SizedBox(height: AppSpacing.xs),
                         Text(
-                          feedSyncLabel(sync, DateTime.now()),
+                          feedSyncLabel(sync, DateTime.now(), context.l10n),
                           key: const Key('feed-sync-status'),
                           style: context.text.label.copyWith(
                             fontWeight: FontWeight.w400,

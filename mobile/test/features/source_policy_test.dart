@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../test_harness.dart';
 import 'package:tecos/app/router.dart';
 import 'package:tecos/data/feed/feed_schema.dart';
-import 'package:tecos/design_system/theme/app_theme.dart';
 import 'package:tecos/features/settings/source_policy_screen.dart';
 
 import '../support/test_overrides.dart';
@@ -16,7 +16,7 @@ Future<void> pumpPolicyScreen(
   final router = createRouter(initialLocation: sourcePolicyRoute);
   addTearDown(router.dispose);
 
-  final app = MaterialApp.router(theme: AppTheme.dark, routerConfig: router);
+  final app = testRouterApp(router);
   await tester.pumpWidget(
     failing
         ? memoryDataScopeWithFailingFeed(app)

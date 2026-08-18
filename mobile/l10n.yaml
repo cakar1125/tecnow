@@ -1,0 +1,15 @@
+# Arayüz dizeleri — ARB üretimi.
+#
+# `arb-dir` altındaki dosyalar kaynak, `lib/l10n/app_localizations.dart`
+# üretilen çıktıdır ve **elle düzenlenmez**; `flutter gen-l10n` (ya da
+# `flutter pub get` / `flutter run`) yeniden yazar.
+#
+# `nullable-getter: false` bilinçli: `AppLocalizations.of(context)` artık
+# `null` dönmüyor, dolayısıyla her çağrı yerinde `!` yazmak gerekmiyor. Delege
+# verilmemişse hata derleme anında değil çalışma anında çıkar — o yüzden
+# `app.dart` delegeyi koşulsuz veriyor ve bir test bunu kilitliyor.
+arb-dir: lib/l10n
+template-arb-file: app_tr.arb
+output-localization-file: app_localizations.dart
+output-class: L10n
+nullable-getter: false

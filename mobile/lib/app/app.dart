@@ -4,20 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/providers.dart';
 import '../design_system/theme/app_theme.dart';
+import '../l10n/app_localizations.dart';
 import 'router.dart';
 
 class TecOsApp extends ConsumerWidget {
   const TecOsApp({super.key});
-
-  /// Uygulamanın dili. Arayüzün tamamı Türkçe yazıldı ama Flutter'ın **kendi**
-  /// hazır ekranları (lisans sayfası, metin seçim menüsü, tarih seçici)
-  /// `MaterialLocalizations`'tan besleniyor ve delege verilmediğinde İngilizce
-  /// kalıyorlardı.
-  ///
-  /// Cihazda görüldü (2026-07-28): Ayarlar → Lisanslar başlığı **"Licenses"**
-  /// yazıyordu, Türkçe bir uygulamanın ortasında. `flutter_localizations`
-  /// Türkçe çevirileri hazır getiriyor; yazılacak bir metin yok.
-  static const _turkish = Locale('tr');
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,9 +22,17 @@ class TecOsApp extends ConsumerWidget {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ref.watch(themeModeProvider),
-      locale: _turkish,
-      supportedLocales: const [_turkish],
+      // Dil **açıkça** veriliyor, cihaza bırakılmıyor: kullanıcı ayarlardan
+      // bir dil seçtiyse cihaz ne derse desin o geçerli olmalı.
+      locale: ref.watch(localeProvider),
+      supportedLocales: supportedUiLocales,
+      // `L10n` bizim dizelerimiz; `Global*` delegeleri Flutter'ın **kendi**
+      // hazır ekranlarını (lisans sayfası, metin seçim menüsü, tarih seçici)
+      // besliyor. İkincisi olmadan cihazda görülmüştü (2026-07-28):
+      // Ayarlar → Lisanslar başlığı Türkçe bir uygulamanın ortasında
+      // **"Licenses"** yazıyordu.
       localizationsDelegates: const [
+        L10n.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,

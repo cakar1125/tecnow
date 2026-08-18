@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import '../test_harness.dart';
 import 'package:tecos/app/router.dart';
-import 'package:tecos/design_system/theme/app_theme.dart';
 
 void main() {
   for (final path in ['/create-post', '/notifications', '/profile']) {
@@ -9,9 +8,7 @@ void main() {
       final router = createRouter(initialLocation: path);
       addTearDown(router.dispose);
 
-      await tester.pumpWidget(
-        MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
-      );
+      await tester.pumpWidget(testRouterApp(router));
       await tester.pumpAndSettle();
 
       expect(find.text('Sayfa bulunamadı'), findsOneWidget);

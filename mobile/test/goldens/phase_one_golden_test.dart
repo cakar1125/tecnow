@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_toolkit/golden_toolkit.dart';
+import '../test_harness.dart';
 import 'package:tecos/design_system/theme/app_theme.dart';
 import 'package:tecos/features/detail/feed_detail_screen.dart';
 import 'package:tecos/features/feed/feed_screen.dart';
@@ -18,7 +19,11 @@ void main() {
   testGoldens('GOLDEN Ana Sayfa 390x844', (tester) async {
     await tester.pumpWidgetBuilder(
       memoryDataScope(const FeedScreen()),
-      wrapper: materialAppWrapper(theme: AppTheme.dark),
+      wrapper: materialAppWrapper(
+        theme: AppTheme.dark,
+        localizations: testLocalizationDelegates,
+        localeOverrides: const [Locale('tr')],
+      ),
       surfaceSize: const Size(390, 844),
     );
     await tester.pumpAndSettle();
@@ -31,7 +36,11 @@ void main() {
   testGoldens('GOLDEN Repository Detayı 390x844', (tester) async {
     await tester.pumpWidgetBuilder(
       memoryDataScope(const FeedDetailScreen(id: '0000000000000001')),
-      wrapper: materialAppWrapper(theme: AppTheme.dark),
+      wrapper: materialAppWrapper(
+        theme: AppTheme.dark,
+        localizations: testLocalizationDelegates,
+        localeOverrides: const [Locale('tr')],
+      ),
       surfaceSize: const Size(390, 844),
     );
     await tester.pumpAndSettle();
@@ -41,7 +50,11 @@ void main() {
   testGoldens('GOLDEN AI Model Detayı 390x844', (tester) async {
     await tester.pumpWidgetBuilder(
       memoryDataScope(const FeedDetailScreen(id: '0000000000000002')),
-      wrapper: materialAppWrapper(theme: AppTheme.dark),
+      wrapper: materialAppWrapper(
+        theme: AppTheme.dark,
+        localizations: testLocalizationDelegates,
+        localeOverrides: const [Locale('tr')],
+      ),
       surfaceSize: const Size(390, 844),
     );
     await tester.pumpAndSettle();
@@ -63,7 +76,11 @@ void main() {
     testGoldens('GOLDEN Ana Sayfa açık 390x844', (tester) async {
       await tester.pumpWidgetBuilder(
         memoryDataScope(const FeedScreen()),
-        wrapper: materialAppWrapper(theme: AppTheme.light),
+        wrapper: materialAppWrapper(
+          theme: AppTheme.light,
+          localizations: testLocalizationDelegates,
+          localeOverrides: const [Locale('tr')],
+        ),
         surfaceSize: const Size(390, 844),
       );
       await tester.pumpAndSettle();
@@ -73,7 +90,11 @@ void main() {
     testGoldens('GOLDEN AI Model Detayı açık 390x844', (tester) async {
       await tester.pumpWidgetBuilder(
         memoryDataScope(const FeedDetailScreen(id: '0000000000000002')),
-        wrapper: materialAppWrapper(theme: AppTheme.light),
+        wrapper: materialAppWrapper(
+          theme: AppTheme.light,
+          localizations: testLocalizationDelegates,
+          localeOverrides: const [Locale('tr')],
+        ),
         surfaceSize: const Size(390, 844),
       );
       await tester.pumpAndSettle();
@@ -93,7 +114,11 @@ void main() {
     testWidgets('detay 360 dp / $scale ölçekte taşmaz', (tester) async {
       await tester.pumpWidgetBuilder(
         memoryDataScope(const FeedDetailScreen(id: '0000000000000001')),
-        wrapper: materialAppWrapper(theme: AppTheme.dark),
+        wrapper: materialAppWrapper(
+          theme: AppTheme.dark,
+          localizations: testLocalizationDelegates,
+          localeOverrides: const [Locale('tr')],
+        ),
         surfaceSize: const Size(360, 1600),
       );
       tester.platformDispatcher.textScaleFactorTestValue = scale;

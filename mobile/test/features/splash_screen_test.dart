@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../test_harness.dart';
 import 'package:tecos/app/router.dart';
 import 'package:tecos/data/app_preferences.dart';
-import 'package:tecos/design_system/theme/app_theme.dart';
 import 'package:tecos/features/splash/splash_screen.dart';
 
 import '../support/test_overrides.dart';
@@ -16,11 +16,7 @@ void main() {
     final router = createRouter(initialLocation: '/splash');
     addTearDown(router.dispose);
 
-    await tester.pumpWidget(
-      memoryDataScope(
-        MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
-      ),
-    );
+    await tester.pumpWidget(memoryDataScope(testRouterApp(router)));
     await tester.pump();
     // Marka duraklamasını geç, sonra yönlendirmenin yerleşmesini bekle.
     await tester.pump(SplashScreen.brandPause);
@@ -52,11 +48,7 @@ void main() {
     final router = createRouter(initialLocation: '/splash');
     addTearDown(router.dispose);
 
-    await tester.pumpWidget(
-      memoryDataScope(
-        MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
-      ),
-    );
+    await tester.pumpWidget(memoryDataScope(testRouterApp(router)));
     await tester.pump();
 
     // Duraklama dolmadan ağacı değiştir: iptal edilmeyen bir timer burada

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../test_harness.dart';
 import 'package:tecos/app/router.dart';
 import 'package:tecos/data/feed/feed_schema.dart';
 import 'package:tecos/data/repositories/read_history_repository.dart';
-import 'package:tecos/design_system/theme/app_theme.dart';
 import 'package:tecos/features/read_history/read_history_screen.dart';
 
 import '../support/test_overrides.dart';
@@ -18,11 +18,7 @@ Future<void> pumpHistoryScreen(
   addTearDown(router.dispose);
 
   await tester.pumpWidget(
-    memoryDataScope(
-      MaterialApp.router(theme: AppTheme.dark, routerConfig: router),
-      readHistory: history,
-      feed: feed,
-    ),
+    memoryDataScope(testRouterApp(router), readHistory: history, feed: feed),
   );
   await tester.pumpAndSettle();
 }

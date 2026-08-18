@@ -49,3 +49,12 @@ test/goldens/failures/
 
 # CI test çıktısı (kalite kapısı teşhis dosyası)
 test-output.txt
+
+# ARB'den üretilen çeviri sınıfları. Kaynak `lib/l10n/*.arb`; bunlar
+# `flutter pub get` / `flutter gen-l10n` tarafından yeniden yazılır.
+#
+# Depoda durmuyorlar çünkü üretilebilir bir dosya depoda durduğu gün elle
+# düzenlenir ve ilk yeniden üretimde o düzenleme sessizce kaybolur. CI zaten
+# `flutter pub get` çalıştırıyor, yani kapılar dosyaları üretilmiş hâlleriyle
+# görüyor.
+/lib/l10n/app_localizations*.dart

@@ -13,6 +13,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../l10n/l10n_context.dart';
 import '../../app/app_version.dart';
 import '../../design_system/components/app_components.dart';
 import '../../design_system/tokens/app_palette.dart';
@@ -27,7 +28,7 @@ class AboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: const AppBackTopBar(title: 'tecOS Hakkında'),
+    appBar: AppBackTopBar(title: context.l10n.settingsAbout),
     body: SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(
@@ -41,42 +42,28 @@ class AboutScreen extends StatelessWidget {
           children: [
             Text('tecOS', style: context.text.display),
             const SizedBox(height: AppSpacing.sm),
-            Text(
-              'Teknoloji dünyasında olan biteni tek akışta izlemek için bir '
-              'rehber. Sosyal ağ değil: burada gönderi paylaşılmaz, yorum '
-              'yazılmaz, kimse takip edilmez.',
-              style: context.text.bodyMuted,
-            ),
+            Text(context.l10n.aboutIntro, style: context.text.bodyMuted),
             const SizedBox(height: AppSpacing.xl),
 
-            const _AboutFact(
+            _AboutFact(
               icon: Icons.person_off_outlined,
-              title: 'Hesap yok',
-              body:
-                  'Kayıt, giriş, kullanıcı adı ve şifre yok. Uygulamayı '
-                  'kullanmak için hiçbir kimlik vermeniz gerekmiyor.',
+              title: context.l10n.aboutNoAccountTitle,
+              body: context.l10n.aboutNoAccountBody,
             ),
-            const _AboutFact(
+            _AboutFact(
               icon: Icons.smartphone_rounded,
-              title: 'Veriler bu cihazda',
-              body:
-                  'İlgi alanlarınız, kaydettiğiniz içerikler ve okuma '
-                  'geçmişiniz yalnızca bu telefonda saklanır. Bulut '
-                  'senkronizasyonu yok; Ayarlar\'dan hepsini tek işlemle '
-                  'silebilirsiniz.',
+              title: context.l10n.aboutLocalDataTitle,
+              body: context.l10n.aboutLocalDataBody,
             ),
-            const _AboutFact(
+            _AboutFact(
               icon: Icons.link_rounded,
-              title: 'Kaynak her zaman görünür',
-              body:
-                  'Her içerikte onu kimin yayımladığı yazar ve detay '
-                  'ekranından orijinal adrese gidilebilir. İçerik burada '
-                  'yeniden yazılmaz.',
+              title: context.l10n.aboutSourceVisibleTitle,
+              body: context.l10n.aboutSourceVisibleBody,
             ),
 
             const SizedBox(height: AppSpacing.lg),
             SecondaryButton(
-              label: 'Kaynak Politikası',
+              label: context.l10n.settingsSourcePolicy,
               onPressed: () => context.push(sourcePolicyRoute),
             ),
 

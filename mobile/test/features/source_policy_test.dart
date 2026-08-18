@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../test_harness.dart';
+import 'package:tecos/l10n/app_localizations_tr.dart';
 import 'package:tecos/app/router.dart';
 import 'package:tecos/data/feed/feed_schema.dart';
 import 'package:tecos/features/settings/source_policy_screen.dart';
@@ -161,6 +162,7 @@ void main() {
             kind: FeedSourceKind.huggingFace,
             itemCount: 20,
           ),
+          L10nTr(),
         ),
         isNull,
       );
@@ -174,6 +176,7 @@ void main() {
             kind: FeedSourceKind.officialBlog,
             itemCount: 12,
           ),
+          L10nTr(),
         ),
         'Resmi bloglar',
       );

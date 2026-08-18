@@ -17,6 +17,8 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../l10n/app_localizations.dart';
+import '../../l10n/l10n_context.dart';
 import '../../data/feed/feed_schema.dart';
 import '../../data/providers.dart';
 import '../../design_system/components/app_components.dart';
@@ -39,15 +41,16 @@ final class SourceUsage {
   final int itemCount;
 }
 
-String sourceKindLabel(FeedSourceKind kind) => switch (kind) {
+String sourceKindLabel(FeedSourceKind kind, L10n l10n) => switch (kind) {
+  // Marka adları çevrilmez.
   FeedSourceKind.github => 'GitHub',
   FeedSourceKind.huggingFace => 'Hugging Face',
-  FeedSourceKind.officialBlog => 'Resmi bloglar',
-  FeedSourceKind.documentation => 'Resmi dokümantasyon',
+  FeedSourceKind.officialBlog => l10n.sourceKindOfficialBlog,
+  FeedSourceKind.documentation => l10n.sourceKindDocumentation,
   // Yayın bu uygulama sürümünden yeni bir kaynak türü taşıyor. Kaynağın
   // **adı** küratörlü ve başlıkta zaten görünüyor; burada uydurma bir
   // kategori yazmak yerine tanımadığımızı söylüyoruz.
-  FeedSourceKind.other => 'Bu sürümde tanımlı değil',
+  FeedSourceKind.other => l10n.sourceKindOther,
 };
 
 /// Kaynağın altında gösterilecek tür etiketi — ad zaten aynı şeyi söylüyorsa
@@ -56,8 +59,8 @@ String sourceKindLabel(FeedSourceKind kind) => switch (kind) {
 /// Cihazda görüldü (2026-07-28): platform kaynaklarında ad ile tür aynı olduğu
 /// için satır **"Hugging Face"** başlığının altına yine "Hugging Face" yazıyordu.
 /// Aynı sözcüğü iki kez yazmak bilgi vermiyor, hata gibi duruyor.
-String? sourceKindSubtitle(SourceUsage source) {
-  final label = sourceKindLabel(source.kind);
+String? sourceKindSubtitle(SourceUsage source, L10n l10n) {
+  final label = sourceKindLabel(source.kind, l10n);
   return label == source.name ? null : label;
 }
 
@@ -94,7 +97,7 @@ class SourcePolicyScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final feed = ref.watch(feedProvider);
     return Scaffold(
-      appBar: const AppBackTopBar(title: 'Kaynak Politikası'),
+      appBar: AppBackTopBar(title: context.l10n.settingsSourcePolicy),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(
@@ -106,49 +109,41 @@ class SourcePolicyScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('İçerik nereden geliyor?', style: context.text.headline),
+              Text(
+                context.l10n.sourcePolicyHeadline,
+                style: context.text.headline,
+              ),
               const SizedBox(height: AppSpacing.sm),
               Text(
-                'tecOS haber yazmaz. Başkalarının yayımladığı gelişmeleri '
-                'derler, kaynağıyla birlikte gösterir ve orijinaline yönlendirir.',
+                context.l10n.sourcePolicyLede,
                 style: context.text.bodyMuted,
               ),
               const SizedBox(height: AppSpacing.xl),
 
-              const _PolicyRule(
+              _PolicyRule(
                 icon: Icons.lock_outline_rounded,
-                title: 'Kapalı liste',
-                body:
-                    'Yalnızca önceden onaylanmış adreslerden içerik alınır. '
-                    'Listede olmayan bir site, ne kadar popüler olursa olsun '
-                    'akışa giremez.',
+                title: context.l10n.sourcePolicyClosedListTitle,
+                body: context.l10n.sourcePolicyClosedListBody,
               ),
-              const _PolicyRule(
+              _PolicyRule(
                 icon: Icons.verified_outlined,
-                title: 'Önce birincil kaynak',
-                body:
-                    'GitHub, Hugging Face, kurumların kendi blogları ve resmi '
-                    'dokümantasyon. Bir gelişmeyi aktaran değil, yapan yazar.',
+                title: context.l10n.sourcePolicyPrimaryTitle,
+                body: context.l10n.sourcePolicyPrimaryBody,
               ),
-              const _PolicyRule(
+              _PolicyRule(
                 icon: Icons.event_outlined,
-                title: 'Tarih uydurulmaz',
-                body:
-                    'Yayın tarihini vermeyen bir kaynak listeye alınmaz. '
-                    'Eksik tarihi bugünle doldurmak, eski bir yazıyı yeni '
-                    'göstermek olurdu.',
+                title: context.l10n.sourcePolicyDateTitle,
+                body: context.l10n.sourcePolicyDateBody,
               ),
-              const _PolicyRule(
+              _PolicyRule(
                 icon: Icons.person_off_outlined,
-                title: 'Kullanıcı içeriği yok',
-                body:
-                    'Akışta gönderi, yorum veya kullanıcı katkısı bulunmaz. '
-                    'Yayımlayan taraf yalnızca tecOS\'ın kaynak hattıdır.',
+                title: context.l10n.sourcePolicyNoUserContentTitle,
+                body: context.l10n.sourcePolicyNoUserContentBody,
               ),
 
               const SizedBox(height: AppSpacing.lg),
               Text(
-                'BU AKIŞTAKİ KAYNAKLAR',
+                context.l10n.sourcePolicySourcesHeading,
                 style: context.text.label.copyWith(
                   color: context.palette.primary,
                 ),
@@ -177,7 +172,7 @@ class _SourceList extends StatelessWidget {
       final sources = sourcesInFeed(feed.value!);
       if (sources.isEmpty) {
         return Text(
-          'Akış henüz yüklenmedi.',
+          context.l10n.sourcePolicyFeedNotLoaded,
           key: const Key('source-policy-empty'),
           style: context.text.bodyMuted,
         );
@@ -190,7 +185,7 @@ class _SourceList extends StatelessWidget {
     }
     if (feed.hasError) {
       return Text(
-        'Kaynak listesi okunamadı.',
+        context.l10n.sourcePolicyUnreadable,
         key: const Key('source-policy-error'),
         style: context.text.bodyMuted,
       );
@@ -206,7 +201,7 @@ class _SourceRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final subtitle = sourceKindSubtitle(source);
+    final subtitle = sourceKindSubtitle(source, context.l10n);
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Row(
@@ -228,7 +223,10 @@ class _SourceRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacing.md),
-          Text('${source.itemCount} içerik', style: context.text.bodyMuted),
+          Text(
+            context.l10n.sourcePolicyItemCount(source.itemCount),
+            style: context.text.bodyMuted,
+          ),
         ],
       ),
     );

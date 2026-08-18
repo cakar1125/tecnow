@@ -10,6 +10,8 @@ import '../../design_system/components/app_components.dart';
 import '../../design_system/tokens/app_palette.dart';
 import '../../design_system/tokens/app_text.dart';
 import '../../design_system/tokens/app_tokens.dart';
+import '../../l10n/app_localizations.dart';
+import '../../l10n/l10n_context.dart';
 import '../../ui/language_names.dart';
 import '../read_history/read_history_screen.dart';
 import 'about_screen.dart';
@@ -35,16 +37,16 @@ class SettingsScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) async {
-    // Messenger dialog'dan önce alınır: `await` sonrasında `context` artık
-    // güvenle kullanılamaz.
+    // Messenger ve çeviriler dialog'dan **önce** alınır: `await`
+    // sonrasında `context` artık güvenle kullanılamaz.
     final messenger = ScaffoldMessenger.of(context);
+    final l10n = context.l10n;
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AppConfirmationDialog(
-        title: 'Verileri Sil',
-        message:
-            'Bu cihazdaki yerel verileri silmek istediğinizden emin misiniz?',
+        title: l10n.settingsEraseData,
+        message: l10n.settingsEraseConfirm,
         onConfirm: () => Navigator.of(dialogContext).pop(true),
       ),
     );
@@ -52,17 +54,10 @@ class SettingsScreen extends ConsumerWidget {
 
     try {
       await eraseAllLocalData(ref);
-      messenger.showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Yerel veriler silindi. Uygulama yeniden açıldığında kurulum '
-            'baştan sorulacak.',
-          ),
-        ),
-      );
+      messenger.showSnackBar(SnackBar(content: Text(l10n.settingsEraseDone)));
     } catch (error) {
       messenger.showSnackBar(
-        SnackBar(content: Text('Yerel veriler silinemedi: $error')),
+        SnackBar(content: Text(l10n.settingsEraseFailed('$error'))),
       );
     }
   }
@@ -70,10 +65,11 @@ class SettingsScreen extends ConsumerWidget {
   /// Adet okunamıyorsa satır sayısız gösterilir — yanlış bir `0` yazmaktansa
   /// hiçbir şey yazmamak dürüsttür.
   String? _countLabel(
+    L10n l10n,
     AsyncValue<LocalDataCounts> counts,
     int Function(LocalDataCounts) select,
   ) => switch (counts) {
-    AsyncData(:final value) => '${select(value)} kayıt',
+    AsyncData(:final value) => l10n.settingsRecordCount(select(value)),
     _ => null,
   };
 
@@ -103,93 +99,97 @@ class SettingsScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text('Ayarlar', style: context.text.headline),
+                Text(context.l10n.settingsTitle, style: context.text.headline),
                 const SizedBox(height: AppSpacing.xl),
                 _SettingsSection(
-                  title: 'KİŞİSELLEŞTİRME',
+                  title: context.l10n.settingsSectionPersonalization,
                   children: [
                     _SettingsRow(
                       icon: Icons.interests_outlined,
-                      title: 'İlgi Alanları',
+                      title: context.l10n.settingsInterests,
                       onTap: () => context.push('/interests'),
                     ),
                     const _LanguageRow(),
                     const _ThemeRow(),
-                    const _SettingsRow.upcoming(
+                    _SettingsRow.upcoming(
                       icon: Icons.tune_rounded,
-                      title: 'İçerik Tercihleri',
+                      title: context.l10n.settingsContentPreferences,
                     ),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.xl),
                 _SettingsSection(
-                  title: 'YEREL VERİLER',
+                  title: context.l10n.settingsSectionLocalData,
                   children: [
                     _SettingsRow(
                       icon: Icons.bookmark_outline,
-                      title: 'Kaydedilen İçerikler',
-                      value: _countLabel(counts, (c) => c.savedItems),
+                      title: context.l10n.settingsSavedItems,
+                      value: _countLabel(
+                        context.l10n,
+                        counts,
+                        (c) => c.savedItems,
+                      ),
                       onTap: () => context.go('/saved'),
                     ),
                     _SettingsRow.upcoming(
                       icon: Icons.forum_outlined,
-                      title: 'Asistan Konuşmaları',
+                      title: context.l10n.settingsAssistantChats,
                       value: _countLabel(
+                        context.l10n,
                         counts,
                         (c) => c.assistantConversations,
                       ),
                     ),
                     _SettingsRow(
                       icon: Icons.history_rounded,
-                      title: 'Okuma Geçmişi',
-                      value: _countLabel(counts, (c) => c.readHistory),
+                      title: context.l10n.settingsReadHistory,
+                      value: _countLabel(
+                        context.l10n,
+                        counts,
+                        (c) => c.readHistory,
+                      ),
                       onTap: () => context.push(readHistoryRoute),
                     ),
                     _SettingsRow.upcoming(
                       icon: Icons.download_outlined,
-                      title: 'Verileri Dışa Aktar',
+                      title: context.l10n.settingsExportData,
                     ),
                     _SettingsRow(
                       icon: Icons.delete_outline,
-                      title: 'Verileri Sil',
+                      title: context.l10n.settingsEraseData,
                       color: context.palette.critical,
                       onTap: () => _confirmLocalDataDeletion(context, ref),
                     ),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.xl),
-                const _SettingsSection(
-                  title: 'GİZLİLİK',
+                _SettingsSection(
+                  title: context.l10n.settingsSectionPrivacy,
                   children: [
                     _PrivacyItem(
                       icon: Icons.smartphone_rounded,
-                      title: 'Verileriniz bu cihazda saklanır.',
-                      description:
-                          'İlgi alanlarınız, kaydedilen içerikler ve sohbet '
-                          'geçmişi bu cihazda saklanır.',
+                      title: context.l10n.settingsPrivacyLocalTitle,
+                      description: context.l10n.settingsPrivacyLocalBody,
                     ),
                     _PrivacyItem(
                       icon: Icons.person_off_outlined,
-                      title: 'Hesap gerekmez.',
-                      description:
-                          'Proje Asistanı yanıt üretirken gerekli mesaj '
-                          'içeriği seçilen AI hizmetine gönderilebilir. '
-                          'tecOS hesap veya sosyal profil oluşturmaz.',
+                      title: context.l10n.settingsPrivacyNoAccountTitle,
+                      description: context.l10n.settingsPrivacyNoAccountBody,
                     ),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.xl),
                 _SettingsSection(
-                  title: 'HAKKINDA',
+                  title: context.l10n.settingsSectionAbout,
                   children: [
                     _SettingsRow(
                       icon: Icons.info_outline_rounded,
-                      title: 'tecOS Hakkında',
+                      title: context.l10n.settingsAbout,
                       onTap: () => context.push(aboutRoute),
                     ),
                     _SettingsRow(
                       icon: Icons.policy_outlined,
-                      title: 'Kaynak Politikası',
+                      title: context.l10n.settingsSourcePolicy,
                       onTap: () => context.push(sourcePolicyRoute),
                     ),
                     // Flutter'ın yerleşik lisans ekranı. Kendi ekranımızı
@@ -221,7 +221,7 @@ class SettingsScreen extends ConsumerWidget {
                 // teknik bir tanımlayıcıdır ve `technical` token'ı tam bunun
                 // için var. Değişen tek şey içerik.
                 Text(
-                  'Uygulama Sürümü: $appVersionLabel',
+                  context.l10n.settingsAppVersion(appVersionLabel),
                   style: context.text.technical,
                   textAlign: TextAlign.center,
                 ),
@@ -463,10 +463,13 @@ class _LanguageSheet extends ConsumerWidget {
               AppSpacing.lg,
               AppSpacing.sm,
             ),
-            child: Text('İçerik dili', style: context.text.title),
+            child: Text(
+              context.l10n.languageSheetTitle,
+              style: context.text.title,
+            ),
           ),
           _LanguageOption(
-            label: 'Cihazın dili',
+            label: context.l10n.languageDeviceDefault,
             // Otomatik seçimin **bugün ne getirdiğini** yazıyor. "Otomatik"
             // tek başına, kullanıcının hangi dili okuyacağını söylemez.
             detail: languageName(options.current),
@@ -594,21 +597,21 @@ class _ThemeRow extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           SegmentedButton<ThemeMode>(
-            segments: const [
+            segments: [
               ButtonSegment(
                 value: ThemeMode.system,
-                icon: Icon(Icons.brightness_auto_outlined),
-                label: Text('Sistem'),
+                icon: const Icon(Icons.brightness_auto_outlined),
+                label: Text(context.l10n.themeSystem),
               ),
               ButtonSegment(
                 value: ThemeMode.light,
-                icon: Icon(Icons.light_mode_outlined),
-                label: Text('Açık'),
+                icon: const Icon(Icons.light_mode_outlined),
+                label: Text(context.l10n.themeLight),
               ),
               ButtonSegment(
                 value: ThemeMode.dark,
-                icon: Icon(Icons.dark_mode_outlined),
-                label: Text('Koyu'),
+                icon: const Icon(Icons.dark_mode_outlined),
+                label: Text(context.l10n.themeDark),
               ),
             ],
             selected: {selected},
@@ -651,7 +654,7 @@ class _UpcomingTag extends StatelessWidget {
       border: Border.all(color: context.palette.outline),
     ),
     child: Text(
-      'Yakında',
+      context.l10n.comingSoon,
       style: context.text.label.copyWith(color: context.palette.textSecondary),
     ),
   );

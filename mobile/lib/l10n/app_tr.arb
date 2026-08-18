@@ -1,58 +1,155 @@
 {
   "@@locale": "tr",
-
   "feedSyncRefreshing": "Güncelleniyor…",
   "@feedSyncRefreshing": {
     "description": "Feed tazelenirken durum satırı."
   },
-
   "feedSyncBundled": "İçerik uygulamayla birlikte geliyor",
   "@feedSyncBundled": {
     "description": "Uzak adres derlemeye verilmediğinde. Tarih verilmez: paketlenmiş içeriğin tazeliği için tutulamayacak bir söz olurdu."
   },
-
   "feedSyncFailedBundled": "Güncellenemedi · paketlenmiş içerik gösteriliyor",
   "@feedSyncFailedBundled": {
     "description": "Tazeleme düştü ve daha önce hiç indirilmemiş."
   },
-
   "feedSyncFailedCached": "Güncellenemedi · {relative} alınan içerik gösteriliyor",
   "@feedSyncFailedCached": {
     "description": "Tazeleme düştü ama önbellekte içerik var. Hata gizlenmez, içerik de kaybolmaz.",
     "placeholders": {
-      "relative": { "type": "String", "example": "1 dakika önce" }
+      "relative": {
+        "type": "String",
+        "example": "1 dakika önce"
+      }
     }
   },
-
   "feedSyncNever": "Henüz güncellenmedi",
   "@feedSyncNever": {
     "description": "Uzak adres var ama hiç başarılı tazeleme olmamış."
   },
-
   "feedSyncLast": "Son güncelleme: {relative}",
   "@feedSyncLast": {
     "placeholders": {
-      "relative": { "type": "String", "example": "az önce" }
+      "relative": {
+        "type": "String",
+        "example": "az önce"
+      }
     }
   },
-
   "relativeJustNow": "az önce",
   "@relativeJustNow": {
     "description": "Bir dakikadan yeni. Gelecekteki damgalar da buraya düşer: cihaz saati geri alındığında '-3 saat önce' yazmak kullanıcının düzeltemeyeceği bir tuhaflık olurdu."
   },
-
   "relativeMinutes": "{count, plural, other{{count} dakika önce}}",
   "@relativeMinutes": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
-
   "relativeHours": "{count, plural, other{{count} saat önce}}",
   "@relativeHours": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
-
   "relativeDays": "{count, plural, other{{count} gün önce}}",
   "@relativeDays": {
-    "placeholders": { "count": { "type": "int" } }
-  }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsTitle": "Ayarlar",
+  "settingsSectionPersonalization": "KİŞİSELLEŞTİRME",
+  "settingsInterests": "İlgi Alanları",
+  "settingsContentPreferences": "İçerik Tercihleri",
+  "settingsSectionLocalData": "YEREL VERİLER",
+  "settingsSavedItems": "Kaydedilen İçerikler",
+  "settingsAssistantChats": "Asistan Konuşmaları",
+  "settingsReadHistory": "Okuma Geçmişi",
+  "settingsExportData": "Verileri Dışa Aktar",
+  "settingsEraseData": "Verileri Sil",
+  "settingsSectionPrivacy": "GİZLİLİK",
+  "settingsPrivacyLocalTitle": "Verileriniz bu cihazda saklanır.",
+  "settingsPrivacyLocalBody": "İlgi alanlarınız, kaydedilen içerikler ve sohbet geçmişi bu cihazda saklanır.",
+  "settingsPrivacyNoAccountTitle": "Hesap gerekmez.",
+  "settingsPrivacyNoAccountBody": "Proje Asistanı yanıt üretirken gerekli mesaj içeriği seçilen AI hizmetine gönderilebilir. tecOS hesap veya sosyal profil oluşturmaz.",
+  "settingsSectionAbout": "HAKKINDA",
+  "settingsAbout": "tecOS Hakkında",
+  "settingsSourcePolicy": "Kaynak Politikası",
+  "settingsEraseConfirm": "Bu cihazdaki yerel verileri silmek istediğinizden emin misiniz?",
+  "settingsEraseDone": "Yerel veriler silindi. Uygulama yeniden açıldığında kurulum baştan sorulacak.",
+  "comingSoon": "Yakında",
+  "themeSystem": "Sistem",
+  "themeLight": "Açık",
+  "themeDark": "Koyu",
+  "languageSheetTitle": "İçerik dili",
+  "languageDeviceDefault": "Cihazın dili",
+  "settingsEraseFailed": "Yerel veriler silinemedi: {error}",
+  "@settingsEraseFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsRecordCount": "{count, plural, other{{count} kayıt}}",
+  "@settingsRecordCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsAppVersion": "Uygulama Sürümü: {version}",
+  "@settingsAppVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutIntro": "Teknoloji dünyasında olan biteni tek akışta izlemek için bir rehber. Sosyal ağ değil: burada gönderi paylaşılmaz, yorum yazılmaz, kimse takip edilmez.",
+  "aboutNoAccountBody": "Kayıt, giriş, kullanıcı adı ve şifre yok. Uygulamayı kullanmak için hiçbir kimlik vermeniz gerekmiyor.",
+  "aboutLocalDataBody": "İlgi alanlarınız, kaydettiğiniz içerikler ve okuma geçmişiniz yalnızca bu telefonda saklanır. Bulut senkronizasyonu yok; Ayarlar'dan hepsini tek işlemle silebilirsiniz.",
+  "aboutSourceVisibleTitle": "Kaynak her zaman görünür",
+  "aboutSourceVisibleBody": "Her içerikte onu kimin yayımladığı yazar ve detay ekranından orijinal adrese gidilebilir. İçerik burada yeniden yazılmaz.",
+  "aboutVersion": "Sürüm {version}",
+  "sourcePolicyHeadline": "İçerik nereden geliyor?",
+  "sourcePolicyLede": "tecOS haber yazmaz. Başkalarının yayımladığı gelişmeleri derler, kaynağıyla birlikte gösterir ve orijinaline yönlendirir.",
+  "sourcePolicyClosedListTitle": "Kapalı liste",
+  "sourcePolicyClosedListBody": "Yalnızca önceden onaylanmış adreslerden içerik alınır. Listede olmayan bir site, ne kadar popüler olursa olsun akışa giremez.",
+  "sourcePolicyPrimaryTitle": "Önce birincil kaynak",
+  "sourcePolicyPrimaryBody": "GitHub, Hugging Face, kurumların kendi blogları ve resmi dokümantasyon. Bir gelişmeyi aktaran değil, yapan yazar.",
+  "sourcePolicyDateBody": "Yayın tarihini vermeyen bir kaynak listeye alınmaz. Eksik tarihi bugünle doldurmak, eski bir yazıyı yeni göstermek olurdu.",
+  "sourcePolicyNoUserContentTitle": "Kullanıcı içeriği yok",
+  "sourcePolicyNoUserContentBody": "Akışta gönderi, yorum veya kullanıcı katkısı bulunmaz. Yayımlayan taraf yalnızca tecOS'ın kaynak hattıdır.",
+  "sourcePolicySourcesHeading": "BU AKIŞTAKİ KAYNAKLAR",
+  "sourcePolicyFeedNotLoaded": "Akış henüz yüklenmedi.",
+  "sourcePolicyUnreadable": "Kaynak listesi okunamadı.",
+  "sourceKindDocumentation": "Resmi dokümantasyon",
+  "sourceKindOther": "Bu sürümde tanımlı değil",
+  "@aboutVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "sourcePolicyItemCount": "{count, plural, other{{count} içerik}}",
+  "@sourcePolicyItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "aboutNoAccountTitle": "Hesap yok",
+  "aboutLocalDataTitle": "Veriler bu cihazda",
+  "sourcePolicyDateTitle": "Tarih uydurulmaz",
+  "sourceKindOfficialBlog": "Resmi bloglar"
 }
